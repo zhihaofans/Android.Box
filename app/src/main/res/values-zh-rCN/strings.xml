@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_copy">复制</string>
+    <string name="text_finish">完成</string>
+    <string name="text_canceled_by_user">用户取消。</string>
+    <string name="text_no_install_need_plugin">你没有安装对应的插件。</string>
+    <string name="text_share">分享</string>
+    <string name="text_setting">设置</string>
+    <string name="text_qrcode">二维码</string>
+</resources>

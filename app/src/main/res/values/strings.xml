@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name" translatable="false">Android.Box</string>
+    <string name="text_copy">Copy</string>
+    <string name="text_finish">Finished</string>
+    <string name="text_ok" translatable="false">Ok</string>
+    <string name="text_canceled_by_user">Cancel by user.</string>
+    <string name="text_no_install_need_plugin">You do not install the corresponding plugin.</string>
+    <string name="text_qrcode">Qrcode</string>
+    <string name="text_share">Share</string>
+    <string name="text_setting">Setting</string>
+</resources>

@@ -8,4 +8,5 @@
     <string name="text_qrcode">Qrcode</string>
     <string name="text_share">Share</string>
     <string name="text_setting">Setting</string>
+    <string name="text_install">Install</string>
 </resources>

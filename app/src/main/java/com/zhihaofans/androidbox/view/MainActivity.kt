@@ -18,6 +18,8 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
 import com.zhihaofans.androidbox.R
+import org.jetbrains.anko.browse
+import org.jetbrains.anko.selector
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,12 +36,20 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        _sendSMS()
         button_qrcode.onClick {
             val qrcodePlugin = qrcode.getInstalledPlugin(this@MainActivity)
             Logger.d("Qrcode Plugin:$qrcodePlugin")
             if (qrcodePlugin < 1) {
-                snackbar(R.string.text_no_install_need_plugin)
+                Snackbar.make(coordinatorLayout_main, R.string.text_no_install_need_plugin, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.text_install, {
+                            val countries = listOf("二维码扫描(mark.qrcode)", "H5扫码器(org.noear.scan.H5_SCAN)")
+                            selector("", countries, { _, i ->
+                                when (i) {
+                                    0 -> browse("https://www.coolapk.com/apk/mark.qrcode")
+                                    1 -> browse("https://www.coolapk.com/apk/org.noear.scan")
+                                }
+                            })
+                        }).show()
             } else {
                 try {
                     qrcode.scan(qrcodePlugin)

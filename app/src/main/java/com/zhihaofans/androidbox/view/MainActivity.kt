@@ -1,19 +1,16 @@
 package com.zhihaofans.androidbox.view
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment.getExternalStorageDirectory
-import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import com.orhanobut.logger.Logger
 import com.tbruyelle.rxpermissions2.RxPermissions
-import com.wx.android.common.util.FileUtils
+import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import kotlinx.android.synthetic.main.activity_main.*
@@ -38,65 +35,50 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        button_dotnomedia.onClick {
-            rxPermissions
-                    .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .subscribe({ granted ->
-                        if (granted) {
-                            alert {
-                                customView {
-                                    verticalLayout {
-                                        textView("路径:")
-                                        var path = editText {
-                                            setText("${getExternalStorageDirectory().absolutePath}/")
-                                        }.text.toString()
-                                        yesButton {
-                                            if (path.isNotEmpty()) {
-                                                if (!path.endsWith("/")) path += "/"
-                                                if (FileUtils.isFileExist(path)) {
-                                                    Snackbar.make(coordinatorLayout_main, "该路径是个文件不是文件夹，生成文件失败",
-                                                            Snackbar.LENGTH_SHORT).show()
-                                                } else {
-                                                    if (FileUtils.isFolderExist(path)) {
-                                                        val fileName = path + ".nomedia"
-                                                        if (FileUtils.isFileExist(fileName)) {
-                                                            Snackbar.make(coordinatorLayout_main, "文件已存在，不需要生成",
-                                                                    Snackbar.LENGTH_SHORT).show()
-                                                        } else {
-                                                            if (FileUtils.writeFile(fileName, "")) {
-                                                                Snackbar.make(coordinatorLayout_main, "生成文件成功",
-                                                                        Snackbar.LENGTH_SHORT).show()
-                                                            } else {
-                                                                Snackbar.make(coordinatorLayout_main, "生成文件失败",
-                                                                        Snackbar.LENGTH_SHORT).show()
-                                                            }
-                                                        }
-                                                    } else {
-                                                        Snackbar.make(coordinatorLayout_main, "该文件夹不存在，要先创建吗？",
-                                                                Snackbar.LENGTH_LONG)
-                                                                .setAction("创建并生成文件", {
+        button_androidsdk.onClick {
+            val sdks = listOf(
+                    "Android 1.0 (API 1)",
+                    "Android 1.1 (API 2, Petit Four 花式小蛋糕)",
+                    "Android 1.5 (API 3, Cupcake 纸杯蛋糕)",
+                    "Android 1.6 (API 4, Donut 甜甜圈)",
+                    "Android 2.0 (API 5, Eclair 松饼)",
+                    "Android 2.0.1 (API 6, Eclair 松饼)",
+                    "Android 2.1 (API 7, Eclair 松饼)",
+                    "Android 2.2.x (API 8, Froyo 冻酸奶)",
+                    "Android 2.3-2.3.2 (API 9, Gingerbread 姜饼)",
+                    "Android 2.3.3-2.3.7 (API 10, Gingerbread 姜饼)",
+                    "Android 3.0 (API 11, Honeycomb 蜂巢)",
+                    "Android 3.1 (API 12, Honeycomb 蜂巢)",
+                    "Android 3.2.x (API 13, Honeycomb 蜂巢)",
+                    "Android 4.0-4.0.2 (API 14, Ice Cream Sandwich 冰激凌三明治)",
+                    "Android 4.0.3-4.0.4 (API 15, Ice Cream Sandwich 冰激凌三明治)",
+                    "Android 4.1.x (API 16, Jelly Bean  果冻豆)",
+                    "Android 4.2.x (API 17, Jelly Bean  果冻豆)",
+                    "Android 4.3.x (API 18, Jelly Bean  果冻豆)",
+                    "Android 4.4.x (API 19, KitKat 奇巧巧克力棒)",
+                    "Android 4.4w.x (API 20, KitKat 奇巧巧克力棒)",
+                    "Android 5.0.x (API 21, Lollipop 棒棒糖)",
+                    "Android 5.1.x (API 22, Lollipop 棒棒糖)",
+                    "Android 6.0.x (API 23, Marshmallow 棉花糖)",
+                    "Android 7.0 (API 24, Nougat 牛轧糖)",
+                    "Android 7.1.x (API 25, Nougat 牛轧糖)",
+                    "Android 8.0 (API 26, Oreo 奥利奥)",
+                    "Android 8.1 (API 27, Oreo 奥利奥)"
 
-                                                                }).show()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        noButton { }
-                                    }
-                                }
-                            }.show()
-                        } else {
-                            Snackbar.make(coordinatorLayout_main, "生成文件失败，没有储存权限。", Snackbar.LENGTH_SHORT)
-                                    .setAction("授权", {
-                                        val intent = Intent()
-                                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                        intent.data = Uri.fromParts("package", packageName, null)
-                                        startActivity(intent)
-                                    })
-                                    .show()
+            )
+            val nowSdk = Build.VERSION.SDK_INT
+            selector("你是${sdks[nowSdk - 1]}", sdks, { _, i ->
+                val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
+                selector("", acts, { _, ii ->
+                    when (ii) {
+                        0 -> {
+                            ClipboardUtils.copy(this@MainActivity, sdks[i])
+                            Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
                         }
-                    })
-
+                        1 -> share(sdks[i])
+                    }
+                })
+            })
         }
         button_qrcode.onClick {
             val qrcodePlugin = qrcode.getInstalledPlugin(this@MainActivity)

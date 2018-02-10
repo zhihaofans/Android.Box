@@ -31,11 +31,11 @@
                 android:text="@string/text_qrcode" />
 
             <Button
-                android:id="@+id/button_dotnomedia"
+                android:id="@+id/button_androidsdk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:text="@string/text_dotnomedia" />
+                android:text="@string/text_androidsdk" />
 
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>

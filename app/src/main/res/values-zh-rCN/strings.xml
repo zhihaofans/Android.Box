@@ -8,4 +8,5 @@
     <string name="text_setting">设置</string>
     <string name="text_qrcode">二维码</string>
     <string name="text_install">安装</string>
+    <string name="text_appmanagement">应用管理</string>
 </resources>

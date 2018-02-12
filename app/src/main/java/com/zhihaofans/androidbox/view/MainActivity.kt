@@ -103,6 +103,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        button_appmanagement.onClick {
+            startActivity<AppManagementActivity>()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

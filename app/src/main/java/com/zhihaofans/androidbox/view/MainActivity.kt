@@ -15,8 +15,11 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.browse
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -64,11 +67,13 @@ class MainActivity : AppCompatActivity() {
                     "Android 7.1.x (API 25, Nougat 牛轧糖)",
                     "Android 8.0 (API 26, Oreo 奥利奥)",
                     "Android 8.1 (API 27, Oreo 奥利奥)"
-
             )
+
             val nowSdk = Build.VERSION.SDK_INT
+
             selector("你是${sdks[nowSdk - 1]}", sdks, { _, i ->
                 val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
+
                 selector("", acts, { _, ii ->
                     when (ii) {
                         0 -> {

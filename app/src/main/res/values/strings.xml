@@ -11,4 +11,5 @@
     <string name="text_install">Install</string>
     <string name="text_androidsdk" translatable="false">Android SDK</string>
     <string name="text_appmanagement">App Management</string>
+    <string name="text_error">Error</string>
 </resources>

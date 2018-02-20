@@ -9,4 +9,5 @@
     <string name="text_qrcode">二维码</string>
     <string name="text_install">安装</string>
     <string name="text_appmanagement">应用管理</string>
+    <string name="text_error">错误</string>
 </resources>

@@ -38,7 +38,7 @@ class AppManagementActivity : AppCompatActivity() {
         var onlyUserApp = false
         var index = 0
         val pm = packageManager
-        appList = ArrayList<Map<String, Any>>()
+        appList = ArrayList()
         loading.setCanceledOnTouchOutside(false)
         //loading.setCancelable(false)
         val backG = doAsync {
@@ -46,7 +46,7 @@ class AppManagementActivity : AppCompatActivity() {
             val packs = pm.getInstalledPackages(0)
             //得到系统 安装的所有程序包的PackageInfo对象
             val appCount = packs.size
-            Logger.d("appList\nlist------>$packs")
+            Logger.d("appList\nlist------>$appCount")
             for (pi in packs) {
                 val map = hashMapOf<String, Any>()
                 if (pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {

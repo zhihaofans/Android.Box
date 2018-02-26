@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             selector("你是${sdks[nowSdk - 1]}", sdks, { _, i ->
                 val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
 
-                selector("", acts, { _, ii ->
+                selector(sdks[i], acts, { _, ii ->
                     when (ii) {
                         0 -> {
                             ClipboardUtils.copy(this@MainActivity, sdks[i])

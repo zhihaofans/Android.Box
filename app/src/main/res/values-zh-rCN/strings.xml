@@ -10,4 +10,9 @@
     <string name="text_install">安装</string>
     <string name="text_appmanagement">应用管理</string>
     <string name="text_error">错误</string>
+    <string name="text_use_qrplugin_fail">调用二维码插件失败</string>
+    <string name="text_app_name">应用名称</string>
+    <string name="text_app_packagename">包名</string>
+    <string name="text_app_info">应用信息</string>
+    <string name="text_app_apk">安装包</string>
 </resources>

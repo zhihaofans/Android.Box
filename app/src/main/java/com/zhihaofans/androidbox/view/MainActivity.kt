@@ -68,9 +68,7 @@ class MainActivity : AppCompatActivity() {
                     "Android 8.0 (API 26, Oreo 奥利奥)",
                     "Android 8.1 (API 27, Oreo 奥利奥)"
             )
-
             val nowSdk = Build.VERSION.SDK_INT
-
             selector("你是${sdks[nowSdk - 1]}", sdks, { _, i ->
                 val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
 
@@ -85,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                 })
             })
         }
+
         button_qrcode.onClick {
             val qrcodePlugin = qrcode.getInstalledPlugin(this@MainActivity)
             Logger.d("Qrcode Plugin:$qrcodePlugin")
@@ -104,10 +103,11 @@ class MainActivity : AppCompatActivity() {
                     qrcode.scan(qrcodePlugin)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    snackbar("调用二维码插件失败")
+                    Snackbar.make(coordinatorLayout_main, R.string.text_use_qrplugin_fail, Snackbar.LENGTH_SHORT).show()
                 }
             }
         }
+
         button_appmanagement.onClick {
             startActivity<AppManagementActivity>()
         }
@@ -141,14 +141,4 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    // 自定义扩展函数
-    private fun snackbar(message: CharSequence, showLongTime: Boolean = false) {
-        var showTime = Snackbar.LENGTH_SHORT
-        if (showLongTime) showTime = Snackbar.LENGTH_LONG
-        Snackbar.make(coordinatorLayout_main, message, showTime).show()
-    }
-
-    private fun snackbar(message: Int, showLongTime: Boolean = false) {
-        snackbar(getString(message), showLongTime)
-    }
 }

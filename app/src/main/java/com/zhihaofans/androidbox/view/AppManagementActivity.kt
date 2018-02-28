@@ -7,10 +7,12 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.widget.ListView
 import com.orhanobut.logger.Logger
+import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
+import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import java.util.*
@@ -32,11 +34,9 @@ class AppManagementActivity : AppCompatActivity() {
     }
 
 
-    private fun appListInit() {
+    private fun appListInit(onlyUserApp: Boolean = false) {
         listView_app.visibility = ListView.INVISIBLE
         val loading = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-        var onlyUserApp = false
-        var index = 0
         val pm = packageManager
         appList = ArrayList()
         loading.setCanceledOnTouchOutside(false)
@@ -49,24 +49,18 @@ class AppManagementActivity : AppCompatActivity() {
             Logger.d("appList\nlist------>$appCount")
             for (pi in packs) {
                 val map = hashMapOf<String, Any>()
+                map["icon"] = pi.applicationInfo.loadIcon(pm)
+                //图标
+                map["appName"] = pi.applicationInfo.loadLabel(pm)
+                //应用名
+                map["packageName"] = pi.packageName
+                map["applicationInfo"] = pi.applicationInfo
+
+                //包名
                 if (pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
-                    map["icon"] = pi.applicationInfo.loadIcon(pm)
-                    //图标
-                    map["appName"] = pi.applicationInfo.loadLabel(pm)
-                    //应用名
-                    map["packageName"] = pi.packageName
-                    //包名
-                    index += 1
                     appList.add(map)//如果非系统应用，则添加至appList
                 } else {
                     if (!onlyUserApp) {
-                        map["icon"] = pi.applicationInfo.loadIcon(pm)
-                        //图标
-                        map["appName"] = pi.applicationInfo.loadLabel(pm)
-                        //应用名
-                        map["packageName"] = pi.packageName
-                        //包名
-                        index += 1
                         appList.add(map)//如果非系统应用，则添加至appList
                     }
                 }
@@ -90,6 +84,16 @@ class AppManagementActivity : AppCompatActivity() {
                         }
                         okButton { }
                     }.show()
+                    val acts = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk))
+                    selector(childItem["appName"] as String, acts, { _, ii ->
+                        when (ii) {
+                            0 -> {
+                                ClipboardUtils.copy(this@MainActivity, sdks[i])
+                                Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
+                            }
+                            1 -> share(sdks[i])
+                        }
+                    })
                 }
 
             }

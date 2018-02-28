@@ -12,4 +12,9 @@
     <string name="text_androidsdk" translatable="false">Android SDK</string>
     <string name="text_appmanagement">App Management</string>
     <string name="text_error">Error</string>
+    <string name="text_use_qrplugin_fail">Use qrcode plugin fail.</string>
+    <string name="text_app_name">Application name</string>
+    <string name="text_app_packagename">Package name</string>
+    <string name="text_app_info">Application information</string>
+    <string name="text_app_apk">APK file</string>
 </resources>

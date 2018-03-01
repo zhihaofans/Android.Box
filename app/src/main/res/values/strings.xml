@@ -17,4 +17,10 @@
     <string name="text_app_packagename">Package name</string>
     <string name="text_app_info">Application information</string>
     <string name="text_app_apk">APK file</string>
+    <string name="text_app_version">Version</string>
+    <string name="text_app_firstinstalltime">Install time</string>
+    <string name="text_app_lastupdatetime">Update time</string>
+    <string name="text_app_size">App size</string>
+    <string name="text_app_apkpath">APK path</string>
+    <string name="text_cancel">Cancel</string>
 </resources>

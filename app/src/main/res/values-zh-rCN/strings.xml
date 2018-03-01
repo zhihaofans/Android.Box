@@ -15,4 +15,10 @@
     <string name="text_app_packagename">包名</string>
     <string name="text_app_info">应用信息</string>
     <string name="text_app_apk">安装包</string>
+    <string name="text_app_version">版本</string>
+    <string name="text_app_firstinstalltime">安装时间</string>
+    <string name="text_app_lastupdatetime">最后更新时间</string>
+    <string name="text_app_size">安装包大小</string>
+    <string name="text_cancel">取消</string>
+    <string name="text_app_apkpath">安装包路径</string>
 </resources>

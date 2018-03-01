@@ -1,20 +1,21 @@
 package com.zhihaofans.androidbox.view
 
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.widget.ListView
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
+import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
-import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -26,7 +27,7 @@ class AppManagementActivity : AppCompatActivity() {
         setContentView(R.layout.activity_app_management)
         setSupportActionBar(toolbar)
         appListInit()
-        this@AppManagementActivity.title = getString(R.string.text_appmanagement)
+        this@AppManagementActivity.title = getStr(R.string.text_appmanagement)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
@@ -54,15 +55,14 @@ class AppManagementActivity : AppCompatActivity() {
                 map["appName"] = pi.applicationInfo.loadLabel(pm)
                 //应用名
                 map["packageName"] = pi.packageName
-                map["applicationInfo"] = pi.applicationInfo
+                map["packageInfo"] = pi
 
                 //包名
                 if (pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
                     appList.add(map)//如果非系统应用，则添加至appList
-                } else {
-                    if (!onlyUserApp) {
-                        appList.add(map)//如果非系统应用，则添加至appList
-                    }
+                } else if (!onlyUserApp) {
+                    appList.add(map)//如果系统应用，当 onlyUserApp==false 时添加至appList
+
                 }
                 //循环读取存到HashMap,再增加到ArrayList.一个HashMap就是一项
             }
@@ -73,7 +73,18 @@ class AppManagementActivity : AppCompatActivity() {
                 listView_app.visibility = ListView.VISIBLE
                 listView_app.onItemClick { _, _, index, _ ->
                     val childItem = appList[index]
-                    Logger.d(childItem["icon"])
+                    val thisPackageInfo: PackageInfo = childItem["packageInfo"] as PackageInfo
+                    val thisAppInfo: ApplicationInfo = thisPackageInfo.applicationInfo
+                    val thisAppName: String = thisAppInfo.loadLabel(pm).toString()
+                    val thisAppIcon: Drawable = thisAppInfo.loadIcon(pm)
+                    val thisAppPackageName: String = thisAppInfo.packageName
+                    val thisAppVersionName: String = thisPackageInfo.versionName
+                    val thisAppVersionCode: Int = thisPackageInfo.versionCode
+                    val thisAppFirstInstallTime: String = time2date(thisPackageInfo.firstInstallTime)
+                    val thisAppLastUpdateTime: String = time2date(thisPackageInfo.lastUpdateTime)
+                    val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
+                    val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt() //TODO:以后加入自动转换单位功能
+                    /*Logger.d(childItem["icon"])
                     alert {
                         customView {
                             verticalLayout {
@@ -83,15 +94,45 @@ class AppManagementActivity : AppCompatActivity() {
                             }
                         }
                         okButton { }
-                    }.show()
-                    val acts = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk))
-                    selector(childItem["appName"] as String, acts, { _, ii ->
-                        when (ii) {
+                    }.show()*/
+
+                    val act_app = listOf(getStr(R.string.text_app_info), getStr(R.string.text_app_apk))
+                    selector(childItem["appName"] as String, act_app, { _, i ->
+                        when (i) {
                             0 -> {
-                                ClipboardUtils.copy(this@MainActivity, sdks[i])
-                                Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
+                                val act_appInfo = listOf(
+                                        "${getStr(R.string.text_app_name)}:$thisAppName",
+                                        "${getStr(R.string.text_app_packagename)}:$thisAppPackageName",
+                                        "${getStr(R.string.text_app_version)}:$thisAppVersionName ($thisAppVersionCode)",
+                                        "${getStr(R.string.text_app_apkpath)}:$thisApkPath",
+                                        "${getStr(R.string.text_app_size)}:$thisApkSize B",
+                                        "${getStr(R.string.text_app_firstinstalltime)}:$thisAppFirstInstallTime",
+                                        "${getStr(R.string.text_app_lastupdatetime)}:$thisAppLastUpdateTime"
+                                )
+                                //TODO:应用选项
+                                selector(getStr(R.string.text_app_info), act_appInfo, { _, ii ->
+                                    when (ii) {
+                                        0 -> {
+                                            alert {
+                                                customView {
+                                                    verticalLayout {
+                                                        val input: String = editText(act_appInfo[ii]).text.toString()
+                                                        neutralPressed(R.string.text_share, {
+
+                                                        })
+                                                        negativeButton(R.string.text_cancel, {
+
+                                                        })
+                                                        positiveButton(R.string.text_copy, {
+
+                                                        })
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
                             }
-                            1 -> share(sdks[i])
                         }
                     })
                 }
@@ -105,6 +146,14 @@ class AppManagementActivity : AppCompatActivity() {
             finish()
         }
 
+    }
+
+    private fun getStr(strCode: Int): String {
+        return getString(strCode)
+    }
+
+    private fun time2date(time: Long): String {
+        return SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.CHINA).format(Date(time * 1000)) as String
     }
 
 }

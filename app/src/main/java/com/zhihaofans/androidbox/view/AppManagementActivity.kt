@@ -118,7 +118,7 @@ class AppManagementActivity : AppCompatActivity() {
                                                     verticalLayout {
                                                         val input: String = editText(act_appInfo[ii]).text.toString()
                                                         neutralPressed(R.string.text_share, {
-
+                                                            toast(input)
                                                         })
                                                         negativeButton(R.string.text_cancel, {
 

@@ -23,4 +23,8 @@
     <string name="text_app_size">App size</string>
     <string name="text_app_apkpath">APK path</string>
     <string name="text_cancel">Cancel</string>
+    <string name="text_newsbox">News box</string>
+    <string name="text_refresh">Refresh</string>
+    <string name="text_previous_page">Previous page</string>
+    <string name="text_next_page">Next page</string>
 </resources>

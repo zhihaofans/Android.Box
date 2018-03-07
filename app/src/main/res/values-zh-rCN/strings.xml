@@ -21,4 +21,8 @@
     <string name="text_app_size">安装包大小</string>
     <string name="text_cancel">取消</string>
     <string name="text_app_apkpath">安装包路径</string>
+    <string name="text_newsbox">新闻盒子</string>
+    <string name="text_refresh">刷新</string>
+    <string name="text_previous_page">上一页</string>
+    <string name="text_next_page">下一页</string>
 </resources>

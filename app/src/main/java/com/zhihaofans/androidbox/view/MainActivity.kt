@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import com.orhanobut.logger.Logger
-import com.tbruyelle.rxpermissions2.RxPermissions
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v0.0.1"
         setSupportActionBar(toolbar_main)
-        val rxPermissions = RxPermissions(this)
+        //val rxPermissions = RxPermissions(this)
         qrcode.setActivity(this@MainActivity)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -38,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
         button_androidsdk.onClick {
             val sdks = listOf(
                     "Android 1.0 (API 1)",
@@ -110,6 +110,10 @@ class MainActivity : AppCompatActivity() {
 
         button_appmanagement.onClick {
             startActivity<AppManagementActivity>()
+        }
+
+        button_newsbox.onClick {
+            startActivity<NewsBoxActivity>()
         }
     }
 

@@ -49,6 +49,9 @@ dependencies {
     implementation "com.facebook.fresco:webpsupport:$fresco_version"
     implementation 'com.liulishuo.filedownloader:library:1.7.1'
     implementation 'me.weyye.hipermission:library:1.0.7'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okio:okio:1.14.0'
+
 }
 kotlin {
     experimental {

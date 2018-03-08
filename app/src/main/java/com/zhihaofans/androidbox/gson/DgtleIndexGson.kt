@@ -7,5 +7,6 @@ data class DgtleIndexGson(
         val list: MutableList<DgtleIndexListGson>,
         val dateline: String,
         val count: Int,
-        val total: Int
+        val total: Int,
+        val cdn_img_ext: String
 )

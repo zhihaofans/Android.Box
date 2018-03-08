@@ -41,6 +41,10 @@ class NewsBoxActivity : AppCompatActivity() {
                     nowPage++
                     initSite()
                 }
+                R.id.menu_first_page -> {
+                    nowPage = 1
+                    initSite()
+                }
                 R.id.menu_previous_page -> {
                     if (nowPage > 1) {
                         nowPage--
@@ -59,7 +63,6 @@ class NewsBoxActivity : AppCompatActivity() {
     }
 
     fun loading(thisSite: String, thisPage: Int) {
-        var url = ""
         if (listView_news.adapter != null && !listView_news.adapter.isEmpty && listView_news.adapter.count > 0) listView_news.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
         val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
         loadingProgressBar.setCancelable(false)
@@ -72,9 +75,11 @@ class NewsBoxActivity : AppCompatActivity() {
 
         when (thisSite) {
             "dgtle" -> {
-                url = "https://api.yii.dgtle.com/v2/index?token=&perpage=14&page=$thisPage"
-                if (thisPage > 1) url += "&dateline=${System.currentTimeMillis()}"
+                var url = "https://api.yii.dgtle.com/v2/news?perpage=24&page=$thisPage"
+                //if (thisPage > 1) url += "&dateline=${System.currentTimeMillis()}"
                 request.url(url).addHeader("content-type", "application/json; charset=UTF-8").addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                Logger.d("url:$url")
+                this@NewsBoxActivity.title = "dgtle-$thisPage"
             }
             else -> {
                 Snackbar.make(coordinatorLayout_newsbox, "站点错误", Snackbar.LENGTH_SHORT).show()
@@ -82,7 +87,6 @@ class NewsBoxActivity : AppCompatActivity() {
                 return
             }
         }
-        Logger.d("url:$url")
         val call = client.newCall(request.build())
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -104,7 +108,10 @@ class NewsBoxActivity : AppCompatActivity() {
                 val g = Gson()
                 val dgtleIndex = g.fromJson(responseStr, DgtleIndexGson::class.java)
                 dgtleListIndex = dgtleIndex.list
-                val listData = dgtleListIndex.map { "$nowPage${it.title}" }
+                val listData = dgtleListIndex.map {
+                    if (it.typeid == "388" || it.type == "言论") it.message + it.subject
+                    else it.subject
+                }
                 runOnUiThread {
                     loadingProgressBar.dismiss()
                     Snackbar.make(coordinatorLayout_newsbox, "OK", Snackbar.LENGTH_SHORT).show()
@@ -117,6 +124,21 @@ class NewsBoxActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (menu != null) {
+            if (nowPage > 1) {
+                menu.getItem(0).isVisible = true
+                menu.getItem(1).isVisible = true
+            } else {
+                menu.getItem(0).isVisible = false
+                menu.getItem(1).isVisible = false
+
+            }
+        }
+        return super.onPrepareOptionsMenu(menu)
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_newsbox, menu)

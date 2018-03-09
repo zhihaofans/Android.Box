@@ -26,4 +26,7 @@
     <string name="text_previous_page">上一页</string>
     <string name="text_next_page">下一页</string>
     <string name="text_first_page">首页</string>
+    <string name="text_select_site">选择站点</string>
+    <string name="text_site_dgtle_news">数字尾巴鲸闻</string>
+    <string name="text_site_dgtle_forum">数字尾巴社区</string>
 </resources>

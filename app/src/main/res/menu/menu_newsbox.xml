@@ -2,17 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_first_page"
-        android:title="@string/text_first_page"
-        android:visible="false" />
-    <item
-        android:id="@+id/menu_previous_page"
-        android:title="@string/text_previous_page"
-        android:visible="false" />
-    <item
-        android:id="@+id/menu_next_page"
-        android:title="@string/text_next_page" />
-    <item
-        android:id="@+id/menu_refresh"
-        android:title="@string/text_refresh" />
+        android:id="@+id/menu_site_set"
+        android:title="@string/text_select_site" />
 </menu>

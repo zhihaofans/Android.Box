@@ -26,7 +26,7 @@ data class DgtleIndexListGson(
         val type: String,
         val comment_num: Int,
         val is_recommend: Int,
-        val date: String,
+        val date: String?,
         val cover_name: String,
         val reading_cover_name: String
 )

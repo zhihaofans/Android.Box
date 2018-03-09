@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import com.orhanobut.logger.Logger
+import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        toolbar_main.subtitle = "v0.0.1"
+        toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
         setSupportActionBar(toolbar_main)
         //val rxPermissions = RxPermissions(this)
         qrcode.setActivity(this@MainActivity)

@@ -29,4 +29,6 @@
     <string name="text_select_site">选择站点</string>
     <string name="text_site_dgtle_news">数字尾巴鲸闻</string>
     <string name="text_site_dgtle_forum">数字尾巴社区</string>
+    <string name="text_open">打开</string>
+    <string name="text_more">更多</string>
 </resources>

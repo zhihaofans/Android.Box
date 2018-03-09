@@ -129,8 +129,15 @@ class MainActivity : AppCompatActivity() {
                             if (data.hasExtra("data")) {
                                 val result: String = data.getStringExtra("data")
                                 Logger.d(result)
-                                Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_share, {
-                                    share(result)
+                                Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more, {
+                                    val acts = listOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
+                                    selector("", acts, { _, index ->
+                                        when (index) {
+                                            0 -> browse(result)
+                                            1 -> ClipboardUtils.copy(this@MainActivity, result)
+                                            2 -> share(result)
+                                        }
+                                    })
                                 }).show()
                             }
                         }

@@ -31,4 +31,6 @@
     <string name="text_select_site">Select site</string>
     <string name="text_site_dgtle_news">Dgtle news</string>
     <string name="text_site_dgtle_forum">Dgtle forum</string>
+    <string name="text_open">Open</string>
+    <string name="text_more">More</string>
 </resources>

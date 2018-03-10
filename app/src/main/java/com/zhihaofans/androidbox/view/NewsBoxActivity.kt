@@ -123,7 +123,7 @@ class NewsBoxActivity : AppCompatActivity() {
         //构造Request对象
         //采用建造者模式，链式调用指明进行Get请求,传入Get的请求地址
         //if (thisPage > 1) url += "&page=$thisPage"
-        url = url.replace("{page}", "$thisPage")
+        url = newsBoxMod.pageRuleParser(url, thisPage)
         request.url(url)
         Logger.d("url:$url")
         if (thisSiteInfo["has_headers"] as Boolean) {

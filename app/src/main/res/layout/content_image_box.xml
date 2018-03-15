@@ -8,4 +8,16 @@
     tools:context="com.zhihaofans.androidbox.view.ImageBoxActivity"
     tools:showIn="@layout/activity_image_box">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_image_box"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

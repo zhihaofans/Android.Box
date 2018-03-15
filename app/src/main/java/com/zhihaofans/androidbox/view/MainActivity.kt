@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         qrcode.setActivity(this@MainActivity)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_setting -> startActivity<SettingActivity>()
+                R.id.menu_setting -> startActivity<ImageBoxActivity>()
             }
             true
         }

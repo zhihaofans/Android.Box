@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
 import com.orhanobut.logger.Logger
+import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.DgtleIndexListGson
 import com.zhihaofans.androidbox.mod.NewsBoxMod
@@ -27,14 +28,26 @@ class NewsBoxActivity : AppCompatActivity() {
     private var nowSite: List<String> = listOf()
     private var nowPage = 1
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
+    private var lastSiteId: String? = null
+    private var lastSiteIndex = 0
+    private var lastSitePage = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_box)
         setSupportActionBar(toolbar_newsbox)
         newsBoxMod.setContext(this@NewsBoxActivity)
         newsSites = newsBoxMod.sites()
-        nowSite = newsSites[0]
-        selectSite(nowSite)
+        SharedPreferencesUtils.init(this)
+        lastSiteId = SharedPreferencesUtils.getString("NewsBoxSetting", "LastSiteId")
+        if (lastSiteId.isNullOrEmpty()) {
+            lastSiteIndex = SharedPreferencesUtils.getInt("NewsBoxSetting", "LastSiteIndex")
+            lastSitePage = SharedPreferencesUtils.getInt("NewsBoxSetting", "LastSitePage")
+            lastSiteId = nowSite[0]
+            nowPage = lastSitePage
+        }
+        nowSite = newsSites[lastSiteIndex]
+        saveSet()
+        loading()
         fab.setOnClickListener { view ->
             //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
             if (nowPage > 1) {
@@ -43,19 +56,19 @@ class NewsBoxActivity : AppCompatActivity() {
                     when (index) {
                         0 -> {
                             nowPage = 1
-                            initSite()
+                            loading()
                         }
                         1 -> {
                             if (nowPage > 1) {
                                 nowPage--
-                                initSite()
+                                loading()
                             }
                         }
                         2 -> {
                             nowPage++
-                            initSite()
+                            loading()
                         }
-                        3 -> initSite()
+                        3 -> loading()
                     }
                 })
             } else {
@@ -64,9 +77,9 @@ class NewsBoxActivity : AppCompatActivity() {
                     when (index) {
                         0 -> {
                             nowPage++
-                            initSite()
+                            loading()
                         }
-                        1 -> initSite()
+                        1 -> loading()
                     }
                 })
             }
@@ -76,7 +89,9 @@ class NewsBoxActivity : AppCompatActivity() {
                 R.id.menu_site_set -> {
                     val sites_name: List<String> = newsSites.map { it[1] }
                     selector("", sites_name, { _, index ->
-                        selectSite(newsSites[index])
+                        lastSiteIndex = index
+                        lastSiteId = newsSites[index][0]
+                        selectSite()
                     })
                 }
             }
@@ -90,24 +105,29 @@ class NewsBoxActivity : AppCompatActivity() {
         return true
     }
 
-    fun selectSite(thisSite: List<String>) {
-        nowSite = thisSite
-        nowPage = 1
-        initSite()
+    fun saveSet() {
+        SharedPreferencesUtils.put("NewsBoxSetting", "LastSiteId", lastSiteId)
+        SharedPreferencesUtils.put("NewsBoxSetting", "LastSiteIndex", lastSiteIndex)
+        SharedPreferencesUtils.put("NewsBoxSetting", "LastSitePage", lastSitePage)
+        Logger.d(SharedPreferencesUtils.getAll("NewsBoxSetting"))
     }
 
-    fun initSite() {
-        Logger.d("loading($nowSite, $nowPage)")
-        loading(nowSite, nowPage)
+    fun selectSite() {
+        nowSite = newsSites[lastSiteIndex]
+        nowPage = 1
+        loading()
     }
 
     fun listViewClearAll() {
         if (listView_news.adapter != null && !listView_news.adapter.isEmpty && listView_news.adapter.count > 0) listView_news.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
     }
 
-    fun loading(thisSite: List<String>, thisPage: Int) {
-        val thisSiteId = thisSite[0]
-        val thisSiteName = thisSite[1]
+    fun loading() {
+        Logger.d("loading($nowSite, $nowPage)")
+        lastSitePage = nowPage
+        saveSet()
+        val thisSiteId = nowSite[0]
+        val thisSiteName = nowSite[1]
         val thisSiteInfo = newsBoxMod.siteInfo(thisSiteId)
         var url: String = thisSiteInfo["api_url"] as String
         val client = OkHttpClient()
@@ -120,10 +140,8 @@ class NewsBoxActivity : AppCompatActivity() {
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
-        //构造Request对象
-        //采用建造者模式，链式调用指明进行Get请求,传入Get的请求地址
         //if (thisPage > 1) url += "&page=$thisPage"
-        url = newsBoxMod.pageRuleParser(url, thisPage)
+        url = newsBoxMod.pageRuleParser(url, nowPage)
         request.url(url)
         Logger.d("url:$url")
         if (thisSiteInfo["has_headers"] as Boolean) {
@@ -131,7 +149,7 @@ class NewsBoxActivity : AppCompatActivity() {
                 request.addHeader(it.key as String, it.value as String)
             }
         }
-        this@NewsBoxActivity.title = "$thisSiteName - $thisPage"
+        this@NewsBoxActivity.title = "$thisSiteName - $nowPage"
         val call = client.newCall(request.build())
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

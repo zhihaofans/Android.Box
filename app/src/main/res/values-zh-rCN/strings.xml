@@ -34,4 +34,6 @@
     <string name="text_site_sspai_article">少数派文章</string>
     <string name="text_image_box">图片盒子</string>
     <string name="text_site_gank_io">干货集中营</string>
+    <string name="text_icon">图标</string>
+    <string name="text_permission_storage">储存权限</string>
 </resources>

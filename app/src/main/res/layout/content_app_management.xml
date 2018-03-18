@@ -9,7 +9,6 @@
     tools:showIn="@layout/activity_app_management">
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout_app"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="10dp"

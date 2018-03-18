@@ -50,10 +50,6 @@
             android:name=".view.NewsBoxActivity"
             android:label="@string/text_newsbox"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".view.ImageBoxActivity"
-            android:label="@string/text_image_box"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

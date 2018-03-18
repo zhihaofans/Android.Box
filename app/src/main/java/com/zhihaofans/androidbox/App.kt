@@ -1,10 +1,10 @@
 package com.zhihaofans.androidbox
 
 import android.app.Application
-import com.facebook.drawee.backends.pipeline.Fresco
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+
 
 /**
  *
@@ -15,7 +15,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Logger.addLogAdapter(AndroidLogAdapter())
-        Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)
     }
 }

@@ -39,4 +39,5 @@
     <string name="setting_http_defaultua" translatable="false">Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36</string>
     <string name="text_icon">Icon</string>
     <string name="text_permission_storage">Storage permission</string>
+    <string name="text_weather">Weather</string>
 </resources>

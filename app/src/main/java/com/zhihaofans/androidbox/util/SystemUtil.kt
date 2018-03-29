@@ -22,10 +22,6 @@ class SystemUtil {
         return PackageUtils.isInsatalled(context, packageName)
     }
 
-    fun time2date(time: Int): String {
-        Logger.d(time)
-        return time2date(time.toLong())
-    }
 
     fun time2date(time: Long): String {
         Logger.d(time)

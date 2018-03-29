@@ -37,6 +37,7 @@ class NewsBoxActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_newsbox)
         newsBoxMod.setContext(this@NewsBoxActivity)
         newsSites = newsBoxMod.sites()
+        nowSite = newsSites[lastSiteIndex]
         SharedPreferencesUtils.init(this)
         lastSiteId = SharedPreferencesUtils.getString("NewsBoxSetting", "LastSiteId")
         if (lastSiteId.isNullOrEmpty()) {

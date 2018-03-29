@@ -193,7 +193,15 @@ class MainActivity : AppCompatActivity() {
                     Logger.d(responseStr)
                     val firimUpdateGson: FirimUpdateGson = g.fromJson(responseStr, FirimUpdateGson::class.java)
                     Logger.d(AppUtils.getVersionCode(this@MainActivity).toString())
-                    if (firimUpdateGson.version !== AppUtils.getVersionCode(this@MainActivity).toString()) {
+                    val onlineVersionCode: Int? = firimUpdateGson.version.toIntOrNull()
+                    if (onlineVersionCode is Int) {
+                        Logger.d("$onlineVersionCode\nInt")
+                    } else {
+                        Logger.d(onlineVersionCode)
+                    }
+                    if (onlineVersionCode == null) {
+                        Logger.e(onlineVersionCode)
+                    } else if (onlineVersionCode !== AppUtils.getVersionCode(this@MainActivity)) {
                         FileUtils.makeDirs(context.externalCacheDir.absolutePath + "/update/")
                         val downloadFilePath = context.externalCacheDir.absolutePath + "/update/" + AppUtils.getPackageName(this@MainActivity) + "_" + firimUpdateGson.versionShort + ".apk"
                         runOnUiThread {

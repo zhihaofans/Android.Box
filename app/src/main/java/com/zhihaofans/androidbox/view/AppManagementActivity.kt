@@ -13,6 +13,7 @@ import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
+import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import me.weyye.hipermission.HiPermission
@@ -20,13 +21,12 @@ import me.weyye.hipermission.PermissionCallback
 import me.weyye.hipermission.PermissionItem
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
-import java.text.SimpleDateFormat
 import java.util.*
 
 
 class AppManagementActivity : AppCompatActivity() {
     private var appList = ArrayList<Map<String, Any>>()
-
+    private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
@@ -85,8 +85,8 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppPackageName: String = thisAppInfo.packageName
                     val thisAppVersionName: String = thisPackageInfo.versionName
                     val thisAppVersionCode: Int = thisPackageInfo.versionCode
-                    val thisAppFirstInstallTime: String = time2date(thisPackageInfo.firstInstallTime)
-                    val thisAppLastUpdateTime: String = time2date(thisPackageInfo.lastUpdateTime)
+                    val thisAppFirstInstallTime: String = sysUtil.time2date(thisPackageInfo.firstInstallTime)
+                    val thisAppLastUpdateTime: String = sysUtil.time2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
                     val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt() //TODO:以后加入自动转换单位功能
                     /*Logger.d(childItem["icon"])
@@ -111,7 +111,7 @@ class AppManagementActivity : AppCompatActivity() {
                                         "${getStr(R.string.text_app_packagename)}:$thisAppPackageName",
                                         "${getStr(R.string.text_app_version)}:$thisAppVersionName ($thisAppVersionCode)",
                                         "${getStr(R.string.text_app_apkpath)}:$thisApkPath",
-                                        "${getStr(R.string.text_app_size)}:${fileSize2String(thisApkSize)}",
+                                        "${getStr(R.string.text_app_size)}:${sysUtil.fileSize2String(thisApkSize)}",
                                         "${getStr(R.string.text_app_firstinstalltime)}:$thisAppFirstInstallTime",
                                         "${getStr(R.string.text_app_lastupdatetime)}:$thisAppLastUpdateTime"
                                 )
@@ -196,19 +196,5 @@ class AppManagementActivity : AppCompatActivity() {
         return getString(strCode)
     }
 
-    private fun time2date(time: Long): String {
-        return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
-    }
 
-    private fun fileSize2String(fs: Int): String {
-        var result = fs.toFloat()
-        var times = 0
-        while (result >= 1024) {
-            result /= 1024
-            times++
-        }
-        val units = mutableListOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB", "CB")
-        val sizeUnit = if (times >= units.size) "???" else units[times]
-        return "$result $sizeUnit"
-    }
 }

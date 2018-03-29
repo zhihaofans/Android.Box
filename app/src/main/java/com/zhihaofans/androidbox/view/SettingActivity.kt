@@ -22,6 +22,7 @@ class SettingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_setting)
         setSupportActionBar(toolbar_setting)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         this@SettingActivity.title = getString(R.string.text_setting)
         var hasPermission = false
         val path = Environment.getExternalStorageDirectory().toString() + "/httpbin.png"

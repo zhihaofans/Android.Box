@@ -157,7 +157,8 @@ class AppManagementActivity : AppCompatActivity() {
                                             }
 
                                             override fun onFinish() {
-                                                FileUtils.copyFile(thisApkPath, )
+                                                //TODO:apk file
+                                                FileUtils.copyFile(thisApkPath, "")
                                             }
 
                                             override fun onDeny(permission: String, position: Int) {

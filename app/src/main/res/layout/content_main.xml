@@ -9,41 +9,16 @@
     tools:showIn="@layout/activity_main">
 
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/listView_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:layout_height="match_parent" />
 
-            <Button
-                android:id="@+id/button_qrcode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_qrcode"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/button_androidsdk"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_androidsdk"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/button_appmanagement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_appmanagement"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/button_newsbox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_newsbox"
-                android:textAllCaps="false" />
-
-        </LinearLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

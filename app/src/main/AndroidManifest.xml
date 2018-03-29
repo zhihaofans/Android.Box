@@ -50,6 +50,10 @@
             android:name=".view.NewsBoxActivity"
             android:label="@string/text_newsbox"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.WeatherActivity"
+            android:label="@string/text_weather"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

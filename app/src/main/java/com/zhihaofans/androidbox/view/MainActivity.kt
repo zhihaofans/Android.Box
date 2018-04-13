@@ -54,7 +54,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_androidsdk),
                 getString(R.string.text_appmanagement),
                 getString(R.string.text_newsbox),
-                getString(R.string.text_weather)
+                getString(R.string.text_weather),
+                getString(R.string.text_bilibili)
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.onItemClick { _, _, index, _ ->
@@ -130,6 +131,7 @@ class MainActivity : AppCompatActivity() {
                 2 -> startActivity<AppManagementActivity>()
                 3 -> startActivity<NewsBoxActivity>()
                 4 -> startActivity<WeatherActivity>()
+                5 -> startActivity<BilibiliActivity>()
             }
         }
         checkUpdate(this@MainActivity)
@@ -147,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                                 val result: String = data.getStringExtra("data")
                                 Logger.d(result)
                                 Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more, {
-                                    val acts = listOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
+                                    val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts, { _, index ->
                                         when (index) {
                                             0 -> browse(result)

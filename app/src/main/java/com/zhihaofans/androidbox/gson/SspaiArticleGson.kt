@@ -6,3 +6,9 @@ package com.zhihaofans.androidbox.gson
 data class SspaiArticleGson(
         val list: MutableList<SspaiArticleListGson>
 )
+data class SspaiArticleListGson(
+        val id: Int,
+        val title: String,
+        val summary: String,
+        val promote_intro: String
+)

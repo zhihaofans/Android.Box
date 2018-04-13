@@ -10,3 +10,10 @@ data class DgtleIndexGson(
         val total: Int,
         val cdn_img_ext: String
 )
+
+data class DgtleIndexListGson(
+        val tid: String,
+        val subject: String,
+        val message: String,
+        val date: String?
+)

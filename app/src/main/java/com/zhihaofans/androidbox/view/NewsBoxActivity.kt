@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.gson.DgtleIndexListGson
 import com.zhihaofans.androidbox.mod.NewsBoxMod
 import kotlinx.android.synthetic.main.activity_news_box.*
 import kotlinx.android.synthetic.main.content_news_box.*
@@ -22,7 +21,6 @@ import java.io.IOException
 
 
 class NewsBoxActivity : AppCompatActivity() {
-    private var dgtleListIndex = mutableListOf<DgtleIndexListGson>()
     private val newsBoxMod = NewsBoxMod()
     private var newsSites = mutableListOf<List<String>>()
     private var nowSite: List<String> = listOf()

@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     if (onlineVersionCode == null) {
                         Logger.e(onlineVersionCode)
-                    } else if (onlineVersionCode !== AppUtils.getVersionCode(this@MainActivity)) {
+                    } else if (onlineVersionCode > AppUtils.getVersionCode(this@MainActivity)) {
                         FileUtils.makeDirs(context.externalCacheDir.absolutePath + "/update/")
                         val downloadFilePath = context.externalCacheDir.absolutePath + "/update/" + AppUtils.getPackageName(this@MainActivity) + "_" + firimUpdateGson.versionShort + ".apk"
                         runOnUiThread {

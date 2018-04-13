@@ -42,7 +42,7 @@ class BilibiliActivity : AppCompatActivity() {
                     var input = EditText(this@BilibiliActivity)
                     alert("", "请输入弹幕里的用户hash") {
                         customView {
-                            input = editText("890f613c")
+                            input = editText("")
                         }
                         yesButton {
                             if (input.text.isNullOrEmpty()) {

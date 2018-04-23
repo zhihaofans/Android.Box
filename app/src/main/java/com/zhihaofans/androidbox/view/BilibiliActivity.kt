@@ -18,7 +18,7 @@ import okhttp3.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import java.io.IOException
-
+//import org.xml.sax
 class BilibiliActivity : AppCompatActivity() {
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     private val g = Gson()
@@ -61,7 +61,7 @@ class BilibiliActivity : AppCompatActivity() {
                                     override fun onFailure(call: Call, e: IOException) {
                                         runOnUiThread {
                                             loadingProgressBar.dismiss()
-                                            Snackbar.make(coordinatorLayout_bilibili, "获取uid失败", Snackbar.LENGTH_SHORT).show()
+                                            Snackbar.make(coordinatorLayout_bilibili, "获取弹幕列表失败", Snackbar.LENGTH_SHORT).show()
                                         }
                                         e.printStackTrace()
                                     }

@@ -40,9 +40,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.SettingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".view.ShareActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

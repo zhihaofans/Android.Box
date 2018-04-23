@@ -18,6 +18,7 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.FileUtils
+import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.FirimUpdateGson
 import com.zhihaofans.androidbox.mod.QrcodeMod
@@ -41,11 +42,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
         setSupportActionBar(toolbar_main)
+        SharedPreferencesUtils.init(this@MainActivity)
         //val rxPermissions = RxPermissions(this)
         qrcode.setActivity(this@MainActivity)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_setting -> startActivity<SettingActivity>()
+                R.id.menu_remove_temp_files -> FileUtils.deleteFile(externalCacheDir.absolutePath + "/update/")
             }
             true
         }
@@ -173,7 +175,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkUpdate(context: Context) {
-
+        //删除上一次更新下载的安装包
+        if (AppUtils.getVersionCode(this@MainActivity).toString() == SharedPreferencesUtils.getString("update_version")) {
+            val temp_str = SharedPreferencesUtils.getString("download_file_path")
+            if (FileUtils.isFileExist(temp_str)) {
+                FileUtils.deleteFile(temp_str)
+                SharedPreferencesUtils.remove("download_file_path")
+                SharedPreferencesUtils.remove("update_version")
+            }
+        }
         val client = OkHttpClient()
         val url = "http://api.fir.im/apps/latest/com.zhihaofans.androidbox?api_token=d719843e48e9a1dbd46d45390f58c35f"
         request.url(url)
@@ -181,7 +191,7 @@ class MainActivity : AppCompatActivity() {
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-
+                    Snackbar.make(coordinatorLayout_main, "检测更新失败", Snackbar.LENGTH_SHORT).show()
                 }
                 e.printStackTrace()
             }
@@ -241,6 +251,8 @@ class MainActivity : AppCompatActivity() {
                                                         Logger.d("FileDownloader\ncompleted\n$firimUpdateGson.install_url\n$downloadFilePath")
                                                         runOnUiThread {
                                                             loading.dismiss()
+                                                            SharedPreferencesUtils.put("update_version", firimUpdateGson.versionShort)
+                                                            SharedPreferencesUtils.put("download_file_path", downloadFilePath)
                                                         }
                                                         sysUtil.installApk(this@MainActivity, downloadFilePath)
                                                     }

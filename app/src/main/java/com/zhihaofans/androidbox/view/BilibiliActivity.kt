@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
-import java.nio.charset.Charset
 
 
 //import org.xml.sax
@@ -110,111 +109,124 @@ class BilibiliActivity : AppCompatActivity() {
 
                                                     } else {
                                                         val commentUrl = "https://comment.bilibili.com/${bilibiliVideoGson.cid}.xml"
-                                                        request.url(commentUrl).header("Content-Type", "text/xml;charset=UTF-8")
-                                                        val call_comment = client.newCall(request.build())
-                                                        call_comment.enqueue(object : Callback {
-                                                            override fun onFailure(_call: Call, _e: IOException) {
-                                                                runOnUiThread {
-                                                                    loadingProgressBar_comment.dismiss()
-                                                                    Snackbar.make(coordinatorLayout_bilibili, "获取弹幕列表失败", Snackbar.LENGTH_SHORT).show()
-                                                                }
-                                                                _e.printStackTrace()
-                                                            }
-
-                                                            override fun onResponse(_call: Call, _response: Response) {
-                                                                val resBody_comment = _response.body()
-                                                                if (resBody_comment != null) {
-                                                                    val responseStr_comment = String(resBody_comment.bytes(), Charset.defaultCharset())
-                                                                    if (responseStr_comment.isEmpty()) {
-                                                                        runOnUiThread {
-                                                                            Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
-                                                                        }
-                                                                    } else {
-                                                                        Logger.d(responseStr_comment)
-                                                                        val doc: Document = Jsoup.parseBodyFragment(responseStr_comment)
-                                                                        val body: Element = doc.body()
-                                                                        val comments: Elements = body.getElementsByTag("d")
-                                                                        fun _search(_msg: String = "") {
-                                                                            alert(_msg, "搜索弹幕") {
-                                                                                customView {
-                                                                                    verticalLayout {
-                                                                                        val input_search = editText("")
-                                                                                        okButton {
-                                                                                            val search_key: String = input_search.text.toString()
-                                                                                            if (search_key.isEmpty()) {
-                                                                                                _search("请输入搜索内容")
-                                                                                            } else {
-                                                                                                val searchResult = mutableListOf<Element>()
-                                                                                                comments.map {
-                                                                                                    if (it.hasAttr("p") && it.html().indexOf(search_key) >= 0) {
-                                                                                                        searchResult.add(it)
-                                                                                                    }
-                                                                                                }
-                                                                                                if (searchResult.size == 0) {
-                                                                                                    _search("空白搜索结果")
+                                                        doAsync {
+                                                            val doc: Document = Jsoup.connect(commentUrl).get()
+                                                            uiThread {
+                                                                Logger.d(doc.html())
+                                                                val body: Element = Jsoup.parseBodyFragment(doc.html())
+                                                                val comments: Elements = body.getElementsByTag("d")
+                                                                fun _search(_msg: String = "") {
+                                                                    alert(_msg, "搜索弹幕") {
+                                                                        customView {
+                                                                            verticalLayout {
+                                                                                val input_search = editText("")
+                                                                                okButton {
+                                                                                    val search_key: String = input_search.text.toString()
+                                                                                    if (search_key.isEmpty()) {
+                                                                                        _search("请输入搜索内容")
+                                                                                    } else {
+                                                                                        val searchResult = mutableListOf<Element>()
+                                                                                        comments.map {
+                                                                                            if (it.hasAttr("p") && it.html().indexOf(search_key) >= 0) {
+                                                                                                searchResult.add(it)
+                                                                                            }
+                                                                                        }
+                                                                                        if (searchResult.size == 0) {
+                                                                                            _search("空白搜索结果")
+                                                                                        } else {
+                                                                                            selector("选择你搜查看的弹幕", searchResult.map { it.html() }, { dialogInterface, i ->
+                                                                                                val thisComment: Element = searchResult[i]
+                                                                                                val commentStr = thisComment.html()
+                                                                                                val commentAttr = thisComment.attr("p")
+                                                                                                val commentAttrList = commentAttr.split(",")
+                                                                                                Logger.d("outerHtml:${thisComment.outerHtml()}")
+                                                                                                Logger.d("commentAttrList:$commentAttrList")
+                                                                                                if (commentAttrList.size != 8) {
+                                                                                                    alert(thisComment.outerHtml(), "弹幕解析失败").show()
                                                                                                 } else {
-                                                                                                    selector("Where are you from?", searchResult.map { it.html() }, { dialogInterface, i ->
-                                                                                                        val thisComment: Element = searchResult[i]
-                                                                                                        val commentStr = thisComment.html()
-                                                                                                        val commentAttr = thisComment.attr("p")
-                                                                                                        val commentAttrList = commentAttr.split(",")
-                                                                                                        Logger.d("outerHtml:${thisComment.outerHtml()}")
-                                                                                                        Logger.d("commentAttrList:$commentAttrList")
-                                                                                                        if (commentAttrList.size != 8) {
-                                                                                                            alert(thisComment.outerHtml(), "弹幕解析失败").show()
-                                                                                                        } else {
-                                                                                                            val userHash = commentAttrList[commentAttrList.size - 2]
-                                                                                                            Logger.d("userHash:$userHash")
-                                                                                                            val bilibiliDanmuGetHashGson = g.fromJson(userHash, BilibiliDanmuGetHashGson::class.java) as BilibiliDanmuGetHashGson
-                                                                                                            if (bilibiliDanmuGetHashGson.error == 0) {
-                                                                                                                val data = bilibiliDanmuGetHashGson.data
-                                                                                                                if (data.size == 0) {
+                                                                                                    //用户hash转换成用户Id
+                                                                                                    val userHash = commentAttrList[commentAttrList.size - 2]
+                                                                                                    val loadingProgressBar_hash: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                                                                                                    loadingProgressBar_hash.setCancelable(false)
+                                                                                                    loadingProgressBar_hash.setCanceledOnTouchOutside(false)
+                                                                                                    loadingProgressBar_hash.show()
+                                                                                                    val userHashUrl = "https://biliquery.typcn.com/api/user/hash/$userHash"
+                                                                                                    request.url(userHashUrl).header("Content-Type", "application/json; charset=utf-8")
+                                                                                                    Logger.d("userHash:$userHash")
+                                                                                                    Logger.d("userHashUrl:$userHashUrl")
+                                                                                                    val call_hash = client.newCall(request.build())
+                                                                                                    call_hash.enqueue(object : Callback {
+                                                                                                        override fun onFailure(_call: Call, e: IOException) {
+                                                                                                            runOnUiThread {
+                                                                                                                loadingProgressBar_hash.dismiss()
+                                                                                                                Snackbar.make(coordinatorLayout_bilibili, "获取失败", Snackbar.LENGTH_SHORT).show()
+                                                                                                            }
+                                                                                                            e.printStackTrace()
+                                                                                                        }
+
+                                                                                                        @Throws(IOException::class)
+                                                                                                        override fun onResponse(_call: Call, _response: Response) {
+                                                                                                            val resBody_hash = _response.body()
+                                                                                                            runOnUiThread {
+                                                                                                                loadingProgressBar_hash.dismiss()
+                                                                                                            }
+
+                                                                                                            if (resBody_hash != null) {
+                                                                                                                val responseStr_hash = resBody_hash.string()
+                                                                                                                if (responseStr_hash.isEmpty()) {
                                                                                                                     runOnUiThread {
-                                                                                                                        Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果列表空白", Snackbar.LENGTH_SHORT).show()
+                                                                                                                        Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
                                                                                                                     }
-                                                                                                                } else if (data.size == 1) {
-                                                                                                                    jx(data, client)
                                                                                                                 } else {
-                                                                                                                    runOnUiThread {
-                                                                                                                        Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果太多，解析失败", Snackbar.LENGTH_LONG).setAction("只解析第一个",
-                                                                                                                                {
-                                                                                                                                    jx(data, client)
-                                                                                                                                }
-                                                                                                                        ).show()
+                                                                                                                    val bilibiliDanmuGetHashGson = g.fromJson(responseStr_hash, BilibiliDanmuGetHashGson::class.java) as BilibiliDanmuGetHashGson
+                                                                                                                    if (bilibiliDanmuGetHashGson.error == 0) {
+                                                                                                                        val data = bilibiliDanmuGetHashGson.data
+                                                                                                                        if (data.size == 0) {
+                                                                                                                            runOnUiThread {
+                                                                                                                                Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果列表空白", Snackbar.LENGTH_SHORT).show()
+                                                                                                                            }
+                                                                                                                        } else if (data.size == 1) {
+                                                                                                                            jx(data, client)
+                                                                                                                        } else {
+                                                                                                                            runOnUiThread {
+                                                                                                                                Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果太多，解析失败", Snackbar.LENGTH_LONG).setAction("只解析第一个",
+                                                                                                                                        {
+                                                                                                                                            jx(data, client)
+                                                                                                                                        }
+                                                                                                                                ).show()
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    } else {
+                                                                                                                        Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回错误代码(${bilibiliDanmuGetHashGson.error})", Snackbar.LENGTH_SHORT).show()
                                                                                                                     }
                                                                                                                 }
                                                                                                             } else {
-                                                                                                                Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回错误代码(${bilibiliDanmuGetHashGson.error})", Snackbar.LENGTH_SHORT).show()
+                                                                                                                runOnUiThread {
+                                                                                                                    Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
+                                                                                                                }
                                                                                                             }
-
                                                                                                         }
                                                                                                     })
+
                                                                                                 }
-                                                                                            }
+                                                                                            })
                                                                                         }
                                                                                     }
                                                                                 }
-                                                                            }.show()
-
-                                                                        }
-                                                                        runOnUiThread {
-                                                                            if (comments.size == 0) {
-                                                                                Snackbar.make(coordinatorLayout_bilibili, "空白弹幕列表", Snackbar.LENGTH_SHORT).show()
-                                                                            } else {
-                                                                                _search()
                                                                             }
                                                                         }
+                                                                    }.show()
+
+                                                                }
+                                                                runOnUiThread {
+                                                                    if (comments.size == 0) {
+                                                                        Snackbar.make(coordinatorLayout_bilibili, "空白弹幕列表", Snackbar.LENGTH_SHORT).show()
+                                                                    } else {
+                                                                        _search()
                                                                     }
-                                                                    val hash2UidUrl = "http://biliquery.typcn.com/api/user/hash/{hash}"
-                                                                } else {
-                                                                    runOnUiThread {
-                                                                        loadingProgressBar_comment.dismiss()
-                                                                    }
-                                                                    Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果出现代码错误", Snackbar.LENGTH_SHORT).show()
                                                                 }
                                                             }
-
-                                                        })
+                                                        }
                                                     }
                                                 }
 

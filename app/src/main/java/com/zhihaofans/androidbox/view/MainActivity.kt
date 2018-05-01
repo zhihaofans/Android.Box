@@ -277,7 +277,7 @@ class MainActivity : AppCompatActivity() {
                                                 }).start()
                                     })
                                     negativeButton("打开网页", {
-                                        browse(firimUpdateGson.update_url)
+                                        sysUtil.chromeCustomTabs(this@MainActivity, firimUpdateGson.update_url)
                                     })
                                 }.show()
                             }).show()

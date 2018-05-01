@@ -11,6 +11,7 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
+import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
 import okhttp3.*
@@ -27,6 +28,7 @@ import java.io.IOException
 class BilibiliActivity : AppCompatActivity() {
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     private val g = Gson()
+    private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bilibili)
@@ -59,6 +61,8 @@ class BilibiliActivity : AppCompatActivity() {
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
+
+                        sysUtil.closeKeyborad(this@BilibiliActivity, this@BilibiliActivity)
                         if (input.text.isNullOrEmpty() && input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
@@ -121,6 +125,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                             verticalLayout {
                                                                                 val input_search = editText("")
                                                                                 okButton {
+                                                                                    sysUtil.closeKeyborad(this@BilibiliActivity, this@BilibiliActivity)
                                                                                     val search_key: String = input_search.text.toString()
                                                                                     if (search_key.isEmpty()) {
                                                                                         _search("请输入搜索内容")
@@ -219,6 +224,8 @@ class BilibiliActivity : AppCompatActivity() {
 
                                                                 }
                                                                 runOnUiThread {
+
+                                                                    loadingProgressBar_comment.dismiss()
                                                                     if (comments.size == 0) {
                                                                         Snackbar.make(coordinatorLayout_bilibili, "空白弹幕列表", Snackbar.LENGTH_SHORT).show()
                                                                     } else {
@@ -229,8 +236,6 @@ class BilibiliActivity : AppCompatActivity() {
                                                         }
                                                     }
                                                 }
-
-
                                             }
                                         }
                                     } else {
@@ -250,7 +255,9 @@ class BilibiliActivity : AppCompatActivity() {
 
     }
 
+
     private fun jx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
+        sysUtil.closeKeyborad(this, this)
         val uid = data[0].id
         Snackbar.make(coordinatorLayout_bilibili, "获取成功，用户uid为$uid", Snackbar.LENGTH_SHORT).setAction(getString(R.string.text_more), {
             val acts = mutableListOf(

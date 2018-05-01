@@ -1,10 +1,12 @@
 package com.zhihaofans.androidbox.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.support.v4.content.FileProvider
+import android.view.inputmethod.InputMethodManager
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.PackageUtils
@@ -22,7 +24,9 @@ class SystemUtil {
         return PackageUtils.isInsatalled(context, packageName)
     }
 
-
+    fun closeKeyborad(context: Context, activity: Activity) {
+        (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
+    }
     fun time2date(time: Long): String {
         Logger.d(time)
         return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String

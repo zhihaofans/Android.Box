@@ -39,7 +39,7 @@ class BilibiliActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         val listData = mutableListOf(
-                "弹幕用户hash查用户uid"
+                "视频弹幕查用户uid"
         )
         listView_bilibili.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listData)
         listView_bilibili.onItemClick { _, _, index, _ ->
@@ -116,7 +116,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                         doAsync {
                                                             val doc: Document = Jsoup.connect(commentUrl).get()
                                                             uiThread {
-                                                                Logger.d(doc.html())
+                                                                //Logger.d(doc.html())
                                                                 val body: Element = Jsoup.parseBodyFragment(doc.html())
                                                                 val comments: Elements = body.getElementsByTag("d")
                                                                 fun _search(_msg: String = "") {
@@ -290,69 +290,73 @@ class BilibiliActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     loadingProgressBar.dismiss()
                                     if (resBody != null) {
-                                        responseStr = resBody.string()
-                                        if (responseStr.isEmpty()) {
-                                            Snackbar.make(coordinatorLayout_bilibili, "获取用户信息失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
-
-                                        } else {
-                                            val bilibiliUserInfoResultGson = g.fromJson(responseStr, BilibiliUserInfoResultGson::class.java) as BilibiliUserInfoResultGson
-                                            if (bilibiliUserInfoResultGson.code == 0) {
-                                                val userCard: BilibiliUserInfoResultCardGson = bilibiliUserInfoResultGson.data.card
-                                                if (userCard.mid != uid.toString()) {
-                                                    Snackbar.make(coordinatorLayout_bilibili, "发生错误，所请求的id与服务器返回用户id不同(请求id:$uid|返回id:${userCard.mid}|返回用户昵称:${userCard.name})", Snackbar.LENGTH_SHORT).show()
+                                        doAsync {
+                                            responseStr = resBody.string()
+                                            uiThread {
+                                                if (responseStr.isEmpty()) {
+                                                    Snackbar.make(coordinatorLayout_bilibili, "获取用户信息失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
 
                                                 } else {
-                                                    val acts_result = mutableListOf(
-                                                            "昵称:${userCard.name}",
-                                                            "uid:${userCard.mid}",
-                                                            "性别:${userCard.sex}",
-                                                            "头像地址:${userCard.face}",
-                                                            "关注:${userCard.attention}",
-                                                            "粉丝:${userCard.fans}",
-                                                            "等级:${userCard.level_info.current_level}"
-                                                    )
-                                                    selector("", acts_result, { _, index_a ->
-                                                        when (index_a) {
-                                                            0, 1, 2, 6 -> {
-                                                                _c(acts_result[index_a])
-                                                            }
-                                                            3 -> {
-                                                                selector("", mutableListOf(
-                                                                        getString(R.string.text_open),
-                                                                        getString(R.string.text_copy),
-                                                                        getString(R.string.text_share)
-                                                                ), { _, index_b ->
-                                                                    when (index_b) {
-                                                                        0 -> browse(userCard.face)
-                                                                        1 -> _c(userCard.face)
-                                                                        2 -> share(userCard.face)
+                                                    val bilibiliUserInfoResultGson = g.fromJson(responseStr, BilibiliUserInfoResultGson::class.java) as BilibiliUserInfoResultGson
+                                                    if (bilibiliUserInfoResultGson.code == 0) {
+                                                        val userCard: BilibiliUserInfoResultCardGson = bilibiliUserInfoResultGson.data.card
+                                                        if (userCard.mid != uid.toString()) {
+                                                            Snackbar.make(coordinatorLayout_bilibili, "发生错误，所请求的id与服务器返回用户id不同(请求id:$uid|返回id:${userCard.mid}|返回用户昵称:${userCard.name})", Snackbar.LENGTH_SHORT).show()
+
+                                                        } else {
+                                                            val acts_result = mutableListOf(
+                                                                    "昵称:${userCard.name}",
+                                                                    "uid:${userCard.mid}",
+                                                                    "性别:${userCard.sex}",
+                                                                    "头像地址:${userCard.face}",
+                                                                    "关注:${userCard.attention}",
+                                                                    "粉丝:${userCard.fans}",
+                                                                    "等级:${userCard.level_info.current_level}"
+                                                            )
+                                                            selector("", acts_result, { _, index_a ->
+                                                                when (index_a) {
+                                                                    0, 1, 2, 6 -> {
+                                                                        _c(acts_result[index_a])
                                                                     }
-                                                                })
-                                                            }
-                                                            4 -> {
-                                                                if (userCard.attention > 0) {
-                                                                    val followers: MutableList<String> = userCard.attentions.map { it.toString() }.toMutableList()
-                                                                    selector("uid按关注倒序显示", followers, { _, index_c ->
-                                                                        browse("https://space.bilibili.com/${followers[index_c]}")
-                                                                    })
-                                                                } else {
-                                                                    Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()
+                                                                    3 -> {
+                                                                        selector("", mutableListOf(
+                                                                                getString(R.string.text_open),
+                                                                                getString(R.string.text_copy),
+                                                                                getString(R.string.text_share)
+                                                                        ), { _, index_b ->
+                                                                            when (index_b) {
+                                                                                0 -> browse(userCard.face)
+                                                                                1 -> _c(userCard.face)
+                                                                                2 -> share(userCard.face)
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                    4 -> {
+                                                                        if (userCard.attention > 0) {
+                                                                            val followers: MutableList<String> = userCard.attentions.map { it.toString() }.toMutableList()
+                                                                            selector("uid按关注倒序显示", followers, { _, index_c ->
+                                                                                browse("https://space.bilibili.com/${followers[index_c]}")
+                                                                            })
+                                                                        } else {
+                                                                            Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()
+                                                                        }
+                                                                    }
+                                                                    5 -> {
+                                                                        if (userCard.fans > 0) {
+                                                                            Snackbar.make(coordinatorLayout_bilibili, "暂不支持查看粉丝列表", Snackbar.LENGTH_SHORT).show()
+                                                                        } else {
+                                                                            Snackbar.make(coordinatorLayout_bilibili, "Ta没有粉丝", Snackbar.LENGTH_SHORT).show()
+                                                                        }
+                                                                    }
                                                                 }
-                                                            }
-                                                            5 -> {
-                                                                if (userCard.fans > 0) {
-                                                                    Snackbar.make(coordinatorLayout_bilibili, "暂不支持查看粉丝列表", Snackbar.LENGTH_SHORT).show()
-                                                                } else {
-                                                                    Snackbar.make(coordinatorLayout_bilibili, "Ta没有粉丝", Snackbar.LENGTH_SHORT).show()
-                                                                }
-                                                            }
+                                                            })
+
                                                         }
-                                                    })
+                                                    } else {
+                                                        Snackbar.make(coordinatorLayout_bilibili, "返回错误(${bilibiliUserInfoResultGson.message})", Snackbar.LENGTH_SHORT).show()
 
+                                                    }
                                                 }
-                                            } else {
-                                                Snackbar.make(coordinatorLayout_bilibili, "返回错误(${bilibiliUserInfoResultGson.message})", Snackbar.LENGTH_SHORT).show()
-
                                             }
                                         }
                                     }

@@ -10,10 +10,10 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.NewsBoxMod
+import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_news_box.*
 import kotlinx.android.synthetic.main.content_news_box.*
 import okhttp3.*
-import org.jetbrains.anko.browse
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
@@ -29,6 +29,7 @@ class NewsBoxActivity : AppCompatActivity() {
     private var lastSiteId: String? = null
     private var lastSiteIndex = 0
     private var lastSitePage = 1
+    private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_box)
@@ -178,7 +179,7 @@ class NewsBoxActivity : AppCompatActivity() {
                         Snackbar.make(coordinatorLayout_newsbox, "错误：数据列表长度不相等 (${listData.size}/${urlList.size})", Snackbar.LENGTH_SHORT).show()
                     } else {
                         listView_news.adapter = ArrayAdapter<String>(this@NewsBoxActivity, android.R.layout.simple_list_item_1, listData)
-                        listView_news.onItemClick { _, _, index, _ -> browse(urlList[index]) }
+                        listView_news.onItemClick { _, _, index, _ -> sysUtil.chromeCustomTabs(this@NewsBoxActivity, urlList[index]) }
                         Snackbar.make(coordinatorLayout_newsbox, "OK", Snackbar.LENGTH_SHORT).show()
                     }
                 }

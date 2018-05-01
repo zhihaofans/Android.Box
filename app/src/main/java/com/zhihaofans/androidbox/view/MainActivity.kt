@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts, { _, index ->
                                         when (index) {
-                                            0 -> browse(result)
+                                            0 -> sysUtil.chromeCustomTabs(this@MainActivity, result)
                                             1 -> ClipboardUtils.copy(this@MainActivity, result)
                                             2 -> share(result)
                                         }

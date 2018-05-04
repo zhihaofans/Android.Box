@@ -106,22 +106,37 @@ class AppManagementActivity : AppCompatActivity() {
                         when (i) {
                             0 -> {
                                 //app info
-                                val act_appInfo = listOf(
-                                        "${getStr(R.string.text_app_name)}:$thisAppName",
-                                        "${getStr(R.string.text_app_packagename)}:$thisAppPackageName",
-                                        "${getStr(R.string.text_app_version)}:$thisAppVersionName ($thisAppVersionCode)",
-                                        "${getStr(R.string.text_app_apkpath)}:$thisApkPath",
-                                        "${getStr(R.string.text_app_size)}:${sysUtil.fileSize2String(thisApkSize)}",
-                                        "${getStr(R.string.text_app_firstinstalltime)}:$thisAppFirstInstallTime",
-                                        "${getStr(R.string.text_app_lastupdatetime)}:$thisAppLastUpdateTime"
+                                val list_a = listOf(
+                                        thisAppName,
+                                        thisAppPackageName,
+                                        "$thisAppVersionName ($thisAppVersionCode)",
+                                        thisApkPath,
+                                        sysUtil.fileSize2String(thisApkSize),
+                                        thisAppFirstInstallTime,
+                                        thisAppLastUpdateTime
                                 )
+                                val list_b = mutableListOf(
+                                        getStr(R.string.text_app_name),
+                                        getStr(R.string.text_app_packagename),
+                                        getStr(R.string.text_app_version),
+                                        getStr(R.string.text_app_apkpath),
+                                        getStr(R.string.text_app_size),
+                                        getStr(R.string.text_app_firstinstalltime),
+                                        getStr(R.string.text_app_lastupdatetime)
+                                )
+                                val act_appInfo = mutableListOf<String>()
+                                var _a = 0
+                                list_b.map {
+                                    act_appInfo.add(it + ":" + list_a[_a])
+                                    _a++
+                                }
                                 Logger.d(act_appInfo)
                                 //TODO:应用选项
                                 selector(getStr(R.string.text_app_info), act_appInfo, { _, ii ->
                                     alert {
                                         customView {
                                             verticalLayout {
-                                                val input: String = editText(act_appInfo[ii]).text.toString()
+                                                val input: String = editText(list_a[ii]).text.toString()
                                                 neutralPressed(R.string.text_share, {
                                                     share(input)
                                                 })
@@ -158,7 +173,7 @@ class AppManagementActivity : AppCompatActivity() {
 
                                             override fun onFinish() {
                                                 //TODO:apk file
-                                                FileUtils.copyFile(thisApkPath, "")
+                                                //FileUtils.copyFile(thisApkPath, "")
                                             }
 
                                             override fun onDeny(permission: String, position: Int) {

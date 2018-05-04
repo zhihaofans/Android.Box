@@ -139,7 +139,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                         if (searchResult.size == 0) {
                                                                                             _search("空白搜索结果")
                                                                                         } else {
-                                                                                            selector("选择你搜查看的弹幕", searchResult.map { it.html() }, { dialogInterface, i ->
+                                                                                            selector("选择你想查看的弹幕", searchResult.map { it.html() }, { dialogInterface, i ->
                                                                                                 val thisComment: Element = searchResult[i]
                                                                                                 val commentStr = thisComment.html()
                                                                                                 val commentAttr = thisComment.attr("p")

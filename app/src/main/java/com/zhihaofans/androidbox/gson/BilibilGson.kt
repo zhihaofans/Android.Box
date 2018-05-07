@@ -38,3 +38,8 @@ data class BilibiliUserInfoResultCardGson(
 data class BilibiliUserInfoResultCardLevelGson(
         val current_level: Int//等级
 )
+
+data class BilibiliVideoGson(
+        val error: Int,
+        val cid: String?
+)

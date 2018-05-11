@@ -21,7 +21,6 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.browse
-import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         qrcode.setActivity(this@MainActivity)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_setting -> snackbar(coordinatorLayout_main, R.string.text_setting)
+                R.id.menu_setting -> Snackbar.make(coordinatorLayout_main, R.string.text_setting, Snackbar.LENGTH_SHORT).show()
             }
             true
         }

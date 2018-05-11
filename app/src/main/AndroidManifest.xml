@@ -71,7 +71,15 @@
             android:name=".view.BilibiliActivity"
             android:label="@string/text_bilibili"
             android:theme="@style/AppTheme.NoActionBar"/>
-
+        <activity
+            android:name=".view.Share2clipboardActivity"
+            android:label="@string/text_copy">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
 
     </application>
 

@@ -28,7 +28,6 @@ class NewsBoxActivity : AppCompatActivity() {
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     private var lastSiteId: String? = null
     private var lastSiteIndex = 0
-    private var lastSitePage = 1
     private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +40,7 @@ class NewsBoxActivity : AppCompatActivity() {
         lastSiteId = SharedPreferencesUtils.getString("NewsBoxSetting", "LastSiteId")
         if (lastSiteId.isNullOrEmpty()) {
             lastSiteIndex = SharedPreferencesUtils.getInt("NewsBoxSetting", "LastSiteIndex")
-            lastSitePage = SharedPreferencesUtils.getInt("NewsBoxSetting", "LastSitePage")
             lastSiteId = nowSite[0]
-            nowPage = lastSitePage
         }
         nowSite = newsSites[lastSiteIndex]
         saveSet()
@@ -108,7 +105,6 @@ class NewsBoxActivity : AppCompatActivity() {
     fun saveSet() {
         SharedPreferencesUtils.put("NewsBoxSetting", "LastSiteId", lastSiteId)
         SharedPreferencesUtils.put("NewsBoxSetting", "LastSiteIndex", lastSiteIndex)
-        SharedPreferencesUtils.put("NewsBoxSetting", "LastSitePage", lastSitePage)
         Logger.d(SharedPreferencesUtils.getAll("NewsBoxSetting"))
     }
 
@@ -124,7 +120,6 @@ class NewsBoxActivity : AppCompatActivity() {
 
     fun loading() {
         Logger.d("loading($nowSite, $nowPage)")
-        lastSitePage = nowPage
         saveSet()
         val thisSiteId = nowSite[0]
         val thisSiteName = nowSite[1]

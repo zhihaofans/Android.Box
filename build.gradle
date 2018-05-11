@@ -3,6 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.2.41'
     ext.fresco_version = '1.8.1'
+    ext.anko_version='0.10.4'
     repositories {
         google()
         jcenter()

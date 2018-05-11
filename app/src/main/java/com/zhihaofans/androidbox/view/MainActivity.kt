@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,32 +9,28 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
-import com.google.gson.Gson
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
+import com.tencent.bugly.Bugly
+import com.tencent.bugly.beta.Beta
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
-import com.wx.android.common.util.FileUtils
 import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.gson.FirimUpdateGson
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import okhttp3.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.browse
+import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
-import java.io.IOException
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
-    private val g = Gson()
     private val sysUtil = SystemUtil()
-    private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         qrcode.setActivity(this@MainActivity)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_remove_temp_files -> FileUtils.deleteFile(externalCacheDir.absolutePath + "/update/")
+                R.id.menu_setting -> snackbar(coordinatorLayout_main, R.string.text_setting)
             }
             true
         }
@@ -136,7 +131,8 @@ class MainActivity : AppCompatActivity() {
                 5 -> startActivity<BilibiliActivity>()
             }
         }
-        checkUpdate(this@MainActivity)
+        //新的更新方式
+        buglyInit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -174,118 +170,10 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun checkUpdate(context: Context) {
-        //删除上一次更新下载的安装包
-        if (AppUtils.getVersionCode(this@MainActivity).toString() == SharedPreferencesUtils.getString("update_version")) {
-            val temp_str = SharedPreferencesUtils.getString("download_file_path")
-            if (FileUtils.isFileExist(temp_str)) {
-                FileUtils.deleteFile(temp_str)
-                SharedPreferencesUtils.remove("download_file_path")
-                SharedPreferencesUtils.remove("update_version")
-            }
-        }
-        val client = OkHttpClient()
-        val url = "http://api.fir.im/apps/latest/com.zhihaofans.androidbox?api_token=d719843e48e9a1dbd46d45390f58c35f"
-        request.url(url)
-        val call = client.newCall(request.build())
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Snackbar.make(coordinatorLayout_main, "检测更新失败", Snackbar.LENGTH_SHORT).show()
-                }
-                e.printStackTrace()
-            }
-
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                val resBody = response.body()
-                var responseStr = ""
-                if (resBody != null) {
-                    responseStr = resBody.string()
-                    Logger.d(responseStr)
-                    val firimUpdateGson: FirimUpdateGson = g.fromJson(responseStr, FirimUpdateGson::class.java)
-                    Logger.d(AppUtils.getVersionCode(this@MainActivity).toString())
-                    val onlineVersionCode: Int? = firimUpdateGson.version.toIntOrNull()
-                    if (onlineVersionCode is Int) {
-                        Logger.d("$onlineVersionCode\nInt")
-                    } else {
-                        Logger.d(onlineVersionCode)
-                    }
-                    if (onlineVersionCode == null) {
-                        Logger.e(onlineVersionCode)
-                    } else if (onlineVersionCode > AppUtils.getVersionCode(this@MainActivity)) {
-                        FileUtils.makeDirs(context.externalCacheDir.absolutePath + "/update/")
-                        val downloadFilePath = context.externalCacheDir.absolutePath + "/update/" + AppUtils.getPackageName(this@MainActivity) + "_" + firimUpdateGson.versionShort + ".apk"
-                        runOnUiThread {
-                            Snackbar.make(coordinatorLayout_main, "发现更新，是否要更新？", Snackbar.LENGTH_LONG).setAction("更新", {
-                                alert {
-                                    title = "${firimUpdateGson.versionShort}(${firimUpdateGson.version})"
-                                    message = "更新时间:${sysUtil.time2date(firimUpdateGson.updated_at.toLong() * 1000)}\n更新日志:${firimUpdateGson.changelog}"
-                                    positiveButton(R.string.text_update, {
-                                        val loading = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-                                        loading.setCanceledOnTouchOutside(false)
-                                        FileDownloader.getImpl().create(firimUpdateGson.install_url)
-                                                .setPath(downloadFilePath)
-                                                .setListener(object : FileDownloadListener() {
-                                                    override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                        Logger.d("FileDownloader\npending\n$firimUpdateGson.install_url\nBytes$soFarBytes/$totalBytes")
-                                                    }
-
-                                                    override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                                                        Logger.d("FileDownloader\nconnected\n$firimUpdateGson.install_url\nBytes:$soFarBytes/$totalBytes")
-                                                    }
-
-                                                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                        Logger.d("FileDownloader\nconnected\n$firimUpdateGson.install_url\nBytes:$soFarBytes/$totalBytes")
-                                                    }
-
-                                                    override fun blockComplete(task: BaseDownloadTask?) {
-                                                        Logger.d("FileDownloader\nblockComplete\n$firimUpdateGson.install_url")
-                                                    }
-
-                                                    override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                                                        Logger.d("FileDownloader\nretry\n$firimUpdateGson.install_url\nBytes:$soFarBytes\nTimes:$retryingTimes")
-                                                    }
-
-                                                    override fun completed(task: BaseDownloadTask) {
-                                                        Logger.d("FileDownloader\ncompleted\n$firimUpdateGson.install_url\n$downloadFilePath")
-                                                        runOnUiThread {
-                                                            loading.dismiss()
-                                                            SharedPreferencesUtils.put("update_version", firimUpdateGson.versionShort)
-                                                            SharedPreferencesUtils.put("download_file_path", downloadFilePath)
-                                                        }
-                                                        sysUtil.installApk(this@MainActivity, downloadFilePath)
-                                                    }
-
-                                                    override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                        Logger.d("FileDownloader\npaused\n$firimUpdateGson.install_url\nBytes:$soFarBytes/$totalBytes")
-                                                    }
-
-                                                    override fun error(task: BaseDownloadTask, e: Throwable) {
-                                                        Logger.e("FileDownloader\nerror\n$firimUpdateGson.install_url\n${e.message}")
-                                                        runOnUiThread {
-                                                            loading.dismiss()
-                                                            Snackbar.make(coordinatorLayout_main, "更新失败", Snackbar.LENGTH_SHORT).show()
-                                                        }
-                                                        e.printStackTrace()
-                                                    }
-
-                                                    override fun warn(task: BaseDownloadTask) {
-                                                        Logger.w("FileDownloader\nwarn\n$firimUpdateGson.install_url\n$downloadFilePath")
-
-                                                    }
-                                                }).start()
-                                    })
-                                    negativeButton("打开网页", {
-                                        sysUtil.chromeCustomTabs(this@MainActivity, firimUpdateGson.update_url)
-                                    })
-                                }.show()
-                            }).show()
-                        }
-                    }
-                }
-            }
-        })
+    private fun buglyInit() {
+        Bugly.init(applicationContext, "a71e8c60bc", true)//初始化
+        Beta.enableNotification = true//设置在通知栏显示下载进度
+        Beta.autoDownloadOnWifi = true//设置Wifi下自动下载
+        Beta.enableHotfix = false//关闭热更新能力
     }
-
 }

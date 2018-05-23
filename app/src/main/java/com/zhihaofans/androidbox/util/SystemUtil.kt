@@ -8,6 +8,7 @@ import android.os.Build
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.FileProvider
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.PackageUtils
@@ -28,6 +29,10 @@ class SystemUtil {
 
     fun closeKeyborad(context: Context, activity: Activity) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
+    }
+
+    fun closeKeyborad(activity: Activity) {
+        (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
     }
 
     fun time2date(time: Long): String {
@@ -69,5 +74,11 @@ class SystemUtil {
             intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive")
         }
         context.startActivity(intent)
+    }
+
+    fun viewGetFocusable(editText: EditText) {
+        editText.isFocusable = true
+        editText.isFocusableInTouchMode = true
+        editText.requestFocus()
     }
 }

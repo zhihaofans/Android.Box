@@ -40,4 +40,7 @@
     <string name="text_update">更新</string>
     <string name="text_bilibili">哔哩哔哩</string>
     <string name="text_remove_temp_files">删除临时文件</string>
+    <string name="text_send">发送</string>
+    <string name="text_serverchan">Server酱</string>
+    <string name="text_sendto_serverchan">发送至Server酱</string>
 </resources>

@@ -70,7 +70,7 @@
         <activity
             android:name=".view.BilibiliActivity"
             android:label="@string/text_bilibili"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.Share2clipboardActivity"
             android:label="@string/text_copy">
@@ -80,7 +80,16 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".view.ServerChanActivity"
+            android:label="@string/text_sendto_serverchan"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

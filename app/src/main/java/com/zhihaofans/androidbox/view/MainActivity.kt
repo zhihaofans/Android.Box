@@ -51,7 +51,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_appmanagement),
                 getString(R.string.text_newsbox),
                 getString(R.string.text_weather),
-                getString(R.string.text_bilibili)
+                getString(R.string.text_bilibili),
+                "ServerChan"
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.onItemClick { _, _, index, _ ->
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 3 -> startActivity<NewsBoxActivity>()
                 4 -> startActivity<WeatherActivity>()
                 5 -> startActivity<BilibiliActivity>()
+                6 -> startActivity<ServerChanActivity>()
             }
         }
         //新的更新方式

@@ -38,6 +38,7 @@ class ServerChanActivity : AppCompatActivity() {
         if (savedKey.isNullOrEmpty()) {
             updateKey()
         } else {
+            serverChanKey = savedKey!!
             init()
         }
     }
@@ -62,7 +63,7 @@ class ServerChanActivity : AppCompatActivity() {
                 verticalLayout {
                     val editText_title = editText(oldKey)
                     editText_title.setSingleLine(true)
-                    positiveButton(R.string.text_send) {
+                    positiveButton(R.string.text_save) {
                         val input_key: String = editText_title.text.toString()
                         if (input_key.isNotEmpty()) {
                             serverChanKey = input_key
@@ -88,44 +89,48 @@ class ServerChanActivity : AppCompatActivity() {
     }
 
     private fun askPush(title: String = "", desp: String = "") {
-        alert("Title必须输入", "Server Chan") {
-            customView {
-                verticalLayout {
-                    textView("Title:(最多256字符)")
-                    val editText_title = editText(title)
-                    textView("Description:(最长64Kb,支持MarkDown)")
-                    val editText_desp = editText(desp)
-                    editText_title.setSingleLine(true)
-                    editText_title.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(256))
-                    editText_title.setOnEditorActionListener { v, actionId, event ->
-                        if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                            if (editText_title.text.isNotEmpty()) {
-                                sysUtil.viewGetFocusable(editText_desp)
+        if (serverChanKey.isEmpty()) {
+            updateKey(serverChanKey)
+        } else {
+            alert("Title必须输入", "Server Chan") {
+                customView {
+                    verticalLayout {
+                        textView("Title:(最多256字符)")
+                        val editText_title = editText(title)
+                        textView("Description:(最长64Kb,支持MarkDown)")
+                        val editText_desp = editText(desp)
+                        editText_title.setSingleLine(true)
+                        editText_title.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(256))
+                        editText_title.setOnEditorActionListener { v, actionId, event ->
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                                if (editText_title.text.isNotEmpty()) {
+                                    sysUtil.viewGetFocusable(editText_desp)
+                                }
+                            }
+                            false
+                        }
+                        editText_desp.setSingleLine(false)
+                        // editText_desp.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                        editText_desp.setHorizontallyScrolling(false)
+                        editText_desp.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(64000))
+                        positiveButton(R.string.text_send) {
+                            val input_title: String = editText_title.text.toString()
+                            val input_desp: String = editText_desp.text.toString()
+                            if (input_title.isNotEmpty() && input_title.length <= 256) {
+                                pushMsg(serverChanKey, input_title, input_desp)
                             }
                         }
-                        false
-                    }
-                    editText_desp.setSingleLine(false)
-                    // editText_desp.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                    editText_desp.setHorizontallyScrolling(false)
-                    editText_desp.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(64000))
-                    positiveButton(R.string.text_send) {
-                        val input_title: String = editText_title.text.toString()
-                        val input_desp: String = editText_desp.text.toString()
-                        if (input_title.isNotEmpty() && input_title.length <= 256) {
-                            pushMsg(serverChanKey, input_title, input_desp)
+                        negativeButton("修改SCKEY") {
+                            updateKey(serverChanKey)
                         }
                     }
-                    negativeButton("修改SCKEY") {
-                        updateKey(serverChanKey)
-                    }
                 }
-            }
-            onCancelled {
-                toast(R.string.text_cancel)
-                finish()
-            }
-        }.show()
+                onCancelled {
+                    toast(R.string.text_cancel)
+                    finish()
+                }
+            }.show()
+        }
     }
 
     private fun pushMsg(pushKey: String, title: String, desp: String = "By com.zhihaofans.androidbox") {

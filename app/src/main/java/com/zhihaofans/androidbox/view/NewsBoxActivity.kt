@@ -48,57 +48,65 @@ class NewsBoxActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
             if (nowPage > 1) {
-                val acts = listOf<String>(getString(R.string.text_first_page), getString(R.string.text_previous_page), getString(R.string.text_next_page), getString(R.string.text_refresh))
+                val acts = listOf<String>(getString(R.string.text_select_site), getString(R.string.text_first_page), getString(R.string.text_previous_page), getString(R.string.text_next_page), getString(R.string.text_refresh))
                 selector("", acts, { _, index ->
                     when (index) {
                         0 -> {
+                            val sites_name: List<String> = newsSites.map { it[1] }
+                            selector("", sites_name, { _, index ->
+                                lastSiteIndex = index
+                                lastSiteId = newsSites[index][0]
+                                selectSite()
+                            })
+                        }
+                        1 -> {
                             nowPage = 1
                             loading()
                         }
-                        1 -> {
+                        2 -> {
                             if (nowPage > 1) {
                                 nowPage--
                                 loading()
                             }
                         }
-                        2 -> {
+                        3 -> {
                             nowPage++
                             loading()
                         }
-                        3 -> loading()
+                        4 -> loading()
                     }
                 })
             } else {
-                val acts = listOf<String>(getString(R.string.text_next_page), getString(R.string.text_refresh))
+                val acts = listOf<String>(getString(R.string.text_select_site), getString(R.string.text_next_page), getString(R.string.text_refresh))
                 selector("", acts, { _, index ->
                     when (index) {
                         0 -> {
+                            val sites_name: List<String> = newsSites.map { it[1] }
+                            selector("", sites_name, { _, i ->
+                                lastSiteIndex = i
+                                lastSiteId = newsSites[i][0]
+                                selectSite()
+                            })
+                        }
+                        1 -> {
                             nowPage++
                             loading()
                         }
-                        1 -> loading()
+                        2 -> loading()
                     }
                 })
             }
         }
         toolbar_newsbox.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_site_set -> {
-                    val sites_name: List<String> = newsSites.map { it[1] }
-                    selector("", sites_name, { _, index ->
-                        lastSiteIndex = index
-                        lastSiteId = newsSites[index][0]
-                        selectSite()
-                    })
-                }
-            }
+            //when (item.itemId) { }
             true
         }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_newsbox, menu)
+        // Toolbar 菜单初始化
+        //menuInflater.inflate(R.menu.menu_newsbox, menu)
         return true
     }
 

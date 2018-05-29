@@ -13,27 +13,38 @@ import com.zhihaofans.androidbox.mod.NewsBoxMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_news_box.*
 import kotlinx.android.synthetic.main.content_news_box.*
-import okhttp3.*
+import okhttp3.CacheControl
+import okhttp3.Request
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
-import java.io.IOException
+import org.jetbrains.anko.uiThread
 
 
 class NewsBoxActivity : AppCompatActivity() {
+    private val sysUtil = SystemUtil()
     private val newsBoxMod = NewsBoxMod()
+    private val sites = NewsBoxMod.sites(this@NewsBoxActivity)
+    private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
+    private var nowPage = 1
+    // 旧变量
     private var newsSites = mutableListOf<List<String>>()
     private var nowSite: List<String> = listOf()
-    private var nowPage = 1
-    private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     private var lastSiteId: String? = null
     private var lastSiteIndex = 0
-    private val sysUtil = SystemUtil()
+    // 新变量
+    private var siteChannelId = ""
+    private var siteId = ""
+    private var siteName = ""
+    private var channelName = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_box)
         setSupportActionBar(toolbar_newsbox)
         newsBoxMod.setContext(this@NewsBoxActivity)
+        /*
         newsSites = newsBoxMod.sites()
         nowSite = newsSites[lastSiteIndex]
         SharedPreferencesUtils.init(this)
@@ -43,6 +54,9 @@ class NewsBoxActivity : AppCompatActivity() {
             lastSiteId = nowSite[0]
         }
         nowSite = newsSites[lastSiteIndex]
+        */
+        siteId = SharedPreferencesUtils.getString("NewsBox", "LAST_SITE_ID") ?: sites.getSiteList()[0]["id"].toString()
+        siteChannelId = SharedPreferencesUtils.getString("NewsBox", "LAST_SITE_CHANNEL_ID") ?: sites.getSiteChannelList(siteId)!![0]["channelId"]!!
         saveSet()
         loading()
         fab.setOnClickListener { view ->
@@ -52,12 +66,7 @@ class NewsBoxActivity : AppCompatActivity() {
                 selector("", acts, { _, index ->
                     when (index) {
                         0 -> {
-                            val sites_name: List<String> = newsSites.map { it[1] }
-                            selector("", sites_name, { _, index ->
-                                lastSiteIndex = index
-                                lastSiteId = newsSites[index][0]
-                                selectSite()
-                            })
+                            selectSite()
                         }
                         1 -> {
                             nowPage = 1
@@ -81,12 +90,7 @@ class NewsBoxActivity : AppCompatActivity() {
                 selector("", acts, { _, index ->
                     when (index) {
                         0 -> {
-                            val sites_name: List<String> = newsSites.map { it[1] }
-                            selector("", sites_name, { _, i ->
-                                lastSiteIndex = i
-                                lastSiteId = newsSites[i][0]
-                                selectSite()
-                            })
+                            selectSite()
                         }
                         1 -> {
                             nowPage++
@@ -98,7 +102,9 @@ class NewsBoxActivity : AppCompatActivity() {
             }
         }
         toolbar_newsbox.setOnMenuItemClickListener { item ->
-            //when (item.itemId) { }
+            when (item.itemId) {
+                R.id.menu_refresh -> loading()
+            }
             true
         }
     }
@@ -106,20 +112,62 @@ class NewsBoxActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Toolbar 菜单初始化
-        //menuInflater.inflate(R.menu.menu_newsbox, menu)
+        menuInflater.inflate(R.menu.menu_newsbox, menu)
         return true
     }
 
+    fun updateSiteInfo() {
+        var thisSite = mutableMapOf<String, String>()
+        var thisChannel = mutableMapOf<String, String>()
+        sites.getSiteList().map {
+            if (it["id"] == siteId) {
+                thisSite = it
+            }
+        }
+        sites.getSiteChannelList(siteId)!!.map {
+            if (it["channelId"] == siteChannelId) {
+                thisChannel = it
+            }
+        }
+        siteName = thisSite["name"]!!
+        channelName = thisChannel["channelName"]!!
+    }
+
     fun saveSet() {
-        SharedPreferencesUtils.put("NewsBoxSetting", "LastSiteId", lastSiteId)
-        SharedPreferencesUtils.put("NewsBoxSetting", "LastSiteIndex", lastSiteIndex)
-        Logger.d(SharedPreferencesUtils.getAll("NewsBoxSetting"))
+        SharedPreferencesUtils.put("NewsBox", "LAST_SITE_ID", siteId)
+        SharedPreferencesUtils.put("NewsBox", "LAST_SITE_CHANNEL_ID", siteChannelId)
+        Logger.d(SharedPreferencesUtils.getAll("NewsBox"))
+        // 删除旧设置
+        if (SharedPreferencesUtils.getAll("NewsBoxSetting").isNotEmpty()) {
+            SharedPreferencesUtils.getAll("NewsBoxSetting").map {
+                SharedPreferencesUtils.remove("NewsBoxSetting", it.key)
+            }
+        }
     }
 
     fun selectSite() {
-        nowSite = newsSites[lastSiteIndex]
-        nowPage = 1
-        loading()
+        val siteList = sites.getSiteList()
+        val siteIdList = siteList.map {
+            it["id"]!!
+        }
+        val siteNameList = siteList.map {
+            it["name"]!!
+        }
+        selector(getString(R.string.text_site), siteNameList, { _, i ->
+            val siteIdTemp = siteIdList[i]
+            val channelList = sites.getSiteChannelList(siteIdTemp)
+            if (channelList == null) {
+                Snackbar.make(coordinatorLayout_newsbox, "Site id error", Snackbar.LENGTH_SHORT).show()
+            } else {
+                selector(getString(R.string.text_channel), channelList.map { it["channelName"]!! }, { _, index ->
+                    siteId = siteIdTemp
+                    siteChannelId = channelList[index]["channelId"]!!
+                    nowPage = 1
+                    loading()
+                })
+            }
+        })
+
     }
 
     fun listViewClearAll() {
@@ -127,67 +175,31 @@ class NewsBoxActivity : AppCompatActivity() {
     }
 
     fun loading() {
-        Logger.d("loading($nowSite, $nowPage)")
+        Logger.d("loading($siteId, $siteChannelId, $nowPage)")
         saveSet()
-        val thisSiteId = nowSite[0]
-        val thisSiteName = nowSite[1]
-        val thisSiteInfo = newsBoxMod.siteInfo(thisSiteId)
-        var url: String = thisSiteInfo["api_url"] as String
-        val client = OkHttpClient()
+        updateSiteInfo()
         val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-        if (!(thisSiteInfo["yes"] as Boolean)) {
-            Snackbar.make(coordinatorLayout_newsbox, "站点错误", Snackbar.LENGTH_SHORT).show()
-            return
-        }
         listViewClearAll()
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
-        //if (thisPage > 1) url += "&page=$thisPage"
-        url = newsBoxMod.pageRuleParser(url, nowPage)
-        request.url(url)
-        Logger.d("url:$url")
-        if (thisSiteInfo["has_headers"] as Boolean) {
-            (thisSiteInfo["headers"] as MutableMap<*, *>).map {
-                request.addHeader(it.key as String, it.value as String)
-            }
-        }
-        this@NewsBoxActivity.title = "$thisSiteName - $nowPage"
-        val call = client.newCall(request.build())
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    loadingProgressBar.dismiss()
-                    Snackbar.make(coordinatorLayout_newsbox, "获取信息失败", Snackbar.LENGTH_SHORT).show()
-                }
-                e.printStackTrace()
-            }
-
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                val resBody = response.body()
-                var responseStr = ""
-                if (resBody != null) {
-                    responseStr = resBody.string()
-                }
-                Logger.d(responseStr)
-                val siteDataList = newsBoxMod.siteHtml2list(thisSiteId, responseStr)
-                val listData = siteDataList["title"]
-                val urlList = siteDataList["web_url"]
-                runOnUiThread {
-                    loadingProgressBar.dismiss()
-                    if (listData == null || urlList == null) {
-                        Snackbar.make(coordinatorLayout_newsbox, "错误：数据空白", Snackbar.LENGTH_SHORT).show()
-                    } else if (listData.size != urlList.size) {
-                        Snackbar.make(coordinatorLayout_newsbox, "错误：数据列表长度不相等 (${listData.size}/${urlList.size})", Snackbar.LENGTH_SHORT).show()
-                    } else {
-                        listView_news.adapter = ArrayAdapter<String>(this@NewsBoxActivity, android.R.layout.simple_list_item_1, listData)
-                        listView_news.onItemClick { _, _, index, _ -> sysUtil.chromeCustomTabs(this@NewsBoxActivity, urlList[index]) }
-                        Snackbar.make(coordinatorLayout_newsbox, "OK", Snackbar.LENGTH_SHORT).show()
+        this@NewsBoxActivity.title = "$channelName - $nowPage"
+        doAsync {
+            val siteDataList = sites.getNewsList(siteId, siteChannelId, nowPage)
+            uiThread {
+                if (siteDataList == null) {
+                    Snackbar.make(coordinatorLayout_newsbox, "错误：数据空白", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    listView_news.adapter = ArrayAdapter<String>(this@NewsBoxActivity, android.R.layout.simple_list_item_1, siteDataList.map { it["title"] })
+                    listView_news.onItemClick { _, _, index, _ ->
+                        val clickedUrl: String = siteDataList[index]["web_url"].toString()
+                        Logger.d(clickedUrl)
+                        sysUtil.chromeCustomTabs(this@NewsBoxActivity, clickedUrl)
                     }
                 }
+                loadingProgressBar.dismiss()
             }
-        })
-    }
+        }
 
+    }
 }

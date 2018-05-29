@@ -44,4 +44,9 @@
     <string name="text_serverchan">Server酱</string>
     <string name="text_sendto_serverchan">发送至Server酱</string>
     <string name="text_save">保存</string>
+    <string name="text_site_sspai">少数派</string>
+    <string name="text_all">全部</string>
+    <string name="text_site_dgtle">数字尾巴</string>
+    <string name="text_channel">频道</string>
+    <string name="text_site">站点</string>
 </resources>

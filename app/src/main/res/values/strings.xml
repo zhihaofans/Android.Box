@@ -47,4 +47,9 @@
     <string name="text_serverchan">Server Chan</string>
     <string name="text_sendto_serverchan">Send to Server Chan</string>
     <string name="text_save">Save</string>
+    <string name="text_site_sspai">Sspai</string>
+    <string name="text_all">All</string>
+    <string name="text_site_dgtle">Dgtle</string>
+    <string name="text_channel">Channel</string>
+    <string name="text_site">Site</string>
 </resources>

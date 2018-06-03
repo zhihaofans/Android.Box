@@ -25,6 +25,10 @@ class siteInfo_gankio(_context: Context) {
                 mutableMapOf(
                         "channelId" to "gank_io_android",
                         "channelName" to context.getString(R.string.text_site_gank_io) + "-" + context.getString(R.string.text_android)
+                ),
+                mutableMapOf(
+                        "channelId" to "gank_io_girl",
+                        "channelName" to context.getString(R.string.text_site_gank_io) + "-" + context.getString(R.string.text_gankio_girl)
                 )
         )
     }
@@ -42,6 +46,9 @@ class siteInfo_gankio(_context: Context) {
             }
             "gank_io_android" -> {
                 "http://gank.io/api/data/Android/20/$_page"
+            }
+            "gank_io_girl" -> {
+                "http://gank.io/api/data/福利/20/$_page"
             }
             else -> null
         }

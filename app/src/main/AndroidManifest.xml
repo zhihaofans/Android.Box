@@ -76,21 +76,29 @@
             android:label="@string/text_copy">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
-            android:icon="@drawable/ic_serverchan"
             android:name=".view.ServerChanActivity"
+            android:icon="@drawable/ic_serverchan"
             android:label="@string/text_sendto_serverchan"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.ImageViewActivity"
+            android:label="@string/title_activity_image_view"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

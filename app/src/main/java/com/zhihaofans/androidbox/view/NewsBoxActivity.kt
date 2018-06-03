@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
 import com.orhanobut.logger.Logger
+import com.wx.android.common.util.FileUtils
 import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.NewsBoxMod
@@ -15,11 +16,8 @@ import kotlinx.android.synthetic.main.activity_news_box.*
 import kotlinx.android.synthetic.main.content_news_box.*
 import okhttp3.CacheControl
 import okhttp3.Request
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.uiThread
 
 
 class NewsBoxActivity : AppCompatActivity() {
@@ -102,9 +100,10 @@ class NewsBoxActivity : AppCompatActivity() {
             }
         }
         toolbar_newsbox.setOnMenuItemClickListener { item ->
+            /*
             when (item.itemId) {
-                R.id.menu_refresh -> loading()
             }
+            */
             true
         }
     }
@@ -112,7 +111,7 @@ class NewsBoxActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Toolbar 菜单初始化
-        menuInflater.inflate(R.menu.menu_newsbox, menu)
+        // menuInflater.inflate(R.menu.menu_newsbox, menu)
         return true
     }
 
@@ -194,11 +193,23 @@ class NewsBoxActivity : AppCompatActivity() {
                     listView_news.onItemClick { _, _, index, _ ->
                         val clickedUrl: String = siteDataList[index]["web_url"].toString()
                         Logger.d(clickedUrl)
-                        sysUtil.chromeCustomTabs(this@NewsBoxActivity, clickedUrl)
+                        if (checkIfImageUrl(clickedUrl)) {
+                            startActivity<ImageViewActivity>("image" to clickedUrl, "title" to siteDataList[index]["title"])
+                        } else {
+                            sysUtil.chromeCustomTabs(this@NewsBoxActivity, clickedUrl)
+                        }
                     }
                 }
                 loadingProgressBar.dismiss()
             }
+        }
+
+    }
+
+    private fun checkIfImageUrl(imageUrl: String): Boolean {
+        return when (FileUtils.getFileSuffix(imageUrl).toLowerCase()) {
+            "jpg", "jpeg", "bmp", "webp", "gif" -> true
+            else -> false
         }
 
     }

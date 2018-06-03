@@ -90,9 +90,7 @@ class ImageViewActivity : AppCompatActivity() {
 
                     val layoutParams = imageView.layoutParams
                     layoutParams.width = linearLayout_imageview.width
-                    //layoutParams.height = linearLayout_imageview.height
                     layoutParams.height = (linearLayout_imageview.width.toFloat() / (imageInfo.width.toFloat() / imageInfo.height.toFloat())).toInt()
-                    Logger.d("layoutParams.width:${layoutParams.width}\nlayoutParams.height:${layoutParams.height}\nlayoutParams:${imageInfo.width.toFloat() / imageInfo.height.toFloat()}\nlinearLayout_imageview.height:${linearLayout_imageview.height}\nlinearLayout_imageview.width:${linearLayout_imageview.width}")
                     imageView.layoutParams = layoutParams
                     loadingProgressBar.dismiss()
                     imageView.onLongClick {

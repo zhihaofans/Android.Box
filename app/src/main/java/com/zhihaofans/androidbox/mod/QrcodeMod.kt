@@ -3,7 +3,10 @@ package com.zhihaofans.androidbox.mod
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.xuexiang.xqrcode.XQRCode
+import com.xuexiang.xqrcode.ui.CaptureActivity
 import com.zhihaofans.androidbox.util.SystemUtil
+
 
 /**
  *
@@ -27,6 +30,10 @@ class QrcodeMod {
     fun scan(qrcodeFrame: Int) {
         //0:调用自带(未完成) 1:调用mark.qrcode 2:调用org.noear.scan
         when (qrcodeFrame) {
+            0 -> {
+                val intent = Intent(activity, CaptureActivity::class.java)
+                activity.startActivityForResult(intent, 0)
+            }
             1 -> {
                 val intent = Intent("mark.qrcode.SCAN")
                 intent.setClassName("mark.qrcode", "mark.qrcode.CaptureActivity")
@@ -52,5 +59,35 @@ class QrcodeMod {
                 }
             }
         }
+    }
+
+    /**
+     * 处理二维码扫描结果
+     * @param data
+     */
+    fun handleScanResult(data: Intent?): MutableMap<String, String> {
+        val returnMessage = mutableMapOf(
+                "code" to "0",
+                "message" to "ok",
+                "qrcodeData" to ""
+        )
+        if (data != null) {
+            val bundle = data.extras
+            if (bundle != null) {
+                if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_SUCCESS) {
+                    returnMessage["qrcodeData"] = bundle.getString(XQRCode.RESULT_DATA)
+                } else if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_FAILED) {
+                    returnMessage["code"] = "1"
+                    returnMessage["message"] = "RESULT_TYPE = RESULT_FAILED"
+                }
+            } else {
+                returnMessage["code"] = "2"
+                returnMessage["message"] = "bundle = null"
+            }
+        } else {
+            returnMessage["code"] = "3"
+            returnMessage["message"] = "data = null"
+        }
+        return returnMessage
     }
 }

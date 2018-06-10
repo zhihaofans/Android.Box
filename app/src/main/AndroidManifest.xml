@@ -99,6 +99,10 @@
             android:name=".view.ImageViewActivity"
             android:label="@string/title_activity_image_view"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.QrcodeActivity"
+            android:label="@string/text_qrcode"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

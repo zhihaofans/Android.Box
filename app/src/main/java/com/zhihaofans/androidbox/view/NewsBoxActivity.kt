@@ -196,7 +196,7 @@ class NewsBoxActivity : AppCompatActivity() {
                         if (checkIfImageUrl(clickedUrl)) {
                             startActivity<ImageViewActivity>("image" to clickedUrl, "title" to siteDataList[index]["title"])
                         } else {
-                            sysUtil.chromeCustomTabs(this@NewsBoxActivity, clickedUrl)
+                            sysUtil.browseWeb(this@NewsBoxActivity, clickedUrl)
                         }
                     }
                 }

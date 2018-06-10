@@ -20,7 +20,6 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.browse
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
@@ -38,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_main)
         SharedPreferencesUtils.init(this@MainActivity)
         //val rxPermissions = RxPermissions(this)
-        qrcode.setActivity(this@MainActivity)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> Snackbar.make(coordinatorLayout_main, R.string.text_setting, Snackbar.LENGTH_SHORT).show()
@@ -57,29 +55,7 @@ class MainActivity : AppCompatActivity() {
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.onItemClick { _, _, index, _ ->
             when (index) {
-                0 -> {
-                    val qrcodePlugin = qrcode.getInstalledPlugin(this@MainActivity)
-                    Logger.d("Qrcode Plugin:$qrcodePlugin")
-                    if (qrcodePlugin < 1) {
-                        Snackbar.make(coordinatorLayout_main, R.string.text_no_install_need_plugin, Snackbar.LENGTH_SHORT)
-                                .setAction(R.string.text_install, {
-                                    val countries = listOf("二维码扫描(mark.qrcode)", "H5扫码器(org.noear.scan.H5_SCAN)")
-                                    selector("", countries, { _, i ->
-                                        when (i) {
-                                            0 -> browse("https://www.coolapk.com/apk/mark.qrcode")
-                                            1 -> browse("https://www.coolapk.com/apk/org.noear.scan")
-                                        }
-                                    })
-                                }).show()
-                    } else {
-                        try {
-                            qrcode.scan(qrcodePlugin)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            Snackbar.make(coordinatorLayout_main, R.string.text_use_qrplugin_fail, Snackbar.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+                0 -> startActivity<QrcodeActivity>()
                 1 -> {
                     val sdks = listOf(
                             "Android 1.0 (API 1)",
@@ -151,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts, { _, index ->
                                         when (index) {
-                                            0 -> sysUtil.chromeCustomTabs(this@MainActivity, result)
+                                            0 -> sysUtil.browseWeb(this@MainActivity, result)
                                             1 -> ClipboardUtils.copy(this@MainActivity, result)
                                             2 -> share(result)
                                         }

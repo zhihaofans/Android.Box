@@ -342,7 +342,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                         if (userCard.attention > 0) {
                                                                             val followers: MutableList<String> = userCard.attentions.map { it.toString() }.toMutableList()
                                                                             selector("uid按关注倒序显示", followers, { _, index_c ->
-                                                                                sysUtil.chromeCustomTabs(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
+                                                                                sysUtil.browseWeb(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
                                                                             })
                                                                         } else {
                                                                             Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()

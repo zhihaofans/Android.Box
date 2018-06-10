@@ -13,6 +13,8 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.PackageUtils
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.mod.GlobalSettingMod
+import org.jetbrains.anko.browse
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,6 +25,7 @@ import java.util.*
  * @date 2018/1/5
  */
 class SystemUtil {
+    private val globalSetting = GlobalSettingMod()
     fun isAppInstalled(context: Context, packageName: String): Boolean {
         return PackageUtils.isInsatalled(context, packageName)
     }
@@ -45,6 +48,14 @@ class SystemUtil {
         val customTabsIntent: CustomTabsIntent = builder.build()
         builder.setToolbarColor(context.getColor(R.color.colorPrimaryDark))
         customTabsIntent.launchUrl(context, Uri.parse(url))
+    }
+
+    fun browseWeb(context: Context, url: String) {
+        if (globalSetting.forceUseChromeCustomTabs()) {
+            chromeCustomTabs(context, url)
+        } else {
+            context.browse(url)
+        }
     }
 
     fun fileSize2String(fs: Int): String {

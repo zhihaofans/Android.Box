@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CancellationSignal
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -20,13 +21,37 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import moe.feng.support.biometricprompt.BiometricPromptCompat
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationCallback {
+    override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
+        Snackbar.make(coordinatorLayout_main, "指纹验证错误(Code:$errorCode) $errString", Snackbar.LENGTH_LONG).show()
+        Logger.e("指纹验证错误(Code:$errorCode) $errString")
+    }
+
+    override fun onAuthenticationSucceeded(result: BiometricPromptCompat.IAuthenticationResult) {
+        Snackbar.make(coordinatorLayout_main, "指纹验证成功", Snackbar.LENGTH_SHORT).show()
+        Logger.d("指纹验证成功")
+
+    }
+
+    override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
+        Snackbar.make(coordinatorLayout_main, "onAuthenticationHelp(Code:$helpCode) $helpString", Snackbar.LENGTH_LONG).show()
+        Logger.d("onAuthenticationHelp(Code:$helpCode) $helpString")
+    }
+
+    override fun onAuthenticationFailed() {
+        Snackbar.make(coordinatorLayout_main, "指纹验证失败", Snackbar.LENGTH_LONG).show()
+        Logger.d("onAuthenticationHelp")
+
+    }
+
     private val qrcode = QrcodeMod()
     private val sysUtil = SystemUtil()
     @SuppressLint("SetTextI18n")
@@ -39,7 +64,9 @@ class MainActivity : AppCompatActivity() {
         //val rxPermissions = RxPermissions(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_setting -> Snackbar.make(coordinatorLayout_main, R.string.text_setting, Snackbar.LENGTH_SHORT).show()
+                R.id.menu_setting -> {
+
+                }
             }
             true
         }
@@ -110,6 +137,24 @@ class MainActivity : AppCompatActivity() {
         }
         //新的更新方式
         buglyInit()
+        if (BiometricPromptCompat.isHardwareDetected(this)) {
+            Snackbar.make(coordinatorLayout_main, "支持指纹", Snackbar.LENGTH_SHORT).show()
+            val biometricPrompt = BiometricPromptCompat.Builder(this)
+                    .setTitle("标题")
+                    .setSubtitle("副标题")
+                    .setDescription("描述：吧啦吧啦吧啦吧啦吧啦……")
+                    .setNegativeButton("使用密码") { dialog, which ->
+                        toast("你请求了密码解锁。")
+                    }
+                    .build()
+            val cancellationSignal = CancellationSignal()
+            cancellationSignal.setOnCancelListener({
+                toast("onCancel")
+            })
+            biometricPrompt.authenticate(cancellationSignal, this)
+        } else {
+            Snackbar.make(coordinatorLayout_main, "不支持指纹", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -148,9 +193,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buglyInit() {
-        Bugly.init(applicationContext, "a71e8c60bc", true)//初始化
-        Beta.enableNotification = true//设置在通知栏显示下载进度
-        Beta.autoDownloadOnWifi = true//设置Wifi下自动下载
-        Beta.enableHotfix = false//关闭热更新能力
+        Bugly.init(applicationContext, "a71e8c60bc", true) //初始化
+        Beta.enableNotification = true //设置在通知栏显示下载进度
+        Beta.autoDownloadOnWifi = true //设置Wifi下自动下载
+        Beta.enableHotfix = false //关闭热更新能力
     }
 }

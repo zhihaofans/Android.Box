@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout_image_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".view.ImageViewActivity"
+    tools:showIn="@layout/activity_image_view">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:scaleType="centerInside"
+            app:failureImage="@drawable/ic_fail"
+            app:failureImageScaleType="centerInside"
+            app:placeholderImage="@drawable/ic_loading"
+            app:placeholderImageScaleType="centerInside"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="2dp" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

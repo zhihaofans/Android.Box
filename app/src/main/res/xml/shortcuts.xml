@@ -1,0 +1,54 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/permission_ic_camera"
+        android:shortcutDisabledMessage="@string/text_qrcode_scan"
+        android:shortcutId="qrcode_scan"
+        android:shortcutLongLabel="@string/text_qrcode_scan"
+        android:shortcutShortLabel="@string/text_qrcode_scan">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.zhihaofans.androidbox.shortcuts.QrcodeScanShortcuts"
+            android:targetPackage="com.zhihaofans.androidbox" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/permission_ic_camera"
+        android:shortcutDisabledMessage="@string/text_qrcode_generate"
+        android:shortcutId="qrcode_generate"
+        android:shortcutLongLabel="@string/text_qrcode_generate"
+        android:shortcutShortLabel="@string/text_qrcode_generate">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.zhihaofans.androidbox.shortcuts.QrcodeGenerateShortcuts"
+            android:targetPackage="com.zhihaofans.androidbox" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_serverchan"
+        android:shortcutDisabledMessage="@string/text_serverchan"
+        android:shortcutId="serverchan"
+        android:shortcutLongLabel="@string/text_serverchan"
+        android:shortcutShortLabel="@string/text_serverchan">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.zhihaofans.androidbox.view.ServerChanActivity"
+            android:targetPackage="com.zhihaofans.androidbox" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutDisabledMessage="@string/text_newsbox"
+        android:shortcutId="newbox"
+        android:shortcutLongLabel="@string/text_newsbox"
+        android:shortcutShortLabel="@string/text_newsbox">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.zhihaofans.androidbox.view.NewsBoxActivity"
+            android:targetPackage="com.zhihaofans.androidbox" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

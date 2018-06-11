@@ -17,6 +17,7 @@ import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -30,30 +31,10 @@ import org.jetbrains.anko.toast
 
 
 class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationCallback {
-    override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
-        Snackbar.make(coordinatorLayout_main, "指纹验证错误(Code:$errorCode) $errString", Snackbar.LENGTH_LONG).show()
-        Logger.e("指纹验证错误(Code:$errorCode) $errString")
-    }
-
-    override fun onAuthenticationSucceeded(result: BiometricPromptCompat.IAuthenticationResult) {
-        Snackbar.make(coordinatorLayout_main, "指纹验证成功", Snackbar.LENGTH_SHORT).show()
-        Logger.d("指纹验证成功")
-
-    }
-
-    override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
-        Snackbar.make(coordinatorLayout_main, "onAuthenticationHelp(Code:$helpCode) $helpString", Snackbar.LENGTH_LONG).show()
-        Logger.d("onAuthenticationHelp(Code:$helpCode) $helpString")
-    }
-
-    override fun onAuthenticationFailed() {
-        Snackbar.make(coordinatorLayout_main, "指纹验证失败", Snackbar.LENGTH_LONG).show()
-        Logger.d("onAuthenticationHelp")
-
-    }
 
     private val qrcode = QrcodeMod()
     private val sysUtil = SystemUtil()
+    private val globalSetting = GlobalSettingMod()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +46,22 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
-
+                    val settings = mutableListOf(
+                            getString(R.string.text_setting_use_cct_for_web) + ":" +
+                                    sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no))
+                    )
+                    selector(getString(R.string.text_setting), settings, { _, i ->
+                        when (i) {
+                            0 -> {
+                                globalSetting.forceUseChromeCustomTabs(!(globalSetting.forceUseChromeCustomTabs()))
+                                Snackbar.make(coordinatorLayout_main,
+                                        getString(R.string.text_setting_use_cct_for_web) + ":" +
+                                                sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                        Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    })
                 }
             }
             true
@@ -190,6 +186,28 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
+    }
+
+    override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
+        Snackbar.make(coordinatorLayout_main, "指纹验证错误(Code:$errorCode) $errString", Snackbar.LENGTH_LONG).show()
+        Logger.e("指纹验证错误(Code:$errorCode) $errString")
+    }
+
+    override fun onAuthenticationSucceeded(result: BiometricPromptCompat.IAuthenticationResult) {
+        Snackbar.make(coordinatorLayout_main, "指纹验证成功", Snackbar.LENGTH_SHORT).show()
+        Logger.d("指纹验证成功")
+
+    }
+
+    override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
+        Snackbar.make(coordinatorLayout_main, "onAuthenticationHelp(Code:$helpCode) $helpString", Snackbar.LENGTH_LONG).show()
+        Logger.d("onAuthenticationHelp(Code:$helpCode) $helpString")
+    }
+
+    override fun onAuthenticationFailed() {
+        Snackbar.make(coordinatorLayout_main, "指纹验证失败", Snackbar.LENGTH_LONG).show()
+        Logger.d("onAuthenticationHelp")
+
     }
 
     private fun buglyInit() {

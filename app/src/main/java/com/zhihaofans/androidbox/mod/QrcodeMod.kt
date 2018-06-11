@@ -19,12 +19,21 @@ class QrcodeMod {
     private val sys = SystemUtil()
     fun setActivity(activity: Activity) {
         this@QrcodeMod.activity = activity
+        XQRCode.debug(false)
+    }
+
+    fun setActivity(activity: Activity, debug: Boolean) {
+        this@QrcodeMod.activity = activity
+        XQRCode.debug(debug)
     }
 
     fun getInstalledPlugin(context: Context): Int {
         if (sys.isAppInstalled(context, "mark.qrcode")) return 1
         if (sys.isAppInstalled(context, "org.noear.scan")) return 2
         return -1
+    }
+
+    fun file() {
     }
 
     fun scan(qrcodeFrame: Int) {
@@ -38,7 +47,7 @@ class QrcodeMod {
                 val intent = Intent("mark.qrcode.SCAN")
                 intent.setClassName("mark.qrcode", "mark.qrcode.CaptureActivity")
                 try {
-                    activity.startActivityForResult(intent, 0) // 0:Qrcode
+                    activity.startActivityForResult(intent, 1)
                     isInstallQrPlugin = true
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -50,7 +59,7 @@ class QrcodeMod {
                 val intent = Intent("org.noear.scan.H5_SCAN")
                 intent.setClassName("org.noear.scan", "org.noear.scan.CaptureActivity")
                 try {
-                    activity.startActivityForResult(intent, 0) // 0:Qrcode
+                    activity.startActivityForResult(intent, 2)
                     isInstallQrPlugin = true
                 } catch (e: Exception) {
                     e.printStackTrace()

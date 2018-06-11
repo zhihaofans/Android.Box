@@ -52,4 +52,11 @@
     <string name="text_android">安卓</string>
     <string name="title_activity_image_view">图片浏览</string>
     <string name="text_gankio_girl">福利</string>
+    <string name="text_qrcode_content">二维码内容</string>
+    <string name="text_setting_use_cct_for_web">使用Chrome Custom Tabs来浏览网页</string>
+    <string name="text_yes">是</string>
+    <string name="text_no">否</string>
+    <string name="text_qrcode_scan">扫二维码</string>
+    <string name="text_qrcode_generate">生成二维码</string>
+    <string name="text_permission_camera">相机权限</string>
 </resources>

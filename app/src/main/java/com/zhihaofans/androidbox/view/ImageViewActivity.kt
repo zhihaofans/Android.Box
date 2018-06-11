@@ -106,7 +106,7 @@ class ImageViewActivity : AppCompatActivity() {
                                     1 -> sysUtil.browseWeb(this@ImageViewActivity, imageUrl.toString())
                                     2 -> {
                                         ClipboardUtils.copy(this@ImageViewActivity, imageUrl)
-                                        Snackbar.make(coordinatorLayout_imageView, getString(R.string.text_ok), Snackbar.LENGTH_SHORT).show()
+                                        Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()
                                     }
                                 }
                             })

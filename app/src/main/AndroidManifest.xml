@@ -39,21 +39,13 @@
         <activity
             android:name=".view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".view.ShareActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity
@@ -89,9 +81,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
@@ -101,8 +91,21 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.QrcodeActivity"
-            android:label="@string/text_qrcode"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:icon="@drawable/permission_ic_camera"
+            android:label="@string/text_qrcode_generate"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".shortcuts.QrcodeScanShortcuts"
+            android:label="@string/text_qrcode_scan" />
+        <activity
+            android:name=".shortcuts.QrcodeGenerateShortcuts"
+            android:label="@string/text_qrcode_generate" />
     </application>
 
 </manifest>

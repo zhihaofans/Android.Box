@@ -145,7 +145,7 @@ class AppManagementActivity : AppCompatActivity() {
                                                 })
                                                 positiveButton(R.string.text_copy, {
                                                     ClipboardUtils.copy(this@AppManagementActivity, input)
-                                                    Snackbar.make(coordinatorLayout_app, R.string.text_ok, Snackbar.LENGTH_SHORT).show()
+                                                    Snackbar.make(coordinatorLayout_app, "ok", Snackbar.LENGTH_SHORT).show()
                                                 })
                                             }
                                         }

@@ -2,10 +2,9 @@
     <string name="app_name" translatable="false">Android.Box</string>
     <string name="text_copy">Copy</string>
     <string name="text_finish">Finished</string>
-    <string name="text_ok" translatable="false">Ok</string>
     <string name="text_canceled_by_user">Cancel by user.</string>
     <string name="text_no_install_need_plugin">You do not install the corresponding plugin.</string>
-    <string name="text_qrcode">Qrcode</string>
+    <string name="text_qrcode">QR code</string>
     <string name="text_share">Share</string>
     <string name="text_setting">Setting</string>
     <string name="text_install">Install</string>
@@ -55,4 +54,11 @@
     <string name="text_android">Android</string>
     <string name="title_activity_image_view">Image View</string>
     <string name="text_gankio_girl">Girl</string>
+    <string name="text_qrcode_content">QR code content</string>
+    <string name="text_setting_use_cct_for_web">Use Chrome Custom Tabs to browse the web</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
+    <string name="text_qrcode_scan">Scan QR code</string>
+    <string name="text_qrcode_generate">Generate QR code</string>
+    <string name="text_permission_camera">Camera permission</string>
 </resources>

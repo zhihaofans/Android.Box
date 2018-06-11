@@ -58,6 +58,14 @@ class SystemUtil {
         }
     }
 
+    fun booleen2string(boolean: Boolean, trueString: String, falseString: String): String {
+        return if (boolean) {
+            trueString
+        } else {
+            falseString
+        }
+    }
+
     fun fileSize2String(fs: Int): String {
         var result = fs.toFloat()
         var times = 0

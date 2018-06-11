@@ -27,8 +27,8 @@ class GlobalSettingMod {
 
     fun forceUseChromeCustomTabs(): Boolean {
         return if (_get("BROWSER_USE_CHROME_CUSTOM_TABS").isNullOrEmpty()) {
-            forceUseChromeCustomTabs(false)
-            false
+            forceUseChromeCustomTabs(true)
+            true
         } else _get("BROWSER_USE_CHROME_CUSTOM_TABS") == "1"
     }
 
@@ -39,5 +39,4 @@ class GlobalSettingMod {
             _set("BROWSER_USE_CHROME_CUSTOM_TABS", "0")
         }
     }
-
 }

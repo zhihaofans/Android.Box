@@ -52,6 +52,9 @@ class NewsBoxMod {
                 "gank.io" -> {
                     siteInfo_gankio(context).getNewsList(channelId, page)
                 }
+                "pingwest" -> {
+                    siteInfo_pingwest(context).getNewsList(channelId, page)
+                }
                 else -> null
             }
         }
@@ -69,6 +72,10 @@ class NewsBoxMod {
                     mutableMapOf(
                             "id" to "gank.io",
                             "name" to context.getString(R.string.text_site_gank_io)
+                    ),
+                    mutableMapOf(
+                            "id" to "pingwest",
+                            "name" to context.getString(R.string.text_site_pingwest)
                     )
             )
         }
@@ -78,6 +85,7 @@ class NewsBoxMod {
                 "sspai" -> siteInfo_sspai(context).getchannelList()
                 "dgtle" -> siteInfo_dgtle(context).getchannelList()
                 "gank.io" -> siteInfo_gankio(context).getchannelList()
+                "pingwest" -> siteInfo_pingwest(context).getchannelList()
                 else -> null
             }
         }

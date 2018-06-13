@@ -59,4 +59,6 @@
     <string name="text_qrcode_scan">扫二维码</string>
     <string name="text_qrcode_generate">生成二维码</string>
     <string name="text_permission_camera">相机权限</string>
+    <string name="text_site_pingwest_forwardrecommend">品玩转发推荐</string>
+    <string name="text_site_pingwest">品玩</string>
 </resources>

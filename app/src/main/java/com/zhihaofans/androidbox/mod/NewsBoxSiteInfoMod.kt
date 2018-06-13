@@ -2,11 +2,14 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.DgtleIndexGson
 import com.zhihaofans.androidbox.gson.GankIoAllGson
+import com.zhihaofans.androidbox.gson.PingwestForwardRecommendGson
 import com.zhihaofans.androidbox.gson.SspaiArticleGson
+
 
 /**
  * Created by zhihaofans on 2018/6/3.
@@ -63,13 +66,13 @@ class siteInfo_gankio(_context: Context) {
         try {
             newsListJson = nbc.httpGet4String(thisUrl, headers)
             Logger.d("newsListJson:$newsListJson")
-            val gankIndex = g.fromJson(newsListJson, GankIoAllGson::class.java)
-            val gankListIndex = gankIndex.results
-            if (gankIndex.error) {
-                Logger.e("gankIndex.error:${gankIndex.error}")
+            val newsIndex = g.fromJson(newsListJson, GankIoAllGson::class.java)
+            val newsListIndex = newsIndex.results
+            if (newsIndex.error) {
+                Logger.e("gankIndex.error:${newsIndex.error}")
                 return null
             }
-            gankListIndex.map {
+            newsListIndex.map {
                 newsList.add(mutableMapOf(
                         "title" to it.desc
                         ,
@@ -94,10 +97,6 @@ class siteInfo_dgtle(_context: Context) {
                 mutableMapOf(
                         "channelId" to "dgtle_news",
                         "channelName" to context.getString(R.string.text_site_dgtle_news)
-                ),
-                mutableMapOf(
-                        "channelId" to "dgtle_forum",
-                        "channelName" to context.getString(R.string.text_site_dgtle_forum)
                 )
         )
     }
@@ -113,9 +112,6 @@ class siteInfo_dgtle(_context: Context) {
             "dgtle_news" -> {
                 "https://api.yii.dgtle.com/v2/news?perpage=24&page=$_page"
             }
-            "dgtle_forum" -> {
-                "https://api.yii.dgtle.com/v2/forum-thread/thread?perpage=24&typeid=0&page=$_page"
-            }
             else -> null
         }
 
@@ -129,12 +125,12 @@ class siteInfo_dgtle(_context: Context) {
         try {
             newsListJson = nbc.httpGet4String(thisUrl, headers)
             Logger.d("newsListJson:$newsListJson")
-            val dgtleIndex = g.fromJson(newsListJson, DgtleIndexGson::class.java)
-            val dgtleListIndex = dgtleIndex.list
-            if (dgtleListIndex.size == 0) {
+            val newsIndex = g.fromJson(newsListJson, DgtleIndexGson::class.java)
+            val newsListIndex = newsIndex.list
+            if (newsListIndex.size == 0) {
                 return null
             }
-            dgtleListIndex.map {
+            newsListIndex.map {
                 newsList.add(mutableMapOf(
                         "title" to
                                 if (it.date == null) {
@@ -186,15 +182,69 @@ class siteInfo_sspai(_context: Context) {
                 try {
                     newsListJson = nbc.httpGet4String(thisUrl, headers)
                     Logger.d("newsListJson:$newsListJson")
-                    val sspaiIndex = g.fromJson(newsListJson, SspaiArticleGson::class.java)
-                    val sspaiListIndex = sspaiIndex.list
-                    if (sspaiListIndex.size == 0) {
+                    val newsIndex = g.fromJson(newsListJson, SspaiArticleGson::class.java)
+                    val newsListIndex = newsIndex.list
+                    if (newsListIndex.size == 0) {
                         return null
                     }
-                    sspaiListIndex.map {
+                    newsListIndex.map {
                         newsList.add(mutableMapOf(
                                 "title" to it.title,
                                 "web_url" to "https://www.sspai.com/post/${it.id}"
+                        ))
+                    }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}
+
+class siteInfo_pingwest(_context: Context) {
+
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val g = Gson()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "pingwest_forwarding_recommendation",
+                        "channelName" to context.getString(R.string.text_site_pingwest_forwardrecommend)
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        var newsListJson = ""
+        var _page = page
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        if (page < 1) {
+            _page = 1
+        }
+        when (channelId) {
+            "pingwest_forwarding_recommendation" -> {
+                val thisUrl = "http://no.pingwest.com/recommend?num=20&pagenum=$_page"
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json, text/javascript, */*; q=0.01"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                try {
+                    newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    Logger.d("newsListJson:$newsListJson")
+                    val jsonArray = JsonParser().parse(newsListJson).asJsonArray
+                    if (jsonArray.size() == 0) {
+                        return null
+                    }
+                    jsonArray.map {
+                        val newsItem = g.fromJson(it, PingwestForwardRecommendGson::class.java)
+                        Logger.d("newsItem:$newsItem")
+                        newsList.add(mutableMapOf(
+                                "title" to newsItem.title,
+                                "web_url" to newsItem.link
                         ))
                     }
                     return newsList

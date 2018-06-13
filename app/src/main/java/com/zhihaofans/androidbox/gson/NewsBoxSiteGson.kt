@@ -48,3 +48,15 @@ data class SspaiArticleListGson(
         val summary: String,
         val promote_intro: String
 )
+
+// 品玩(pingwest)
+data class PingwestForwardRecommendGson(
+        val id: String,
+        val title: String,
+        val content: String,
+        val link: String,
+        val img: String,
+        val source: String,
+        val zuozhe: String,
+        val orglink: String
+)

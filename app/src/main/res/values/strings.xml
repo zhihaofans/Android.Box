@@ -61,4 +61,6 @@
     <string name="text_qrcode_scan">Scan QR code</string>
     <string name="text_qrcode_generate">Generate QR code</string>
     <string name="text_permission_camera">Camera permission</string>
+    <string name="text_site_pingwest_forwardrecommend">Pingwest forwarding recommendation</string>
+    <string name="text_site_pingwest">Pingwest</string>
 </resources>

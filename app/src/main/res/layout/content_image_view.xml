@@ -20,10 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:scaleType="centerInside"
-            app:failureImage="@drawable/ic_fail"
-            app:failureImageScaleType="centerInside"
-            app:placeholderImage="@drawable/ic_loading"
-            app:placeholderImageScaleType="centerInside"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="2dp" />
     </LinearLayout>

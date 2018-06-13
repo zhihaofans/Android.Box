@@ -31,7 +31,6 @@ import org.jetbrains.anko.toast
 
 
 class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationCallback {
-
     private val qrcode = QrcodeMod()
     private val sysUtil = SystemUtil()
     private val globalSetting = GlobalSettingMod()
@@ -59,6 +58,9 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
                                                 sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
                                         Snackbar.LENGTH_SHORT
                                 ).show()
+                            }
+                            1 -> {
+
                             }
                         }
                     })

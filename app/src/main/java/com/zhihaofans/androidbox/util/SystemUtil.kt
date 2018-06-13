@@ -11,10 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
+import com.wx.android.common.util.FileUtils
 import com.wx.android.common.util.PackageUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.GlobalSettingMod
+import com.zhihaofans.androidbox.view.ImageViewActivity
 import org.jetbrains.anko.browse
+import org.jetbrains.anko.startActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,8 +53,10 @@ class SystemUtil {
         customTabsIntent.launchUrl(context, Uri.parse(url))
     }
 
-    fun browseWeb(context: Context, url: String) {
-        if (globalSetting.forceUseChromeCustomTabs()) {
+    fun browseWeb(context: Context, url: String, title: String = url) {
+        if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
+            context.startActivity<ImageViewActivity>("image" to url, "title" to title)
+        } else if (globalSetting.forceUseChromeCustomTabs()) {
             chromeCustomTabs(context, url)
         } else {
             context.browse(url)
@@ -76,6 +81,14 @@ class SystemUtil {
         val units = mutableListOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB", "CB")
         val sizeUnit = if (times >= units.size) "???" else units[times]
         return "$result $sizeUnit"
+    }
+
+    fun checkIfImageUrl(imageUrl: String): Boolean {
+        return when (FileUtils.getFileSuffix(imageUrl).toLowerCase()) {
+            "jpg", "jpeg", "bmp", "webp", "gif" -> true
+            else -> false
+        }
+
     }
 
     fun installApk(context: Context, filePath: String) {

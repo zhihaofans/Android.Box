@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.CancellationSignal
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -27,27 +26,28 @@ import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 
 
 class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationCallback {
     private val qrcode = QrcodeMod()
     private val sysUtil = SystemUtil()
     private val globalSetting = GlobalSettingMod()
+    private val updateWebUrl = "https://fir.im/fkw1"
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
         setSupportActionBar(toolbar_main)
-        SharedPreferencesUtils.init(this@MainActivity)
-        //val rxPermissions = RxPermissions(this)
+        SharedPreferencesUtils.init(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
                     val settings = mutableListOf(
                             getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                    sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no))
+                                    sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
+                            getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
+                                    sysUtil.booleen2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no))
                     )
                     selector(getString(R.string.text_setting), settings, { _, i ->
                         when (i) {
@@ -64,6 +64,9 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
                             }
                         }
                     })
+                }
+                R.id.menu_manual_update -> {
+                    sysUtil.browseWeb(this@MainActivity, updateWebUrl)
                 }
             }
             true
@@ -135,6 +138,8 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
         }
         //新的更新方式
         buglyInit()
+        //指纹验证
+        /*
         if (BiometricPromptCompat.isHardwareDetected(this)) {
             Snackbar.make(coordinatorLayout_main, "支持指纹", Snackbar.LENGTH_SHORT).show()
             val biometricPrompt = BiometricPromptCompat.Builder(this)
@@ -153,6 +158,7 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
         } else {
             Snackbar.make(coordinatorLayout_main, "不支持指纹", Snackbar.LENGTH_SHORT).show()
         }
+        */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

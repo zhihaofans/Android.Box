@@ -65,4 +65,6 @@
     <string name="text_site_pingwest">Pingwest</string>
     <string name="text_setting_open_image_url_with_buildin_viewer">Open image url with build-in viewer</string>
     <string name="text_manual_update">Manual update</string>
+    <string name="text_site_allgl">all.gl</string>
+    <string name="text_site_allgl_all">all.gl - All</string>
 </resources>

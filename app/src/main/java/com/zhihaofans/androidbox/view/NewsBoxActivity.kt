@@ -181,6 +181,7 @@ class NewsBoxActivity : AppCompatActivity() {
             val siteDataList = sites.getNewsList(siteId, siteChannelId, nowPage)
             uiThread {
                 if (siteDataList == null) {
+                    Logger.e("错误：数据空白")
                     Snackbar.make(coordinatorLayout_newsbox, "错误：数据空白", Snackbar.LENGTH_SHORT).show()
                 } else {
                     listView_news.adapter = ArrayAdapter<String>(this@NewsBoxActivity, android.R.layout.simple_list_item_1, siteDataList.map { it["title"] })

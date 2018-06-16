@@ -257,3 +257,83 @@ class siteInfo_pingwest(_context: Context) {
         }
     }
 }
+
+class siteInfo_allgl(_context: Context) {
+
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "allgl_all",
+                        "channelName" to context.getString(R.string.text_site_allgl_all)
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        var _page = page
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        if (page < 1) {
+            _page = 1
+        }
+        when (channelId) {
+            "allgl_all" -> {
+                var thisUrl = "http://all.gl"
+                if (_page >= 2) {
+                    thisUrl += "/page/$_page/"
+                }
+                val headers = mutableMapOf(
+                        Pair("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                try {
+                    val doc = nbc.httpGet4Jsoup(thisUrl, headers)
+                    val docHtml = doc.html()
+                    Logger.d("docHtml:$docHtml")
+                    if (docHtml.isEmpty()) {
+                        Logger.e("docHtml.isEmpty()")
+                        return null
+                    }
+                    val htmlMain = doc.getElementById("main")
+                    if (htmlMain == null) {
+                        Logger.e("htmlMain=null")
+                        return null
+                    }
+                    val newsListClass = htmlMain.getElementsByClass("clickright-lite-grid")
+                    if (newsListClass == null) {
+                        Logger.e("newsListClass=null")
+                        return null
+                    } else if (newsListClass.size != 1) {
+                        Logger.e("newsListClass.size!=1")
+                        return null
+                    }
+                    val newsListData = newsListClass[0].select("li > article.item")
+                    if (newsListData == null) {
+                        Logger.e("newsList=null")
+                        return null
+                    }
+                    if (newsListData.size == 0) {
+                        Logger.e("newsList.size=0")
+                        return null
+                    }
+                    newsListData.map {
+                        val contentJsoup = it.select("div.item-content > h2 > a")
+                        Logger.d("contentJsoup:$contentJsoup")
+                        val newsItemUrl = contentJsoup.attr("href")
+                        val newsItemTitle = contentJsoup.text()
+                        newsList.add(mutableMapOf(
+                                "title" to newsItemTitle,
+                                "web_url" to newsItemUrl
+                        ))
+                    }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}

@@ -1,11 +1,15 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.IOException
+
 
 /**
  * Created by zhihaofans on 2018/3/9.
@@ -37,11 +41,21 @@ class NewsBoxMod {
             }
 
         }
+
+        fun httpGet4Jsoup(url: String, headers: MutableMap<String, String>? = null, timeout: Int = 10000): Document {
+            Logger.d("httpGet4Jsoup:$url,$headers,$timeout")
+            val doc = Jsoup.connect(url)
+                    .headers(headers)
+                    .timeout(timeout)
+                    .get()
+            return doc
+        }
     }
 
     class sites(_context: Context) {
         private val context = _context
         fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+            Logger.d("getNewsList($siteId,$channelId,$page)")
             return when (siteId) {
                 "sspai" -> {
                     siteInfo_sspai(context).getNewsList(channelId, page)
@@ -54,6 +68,9 @@ class NewsBoxMod {
                 }
                 "pingwest" -> {
                     siteInfo_pingwest(context).getNewsList(channelId, page)
+                }
+                "all.gl" -> {
+                    siteInfo_allgl(context).getNewsList(channelId, page)
                 }
                 else -> null
             }
@@ -76,6 +93,10 @@ class NewsBoxMod {
                     mutableMapOf(
                             "id" to "pingwest",
                             "name" to context.getString(R.string.text_site_pingwest)
+                    ),
+                    mutableMapOf(
+                            "id" to "all.gl",
+                            "name" to context.getString(R.string.text_site_allgl)
                     )
             )
         }
@@ -86,6 +107,7 @@ class NewsBoxMod {
                 "dgtle" -> siteInfo_dgtle(context).getchannelList()
                 "gank.io" -> siteInfo_gankio(context).getchannelList()
                 "pingwest" -> siteInfo_pingwest(context).getchannelList()
+                "all.gl" -> siteInfo_allgl(context).getchannelList()
                 else -> null
             }
         }

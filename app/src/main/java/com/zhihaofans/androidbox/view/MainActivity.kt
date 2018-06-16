@@ -21,14 +21,13 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import moe.feng.support.biometricprompt.BiometricPromptCompat
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
 
 
-class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationCallback {
+class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private val sysUtil = SystemUtil()
     private val globalSetting = GlobalSettingMod()
@@ -195,7 +194,7 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
+/*
     override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
         Snackbar.make(coordinatorLayout_main, "指纹验证错误(Code:$errorCode) $errString", Snackbar.LENGTH_LONG).show()
         Logger.e("指纹验证错误(Code:$errorCode) $errString")
@@ -216,7 +215,7 @@ class MainActivity : AppCompatActivity(), BiometricPromptCompat.IAuthenticationC
         Snackbar.make(coordinatorLayout_main, "指纹验证失败", Snackbar.LENGTH_LONG).show()
         Logger.d("onAuthenticationHelp")
 
-    }
+    }*/
 
     private fun buglyInit() {
         Bugly.init(applicationContext, "a71e8c60bc", true) //初始化

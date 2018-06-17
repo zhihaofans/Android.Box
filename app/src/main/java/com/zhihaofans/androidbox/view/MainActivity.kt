@@ -114,10 +114,9 @@ class MainActivity : AppCompatActivity() {
                             "Android 8.1 (API 27, Oreo 奥利奥)"
                     )
                     val nowSdk = Build.VERSION.SDK_INT
-                    selector("你是${sdks[nowSdk - 1]}", sdks, { _, i ->
+                    selector("你是${sdks[nowSdk - 1]}", sdks) { _, i ->
                         val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
-
-                        selector(sdks[i], acts, { _, ii ->
+                        selector(sdks[i], acts) { _, ii ->
                             when (ii) {
                                 0 -> {
                                     ClipboardUtils.copy(this@MainActivity, sdks[i])
@@ -125,8 +124,8 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 1 -> share(sdks[i])
                             }
-                        })
-                    })
+                        }
+                    }
                 }
                 2 -> startActivity<AppManagementActivity>()
                 3 -> startActivity<NewsBoxActivity>()

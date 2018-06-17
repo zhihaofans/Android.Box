@@ -71,3 +71,14 @@ data class GuandnIndexListGson(
         val identification: String
 
 )
+
+// RSSHub
+data class RsshubGson(
+        val items: MutableList<RsshubItemGson>
+)
+
+data class RsshubItemGson(
+        val url: String,
+        val title: String,
+        val summary: String
+)

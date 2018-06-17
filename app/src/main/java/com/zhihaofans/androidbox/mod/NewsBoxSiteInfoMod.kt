@@ -392,3 +392,62 @@ class siteInfo_guandn(_context: Context) {
         }
     }
 }
+
+class siteInfo_rsshub(_context: Context) {
+
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val g = Gson()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "rsshub_weibo_user_6180475384",
+                        "channelName" to context.getString(R.string.text_site_rsshub_weibo_user_6180475384)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_zhihu_daily",
+                        "channelName" to context.getString(R.string.text_site_rsshub_zhihu_daily)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_douban_movie_playing",
+                        "channelName" to context.getString(R.string.text_site_rsshub_douban_movie_playing)
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        val headers = mutableMapOf(
+                Pair("content-type", "application/json, text/javascript, */*; q=0.01"),
+                Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+        )
+        val newsListJson: String
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        val thisUrl = when (channelId) {
+            "rsshub_weibo_user_6180475384" -> "https://rsshub.app/weibo/user2/6180475384.json"
+            "rsshub_zhihu_daily" -> "https://rsshub.app/zhihu/daily.json"
+            "rsshub_douban_movie_playing" -> "https://rsshub.app/douban/movie/playing.json"
+            else -> return null
+        }
+        if (thisUrl.isEmpty()) return null
+        try {
+            newsListJson = nbc.httpGet4String(thisUrl, headers)
+            Logger.d("newsListJson:$newsListJson")
+            val newsListData = g.fromJson(newsListJson, RsshubGson::class.java)
+            val newsListItemData = newsListData.items
+            if (newsListItemData.size == 0) {
+                return null
+            }
+            newsListItemData.map {
+                Logger.d("newsItem:$it")
+                newsList.add(mutableMapOf(
+                        "title" to it.title,
+                        "web_url" to it.url
+                ))
+            }
+            return newsList
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+}

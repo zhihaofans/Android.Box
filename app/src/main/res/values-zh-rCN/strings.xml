@@ -67,4 +67,8 @@
     <string name="text_site_allgl">全球聚合</string>
     <string name="text_site_guandn_index">观点-首页</string>
     <string name="text_site_guandn">观点</string>
+    <string name="text_site_rsshub_weibo_user_6180475384">我以为我很浮夸的微博</string>
+    <string name="text_site_rsshub">RSSHub</string>
+    <string name="text_site_rsshub_zhihu_daily">知乎日报</string>
+    <string name="text_site_rsshub_douban_movie_playing">豆瓣正在上映的电影</string>
 </resources>

@@ -115,6 +115,9 @@ class NewsBoxMod {
                 "guandn" -> {
                     siteInfo_guandn(context).getNewsList(channelId, page)
                 }
+                "rsshub" -> {
+                    siteInfo_rsshub(context).getNewsList(channelId, page)
+                }
                 else -> null
             }
         }
@@ -144,6 +147,10 @@ class NewsBoxMod {
                     mutableMapOf(
                             "id" to "guandn",
                             "name" to context.getString(R.string.text_site_guandn)
+                    ),
+                    mutableMapOf(
+                            "id" to "rsshub",
+                            "name" to context.getString(R.string.text_site_rsshub)
                     )
             )
         }
@@ -156,6 +163,7 @@ class NewsBoxMod {
                 "pingwest" -> siteInfo_pingwest(context).getchannelList()
                 "all.gl" -> siteInfo_allgl(context).getchannelList()
                 "guandn" -> siteInfo_guandn(context).getchannelList()
+                "rsshub" -> siteInfo_rsshub(context).getchannelList()
                 else -> null
             }
         }

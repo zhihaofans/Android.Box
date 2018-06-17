@@ -67,4 +67,6 @@
     <string name="text_manual_update">Manual update</string>
     <string name="text_site_allgl">all.gl</string>
     <string name="text_site_allgl_all">all.gl - All</string>
+    <string name="text_site_guandn_index">Guandn - homepage</string>
+    <string name="text_site_guandn">Guandn</string>
 </resources>

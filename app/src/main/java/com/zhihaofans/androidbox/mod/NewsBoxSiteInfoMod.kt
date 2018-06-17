@@ -5,10 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.gson.DgtleIndexGson
-import com.zhihaofans.androidbox.gson.GankIoAllGson
-import com.zhihaofans.androidbox.gson.PingwestForwardRecommendGson
-import com.zhihaofans.androidbox.gson.SspaiArticleGson
+import com.zhihaofans.androidbox.gson.*
 
 
 /**
@@ -325,6 +322,64 @@ class siteInfo_allgl(_context: Context) {
                         newsList.add(mutableMapOf(
                                 "title" to newsItemTitle,
                                 "web_url" to newsItemUrl
+                        ))
+                    }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}
+
+class siteInfo_guandn(_context: Context) {
+
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val g = Gson()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "guandn_index",
+                        "channelName" to context.getString(R.string.text_site_guandn_index)
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        var newsListJson = ""
+        var _page = page
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        if (page < 1) {
+            _page = 1
+        }
+        when (channelId) {
+            "guandn_index" -> {
+                val thisUrl = "http://www.guandn.com/getIndexWriteAjax"
+                val body = mutableMapOf("currentPage" to _page.toString())
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json;charset=UTF-8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                try {
+
+                    newsListJson = nbc.httpPost4String(thisUrl, body, headers)
+                    Logger.d("newsListJson:$newsListJson")
+                    if (newsListJson.isEmpty()) {
+                        return null
+                    }
+                    val newsIndex = g.fromJson(newsListJson, GuandnIndexGson::class.java)
+                    val newsListIndex = newsIndex.source
+                    if (newsListIndex.size == 0) {
+                        return null
+                    }
+                    newsListIndex.map {
+                        newsList.add(mutableMapOf(
+                                "title" to it.title,
+                                "web_url" to "http://www.guandn.com/p/${it.identification}"
                         ))
                     }
                     return newsList

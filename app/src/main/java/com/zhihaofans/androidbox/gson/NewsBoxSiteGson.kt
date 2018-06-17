@@ -60,3 +60,14 @@ data class PingwestForwardRecommendGson(
         val zuozhe: String,
         val orglink: String
 )
+
+// 观点(guandn)
+data class GuandnIndexGson(
+        val source: MutableList<GuandnIndexListGson>
+)
+
+data class GuandnIndexListGson(
+        val title: String,
+        val identification: String
+
+)

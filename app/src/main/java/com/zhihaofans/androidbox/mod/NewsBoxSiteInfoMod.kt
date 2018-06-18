@@ -405,8 +405,8 @@ class siteInfo_rsshub(_context: Context) {
                         "channelName" to context.getString(R.string.text_site_rsshub_weibo_user_6180475384)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_zhihu_daily",
-                        "channelName" to context.getString(R.string.text_site_rsshub_zhihu_daily)
+                        "channelId" to "rsshub_v2ex_topics",
+                        "channelName" to context.getString(R.string.text_site_rsshub_v2ex_topics)
                 ),
                 mutableMapOf(
                         "channelId" to "rsshub_douban_movie_playing",
@@ -424,14 +424,14 @@ class siteInfo_rsshub(_context: Context) {
         val newsList = mutableListOf<MutableMap<String, String>>()
         val thisUrl = when (channelId) {
             "rsshub_weibo_user_6180475384" -> "https://rsshub.app/weibo/user2/6180475384.json"
-            "rsshub_zhihu_daily" -> "https://rsshub.app/zhihu/daily.json"
+            "rsshub_v2ex_topics" -> "https://rsshub.app/v2ex/topics/latest.json"
             "rsshub_douban_movie_playing" -> "https://rsshub.app/douban/movie/playing.json"
             else -> return null
         }
         if (thisUrl.isEmpty()) return null
         try {
             newsListJson = nbc.httpGet4String(thisUrl, headers)
-            Logger.d("newsListJson:$newsListJson")
+            //Logger.d("newsListJson:$newsListJson")
             val newsListData = g.fromJson(newsListJson, RsshubGson::class.java)
             val newsListItemData = newsListData.items
             if (newsListItemData.size == 0) {

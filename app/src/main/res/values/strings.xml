@@ -71,6 +71,6 @@
     <string name="text_site_guandn">Guandn</string>
     <string name="text_site_rsshub_weibo_user_6180475384">我以为我很浮夸\'s weibo</string>
     <string name="text_site_rsshub">RSSHub</string>
-    <string name="text_site_rsshub_zhihu_daily">Zhihu daily news</string>
     <string name="text_site_rsshub_douban_movie_playing">Douban playing movie</string>
+    <string name="text_site_rsshub_v2ex_topics">V2EX - topics</string>
 </resources>

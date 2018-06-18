@@ -51,11 +51,11 @@ class NewsBoxActivity : AppCompatActivity() {
         siteChannelId = SharedPreferencesUtils.getString("NewsBox", "LAST_SITE_CHANNEL_ID") ?: sites.getSiteChannelList(siteId)!![0]["channelId"]!!
         saveSet()
         loading()
-        fab.setOnClickListener { view ->
-            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
+        fab.setOnClickListener {
+            //Snackbar.make(it, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
             if (nowPage > 1) {
                 val acts = listOf<String>(getString(R.string.text_select_site), getString(R.string.text_first_page), getString(R.string.text_previous_page), getString(R.string.text_next_page), getString(R.string.text_refresh))
-                selector("", acts, { _, index ->
+                selector("", acts) { _, index ->
                     when (index) {
                         0 -> {
                             selectSite()
@@ -76,10 +76,10 @@ class NewsBoxActivity : AppCompatActivity() {
                         }
                         4 -> loading()
                     }
-                })
+                }
             } else {
                 val acts = listOf<String>(getString(R.string.text_select_site), getString(R.string.text_next_page), getString(R.string.text_refresh))
-                selector("", acts, { _, index ->
+                selector("", acts) { _, index ->
                     when (index) {
                         0 -> {
                             selectSite()
@@ -90,7 +90,7 @@ class NewsBoxActivity : AppCompatActivity() {
                         }
                         2 -> loading()
                     }
-                })
+                }
             }
         }
         toolbar_newsbox.setOnMenuItemClickListener { item ->
@@ -122,8 +122,14 @@ class NewsBoxActivity : AppCompatActivity() {
                 thisChannel = it
             }
         }
+        Logger.d(thisChannel)
+        if (thisChannel.isEmpty() || thisSite.isEmpty()) {
+            thisSite = sites.getSiteList()[0]
+            thisChannel = sites.getSiteChannelList(thisSite["id"]!!)!![0]
+        }
         siteName = thisSite["name"]!!
         channelName = thisChannel["channelName"]!!
+        saveSet()
     }
 
     fun saveSet() {
@@ -146,20 +152,18 @@ class NewsBoxActivity : AppCompatActivity() {
         val siteNameList = siteList.map {
             it["name"]!!
         }
-        selector(getString(R.string.text_site), siteNameList, { _, i ->
+        selector(getString(R.string.text_site), siteNameList) { _, i ->
             val siteIdTemp = siteIdList[i]
             val channelList = sites.getSiteChannelList(siteIdTemp)
             if (channelList == null) {
                 Snackbar.make(coordinatorLayout_newsbox, "Site id error", Snackbar.LENGTH_SHORT).show()
-            } else {
-                selector(getString(R.string.text_channel), channelList.map { it["channelName"]!! }, { _, index ->
-                    siteId = siteIdTemp
-                    siteChannelId = channelList[index]["channelId"]!!
-                    nowPage = 1
-                    loading()
-                })
+            } else selector(getString(R.string.text_channel), channelList.map { it["channelName"]!! }) { _, index ->
+                siteId = siteIdTemp
+                siteChannelId = channelList[index]["channelId"]!!
+                nowPage = 1
+                loading()
             }
-        })
+        }
 
     }
 

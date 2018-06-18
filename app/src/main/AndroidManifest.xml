@@ -101,11 +101,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".shortcuts.QrcodeScanShortcuts"
+            android:name=".mod.QrcodeScanShortcuts"
             android:label="@string/text_qrcode_scan" />
         <activity
-            android:name=".shortcuts.QrcodeGenerateShortcuts"
+            android:name=".mod.QrcodeGenerateShortcuts"
             android:label="@string/text_qrcode_generate" />
+        <activity
+            android:name=".mod.ServerChanShortcuts"
+            android:label="@string/text_serverchan" />
+        <activity
+            android:name=".mod.NewsboxShortcuts"
+            android:label="@string/text_newsbox" />
     </application>
 
 </manifest>

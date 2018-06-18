@@ -8,7 +8,7 @@
         android:shortcutShortLabel="@string/text_qrcode_scan">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.zhihaofans.androidbox.shortcuts.QrcodeScanShortcuts"
+            android:targetClass="com.zhihaofans.androidbox.mod.QrcodeScanShortcuts"
             android:targetPackage="com.zhihaofans.androidbox" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
@@ -21,7 +21,7 @@
         android:shortcutShortLabel="@string/text_qrcode_generate">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.zhihaofans.androidbox.shortcuts.QrcodeGenerateShortcuts"
+            android:targetClass="com.zhihaofans.androidbox.mod.QrcodeGenerateShortcuts"
             android:targetPackage="com.zhihaofans.androidbox" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
@@ -34,7 +34,7 @@
         android:shortcutShortLabel="@string/text_serverchan">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.zhihaofans.androidbox.view.ServerChanActivity"
+            android:targetClass="com.zhihaofans.androidbox.mod.ServerChanShortcuts"
             android:targetPackage="com.zhihaofans.androidbox" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
@@ -47,7 +47,7 @@
         android:shortcutShortLabel="@string/text_newsbox">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.zhihaofans.androidbox.view.NewsBoxActivity"
+            android:targetClass="com.zhihaofans.androidbox.mod.NewsboxShortcuts"
             android:targetPackage="com.zhihaofans.androidbox" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>

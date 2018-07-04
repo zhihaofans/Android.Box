@@ -35,6 +35,7 @@ class ServerChanActivity : AppCompatActivity() {
         }
         */
 
+        //SharedPreferencesUtils.init(this)
         val savedKey: String? = SharedPreferencesUtils.getString("serverChanKey")
         if (savedKey.isNullOrEmpty()) {
             updateKey()

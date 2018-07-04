@@ -35,18 +35,12 @@ class QrcodeActivity : AppCompatActivity() {
         qrcode.setActivity(this@QrcodeActivity, true)
 
         fab_qrcode.setOnClickListener { view ->
-            val menus = mutableListOf(
-                    getString(R.string.text_qrcode_scan),
-                    getString(R.string.text_qrcode_generate)
-            )
-            selector(getString(R.string.text_setting), menus, { _, i ->
-                when (i) {
-                    0 -> getCameraPermission()
-                    1 -> generateQR()
-                }
-            })
+            qrcodeMenu()
         }
         checkMethod()
+        imageView_qrcode.onClick {
+            qrcodeMenu()
+        }
         button_open.onClick { if (editText_qrcode_content.text.isNotEmpty()) sysUtil.browseWeb(this@QrcodeActivity, editText_qrcode_content.text.toString()) }
         button_copy.onClick { if (editText_qrcode_content.text.isNotEmpty()) ClipboardUtils.copy(this@QrcodeActivity, editText_qrcode_content.text.toString()) }
         button_share.onClick { if (editText_qrcode_content.text.isNotEmpty()) share(editText_qrcode_content.text.toString()) }
@@ -87,6 +81,19 @@ class QrcodeActivity : AppCompatActivity() {
                         finish()
                     }
                 }
+            }
+        }
+    }
+
+    private fun qrcodeMenu() {
+        val menus = mutableListOf(
+                getString(R.string.text_qrcode_scan),
+                getString(R.string.text_qrcode_generate)
+        )
+        selector(getString(R.string.text_setting), menus) { _, i ->
+            when (i) {
+                0 -> getCameraPermission()
+                1 -> generateQR()
             }
         }
     }

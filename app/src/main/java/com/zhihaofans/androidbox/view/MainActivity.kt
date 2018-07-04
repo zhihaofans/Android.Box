@@ -10,11 +10,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
 import com.orhanobut.logger.Logger
-import com.tencent.bugly.Bugly
-import com.tencent.bugly.beta.Beta
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
-import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
@@ -38,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
         setSupportActionBar(toolbar_main)
-        SharedPreferencesUtils.init(this)
+        //SharedPreferencesUtils.init(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
@@ -134,8 +131,6 @@ class MainActivity : AppCompatActivity() {
                 6 -> startActivity<ServerChanActivity>()
             }
         }
-        //新的更新方式
-        buglyInit()
         //指纹验证
         /*
         if (BiometricPromptCompat.isHardwareDetected(this)) {
@@ -216,10 +211,4 @@ class MainActivity : AppCompatActivity() {
 
     }*/
 
-    private fun buglyInit() {
-        Bugly.init(applicationContext, "a71e8c60bc", true) //初始化
-        Beta.enableNotification = true //设置在通知栏显示下载进度
-        Beta.autoDownloadOnWifi = true //设置Wifi下自动下载
-        Beta.enableHotfix = false //关闭热更新能力
-    }
 }

@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.mod
 
 import android.app.Activity
 import android.os.Bundle
-import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.view.NewsBoxActivity
 import com.zhihaofans.androidbox.view.QrcodeActivity
 import com.zhihaofans.androidbox.view.ServerChanActivity
@@ -30,7 +29,7 @@ class QrcodeGenerateShortcuts : Activity() {
 class ServerChanShortcuts : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SharedPreferencesUtils.init(this)
+        //SharedPreferencesUtils.init(this)
         startActivity<ServerChanActivity>()
         finish()
     }
@@ -39,7 +38,7 @@ class ServerChanShortcuts : Activity() {
 class NewsboxShortcuts : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SharedPreferencesUtils.init(this)
+        //SharedPreferencesUtils.init(this)
         startActivity<NewsBoxActivity>()
         finish()
     }

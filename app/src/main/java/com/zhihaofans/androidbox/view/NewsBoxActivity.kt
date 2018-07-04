@@ -157,11 +157,18 @@ class NewsBoxActivity : AppCompatActivity() {
             val channelList = sites.getSiteChannelList(siteIdTemp)
             if (channelList == null) {
                 Snackbar.make(coordinatorLayout_newsbox, "Site id error", Snackbar.LENGTH_SHORT).show()
-            } else selector(getString(R.string.text_channel), channelList.map { it["channelName"]!! }) { _, index ->
+            } else if (channelList.size == 1) {
                 siteId = siteIdTemp
-                siteChannelId = channelList[index]["channelId"]!!
+                siteChannelId = channelList[0]["channelId"]!!
                 nowPage = 1
                 loading()
+            } else {
+                selector(getString(R.string.text_channel), channelList.map { it["channelName"]!! }) { _, index ->
+                    siteId = siteIdTemp
+                    siteChannelId = channelList[index]["channelId"]!!
+                    nowPage = 1
+                    loading()
+                }
             }
         }
 

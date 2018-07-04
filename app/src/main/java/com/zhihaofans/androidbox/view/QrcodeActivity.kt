@@ -41,7 +41,16 @@ class QrcodeActivity : AppCompatActivity() {
         imageView_qrcode.onClick {
             qrcodeMenu()
         }
-        button_open.onClick { if (editText_qrcode_content.text.isNotEmpty()) sysUtil.browseWeb(this@QrcodeActivity, editText_qrcode_content.text.toString()) }
+        button_open.onClick {
+            if (editText_qrcode_content.text.isNotEmpty()) {
+                try {
+                    sysUtil.browseWeb(this@QrcodeActivity, editText_qrcode_content.text.toString())
+                } catch (e: Exception) {
+                    toast("打开失败，错误的地址")
+                    e.printStackTrace()
+                }
+            }
+        }
         button_copy.onClick { if (editText_qrcode_content.text.isNotEmpty()) ClipboardUtils.copy(this@QrcodeActivity, editText_qrcode_content.text.toString()) }
         button_share.onClick { if (editText_qrcode_content.text.isNotEmpty()) share(editText_qrcode_content.text.toString()) }
     }
@@ -85,21 +94,18 @@ class QrcodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun qrcodeMenu() {
-        val menus = mutableListOf(
-                getString(R.string.text_qrcode_scan),
-                getString(R.string.text_qrcode_generate)
-        )
-        selector(getString(R.string.text_setting), menus) { _, i ->
-            when (i) {
-                0 -> getCameraPermission()
-                1 -> generateQR()
-            }
+    private fun qrcodeMenu() = selector(getString(R.string.text_qrcode), mutableListOf(
+            getString(R.string.text_qrcode_scan),
+            getString(R.string.text_qrcode_generate)
+    )) { _, i ->
+        when (i) {
+            0 -> getCameraPermission()
+            1 -> generateQR()
         }
     }
 
+
     private fun checkMethod() {
-        val intent = intent
         if (Objects.equals(Intent.ACTION_SEND, intent.action) && intent.type != null && Objects.equals("text/plain", intent.type)) {
             val st = intent.getStringExtra(Intent.EXTRA_TEXT)
             if (st != null) {

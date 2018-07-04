@@ -19,6 +19,7 @@ import com.zhihaofans.androidbox.view.ImageViewActivity
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import java.io.File
+import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,12 +55,18 @@ class SystemUtil {
     }
 
     fun browseWeb(context: Context, url: String, title: String = url) {
-        if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
-            context.startActivity<ImageViewActivity>("image" to url, "title" to title)
-        } else if (globalSetting.forceUseChromeCustomTabs()) {
-            chromeCustomTabs(context, url)
-        } else {
-            context.browse(url)
+        try {
+            val uriObj = URI(url)
+            uriObj.toString()
+            if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
+                context.startActivity<ImageViewActivity>("image" to url, "title" to title)
+            } else if (globalSetting.forceUseChromeCustomTabs()) {
+                chromeCustomTabs(context, url)
+            } else {
+                context.browse(url)
+            }
+        } catch (e: Exception) {
+            throw RuntimeException("No a correct url.", e)
         }
     }
 
@@ -88,7 +95,6 @@ class SystemUtil {
             "jpg", "jpeg", "bmp", "webp", "gif" -> true
             else -> false
         }
-
     }
 
     fun installApk(context: Context, filePath: String) {

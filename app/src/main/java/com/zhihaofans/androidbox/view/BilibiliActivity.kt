@@ -62,7 +62,7 @@ class BilibiliActivity : AppCompatActivity() {
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
 
-                        sysUtil.closeKeyborad(this@BilibiliActivity, this@BilibiliActivity)
+                        sysUtil.closeKeyborad(this@BilibiliActivity)
                         if (input.text.isNullOrEmpty() && input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
@@ -126,7 +126,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 val input_search = editText("")
                                                                                 input_search.setSingleLine(true)
                                                                                 okButton {
-                                                                                    sysUtil.closeKeyborad(this@BilibiliActivity, this@BilibiliActivity)
+                                                                                    sysUtil.closeKeyborad(this@BilibiliActivity)
                                                                                     val search_key: String = input_search.text.toString()
                                                                                     if (search_key.isEmpty()) {
                                                                                         _search("请输入搜索内容")
@@ -264,7 +264,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun jx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
-        sysUtil.closeKeyborad(this, this)
+        sysUtil.closeKeyborad(this)
         runOnUiThread {
             val uid = data[0].id
             val acts = mutableListOf(

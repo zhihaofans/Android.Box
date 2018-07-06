@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox
 import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.haoge.easyandroid.EasyAndroid
-import com.liulishuo.filedownloader.FileDownloader
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -35,7 +34,7 @@ class App : Application() {
         //新的更新方式
         buglyInit()
         Fresco.initialize(this)
-        FileDownloader.setupOnApplicationOnCreate(this)
+        //FileDownloader.setupOnApplicationOnCreate(this)
     }
 
     private fun buglyInit() {

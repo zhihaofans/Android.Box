@@ -6,9 +6,10 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
+import com.haoge.easyandroid.easy.EasySharedPreferences
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.data.SaveDataSP
 import com.zhihaofans.androidbox.mod.NewsBoxMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_news_box.*
@@ -24,8 +25,8 @@ class NewsBoxActivity : AppCompatActivity() {
     private val sysUtil = SystemUtil()
     private val newsBoxMod = NewsBoxMod()
     private val sites = NewsBoxMod.sites(this@NewsBoxActivity)
+    private val saveDataSP = EasySharedPreferences.load(SaveDataSP::class.java)
     private var nowPage = 1
-    // 新变量
     private var siteChannelId = ""
     private var siteId = ""
     private var siteName = ""
@@ -36,19 +37,8 @@ class NewsBoxActivity : AppCompatActivity() {
         setContentView(R.layout.activity_news_box)
         setSupportActionBar(toolbar_newsbox)
         newsBoxMod.setContext(this@NewsBoxActivity)
-        /*
-        newsSites = newsBoxMod.sites()
-        nowSite = newsSites[lastSiteIndex]
-        SharedPreferencesUtils.init(this)
-        lastSiteId = SharedPreferencesUtils.getString("NewsBoxSetting", "LastSiteId")
-        if (lastSiteId.isNullOrEmpty()) {
-            lastSiteIndex = SharedPreferencesUtils.getInt("NewsBoxSetting", "LastSiteIndex")
-            lastSiteId = nowSite[0]
-        }
-        nowSite = newsSites[lastSiteIndex]
-        */
-        siteId = SharedPreferencesUtils.getString("NewsBox", "LAST_SITE_ID") ?: sites.getSiteList()[0]["id"].toString()
-        siteChannelId = SharedPreferencesUtils.getString("NewsBox", "LAST_SITE_CHANNEL_ID") ?: sites.getSiteChannelList(siteId)!![0]["channelId"]!!
+        siteId = saveDataSP.news_box_last_site_id
+        siteChannelId = saveDataSP.news_box_last_site_channel_id
         saveSet()
         loading()
         fab.setOnClickListener {
@@ -133,15 +123,10 @@ class NewsBoxActivity : AppCompatActivity() {
     }
 
     fun saveSet() {
-        SharedPreferencesUtils.put("NewsBox", "LAST_SITE_ID", siteId)
-        SharedPreferencesUtils.put("NewsBox", "LAST_SITE_CHANNEL_ID", siteChannelId)
-        Logger.d(SharedPreferencesUtils.getAll("NewsBox"))
-        // 删除旧设置
-        if (SharedPreferencesUtils.getAll("NewsBoxSetting").isNotEmpty()) {
-            SharedPreferencesUtils.getAll("NewsBoxSetting").map {
-                SharedPreferencesUtils.remove("NewsBoxSetting", it.key)
-            }
-        }
+        if (saveDataSP.news_box_last_site_id.isEmpty()) siteId = sites.getSiteList()[0]["id"].toString()
+        if (saveDataSP.news_box_last_site_channel_id.isEmpty()) siteChannelId = sites.getSiteChannelList(siteId)!![0]["channelId"]!!
+        saveDataSP.news_box_last_site_id = siteId
+        saveDataSP.news_box_last_site_channel_id = siteChannelId
     }
 
     fun selectSite() {

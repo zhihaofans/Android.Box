@@ -29,7 +29,6 @@ class QrcodeGenerateShortcuts : Activity() {
 class ServerChanShortcuts : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //SharedPreferencesUtils.init(this)
         startActivity<ServerChanActivity>()
         finish()
     }

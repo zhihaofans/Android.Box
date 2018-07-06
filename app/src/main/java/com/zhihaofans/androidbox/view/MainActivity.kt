@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
+import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
@@ -35,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
         setSupportActionBar(toolbar_main)
-        //SharedPreferencesUtils.init(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
@@ -43,9 +43,10 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.text_setting_use_cct_for_web) + ":" +
                                     sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
                             getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                    sysUtil.booleen2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no))
+                                    sysUtil.booleen2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
+                            "Crash page"
                     )
-                    selector(getString(R.string.text_setting), settings, { _, i ->
+                    selector(getString(R.string.text_setting), settings) { _, i ->
                         when (i) {
                             0 -> {
                                 globalSetting.forceUseChromeCustomTabs(!(globalSetting.forceUseChromeCustomTabs()))
@@ -56,10 +57,16 @@ class MainActivity : AppCompatActivity() {
                                 ).show()
                             }
                             1 -> {
-
+                                globalSetting.imageUrlOpenWithBuiltinViewer(!(globalSetting.imageUrlOpenWithBuiltinViewer()))
+                                Snackbar.make(coordinatorLayout_main,
+                                        getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
+                                                sysUtil.booleen2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                        Snackbar.LENGTH_SHORT
+                                ).show()
                             }
+                            2 -> MCrashMonitor.startCrashListPage(this)
                         }
-                    })
+                    }
                 }
                 R.id.menu_manual_update -> {
                     sysUtil.browseWeb(this@MainActivity, updateWebUrl)

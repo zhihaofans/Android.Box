@@ -3,6 +3,7 @@ package com.zhihaofans.androidbox.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.net.Uri
 import android.os.Build
 import android.support.customtabs.CustomTabsIntent
@@ -23,13 +24,13 @@ import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 /**
  *
  * @author zhihaofans
  * @date 2018/1/5
  */
 class SystemUtil {
-    private val globalSetting = GlobalSettingMod()
     fun isAppInstalled(context: Context, packageName: String): Boolean {
         return PackageUtils.isInsatalled(context, packageName)
     }
@@ -55,6 +56,7 @@ class SystemUtil {
     }
 
     fun browseWeb(context: Context, url: String, title: String = url) {
+        val globalSetting = GlobalSettingMod()
         try {
             val uriObj = URI(url)
             uriObj.toString()
@@ -76,6 +78,10 @@ class SystemUtil {
         } else {
             falseString
         }
+    }
+
+    fun booleen2string(boolean: Boolean): String {
+        return boolean.toString()
     }
 
     fun fileSize2String(fs: Int): String {
@@ -119,4 +125,16 @@ class SystemUtil {
         editText.isFocusableInTouchMode = true
         editText.requestFocus()
     }
+
+    fun isApkDebugable(context: Context): Boolean {
+        try {
+            val info = context.applicationInfo
+            return info.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+        } catch (e: Exception) {
+
+        }
+
+        return false
+    }
+
 }

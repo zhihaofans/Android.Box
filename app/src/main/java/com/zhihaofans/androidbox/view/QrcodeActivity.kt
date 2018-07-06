@@ -47,6 +47,7 @@ class QrcodeActivity : AppCompatActivity() {
                     sysUtil.browseWeb(this@QrcodeActivity, editText_qrcode_content.text.toString())
                 } catch (e: Exception) {
                     toast("打开失败，错误的地址")
+                    //throw RuntimeException("No a correct url.", e)
                     e.printStackTrace()
                 }
             }

@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity
 import android.text.InputFilter
 import android.view.inputmethod.EditorInfo
 import com.google.gson.Gson
+import com.haoge.easyandroid.easy.EasySharedPreferences
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.SharedPreferencesUtils
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.data.SaveDataSP
 import com.zhihaofans.androidbox.gson.ServerChanGson
 import com.zhihaofans.androidbox.util.SystemUtil
 import okhttp3.*
@@ -23,20 +24,13 @@ class ServerChanActivity : AppCompatActivity() {
     private val sysUtil = SystemUtil()
     //private val serverChanKey = "SCU6647T00deca519cb008cd7e66b6da08d8fd5058c8159b9e0cc"
     private var serverChanKey: String = ""
+    private val saveDataSP = EasySharedPreferences.load(SaveDataSP::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /*setContentView(R.layout.activity_server_chan)
-        setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        */
-
-        //SharedPreferencesUtils.init(this)
-        val savedKey: String? = SharedPreferencesUtils.getString("serverChanKey")
+        setSupportActionBar(toolbar)*/
+        val savedKey: String? = saveDataSP.server_chan_key
         if (savedKey.isNullOrEmpty()) {
             updateKey()
         } else {
@@ -69,9 +63,11 @@ class ServerChanActivity : AppCompatActivity() {
                         val input_key: String = editText_title.text.toString()
                         if (input_key.isNotEmpty()) {
                             serverChanKey = input_key
-                            SharedPreferencesUtils.put("serverChanKey", input_key)
-                            toast("保存成功")
-                            init()
+                            saveDataSP.server_chan_key = input_key
+                            saveDataSP.apply {
+                                toast("保存成功")
+                                init()
+                            }
                         } else {
                             toast("SCKEY不能为空")
                             updateKey(oldKey)

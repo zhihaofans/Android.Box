@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -22,6 +23,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
+import java.util.*
 
 
 //import org.xml.sax
@@ -29,6 +31,8 @@ class BilibiliActivity : AppCompatActivity() {
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     private val g = Gson()
     private val sysUtil = SystemUtil()
+    private var defaultVid: String = "17027625"
+    private var defaultPart: Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bilibili)
@@ -39,7 +43,8 @@ class BilibiliActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         val listData = mutableListOf(
-                "视频弹幕查用户uid"
+                "视频弹幕查用户uid",
+                "视频封面下载"
         )
         listView_bilibili.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listData)
         listView_bilibili.onItemClick { _, _, index, _ ->
@@ -47,17 +52,115 @@ class BilibiliActivity : AppCompatActivity() {
                 0 -> bilibiliCommentHash2uid()
             }
         }
+        checkShare()
+    }
+
+    private fun checkShare() {
+        val intent = intent
+        if (Objects.equals(Intent.ACTION_SEND, intent.action) && intent.type != null && Objects.equals("text/plain", intent.type)) {
+            val st = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (st.isNullOrEmpty()) {
+                toast("你分享了个空白链接")
+            } else {
+                Logger.d("url:$st")
+                val urlCheck = sysUtil.getUrlFromBiliShare(st)
+                Logger.d("urlCheck:$urlCheck")
+                if (urlCheck == null) {
+                    toast("你分享的不是链接")
+                    finish()
+                } else {
+                    var urlPath = urlCheck.path
+                    val urlQuery = urlCheck.query
+                    when (urlCheck.scheme.toLowerCase()) {
+                        "http", "https" -> {
+                            when (urlCheck.host) {
+                                "www.bilibili.com", "m.bilibili.com", "bilibili.com" -> {
+                                    Logger.d(urlPath)
+                                    if (!urlPath.startsWith("/")) {
+                                        urlPath = "/$urlPath"
+                                    }
+                                    val _a = urlPath.split("/")
+                                    if (_a.size != 3) {
+                                        toast("链接格式错误$urlCheck")
+                                        finish()
+                                    } else {
+                                        if (_a[1] != "video" && _a[2].isNotEmpty()) {
+                                            toast("链接格式错误$urlCheck")
+                                            finish()
+                                        } else {
+                                            defaultVid = _a[2]
+                                            if (urlQuery.isNotEmpty()) {
+                                                var querys = mutableListOf<String>()
+                                                if (urlQuery.indexOf("&") < 0) {
+                                                    querys.add(urlQuery)
+                                                } else {
+                                                    querys = urlPath.split("&").toMutableList()
+                                                }
+                                                querys.map {
+                                                    val _b = it.toLowerCase().split("=")
+                                                    if (_b.size == 2 && _b[0] == "p") {
+                                                        val _part = _b[2].toIntOrNull()
+                                                        if (_part != null && _part > 0) {
+                                                            defaultPart = _part
+                                                        }
+                                                        return@map
+                                                    }
+                                                }
+                                            }
+                                            toast("vid:$defaultVid\npart:$defaultPart")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        "bilibili" -> {
+                            if (urlQuery.isNotEmpty()) {
+                                var querys = mutableListOf<String>()
+                                if (urlQuery.indexOf("&") < 0) {
+                                    querys.add(urlQuery)
+                                } else {
+                                    querys = urlPath.split("&").toMutableList()
+                                }
+                                querys.map {
+                                    val _b = it.toLowerCase().split("=")
+                                    if (_b.size == 2 && _b[0] == "av") {
+                                        if (_b[2].isNotEmpty()) {
+                                            defaultVid = _b[2]
+                                            defaultPart = 1
+                                            toast("vid:$defaultVid\npart:$defaultPart")
+                                        }
+                                        return@map
+                                    }
+                                }
+                            } else {
+                                toast("链接格式错误$urlCheck")
+                                finish()
+                            }
+                        }
+                        else -> {
+                            toast("链接格式错误$urlCheck")
+                            finish()
+                        }
+                    }
+                }
+            }
+        } else {
+            toast("分享失败")
+        }
     }
 
     private fun bilibiliCommentHash2uid() {
         //弹幕用户hash查用户id
+        if (defaultVid.startsWith("av")) {
+            defaultVid = defaultVid.substring(2, defaultVid.length - 1)
+        }
         alert("仅输入av后面的数字", "视频id") {
             customView {
                 verticalLayout {
                     textView("id:")
-                    val input = editText("17027625")
+                    val input = editText(defaultVid)
                     textView("Part:")
-                    val input1 = editText("1")
+                    val input1 = editText(defaultPart.toString())
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
@@ -140,7 +243,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                         if (searchResult.size == 0) {
                                                                                             _search("空白搜索结果")
                                                                                         } else {
-                                                                                            selector("选择你想查看的弹幕", searchResult.map { it.html() }, { dialogInterface, i ->
+                                                                                            selector("选择你想查看的弹幕", searchResult.map { it.html() }) { dialogInterface, i ->
                                                                                                 val thisComment: Element = searchResult[i]
                                                                                                 val commentStr = thisComment.html()
                                                                                                 val commentAttr = thisComment.attr("p")
@@ -153,7 +256,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                                     val userHash = commentAttrList[commentAttrList.size - 2]
                                                                                                     uHash2uid(userHash, client)
                                                                                                 }
-                                                                                            })
+                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }
@@ -244,9 +347,9 @@ class BilibiliActivity : AppCompatActivity() {
                                     data.map {
                                         act_uids.add(it.id.toString())
                                     }
-                                    selector("服务器返回uid结果太多，请选择要解析的uid", act_uids, { _, index ->
+                                    selector("服务器返回uid结果太多，请选择要解析的uid", act_uids) { _, index ->
                                         jx(mutableListOf(data[index]), client)
-                                    })
+                                    }
                                 }
                             }
                         } else {
@@ -270,7 +373,7 @@ class BilibiliActivity : AppCompatActivity() {
             val acts = mutableListOf(
                     "获取用户信息"
             )
-            selector("获取成功，用户uid为$uid", acts, { _, index ->
+            selector("获取成功，用户uid为$uid", acts) { _, index ->
                 when (index) {
                     0 -> {
                         val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
@@ -320,7 +423,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                     "粉丝:${userCard.fans}",
                                                                     "等级:${userCard.level_info.current_level}"
                                                             )
-                                                            selector("", acts_result, { _, index_a ->
+                                                            selector("", acts_result) { _, index_a ->
                                                                 when (index_a) {
                                                                     0, 1, 2, 6 -> {
                                                                         _c(acts_result[index_a])
@@ -330,20 +433,20 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 getString(R.string.text_open),
                                                                                 getString(R.string.text_copy),
                                                                                 getString(R.string.text_share)
-                                                                        ), { _, index_b ->
+                                                                        )) { _, index_b ->
                                                                             when (index_b) {
-                                                                                0 -> browse(userCard.face)
+                                                                                0 -> sysUtil.browseWeb(this@BilibiliActivity, userCard.face)
                                                                                 1 -> _c(userCard.face)
                                                                                 2 -> share(userCard.face)
                                                                             }
-                                                                        })
+                                                                        }
                                                                     }
                                                                     4 -> {
                                                                         if (userCard.attention > 0) {
                                                                             val followers: MutableList<String> = userCard.attentions.map { it.toString() }.toMutableList()
-                                                                            selector("uid按关注倒序显示", followers, { _, index_c ->
+                                                                            selector("uid按关注倒序显示", followers) { _, index_c ->
                                                                                 sysUtil.browseWeb(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
-                                                                            })
+                                                                            }
                                                                         } else {
                                                                             Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()
                                                                         }
@@ -356,7 +459,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                         }
                                                                     }
                                                                 }
-                                                            })
+                                                            }
 
                                                         }
                                                     } else {
@@ -373,7 +476,7 @@ class BilibiliActivity : AppCompatActivity() {
 
                     }
                 }
-            })
+            }
         }
     }
 

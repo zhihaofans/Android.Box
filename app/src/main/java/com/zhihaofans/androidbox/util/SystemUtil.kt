@@ -57,19 +57,17 @@ class SystemUtil {
 
     fun browseWeb(context: Context, url: String, title: String = url) {
         val globalSetting = GlobalSettingMod()
-        try {
-            val uriObj = URI(url)
-            uriObj.toString()
-            if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
-                context.startActivity<ImageViewActivity>("image" to url, "title" to title)
-            } else if (globalSetting.forceUseChromeCustomTabs()) {
-                chromeCustomTabs(context, url)
-            } else {
-                context.browse(url)
-            }
-        } catch (e: Exception) {
-            throw RuntimeException("No a correct url.", e)
+        if (this.checkUrl(url) == null) {
+            throw Exception("No a correct url.")
         }
+        if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
+            context.startActivity<ImageViewActivity>("image" to url, "title" to title)
+        } else if (globalSetting.forceUseChromeCustomTabs()) {
+            chromeCustomTabs(context, url)
+        } else {
+            context.browse(url)
+        }
+
     }
 
     fun booleen2string(boolean: Boolean, trueString: String, falseString: String): String {
@@ -137,4 +135,53 @@ class SystemUtil {
         return false
     }
 
+    fun checkUrl(url: String?): URI? {
+        if (url.isNullOrEmpty()) return null
+        return try {
+            URI(url)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun getUrlFromBiliShare(shareString: String): URI? {
+        val biliScheme = listOf("http", "https", "bilibili")
+        var checked = this.checkUrl(shareString)
+        var result: String? = null
+        Logger.d("getUrlFromBiliShare:1")
+        if (checked !== null) {
+            return checked
+        } else {
+            Logger.d("getUrlFromBiliShare:2")
+            biliScheme.map {
+                Logger.d("Scheme:$it")
+                val _a = shareString.indexOf("$it://")
+                if (_a >= 0) {
+                    val _b = shareString.indexOf(" ", _a)
+                    Logger.d("_a:$_a\n_b:$_b")
+                    if (_b > _a) {
+                        result = shareString.substring(_a, _b)
+                    } else {
+                        result = shareString.substring(_a, shareString.length - 1)
+                    }
+                    Logger.d("result:$result")
+                    checked = this.checkUrl(result)
+                    Logger.d("getUrlFromBiliShare:3")
+                    return if (checked !== null) {
+                        checked
+                    } else {
+                        null
+                    }
+                }
+            }
+            Logger.d("getUrlFromBiliShare:4")
+            return if (result.isNullOrEmpty()) {
+                null
+            } else {
+                this.checkUrl(result)
+            }
+        }
+
+    }
 }

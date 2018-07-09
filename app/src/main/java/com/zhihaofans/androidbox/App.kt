@@ -26,7 +26,7 @@ class App : Application() {
         EasyAndroid.init(applicationContext)
         isDebug = sysUtil.isApkDebugable(this)
         Logger.d("Debug:$isDebug")
-        MCrashMonitor.init(this, isDebug) { file ->
+        MCrashMonitor.init(this, true) { file ->
             //可以在这里保存标识，下次再次进入把日志发送给服务器
             if (isDebug) Logger.d(TAG + "CrashMonitor回调:" + file.absolutePath)
             MCrashMonitor.startCrashShowPage(this)

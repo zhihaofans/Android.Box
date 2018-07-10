@@ -43,3 +43,9 @@ data class BilibiliVideoGson(
         val error: Int,
         val cid: String?
 )
+
+// 视频封面解析(Galmoe)
+data class BiliBiliGalmoeGson(
+        val result: Int,
+        val url: String
+)

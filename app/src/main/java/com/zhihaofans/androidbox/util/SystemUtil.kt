@@ -182,6 +182,15 @@ class SystemUtil {
                 this.checkUrl(result)
             }
         }
+    }
 
+    fun urlAutoHttps(url: String?): String? {
+        return if (url.isNullOrEmpty()) {
+            null
+        } else if (url!!.startsWith("//")) {
+            "https:$url"
+        } else {
+            url
+        }
     }
 }

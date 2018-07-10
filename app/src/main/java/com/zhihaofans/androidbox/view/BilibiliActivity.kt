@@ -12,6 +12,7 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
+import com.zhihaofans.androidbox.util.JsoupUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
@@ -48,8 +49,12 @@ class BilibiliActivity : AppCompatActivity() {
         )
         listView_bilibili.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listData)
         listView_bilibili.onItemClick { _, _, index, _ ->
+            if (defaultVid.startsWith("av")) {
+                defaultVid = defaultVid.substring(2, defaultVid.length - 1)
+            }
             when (index) {
                 0 -> bilibiliCommentHash2uid()
+                //1 -> getVideoCoverUri()
             }
         }
         checkShare()
@@ -151,9 +156,6 @@ class BilibiliActivity : AppCompatActivity() {
 
     private fun bilibiliCommentHash2uid() {
         //弹幕用户hash查用户id
-        if (defaultVid.startsWith("av")) {
-            defaultVid = defaultVid.substring(2, defaultVid.length - 1)
-        }
         alert("仅输入av后面的数字", "视频id") {
             customView {
                 verticalLayout {
@@ -166,12 +168,14 @@ class BilibiliActivity : AppCompatActivity() {
                     yesButton {
 
                         sysUtil.closeKeyborad(this@BilibiliActivity)
-                        if (input.text.isNullOrEmpty() && input1.text.isNullOrEmpty()) {
+                        if (input.text.isNullOrEmpty() || input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
                             Snackbar.make(coordinatorLayout_bilibili, "Part必须大于0", Snackbar.LENGTH_SHORT).show()
                         } else {
-                            val videoPartCidUrl = "https://biliquery.typcn.com/api/cid/${input.text}/${input1.text}"
+                            defaultVid = input.text.toString()
+                            defaultPart = input.text.toString().toIntOrNull() ?: 1
+                            val videoPartCidUrl = "https://biliquery.typcn.com/api/cid/$defaultVid/$defaultPart"
                             val client = OkHttpClient()
                             val loadingProgressBar_cid: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                             loadingProgressBar_cid.setCancelable(false)
@@ -294,7 +298,6 @@ class BilibiliActivity : AppCompatActivity() {
                 noButton { }
             }
         }.show()
-
     }
 
     private fun uHash2uid(userHash: String, client: OkHttpClient) {
@@ -339,7 +342,7 @@ class BilibiliActivity : AppCompatActivity() {
                                     Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果列表空白", Snackbar.LENGTH_SHORT).show()
                                 }
                             } else if (data.size == 1) {
-                                jx(data, client)
+                                bilibiliCommentHash2uidJx(data, client)
                             } else {
                                 runOnUiThread {
                                     Logger.e("获取uid失败，服务器返回结果太多，解析失败\n$data")
@@ -348,7 +351,7 @@ class BilibiliActivity : AppCompatActivity() {
                                         act_uids.add(it.id.toString())
                                     }
                                     selector("服务器返回uid结果太多，请选择要解析的uid", act_uids) { _, index ->
-                                        jx(mutableListOf(data[index]), client)
+                                        bilibiliCommentHash2uidJx(mutableListOf(data[index]), client)
                                     }
                                 }
                             }
@@ -366,7 +369,7 @@ class BilibiliActivity : AppCompatActivity() {
 
     }
 
-    private fun jx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
+    private fun bilibiliCommentHash2uidJx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
         sysUtil.closeKeyborad(this)
         runOnUiThread {
             val uid = data[0].id
@@ -426,7 +429,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                             selector("", acts_result) { _, index_a ->
                                                                 when (index_a) {
                                                                     0, 1, 2, 6 -> {
-                                                                        _c(acts_result[index_a])
+                                                                        copy(acts_result[index_a])
                                                                     }
                                                                     3 -> {
                                                                         selector("", mutableListOf(
@@ -436,7 +439,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                         )) { _, index_b ->
                                                                             when (index_b) {
                                                                                 0 -> sysUtil.browseWeb(this@BilibiliActivity, userCard.face)
-                                                                                1 -> _c(userCard.face)
+                                                                                1 -> copy(userCard.face)
                                                                                 2 -> share(userCard.face)
                                                                             }
                                                                         }
@@ -480,7 +483,80 @@ class BilibiliActivity : AppCompatActivity() {
         }
     }
 
-    private fun _c(string: String) {//复制到剪切板
+    private fun getVideoCoverUri() {
+        alert("仅输入av后面的数字", "视频id") {
+            customView {
+                verticalLayout {
+                    textView("id:")
+                    val input = editText(defaultVid)
+                    input.inputType = InputType.TYPE_CLASS_NUMBER
+                    yesButton {
+                        sysUtil.closeKeyborad(this@BilibiliActivity)
+                        val vid = input.text.toString()
+                        if (vid.isEmpty()) {
+                            Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", Snackbar.LENGTH_SHORT).show()
+                        } else {
+                            defaultVid = vid
+                            defaultPart = 1
+                            //TODO:Bilibili Video Cover
+                        }
+                    }
+                }
+                noButton { }
+            }
+        }.show()
+    }
+
+    private fun getVideoCoverUriJx(vid: String, type: Int): String? {
+        var videoCover: String? = null
+        var html: String? = null
+        val g = Gson()
+        val client = OkHttpClient()
+        when (type) {
+            0 -> {
+                try {
+                    val response = client.newCall(Request.Builder().get().url("https://www.bilibili.com/video/$vid/").build()).execute()
+                    html = response.body()!!.string()
+                    Logger.d(html)
+                    if (html.isNullOrEmpty()) {
+                        return null
+                    }
+                    val ju = JsoupUtil(Jsoup.parse(html))
+                    videoCover = ju.safeAttr("head > meta[itemprop=\"image\"]", "content")
+                    if (videoCover.isEmpty()) videoCover = ju.safeAttr("head > meta[property=\"og:image\"]", "content")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            1 -> {
+                try {
+                    val response = client.newCall(Request.Builder().get().url("https://www.galmoe.com/t.php?aid=$vid").build()).execute()
+                    Logger.d("code:${response.code()}")
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        Logger.d(body)
+                        val rejson: String? = body?.string()
+                        Logger.d(rejson)
+                        val biliBiliGalmoeGson = g.fromJson(rejson, BiliBiliGalmoeGson::class.java)
+                        if (biliBiliGalmoeGson.result == 1) videoCover = biliBiliGalmoeGson.url
+                    } else {
+                        Logger.e("code:${response.code()}")
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Logger.e("error:$e")
+                }
+
+            }
+            else -> return null
+        }
+        if (!videoCover.isNullOrEmpty()) videoCover = sysUtil.urlAutoHttps(videoCover)
+        Logger.d(videoCover)
+        return videoCover
+    }
+
+    private fun copy(string: String) {//复制到剪切板
         ClipboardUtils.copy(this@BilibiliActivity, string)
         Snackbar.make(coordinatorLayout_bilibili, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
     }

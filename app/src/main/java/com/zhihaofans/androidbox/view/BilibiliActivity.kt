@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.Notification
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.widget.ArrayAdapter
+import br.com.goncalves.pugnotification.notification.PugNotification
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
@@ -54,7 +56,7 @@ class BilibiliActivity : AppCompatActivity() {
             }
             when (index) {
                 0 -> bilibiliCommentHash2uid()
-                //1 -> getVideoCoverUri()
+                1 -> getVideoCoverUri()
             }
         }
         checkShare()
@@ -150,7 +152,7 @@ class BilibiliActivity : AppCompatActivity() {
                 }
             }
         } else {
-            toast("分享失败")
+            Logger.i("分享失败")
         }
     }
 
@@ -166,7 +168,6 @@ class BilibiliActivity : AppCompatActivity() {
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
-
                         sysUtil.closeKeyborad(this@BilibiliActivity)
                         if (input.text.isNullOrEmpty() || input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
@@ -174,7 +175,7 @@ class BilibiliActivity : AppCompatActivity() {
                             Snackbar.make(coordinatorLayout_bilibili, "Part必须大于0", Snackbar.LENGTH_SHORT).show()
                         } else {
                             defaultVid = input.text.toString()
-                            defaultPart = input.text.toString().toIntOrNull() ?: 1
+                            defaultPart = input1.text.toString().toIntOrNull() ?: 1
                             val videoPartCidUrl = "https://biliquery.typcn.com/api/cid/$defaultVid/$defaultPart"
                             val client = OkHttpClient()
                             val loadingProgressBar_cid: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
@@ -497,8 +498,34 @@ class BilibiliActivity : AppCompatActivity() {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", Snackbar.LENGTH_SHORT).show()
                         } else {
                             defaultVid = vid
-                            defaultPart = 1
                             //TODO:Bilibili Video Cover
+                            val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                            loadingProgressBar.setCancelable(false)
+                            loadingProgressBar.setCanceledOnTouchOutside(false)
+                            loadingProgressBar.show()
+                            doAsync {
+                                val coverUri: String? = getVideoCoverUriJx(defaultVid, 1)
+                                uiThread {
+                                    loadingProgressBar.dismiss()
+                                    if (coverUri.isNullOrEmpty()) {
+                                        sysUtil.notifySimple(this@BilibiliActivity, "获取视频封面失败", "返回地址空白")
+                                    } else {
+                                        sysUtil.notifySimple(this@BilibiliActivity, "获取视频封面成功", coverUri.toString())
+                                        selector("获取视频封面成功", listOf(
+                                                getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share)
+                                        )) { _, i ->
+                                            when (i) {
+                                                0 -> sysUtil.browseWeb(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
+                                                1 -> {
+                                                    ClipboardUtils.copy(this@BilibiliActivity, coverUri.toString())
+                                                    sysUtil.notifySimple(this@BilibiliActivity, "复制成功", coverUri.toString())
+                                                }
+                                                2 -> share(coverUri.toString())
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -531,7 +558,9 @@ class BilibiliActivity : AppCompatActivity() {
             }
             1 -> {
                 try {
-                    val response = client.newCall(Request.Builder().get().url("https://www.galmoe.com/t.php?aid=$vid").build()).execute()
+                    val url = "https://www.galmoe.com/t.php?aid=$vid"
+                    Logger.d(url)
+                    val response = client.newCall(Request.Builder().get().url(url).build()).execute()
                     Logger.d("code:${response.code()}")
                     if (response.isSuccessful) {
                         val body = response.body()

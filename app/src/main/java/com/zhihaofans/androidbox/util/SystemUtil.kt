@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.util
 
 import android.app.Activity
+import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
@@ -10,6 +11,7 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.FileProvider
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import br.com.goncalves.pugnotification.notification.PugNotification
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.FileUtils
@@ -52,6 +54,7 @@ class SystemUtil {
         val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
         val customTabsIntent: CustomTabsIntent = builder.build()
         builder.setToolbarColor(context.getColor(R.color.colorPrimaryDark))
+        builder.setShowTitle(true)
         customTabsIntent.launchUrl(context, Uri.parse(url))
     }
 
@@ -101,22 +104,6 @@ class SystemUtil {
         }
     }
 
-    fun installApk(context: Context, filePath: String) {
-        //https://www.cnblogs.com/newjeremy/p/7294519.html
-        val apkFile = File(filePath)
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Logger.w("版本大于 N ，开始使用 fileProvider 进行安装")
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            val contentUri = FileProvider.getUriForFile(context, AppUtils.getPackageName(context) + ".fileprovider", apkFile)
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive")
-        } else {
-            Logger.w("正常进行安装")
-            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive")
-        }
-        context.startActivity(intent)
-    }
 
     fun viewGetFocusable(editText: EditText) {
         editText.isFocusable = true
@@ -192,5 +179,17 @@ class SystemUtil {
         } else {
             url
         }
+    }
+
+    fun notifySimple(context: Context, title: String, message: String) {
+        PugNotification.with(context)
+                .load()
+                .title(title)
+                .message(message)
+                .smallIcon(R.mipmap.ic_launcher)
+                .largeIcon(R.mipmap.ic_launcher)
+                .flags(Notification.DEFAULT_ALL)
+                .simple()
+                .build()
     }
 }

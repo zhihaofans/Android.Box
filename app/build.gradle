@@ -61,6 +61,7 @@ dependencies {
     implementation 'moe.feng.support.biometricprompt:library:1.0.0'
     implementation 'com.github.maning0303:MNCrashMonitor:V1.0.7'
     implementation 'com.github.yjfnypeu:EasyAndroid:1.1.2'
+    implementation 'com.github.halysongoncalves:pugnotification:1.8.1'
 }
 kotlin {
     experimental {

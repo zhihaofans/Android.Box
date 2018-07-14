@@ -6,9 +6,10 @@ import com.haoge.easyandroid.EasyAndroid
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
-import com.tencent.bugly.Bugly
-import com.tencent.bugly.beta.Beta
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.sunfusheng.FirUpdater
+
+
 
 
 /**
@@ -31,17 +32,8 @@ class App : Application() {
             if (isDebug) Logger.d(TAG + "CrashMonitor回调:" + file.absolutePath)
             MCrashMonitor.startCrashShowPage(this)
         }
-        //新的更新方式
-        buglyInit()
         Fresco.initialize(this)
-        //FileDownloader.setupOnApplicationOnCreate(this)
     }
 
-    private fun buglyInit() {
-        Bugly.init(applicationContext, "a71e8c60bc", isDebug) //初始化
-        Beta.enableNotification = true //设置在通知栏显示下载进度
-        Beta.autoDownloadOnWifi = true //设置Wifi下自动下载
-        Beta.enableHotfix = false //关闭热更新能力
-    }
 
 }

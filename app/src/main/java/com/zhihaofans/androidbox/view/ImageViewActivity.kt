@@ -100,16 +100,16 @@ class ImageViewActivity : AppCompatActivity() {
                                     "浏览器打开",
                                     "复制图片地址"
                             )
-                            selector("", selectorItemList, { _, i ->
+                            selector("", selectorItemList) { _, i ->
                                 when (i) {
                                     0 -> Snackbar.make(coordinatorLayout_imageView, "暂不支持", Snackbar.LENGTH_SHORT).show()
-                                    1 -> sysUtil.browseWeb(this@ImageViewActivity, imageUrl.toString())
+                                    1 -> sysUtil.browseWithoutSet(this@ImageViewActivity, imageUrl.toString())
                                     2 -> {
                                         ClipboardUtils.copy(this@ImageViewActivity, imageUrl)
                                         Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()
                                     }
                                 }
-                            })
+                            }
                         }
                     }
                 }

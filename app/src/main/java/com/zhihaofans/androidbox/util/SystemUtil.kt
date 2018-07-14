@@ -37,10 +37,6 @@ class SystemUtil {
         return PackageUtils.isInsatalled(context, packageName)
     }
 
-    fun closeKeyborad(context: Context, activity: Activity) {
-        (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
-    }
-
     fun closeKeyborad(activity: Activity) {
         (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
     }
@@ -50,7 +46,7 @@ class SystemUtil {
         return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
     }
 
-    fun chromeCustomTabs(context: Context, url: String) {
+    fun chromeCustomTabs(context: Context, url: String, title: String = url) {
         val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
         val customTabsIntent: CustomTabsIntent = builder.build()
         builder.setToolbarColor(context.getColor(R.color.colorPrimaryDark))
@@ -58,7 +54,17 @@ class SystemUtil {
         customTabsIntent.launchUrl(context, Uri.parse(url))
     }
 
-    fun browseWeb(context: Context, url: String, title: String = url) {
+    fun browseWithoutSet(context: Context, url: String, title: String = url, imageView: Boolean = false, customTabs: Boolean = false) {
+        if (imageView && this.checkIfImageUrl(url)) {
+            context.startActivity<ImageViewActivity>("image" to url, "title" to title)
+        } else if (customTabs) {
+            this.chromeCustomTabs(context, url, title)
+        } else {
+            context.browse(url)
+        }
+    }
+
+    fun browse(context: Context, url: String, title: String = url) {
         val globalSetting = GlobalSettingMod()
         if (this.checkUrl(url) == null) {
             throw Exception("No a correct url.")
@@ -66,11 +72,10 @@ class SystemUtil {
         if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
             context.startActivity<ImageViewActivity>("image" to url, "title" to title)
         } else if (globalSetting.forceUseChromeCustomTabs()) {
-            chromeCustomTabs(context, url)
+            this.chromeCustomTabs(context, url)
         } else {
             context.browse(url)
         }
-
     }
 
     fun booleen2string(boolean: Boolean, trueString: String, falseString: String): String {

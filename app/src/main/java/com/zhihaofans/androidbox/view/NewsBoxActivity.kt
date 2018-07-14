@@ -184,7 +184,7 @@ class NewsBoxActivity : AppCompatActivity() {
                     listView_news.onItemClick { _, _, index, _ ->
                         val clickedUrl: String = siteDataList[index]["web_url"].toString()
                         Logger.d(clickedUrl)
-                        sysUtil.browseWeb(this@NewsBoxActivity, clickedUrl, siteDataList[index]["title"].toString())
+                        sysUtil.browse(this@NewsBoxActivity, clickedUrl, siteDataList[index]["title"].toString())
                     }
                 }
                 loadingProgressBar.dismiss()

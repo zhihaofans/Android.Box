@@ -11,6 +11,7 @@ import android.view.Menu
 import android.widget.ArrayAdapter
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
+import com.sunfusheng.FirUpdater
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.menu_manual_update -> {
-                    sysUtil.browseWeb(this@MainActivity, updateWebUrl)
+                    sysUtil.browse(this@MainActivity, updateWebUrl)
                 }
             }
             true
@@ -138,6 +139,11 @@ class MainActivity : AppCompatActivity() {
                 6 -> startActivity<ServerChanActivity>()
             }
         }
+        // Fir.im检测更新
+        FirUpdater(this, "d719843e48e9a1dbd46d45390f58c35f", "5aa29bd7959d6975a0308613")
+                .apkPath(externalCacheDir.path)
+                .checkVersion()
+
         //指纹验证
         /*
         if (BiometricPromptCompat.isHardwareDetected(this)) {
@@ -172,16 +178,16 @@ class MainActivity : AppCompatActivity() {
                             if (data.hasExtra("data")) {
                                 val result: String = data.getStringExtra("data")
                                 Logger.d(result)
-                                Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more, {
+                                Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more) {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
-                                    selector("", acts, { _, index ->
+                                    selector("", acts) { _, index ->
                                         when (index) {
-                                            0 -> sysUtil.browseWeb(this@MainActivity, result)
+                                            0 -> sysUtil.browse(this@MainActivity, result)
                                             1 -> ClipboardUtils.copy(this@MainActivity, result)
                                             2 -> share(result)
                                         }
-                                    })
-                                }).show()
+                                    }
+                                }.show()
                             }
                         }
                     }

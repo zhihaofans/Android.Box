@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.Notification
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.widget.ArrayAdapter
-import br.com.goncalves.pugnotification.notification.PugNotification
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
@@ -439,7 +437,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 getString(R.string.text_share)
                                                                         )) { _, index_b ->
                                                                             when (index_b) {
-                                                                                0 -> sysUtil.browseWeb(this@BilibiliActivity, userCard.face)
+                                                                                0 -> sysUtil.browse(this@BilibiliActivity, userCard.face)
                                                                                 1 -> copy(userCard.face)
                                                                                 2 -> share(userCard.face)
                                                                             }
@@ -449,7 +447,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                         if (userCard.attention > 0) {
                                                                             val followers: MutableList<String> = userCard.attentions.map { it.toString() }.toMutableList()
                                                                             selector("uid按关注倒序显示", followers) { _, index_c ->
-                                                                                sysUtil.browseWeb(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
+                                                                                sysUtil.browse(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
                                                                             }
                                                                         } else {
                                                                             Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()
@@ -515,7 +513,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                 getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share)
                                         )) { _, i ->
                                             when (i) {
-                                                0 -> sysUtil.browseWeb(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
+                                                0 -> sysUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
                                                 1 -> {
                                                     ClipboardUtils.copy(this@BilibiliActivity, coverUri.toString())
                                                     sysUtil.notifySimple(this@BilibiliActivity, "复制成功", coverUri.toString())

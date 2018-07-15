@@ -143,7 +143,6 @@ class MainActivity : AppCompatActivity() {
         FirUpdater(this, "d719843e48e9a1dbd46d45390f58c35f", "5aa29bd7959d6975a0308613")
                 .apkPath(externalCacheDir.path)
                 .checkVersion()
-
         //指纹验证
         /*
         if (BiometricPromptCompat.isHardwareDetected(this)) {

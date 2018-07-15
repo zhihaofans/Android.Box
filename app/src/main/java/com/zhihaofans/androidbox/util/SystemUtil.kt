@@ -3,17 +3,15 @@ package com.zhihaofans.androidbox.util
 import android.app.Activity
 import android.app.Notification
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.net.Uri
-import android.os.Build
+import android.os.Environment
 import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.FileProvider
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ProgressBar
 import br.com.goncalves.pugnotification.notification.PugNotification
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.FileUtils
 import com.wx.android.common.util.PackageUtils
 import com.zhihaofans.androidbox.R
@@ -25,6 +23,9 @@ import java.io.File
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
+import com.liulishuo.filedownloader.FileDownloadListener
+import com.liulishuo.filedownloader.FileDownloader
+import android.content.Intent
 
 
 /**
@@ -196,5 +197,34 @@ class SystemUtil {
                 .flags(Notification.DEFAULT_ALL)
                 .simple()
                 .build()
+    }
+
+    fun download(url: String, savePath: String, listener: FileDownloadListener) {
+        FileDownloader.getImpl().create(url)
+                .setPath(savePath)
+                .setListener(listener).start()
+    }
+
+
+    fun getPicturePath(): File {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+    }
+
+    fun getDownloadPath(): File {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    }
+
+    fun openImageFile(context: Context, file: File): Intent {
+        val intent = Intent("android.intent.action.VIEW")
+        intent.addCategory("android.intent.category.DEFAULT")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val uri = Uri.fromFile(file)
+        intent.setDataAndType(uri, "image/*")
+        context.startActivity(intent)
+        return intent
+    }
+
+    fun openImageFile(context: Context, file: String): Intent {
+        return openImageFile(context, File(file))
     }
 }

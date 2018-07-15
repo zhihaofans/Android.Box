@@ -3,13 +3,12 @@ package com.zhihaofans.androidbox
 import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.haoge.easyandroid.EasyAndroid
+import com.liulishuo.filedownloader.FileDownloader
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.sunfusheng.FirUpdater
-
-
 
 
 /**
@@ -33,6 +32,7 @@ class App : Application() {
             MCrashMonitor.startCrashShowPage(this)
         }
         Fresco.initialize(this)
+        FileDownloader.setupOnApplicationOnCreate(this)
     }
 
 

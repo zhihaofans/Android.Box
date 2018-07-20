@@ -143,27 +143,6 @@ class MainActivity : AppCompatActivity() {
         FirUpdater(this, "d719843e48e9a1dbd46d45390f58c35f", "5aa29bd7959d6975a0308613")
                 .apkPath(externalCacheDir.path)
                 .checkVersion()
-        //指纹验证
-        /*
-        if (BiometricPromptCompat.isHardwareDetected(this)) {
-            Snackbar.make(coordinatorLayout_main, "支持指纹", Snackbar.LENGTH_SHORT).show()
-            val biometricPrompt = BiometricPromptCompat.Builder(this)
-                    .setTitle("标题")
-                    .setSubtitle("副标题")
-                    .setDescription("描述：吧啦吧啦吧啦吧啦吧啦……")
-                    .setNegativeButton("使用密码") { dialog, which ->
-                        toast("你请求了密码解锁。")
-                    }
-                    .build()
-            val cancellationSignal = CancellationSignal()
-            cancellationSignal.setOnCancelListener({
-                toast("onCancel")
-            })
-            biometricPrompt.authenticate(cancellationSignal, this)
-        } else {
-            Snackbar.make(coordinatorLayout_main, "不支持指纹", Snackbar.LENGTH_SHORT).show()
-        }
-        */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -200,27 +179,5 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-/*
-    override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
-        Snackbar.make(coordinatorLayout_main, "指纹验证错误(Code:$errorCode) $errString", Snackbar.LENGTH_LONG).show()
-        Logger.e("指纹验证错误(Code:$errorCode) $errString")
-    }
-
-    override fun onAuthenticationSucceeded(result: BiometricPromptCompat.IAuthenticationResult) {
-        Snackbar.make(coordinatorLayout_main, "指纹验证成功", Snackbar.LENGTH_SHORT).show()
-        Logger.d("指纹验证成功")
-
-    }
-
-    override fun onAuthenticationHelp(helpCode: Int, helpString: CharSequence?) {
-        Snackbar.make(coordinatorLayout_main, "onAuthenticationHelp(Code:$helpCode) $helpString", Snackbar.LENGTH_LONG).show()
-        Logger.d("onAuthenticationHelp(Code:$helpCode) $helpString")
-    }
-
-    override fun onAuthenticationFailed() {
-        Snackbar.make(coordinatorLayout_main, "指纹验证失败", Snackbar.LENGTH_LONG).show()
-        Logger.d("onAuthenticationHelp")
-
-    }*/
 
 }

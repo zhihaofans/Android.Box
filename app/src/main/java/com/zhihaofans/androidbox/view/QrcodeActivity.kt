@@ -39,7 +39,11 @@ class QrcodeActivity : AppCompatActivity() {
         }
         checkMethod()
         imageView_qrcode.onClick {
-            qrcodeMenu()
+            if (editText_qrcode_content.text.isEmpty()) {
+                getCameraPermission()
+            } else {
+                qrcodeMenu()
+            }
         }
         button_open.onClick {
             if (editText_qrcode_content.text.isNotEmpty()) {
@@ -130,38 +134,17 @@ class QrcodeActivity : AppCompatActivity() {
     }
 
     private fun generateQR() {
-        var qrcodeContentInput = editText_qrcode_content.text.toString()
-        alert(getString(R.string.text_qrcode_content), getString(R.string.text_qrcode_generate)) {
-            customView {
-                verticalLayout {
-                    val editText_input = editText(qrcodeContentInput)
-                    editText_input.setSingleLine(true)
-                    yesButton {
-                        qrcodeContentInput = editText_input.text.toString()
-                        if (qrcodeContentInput.isNotEmpty()) {
-                            val qrcodeData = XQRCode.createQRCodeWithLogo(qrcodeContentInput, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-                            //val qrcodeData: Bitmap? = XQRCode.newQRCodeBuilder(qrcodeContentInput).build()
-                            if (qrcodeData !== null) {
-                                imageView_qrcode.setImageDrawable(BitmapDrawable(resources, qrcodeData))
-                            } else {
-                                Snackbar.make(coordinatorLayout_qrcode, "生成二维码失败，返回null数据", Snackbar.LENGTH_SHORT).show()
-                            }
-                        } else {
-                            Snackbar.make(coordinatorLayout_qrcode, "请输入内容", Snackbar.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+        val qrcodeContentInput = editText_qrcode_content.text.toString()
+        if (qrcodeContentInput.isNotEmpty()) {
+            val qrcodeData = XQRCode.createQRCodeWithLogo(qrcodeContentInput, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+            if (qrcodeData !== null) {
+                imageView_qrcode.setImageDrawable(BitmapDrawable(resources, qrcodeData))
+            } else {
+                Snackbar.make(coordinatorLayout_qrcode, "生成二维码失败，返回null数据", Snackbar.LENGTH_SHORT).show()
             }
-            onCancelled {
-                when (methodId) {
-                    null -> Snackbar.make(coordinatorLayout_qrcode, R.string.text_cancel, Snackbar.LENGTH_SHORT).show()
-                    else -> {
-                        toast(R.string.text_cancel)
-                        finish()
-                    }
-                }
-            }
-        }.show()
+        } else {
+            Snackbar.make(coordinatorLayout_qrcode, "请输入内容", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun getCameraPermission() {

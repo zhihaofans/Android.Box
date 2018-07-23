@@ -13,18 +13,17 @@ import com.facebook.drawee.drawable.ProgressBarDrawable
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
+import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
-import org.jetbrains.anko.sdk25.coroutines.onLongClick
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.wx.android.common.util.FileUtils
 import org.jetbrains.anko.*
-import java.io.File
+import org.jetbrains.anko.sdk25.coroutines.onLongClick
 
 
 class ImageViewActivity : AppCompatActivity() {

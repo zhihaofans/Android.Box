@@ -3,14 +3,18 @@ package com.zhihaofans.androidbox.util
 import android.app.Activity
 import android.app.Notification
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.support.customtabs.CustomTabsIntent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ProgressBar
 import br.com.goncalves.pugnotification.notification.PugNotification
+import com.liulishuo.filedownloader.FileDownloadListener
+import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.FileUtils
 import com.wx.android.common.util.PackageUtils
@@ -20,12 +24,13 @@ import com.zhihaofans.androidbox.view.ImageViewActivity
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
 import java.net.URI
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
-import android.content.Intent
 
 
 /**
@@ -187,7 +192,7 @@ class SystemUtil {
         }
     }
 
-    fun notifySimple(context: Context, title: String, message: String) {
+    fun notifySimple(context: Context, title: String = "Android.Box", message: String = "") {
         PugNotification.with(context)
                 .load()
                 .title(title)
@@ -199,12 +204,51 @@ class SystemUtil {
                 .build()
     }
 
+    fun notifyImage(context: Context, title: String = "Android.Box", message: String = "", image: Bitmap?) {
+        if (image == null) {
+            PugNotification.with(context)
+                    .load()
+                    .title(title)
+                    .message(message)
+                    .smallIcon(R.mipmap.ic_launcher)
+                    .largeIcon(R.mipmap.ic_launcher)
+                    .flags(Notification.DEFAULT_ALL)
+                    .simple()
+                    .build()
+        } else {
+            PugNotification.with(context)
+                    .load()
+                    .title(title)
+                    .message(message)
+                    .smallIcon(R.mipmap.ic_launcher)
+                    .largeIcon(image)
+                    .flags(Notification.DEFAULT_ALL)
+                    .simple()
+                    .build()
+        }
+    }
+
     fun download(url: String, savePath: String, listener: FileDownloadListener) {
         FileDownloader.getImpl().create(url)
                 .setPath(savePath)
                 .setListener(listener).start()
     }
 
+    fun getBitmapFromURL(src: String): Bitmap? {
+        return try {
+            if (src.isEmpty()) return null
+            val url = URL(src)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input: InputStream = connection.inputStream
+            BitmapFactory.decodeStream(input)
+        } catch (e: IOException) {
+            // Log exception
+            e.printStackTrace()
+            null
+        }
+    }
 
     fun getPicturePath(): File {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)

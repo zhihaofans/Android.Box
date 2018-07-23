@@ -99,7 +99,7 @@ class NewsBoxActivity : AppCompatActivity() {
         return true
     }
 
-    fun updateSiteInfo() {
+    private fun updateSiteInfo() {
         var thisSite = mutableMapOf<String, String>()
         var thisChannel = mutableMapOf<String, String>()
         sites.getSiteList().map {
@@ -122,14 +122,14 @@ class NewsBoxActivity : AppCompatActivity() {
         saveSet()
     }
 
-    fun saveSet() {
+    private fun saveSet() {
         if (saveDataSP.news_box_last_site_id.isEmpty()) siteId = sites.getSiteList()[0]["id"].toString()
         if (saveDataSP.news_box_last_site_channel_id.isEmpty()) siteChannelId = sites.getSiteChannelList(siteId)!![0]["channelId"]!!
         saveDataSP.news_box_last_site_id = siteId
         saveDataSP.news_box_last_site_channel_id = siteChannelId
     }
 
-    fun selectSite() {
+    private fun selectSite() {
         val siteList = sites.getSiteList()
         val siteIdList = siteList.map {
             it["id"]!!
@@ -159,11 +159,11 @@ class NewsBoxActivity : AppCompatActivity() {
 
     }
 
-    fun listViewClearAll() {
+    private fun listViewClearAll() {
         if (listView_news.adapter != null && !listView_news.adapter.isEmpty && listView_news.adapter.count > 0) listView_news.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
     }
 
-    fun loading() {
+    private fun loading() {
         Logger.d("loading($siteId, $siteChannelId, $nowPage)")
         saveSet()
         updateSiteInfo()
@@ -180,7 +180,17 @@ class NewsBoxActivity : AppCompatActivity() {
                     Logger.e("错误：数据空白")
                     Snackbar.make(coordinatorLayout_newsbox, "错误：数据空白", Snackbar.LENGTH_SHORT).show()
                 } else {
-                    listView_news.adapter = ArrayAdapter<String>(this@NewsBoxActivity, android.R.layout.simple_list_item_1, siteDataList.map { it["title"] })
+                    listView_news.adapter = ArrayAdapter<String>(this@NewsBoxActivity, android.R.layout.simple_list_item_1, siteDataList.map {
+                        val itemText = it["title"].toString()
+                        val maxTextLength = 30
+                        if (itemText.length > maxTextLength) {
+                            itemText.substring(0, maxTextLength - 1) + "..."
+                        } else if (itemText.isEmpty()) {
+                            "No title"
+                        } else {
+                            itemText
+                        }
+                    })
                     listView_news.onItemClick { _, _, index, _ ->
                         val clickedUrl: String = siteDataList[index]["web_url"].toString()
                         Logger.d(clickedUrl)

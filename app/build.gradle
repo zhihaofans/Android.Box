@@ -60,7 +60,6 @@ dependencies {
     implementation 'moe.feng.support.biometricprompt:library:1.0.0'
     implementation 'com.github.maning0303:MNCrashMonitor:V1.0.7'
     implementation 'com.github.yjfnypeu:EasyAndroid:1.1.4'
-    implementation 'com.github.halysongoncalves:pugnotification:1.8.1'
     implementation 'com.sunfusheng:FirUpdater:1.1.0'
     implementation 'com.liulishuo.filedownloader:library:1.7.4'
 }

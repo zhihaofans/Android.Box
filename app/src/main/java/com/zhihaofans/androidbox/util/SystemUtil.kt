@@ -1,7 +1,6 @@
 package com.zhihaofans.androidbox.util
 
 import android.app.Activity
-import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
@@ -12,7 +11,6 @@ import android.os.Environment
 import android.support.customtabs.CustomTabsIntent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import br.com.goncalves.pugnotification.notification.PugNotification
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
@@ -182,51 +180,20 @@ class SystemUtil {
         }
     }
 
-    fun urlAutoHttps(url: String?): String? {
+    fun urlAutoHttps(url: String?, https: Boolean): String? {
         return if (url.isNullOrEmpty()) {
             null
         } else if (url!!.startsWith("//")) {
-            "https:$url"
+            if (https) {
+                "https:$url"
+            } else {
+                "http:$url"
+            }
         } else {
             url
         }
     }
 
-    fun notifySimple(context: Context, title: String = "Android.Box", message: String = "") {
-        PugNotification.with(context)
-                .load()
-                .title(title)
-                .message(message)
-                .smallIcon(R.mipmap.ic_launcher)
-                .largeIcon(R.mipmap.ic_launcher)
-                .flags(Notification.DEFAULT_ALL)
-                .simple()
-                .build()
-    }
-
-    fun notifyImage(context: Context, title: String = "Android.Box", message: String = "", image: Bitmap?) {
-        if (image == null) {
-            PugNotification.with(context)
-                    .load()
-                    .title(title)
-                    .message(message)
-                    .smallIcon(R.mipmap.ic_launcher)
-                    .largeIcon(R.mipmap.ic_launcher)
-                    .flags(Notification.DEFAULT_ALL)
-                    .simple()
-                    .build()
-        } else {
-            PugNotification.with(context)
-                    .load()
-                    .title(title)
-                    .message(message)
-                    .smallIcon(R.mipmap.ic_launcher)
-                    .largeIcon(image)
-                    .flags(Notification.DEFAULT_ALL)
-                    .simple()
-                    .build()
-        }
-    }
 
     fun download(url: String, savePath: String, listener: FileDownloadListener) {
         FileDownloader.getImpl().create(url)
@@ -271,4 +238,5 @@ class SystemUtil {
     fun openImageFile(context: Context, file: String): Intent {
         return openImageFile(context, File(file))
     }
+
 }

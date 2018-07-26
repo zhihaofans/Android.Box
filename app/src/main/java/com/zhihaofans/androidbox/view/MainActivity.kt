@@ -82,7 +82,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_newsbox),
                 getString(R.string.text_weather),
                 getString(R.string.text_bilibili),
-                "ServerChan"
+                "ServerChan",
+                getString(R.string.title_activity_app_down)
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.onItemClick { _, _, index, _ ->
@@ -137,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                 4 -> startActivity<WeatherActivity>()
                 5 -> startActivity<BilibiliActivity>()
                 6 -> startActivity<ServerChanActivity>()
+                7 -> startActivity<AppDownActivity>()
             }
         }
         // Fir.im检测更新

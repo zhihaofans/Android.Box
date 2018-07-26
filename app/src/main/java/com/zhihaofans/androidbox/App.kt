@@ -8,7 +8,7 @@ import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.sunfusheng.FirUpdater
+import io.paperdb.Paper
 
 
 /**
@@ -17,7 +17,6 @@ import com.sunfusheng.FirUpdater
  * @date 2018/1/9
  */
 class App : Application() {
-    private val TAG = "com.zhihaofans.androidbox"
     private val sysUtil = SystemUtil()
     private var isDebug = false
     override fun onCreate() {
@@ -28,9 +27,10 @@ class App : Application() {
         Logger.d("Debug:$isDebug")
         MCrashMonitor.init(this, true) { file ->
             //可以在这里保存标识，下次再次进入把日志发送给服务器
-            if (isDebug) Logger.d(TAG + "CrashMonitor回调:" + file.absolutePath)
+            if (isDebug) Logger.d("应用发生了错误，CrashMonitor回调:" + file.absolutePath)
             MCrashMonitor.startCrashShowPage(this)
         }
+        Paper.init(this)
         Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)
     }

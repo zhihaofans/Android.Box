@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import com.haoge.easyandroid.easy.EasySharedPreferences
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.data.SaveDataSP
+import com.zhihaofans.androidbox.database.SaveDataSP
 import com.zhihaofans.androidbox.mod.NewsBoxMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_news_box.*

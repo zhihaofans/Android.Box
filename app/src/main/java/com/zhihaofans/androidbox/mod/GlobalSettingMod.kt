@@ -1,7 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
 import com.haoge.easyandroid.easy.EasySharedPreferences
-import com.zhihaofans.androidbox.data.SettingSP
+import com.zhihaofans.androidbox.database.SettingSP
 
 /**
  * Created by zhihaofans on 2018/6/10.

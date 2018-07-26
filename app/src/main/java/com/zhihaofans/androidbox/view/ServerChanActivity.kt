@@ -10,7 +10,7 @@ import com.google.gson.Gson
 import com.haoge.easyandroid.easy.EasySharedPreferences
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.data.SaveDataSP
+import com.zhihaofans.androidbox.database.SaveDataSP
 import com.zhihaofans.androidbox.gson.ServerChanGson
 import com.zhihaofans.androidbox.util.SystemUtil
 import okhttp3.*

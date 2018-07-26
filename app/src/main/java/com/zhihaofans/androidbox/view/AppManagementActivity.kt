@@ -13,6 +13,7 @@ import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
+import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
@@ -102,7 +103,7 @@ class AppManagementActivity : AppCompatActivity() {
                     }.show()*/
 
                     val act_app = listOf(getStr(R.string.text_app_info), getStr(R.string.text_app_apk), getStr(R.string.text_icon))
-                    selector(childItem["appName"] as String, act_app, { _, i ->
+                    selector(childItem["appName"] as String, act_app) { _, i ->
                         when (i) {
                             0 -> {
                                 //app info
@@ -111,7 +112,7 @@ class AppManagementActivity : AppCompatActivity() {
                                         thisAppPackageName,
                                         "$thisAppVersionName ($thisAppVersionCode)",
                                         thisApkPath,
-                                        sysUtil.fileSize2String(thisApkSize),
+                                        ConvertUtil.File().fileSizeInt2string(thisApkSize),
                                         thisAppFirstInstallTime,
                                         thisAppLastUpdateTime
                                 )
@@ -156,11 +157,11 @@ class AppManagementActivity : AppCompatActivity() {
                             1 -> {
                                 //apk file
                                 /*
-                                val act_apk = listOf(getStr(R.string.text_app_info), getStr(R.string.text_app_apk), getStr(R.string.text_icon))
-                                selector(childItem["appName"] as String, act_app, { _, ii ->
+                                            val act_apk = listOf(getStr(R.string.text_app_info), getStr(R.string.text_app_apk), getStr(R.string.text_icon))
+                                            selector(childItem["appName"] as String, act_app, { _, ii ->
 
-                                })
-*/
+                                            })
+            */
                                 val permissionItems = ArrayList<PermissionItem>()
                                 permissionItems.add(PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.text_permission_storage), R.drawable.permission_ic_storage))
                                 HiPermission.create(this@AppManagementActivity)
@@ -193,7 +194,7 @@ class AppManagementActivity : AppCompatActivity() {
                                 //app icon
                             }
                         }
-                    })
+                    }
                 }
 
             }

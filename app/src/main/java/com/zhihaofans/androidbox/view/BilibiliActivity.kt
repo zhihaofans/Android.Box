@@ -506,13 +506,13 @@ class BilibiliActivity : AppCompatActivity() {
                                 uiThread {
                                     if (coverUri.isNullOrEmpty()) {
                                         loadingProgressBar.dismiss()
-                                        sysUtil.notifySimple(this@BilibiliActivity, "获取视频封面失败", "返回地址空白")
+                                        Snackbar.make(coordinatorLayout_bilibili, "获取视频封面失败,返回地址空白", Snackbar.LENGTH_SHORT).show()
                                     } else {
                                         doAsync {
                                             val imageBitmap = sysUtil.getBitmapFromURL(coverUri.toString())
                                             uiThread {
                                                 loadingProgressBar.dismiss()
-                                                sysUtil.notifyImage(this@BilibiliActivity, "获取视频封面成功", coverUri.toString(), imageBitmap)
+                                                Snackbar.make(coordinatorLayout_bilibili, "获取视频封面成功", Snackbar.LENGTH_SHORT).show()
                                                 selector("获取视频封面成功", listOf(
                                                         getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share)
                                                 )) { _, i ->
@@ -520,7 +520,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                         0 -> sysUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
                                                         1 -> {
                                                             ClipboardUtils.copy(this@BilibiliActivity, coverUri.toString())
-                                                            sysUtil.notifySimple(this@BilibiliActivity, "复制成功", coverUri.toString())
+                                                            Snackbar.make(coordinatorLayout_bilibili, "复制成功", Snackbar.LENGTH_SHORT).show()
                                                         }
                                                         2 -> share(coverUri.toString())
                                                     }
@@ -584,7 +584,7 @@ class BilibiliActivity : AppCompatActivity() {
             }
             else -> return null
         }
-        if (!videoCover.isNullOrEmpty()) videoCover = sysUtil.urlAutoHttps(videoCover)
+        if (!videoCover.isNullOrEmpty()) videoCover = sysUtil.urlAutoHttps(videoCover, true)
         Logger.d(videoCover)
         return videoCover
     }

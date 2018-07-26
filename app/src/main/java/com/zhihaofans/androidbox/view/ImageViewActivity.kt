@@ -106,41 +106,40 @@ class ImageViewActivity : AppCompatActivity() {
                                     0 -> {
                                         val fileName = FileUtils.getFileName(imageUrl)
                                         val downloadPath: String = sysUtil.getPicturePath().toString() + "/Android.Box/$fileName"
-                                        val loadingProgressBar_download: ProgressDialog = progressDialog(message = fileName, title = "Downloading...")
-                                        loadingProgressBar_download.setCancelable(false)
-                                        loadingProgressBar_download.setCanceledOnTouchOutside(false)
-                                        loadingProgressBar_download.show()
+                                        val loadingProgressBarDownload: ProgressDialog = progressDialog(message = fileName, title = "Downloading...")
+                                        loadingProgressBarDownload.setCancelable(false)
+                                        loadingProgressBarDownload.setCanceledOnTouchOutside(false)
+                                        loadingProgressBarDownload.show()
                                         Logger.d("downloadPath:$downloadPath")
                                         sysUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                                             override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                loadingProgressBar_download.setTitle("Pending...")
+                                                loadingProgressBarDownload.setTitle("Pending...")
                                             }
 
                                             override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                                                loadingProgressBar_download.setTitle("Connected")
+                                                loadingProgressBarDownload.setTitle("Connected")
 
                                             }
 
                                             override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                                                 if (totalBytes > 0) {
-                                                    loadingProgressBar_download.max = totalBytes
-                                                    loadingProgressBar_download.progress = soFarBytes
+                                                    loadingProgressBarDownload.max = totalBytes
+                                                    loadingProgressBarDownload.progress = soFarBytes
                                                 } else {
-                                                    loadingProgressBar_download.max = 0
-                                                    loadingProgressBar_download.progress = 1
+                                                    loadingProgressBarDownload.max = 0
+                                                    loadingProgressBarDownload.progress = 1
                                                 }
                                             }
 
                                             override fun blockComplete(task: BaseDownloadTask?) {}
 
                                             override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                                                loadingProgressBar_download.setTitle("Retry")
-                                                loadingProgressBar_download.setMessage("Times: $retryingTimes")
-
+                                                loadingProgressBarDownload.setTitle("Retry")
+                                                loadingProgressBarDownload.setMessage("Times: $retryingTimes")
                                             }
 
                                             override fun completed(task: BaseDownloadTask) {
-                                                loadingProgressBar_download.dismiss()
+                                                loadingProgressBarDownload.dismiss()
                                                 alert {
                                                     title = "下载完成"
                                                     message = "文件路径:" + task.targetFilePath
@@ -156,7 +155,7 @@ class ImageViewActivity : AppCompatActivity() {
                                             }
 
                                             override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                loadingProgressBar_download.dismiss()
+                                                loadingProgressBarDownload.dismiss()
                                             }
 
                                             override fun error(task: BaseDownloadTask, e: Throwable) {

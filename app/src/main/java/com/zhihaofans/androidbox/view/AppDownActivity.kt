@@ -5,29 +5,53 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.ArrayAdapter
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.wx.android.common.util.ClipboardUtils
 import com.wx.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-
 import kotlinx.android.synthetic.main.activity_app_down.*
+import kotlinx.android.synthetic.main.content_app_down.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
     private val appDownSiteParser = AppDownMod.SiteParser()
     private val sysUtil = SystemUtil()
     private val savePath: String = sysUtil.getDownloadPath().path
+    private val siteParser = AppDownMod.SiteParser()
+    private val dataBase = AppDownMod.DataBase()
+    private var appFeeds = mutableListOf<AppDownFeed>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar)
         fab.setOnClickListener { view ->
         }
+    }
+
+    private fun initList(): Boolean {
+        val listData = mutableListOf<String>()
+        appFeeds = dataBase.getAppFeeds()
+        if (appFeeds.size == 0) {
+            Logger.d("appFeeds.size=0")
+            return false
+        }
+        appFeeds.map {
+            listData.add(it.name)
+        }
+        listView_app.adapter = ArrayAdapter<String>(this@AppDownActivity, android.R.layout.simple_list_item_1, listData)
+        listView_app.onItemClick { _, _, index, _ ->
+            val clickedApp = appFeeds[index]
+
+        }
+        return true
     }
 
     private fun add() {

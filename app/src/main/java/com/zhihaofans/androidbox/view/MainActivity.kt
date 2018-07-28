@@ -11,7 +11,6 @@ import android.view.Menu
 import android.widget.ArrayAdapter
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
-import com.sunfusheng.FirUpdater
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
@@ -141,10 +140,6 @@ class MainActivity : AppCompatActivity() {
                 7 -> startActivity<AppDownActivity>()
             }
         }
-        // Fir.im检测更新
-        FirUpdater(this, "d719843e48e9a1dbd46d45390f58c35f", "5aa29bd7959d6975a0308613")
-                .apkPath(externalCacheDir.path)
-                .checkVersion()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

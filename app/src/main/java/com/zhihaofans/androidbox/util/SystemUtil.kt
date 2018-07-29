@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -22,9 +23,7 @@ import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
@@ -187,12 +186,26 @@ class SystemUtil {
         }
     }
 
+    fun getAppPrivateDirectory(context: Context): String? {
+        val m = context.packageManager
+        return m.getPackageInfo(context.packageName, 0).applicationInfo.dataDir
+    }
+
     fun getPicturePath(): File {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
     }
 
+    fun getPicturePathString(): String {
+        return getPicturePath().path
+    }
+
     fun getDownloadPath(): File {
+
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    }
+
+    fun getDownloadPathString(): String {
+        return getDownloadPath().path
     }
 
     fun openImageFile(context: Context, file: File): Intent {
@@ -212,4 +225,5 @@ class SystemUtil {
     fun listViewAdapter(context: Context, listData: List<String>): ArrayAdapter<String> {
         return ArrayAdapter(context, android.R.layout.simple_list_item_1, listData)
     }
+
 }

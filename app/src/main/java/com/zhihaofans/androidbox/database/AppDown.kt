@@ -10,7 +10,8 @@ data class AppDownFeed(
         val id_two: String?,
         val site: String,
         val version: String,
-        val updateTime: String
+        val updateTime: String,
+        val fileList: MutableList<FileList>
 )
 
 data class AppInfo(

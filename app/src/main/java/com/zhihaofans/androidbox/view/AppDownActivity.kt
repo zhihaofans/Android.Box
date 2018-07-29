@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -13,7 +12,6 @@ import com.wx.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.mod.AppDownMod
-import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
@@ -23,62 +21,74 @@ import org.jetbrains.anko.sdk25.coroutines.onItemClick
 class AppDownActivity : AppCompatActivity() {
     private val appDownSiteParser = AppDownMod.SiteParser()
     private val sysUtil = SystemUtil()
-    private val savePath: String = sysUtil.getDownloadPath().path
-    private val siteParser = AppDownMod.SiteParser()
-    private val convertUtil = ConvertUtil()
+    private val savePath: String = sysUtil.getDownloadPathString()
     private var appFeeds = mutableListOf<AppDownFeed>()
+    private val dataBase = AppDownMod.DataBase()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar)
         initList()
         fab.setOnClickListener { view ->
-            val fabAction = mutableListOf("Add feed", getString(R.string.text_check_update), getString(R.string.text_delete))
+            val fabAction = mutableListOf("Add feed", getString(R.string.text_delete))
             selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> add()
-                    1 -> checkAllUpdate()
-                    2 -> {
-                        val fabAction = mutableListOf("Add feed", getString(R.string.text_check_update), getString(R.string.text_delete))
-                        selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
-                            when (i) {
-                                0 -> add()
-                                1 -> checkAllUpdate()
-                            }
+                    1 -> {
+                        initList()
+                        selector(getString(R.string.text_delete), dataBase.getAppfeedNameList()) { _: DialogInterface, appIndex: Int ->
+                            alert {
+                                title = getString(R.string.text_delete) + "?"
+                                message = appFeeds[appIndex].name
+                                yesButton {
+                                    del(appIndex)
+                                }
+                                noButton { }
+                            }.show()
                         }
                     }
                 }
             }
-
         }
     }
 
-    private fun initList(): Boolean {
+    private fun initList() {
         listView_app.adapter = null
-        val listData = mutableListOf<String>()
-        appFeeds = AppDownMod.DataBase().getAppFeeds()
+        appFeeds = dataBase.getAppFeeds()
         if (appFeeds.size == 0) {
             Logger.d("appFeeds.size=0")
-            return false
+            snackbar("列表空白")
+        } else {
+            listView_app.adapter = sysUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
+            listView_app.onItemClick { _, _, index, _ ->
+                val clickedApp = appFeeds[index]
+                alert {
+                    title = clickedApp.name
+                    message = "Version: ${clickedApp.version}\nUpdate time: ${clickedApp.updateTime}"
+                    negativeButton(R.string.text_download) {
+                        val fileList = clickedApp.fileList
+                        selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
+                            val file = fileList[fileIndex]
+                            val fileName = clickedApp.site + "_" +
+                                    clickedApp.id_one + "_" + (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") +
+                                    clickedApp.version + "_" + file.name
+                            alert {
+                                title = getString(R.string.text_download) + "?"
+                                message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
+                                yesButton {
+                                    val url = file.url
+                                    downloadFile(url, fileName)
+                                }
+                                noButton { }
+                            }.show()
+                        }
+                    }
+                    positiveButton(R.string.text_check_update) {
+                        checkUpdate(index)
+                    }
+                }.show()
+            }
         }
-        appFeeds.map {
-            listData.add(it.name)
-        }
-        listView_app.adapter = sysUtil.listViewAdapter(this@AppDownActivity, listData)
-        listView_app.onItemClick { _, _, index, _ ->
-            val clickedApp = appFeeds[index]
-            alert {
-                title = clickedApp.name
-                message = "Version: ${clickedApp.version}\nUpdate time: ${clickedApp.updateTime}"
-                negativeButton(R.string.text_delete) {
-                    del(index)
-                }
-                positiveButton(R.string.text_check_update) {
-                    checkUpdate(appFeeds[index])
-                }
-            }.show()
-        }
-        return true
     }
 
     private fun add() {
@@ -151,7 +161,7 @@ class AppDownActivity : AppCompatActivity() {
                                         val inputName = editText(appName)
                                         okButton {
                                             appName = if (inputName.text.isEmpty()) appName else inputName.text.toString()
-                                            if (AppDownMod.DataBase().addFeed(appName, appDownList[0])) {
+                                            if (dataBase.addFeed(appName, appDownList[0])) {
                                                 snackbar("添加成功，刷新订阅列表")
                                             } else {
                                                 snackbar("添加失败，刷新订阅列表")
@@ -165,6 +175,7 @@ class AppDownActivity : AppCompatActivity() {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    toast("Error")
                 }
             }
         }
@@ -173,7 +184,7 @@ class AppDownActivity : AppCompatActivity() {
     private fun del(index: Int) {
         //TODO:delete app feed
         val deleteFeed = appFeeds[index]
-        if (AppDownMod.DataBase().delFeed(index, deleteFeed)) {
+        if (dataBase.delFeed(index, deleteFeed)) {
             snackbar("删除成功，刷新订阅列表")
         } else {
             snackbar("删除失败，刷新订阅列表")
@@ -181,29 +192,57 @@ class AppDownActivity : AppCompatActivity() {
         initList()
     }
 
-    private fun checkAllUpdate() {
-        //TODO:check app feeds update
-        appFeeds.map {
-            checkUpdate(it)
-        }
-
-    }
-
-    private fun checkUpdate(appDownFeed: AppDownFeed) {
+    private fun checkUpdate(index: Int) {
         //TODO:check app feed update
+        val loadingProgressBarUpdate = indeterminateProgressDialog(appFeeds[index].name, "Checking update...")
+        loadingProgressBarUpdate.setCancelable(false)
+        loadingProgressBarUpdate.setCanceledOnTouchOutside(false)
+        loadingProgressBarUpdate.show()
+        var appDownFeed = appFeeds[index]
+        doAsync {
+            val appDownList = appDownSiteParser.getAppUpdates(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
+            uiThread {
+                Logger.d("appDownList:${appDownList?.size}")
+                loadingProgressBarUpdate.dismiss()
+                when {
+                    appDownList == null -> {
+                        snackbar("(checkUpdate)appDownList is null")
+                        Logger.e("(checkUpdate)appDownList is null")
+                    }
+                    appDownList.size == 0 -> {
+                        snackbar("(checkUpdate)appDownList is empty")
+                        Logger.e("(checkUpdate)appDownList is empty")
+                    }
+                    else -> {
+                        if (appDownList[0].name == appDownFeed.version) {
+                            if (appDownList[0].updateTime == appDownFeed.updateTime) {
+                                snackbar("没有变动")
+                            } else {
+                                appDownFeed = dataBase.appDownFeed(appDownFeed.name, appDownList[0])
+                                snackbar("发现最近一个版本更新时间发生变化")
 
+                            }
+                        } else {
+                            appDownFeed = dataBase.appDownFeed(appDownFeed.name, appDownList[0])
+                            snackbar("发现新版本")
+                        }
+                    }
+                }
+                appFeeds[index] = appDownFeed
+            }
+        }
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {
         Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun snackbarFun(text: String, longTime: Boolean = false, button: String = "Button", listener: View.OnClickListener) {
+    private fun snackbar(text: String, longTime: Boolean = false, button: String = "Button", listener: View.OnClickListener) {
         Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).setAction(button, listener).show()
     }
 
     private fun downloadFile(url: String, fileName: String) {
-        val downloadPath = "$savePath/$fileName"
+        val downloadPath = "$savePath/Android.Box/$fileName"
         val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
         loadingProgressBarDownload.setCancelable(false)
         loadingProgressBarDownload.setCanceledOnTouchOutside(false)
@@ -254,7 +293,7 @@ class AppDownActivity : AppCompatActivity() {
 
             override fun error(task: BaseDownloadTask, e: Throwable) {
                 e.printStackTrace()
-                com.orhanobut.logger.Logger.d("Download error\nfileName:" + task.filename)
+                Logger.d("Download error\nfileName:" + task.filename)
                 Snackbar.make(coordinatorLayout_appdown, "下载失败", Snackbar.LENGTH_SHORT).show()
             }
 

@@ -9,7 +9,7 @@ import com.zhihaofans.androidbox.database.AppInfo
 import com.zhihaofans.androidbox.database.FileList
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
-import io.paperdb.Book
+import com.zhihaofans.androidbox.util.SystemUtil
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -115,6 +115,7 @@ class AppDownMod {
     }
 
     class DataBase {
+        private val sysUtil = SystemUtil()
         private val dataBaseName = "app_down"
         private var book = Paper.book(dataBaseName)
         private fun write(file: String, dataBase: Any) {
@@ -123,8 +124,9 @@ class AppDownMod {
 
         fun getAppfeedNameList(): MutableList<String> {
             val appfeedNames = mutableListOf<String>()
-            val appfeeds = getAppFeeds()
-            //TODO:getAppfeedNameList
+            getAppFeeds().map {
+                appfeedNames.add(it.name)
+            }
             return appfeedNames
         }
 
@@ -133,7 +135,7 @@ class AppDownMod {
             return book.read("feeds", mutableListOf())
         }
 
-        fun updateFeed(feeds: List<AppDownFeed>): Boolean {
+        fun updateFeedList(feeds: List<AppDownFeed>): Boolean {
             book = book.write("feeds", feeds)
             return getAppFeeds() == feeds
         }
@@ -141,8 +143,7 @@ class AppDownMod {
         fun addFeed(name: String, appInfo: AppInfo): Boolean {
             val dataBase = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBase")
-            val thisApp = AppDownFeed(dataBase.size, name, appInfo.idOne, appInfo.idTwo, appInfo.site, appInfo.name, appInfo.updateTime)
-            dataBase.add(thisApp)
+            dataBase.add(appDownFeed(name, appInfo))
             this.write("feeds", dataBase)
             val dataBaseNew = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBaseNew")
@@ -156,12 +157,15 @@ class AppDownMod {
             return if (delFeedItem == appDownFeed) {
                 dataBase.removeAt(feedNo)
                 Logger.d("Delete feed item")
-                this.updateFeed(dataBase)
+                this.updateFeedList(dataBase)
             } else {
                 Logger.e("Not this feed item")
                 false
             }
         }
 
+        fun appDownFeed(name: String, appInfo: AppInfo): AppDownFeed {
+            return AppDownFeed(getAppFeeds().size, name, appInfo.idOne, appInfo.idTwo, appInfo.site, appInfo.name, appInfo.updateTime, appInfo.fileList)
+        }
     }
 }

@@ -105,7 +105,7 @@ class ImageViewActivity : AppCompatActivity() {
                                 when (i) {
                                     0 -> {
                                         val fileName = FileUtils.getFileName(imageUrl)
-                                        val downloadPath: String = sysUtil.getPicturePath().toString() + "/Android.Box/$fileName"
+                                        val downloadPath: String = sysUtil.getPicturePathString()+ "/Android.Box/$fileName"
                                         val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
                                         loadingProgressBarDownload.setCancelable(false)
                                         loadingProgressBarDownload.setCanceledOnTouchOutside(false)

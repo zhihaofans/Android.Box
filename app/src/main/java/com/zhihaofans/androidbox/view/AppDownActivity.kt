@@ -294,6 +294,7 @@ class AppDownActivity : AppCompatActivity() {
             override fun error(task: BaseDownloadTask, e: Throwable) {
                 e.printStackTrace()
                 Logger.d("Download error\nfileName:" + task.filename)
+                loadingProgressBarDownload.dismiss()
                 Snackbar.make(coordinatorLayout_appdown, "下载失败", Snackbar.LENGTH_SHORT).show()
             }
 

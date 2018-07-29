@@ -9,6 +9,7 @@ import com.zhihaofans.androidbox.database.AppInfo
 import com.zhihaofans.androidbox.database.FileList
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
+import io.paperdb.Book
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -36,7 +37,7 @@ class AppDownMod {
             return sites
         }
 
-        fun getApp(site: String, idOne: String, idTwo: String? = null): MutableList<AppInfo>? {
+        fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppInfo>? {
             val resultList = mutableListOf<AppInfo>()
             when (site) {
                 "GITHUB_RELEASES" -> {
@@ -47,7 +48,7 @@ class AppDownMod {
                             val githubReleaseResult = githubRelease(idOne, idTwo!!)
                             githubReleaseResult.map {
                                 resultList.add(this.app(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
-                                        it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
+                                        idOne, idTwo, site, it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
                                 ))
 
                             }
@@ -59,8 +60,13 @@ class AppDownMod {
             }
         }
 
-        private fun app(name: String, description: String = "", updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppInfo {
-            return AppInfo(name, description, updateTime, webUrl, fList ?: mutableListOf())
+        private fun app(appDownFeed: AppDownFeed) {
+
+        }
+
+        private fun app(name: String, idOne: String, idTwo: String?, site: String, description: String?, updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppInfo {
+            return AppInfo(name, idOne, idTwo, site, description ?: "", updateTime, webUrl, fList
+                    ?: mutableListOf())
         }
 
         private fun fileList(site: String, list: MutableList<*>): MutableList<FileList>? {
@@ -110,11 +116,16 @@ class AppDownMod {
 
     class DataBase {
         private val dataBaseName = "app_down"
-        private val book = Paper.book(dataBaseName)
+        private var book = Paper.book(dataBaseName)
+        private fun write(file: String, dataBase: Any) {
+            book.write(file, dataBase)
+        }
 
-        private fun update(key: String, valve: Any): Boolean {
-            book.write(key, valve)
-            return book.read<Any>(key) == valve
+        fun getAppfeedNameList(): MutableList<String> {
+            val appfeedNames = mutableListOf<String>()
+            val appfeeds = getAppFeeds()
+            //TODO:getAppfeedNameList
+            return appfeedNames
         }
 
         fun getAppFeeds(): MutableList<AppDownFeed> {
@@ -123,36 +134,28 @@ class AppDownMod {
         }
 
         fun updateFeed(feeds: List<AppDownFeed>): Boolean {
-            return this.update("feeds", feeds)
+            book = book.write("feeds", feeds)
+            return getAppFeeds() == feeds
         }
 
-        fun addFeed(name: String, site: String, idOne: String, idTwo: String? = null): Boolean {
+        fun addFeed(name: String, appInfo: AppInfo): Boolean {
             val dataBase = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBase")
-            val appInfo = SiteParser().getApp(site, idOne, idTwo)
-            if (appInfo == null) {
-                Logger.d("appInfo\n$site/$idOne/$idTwo($name) is null")
-                return false
-            } else if (appInfo.size == 0) {
-                Logger.d("appInfo\n$site/$idOne/$idTwo($name) size==0")
-                return false
-            }
-            val lastUpdate = appInfo[0]
-            val thisApp = AppDownFeed(dataBase.size, name, idOne, idTwo, site, lastUpdate.name, lastUpdate.updateTime)
+            val thisApp = AppDownFeed(dataBase.size, name, appInfo.idOne, appInfo.idTwo, appInfo.site, appInfo.name, appInfo.updateTime)
             dataBase.add(thisApp)
-            book.write("feeds", dataBase)
+            this.write("feeds", dataBase)
             val dataBaseNew = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBaseNew")
             return dataBaseNew == dataBase
         }
 
-        fun delFeed(feedMo: Int, site: String, idOne: String, idTwo: String): Boolean {
+        fun delFeed(feedNo: Int, appDownFeed: AppDownFeed): Boolean {
             val dataBase = this.getAppFeeds()
-            if (dataBase.size <= feedMo) return false
-            val delFeedItem = dataBase[feedMo]
-            return if (delFeedItem.site == site && delFeedItem.id_one == idOne && delFeedItem.id_one == idTwo) {
-                dataBase.removeAt(feedMo)
-                Logger.e("Delete feed item")
+            if (dataBase.size <= feedNo) return false
+            val delFeedItem = dataBase[feedNo]
+            return if (delFeedItem == appDownFeed) {
+                dataBase.removeAt(feedNo)
+                Logger.d("Delete feed item")
                 this.updateFeed(dataBase)
             } else {
                 Logger.e("Not this feed item")

@@ -141,7 +141,7 @@ class ServerChanActivity : AppCompatActivity() {
         val request: Request = Request.Builder().url(pushUrl).post(body).build()
         val client = OkHttpClient()
         val call_cid = client.newCall(request)
-        val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()

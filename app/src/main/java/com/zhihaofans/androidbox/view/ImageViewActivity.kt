@@ -57,7 +57,7 @@ class ImageViewActivity : AppCompatActivity() {
             toast("Empty image")
             finish()
         } else {
-            val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+            val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
             loadingProgressBar.setCancelable(false)
             loadingProgressBar.setCanceledOnTouchOutside(false)
             loadingProgressBar.show()
@@ -106,7 +106,7 @@ class ImageViewActivity : AppCompatActivity() {
                                     0 -> {
                                         val fileName = FileUtils.getFileName(imageUrl)
                                         val downloadPath: String = sysUtil.getPicturePath().toString() + "/Android.Box/$fileName"
-                                        val loadingProgressBarDownload: ProgressDialog = progressDialog(message = fileName, title = "Downloading...")
+                                        val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
                                         loadingProgressBarDownload.setCancelable(false)
                                         loadingProgressBarDownload.setCanceledOnTouchOutside(false)
                                         loadingProgressBarDownload.show()

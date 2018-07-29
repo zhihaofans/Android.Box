@@ -169,7 +169,7 @@ class NewsBoxActivity : AppCompatActivity() {
         Logger.d("loading($siteId, $siteChannelId, $nowPage)")
         saveSet()
         updateSiteInfo()
-        val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
         listViewClearAll()
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)

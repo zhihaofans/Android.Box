@@ -15,6 +15,9 @@ data class AppDownFeed(
 
 data class AppInfo(
         val name: String,
+        val idOne: String,
+        val idTwo: String?,
+        val site: String,
         val description:String,
         val updateTime:String,
         val webUrl:String,

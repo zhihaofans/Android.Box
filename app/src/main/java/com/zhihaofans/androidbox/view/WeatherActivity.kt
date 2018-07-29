@@ -30,7 +30,7 @@ class WeatherActivity : AppCompatActivity() {
     }
 
     fun loading() {
-        //val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        //val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
 
         val client = OkHttpClient()
         val url = "https://api.seniverse.com/v3/weather/now.json?key=y0rkk7s0r2lxzfbi&location=ip&language=zh-Hans"

@@ -6,21 +6,17 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.ArrayAdapter
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.wx.android.common.util.ClipboardUtils
 import com.wx.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.database.AppDownFeed
-import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
-import kotlinx.android.synthetic.main.content_qrcode.view.*
-import kotlinx.android.synthetic.main.content_server_chan.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
@@ -30,7 +26,6 @@ class AppDownActivity : AppCompatActivity() {
     private val savePath: String = sysUtil.getDownloadPath().path
     private val siteParser = AppDownMod.SiteParser()
     private val convertUtil = ConvertUtil()
-    private val dataBase = AppDownMod.DataBase()
     private var appFeeds = mutableListOf<AppDownFeed>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +33,20 @@ class AppDownActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initList()
         fab.setOnClickListener { view ->
-            val fabAction = mutableListOf("Add feed", getString(R.string.text_check_update))
+            val fabAction = mutableListOf("Add feed", getString(R.string.text_check_update), getString(R.string.text_delete))
             selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> add()
                     1 -> checkAllUpdate()
+                    2 -> {
+                        val fabAction = mutableListOf("Add feed", getString(R.string.text_check_update), getString(R.string.text_delete))
+                        selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
+                            when (i) {
+                                0 -> add()
+                                1 -> checkAllUpdate()
+                            }
+                        }
+                    }
                 }
             }
 
@@ -50,8 +54,9 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun initList(): Boolean {
+        listView_app.adapter = null
         val listData = mutableListOf<String>()
-        appFeeds = dataBase.getAppFeeds()
+        appFeeds = AppDownMod.DataBase().getAppFeeds()
         if (appFeeds.size == 0) {
             Logger.d("appFeeds.size=0")
             return false
@@ -64,70 +69,68 @@ class AppDownActivity : AppCompatActivity() {
             val clickedApp = appFeeds[index]
             alert {
                 title = clickedApp.name
-                message = "Version:${clickedApp.version}\nUpdate time:${clickedApp.updateTime}"
+                message = "Version: ${clickedApp.version}\nUpdate time: ${clickedApp.updateTime}"
                 negativeButton(R.string.text_delete) {
-                    checkUpdate(index)
-                }
-                positiveButton(R.string.text_check_update) {
                     del(index)
                 }
-            }
+                positiveButton(R.string.text_check_update) {
+                    checkUpdate(appFeeds[index])
+                }
+            }.show()
         }
         return true
     }
 
     private fun add() {
         val feedSiteList = mutableListOf("Github release")
-        var site = ""
-        var idOne = "id"
-        var idTwo = idOne
+        var site: String
         selector("Site", feedSiteList) { _: DialogInterface, i: Int ->
             when (i) {
                 0 -> {
                     site = "GITHUB_RELEASES"
-                    idOne = "Author"
-                    idTwo = "Project"
-                }
-            }
-        }
-        if (site.isEmpty()) {
-            toast("Unknown site")
-        } else {
-            alert {
-                title = "Add feed"
-                customView {
-                    verticalLayout {
-                        textView(idOne)
-                        val inputOne = editText("feilongfl")
-                        textView(idTwo)
-                        val inputTwo = editText("Cimoc")
-                        okButton {
-                            val idOne = inputOne.text.toString()
-                            val idTwo = inputTwo.text.toString()
-                            when (site) {
-                                "GITHUB_RELEASES" -> {
-                                    if (idOne.isEmpty() || idTwo.isEmpty()) {
-                                        toast("请输入内容")
-                                    } else {
-                                        addFeed(site, idOne, idTwo)
+                    alert {
+                        title = "Add feed"
+                        customView {
+                            verticalLayout {
+                                textView("Author")
+                                val inputOne = editText("zhihaofans")
+                                textView("Project")
+                                val inputTwo = editText("Android.box")
+                                okButton {
+                                    val idOne = inputOne.text.toString()
+                                    val idTwo = inputTwo.text.toString()
+                                    when (site) {
+                                        "GITHUB_RELEASES" -> {
+                                            if (idOne.isEmpty() || idTwo.isEmpty()) {
+                                                toast("请输入内容")
+                                            } else {
+                                                addFeed(site, idOne, idTwo)
+                                            }
+                                        }
+                                        else -> {
+                                            toast("Unknown site")
+                                        }
                                     }
-                                }
-                                else -> {
-                                    toast("Unknown site")
                                 }
                             }
                         }
-                    }
+                    }.show()
                 }
             }
+
         }
     }
 
     private fun addFeed(site: String, idOne: String, idTwo: String? = null) {
+        val loadingProgressBarAddFeed = indeterminateProgressDialog(message = "$site : " + if (idTwo.isNullOrEmpty()) idOne else idTwo, title = "Loading...")
+        loadingProgressBarAddFeed.setCancelable(false)
+        loadingProgressBarAddFeed.setCanceledOnTouchOutside(false)
+        loadingProgressBarAddFeed.show()
         doAsync {
-            val appDownList = appDownSiteParser.getApp(site, idOne, idTwo)
+            val appDownList = appDownSiteParser.getAppUpdates(site, idOne, idTwo)
             Logger.d("appDownList:${appDownList?.size}")
             uiThread {
+                loadingProgressBarAddFeed.dismiss()
                 try {
                     when {
                         appDownList == null -> {
@@ -139,82 +142,56 @@ class AppDownActivity : AppCompatActivity() {
                             Logger.e("appDownList is empty")
                         }
                         else -> {
-                            val nameList = mutableListOf<String>()
-                            val appDownListNew = mutableListOf<MutableMap<String, Any>>()
-                            appDownList.map {
-                                val thisName = it["name"] as String?
-                                val thisTagName = it["tag_name"] as String?
-                                if (thisName.isNullOrEmpty()) {
-                                    if (thisTagName.isNullOrEmpty()) {
-                                        Logger.d("thisName and thisTagName isNullOrEmpty")
-                                    } else {
-                                        nameList.add(thisTagName ?: "Null")
-                                        appDownListNew.add(it)
-                                    }
-                                } else {
-                                    nameList.add(thisTagName ?: "Null")
-                                    appDownListNew.add(it)
-                                }
-                            }
-                            Logger.d("nameList:$nameList")
-                            selector(appDownListNew.size.toString() + " update(s)", nameList) { _, i ->
-                                val updateItem = appDownListNew[i]
-                                val updateName = updateItem["name"] as String
-                                val htmlUrl = updateItem["html_url"] as String
-                                val description = updateItem["description"] as String
-                                val fileList = updateItem["file_list"] as MutableList<*>
-                                alert {
-                                    title = updateName
-                                    message = description
-                                    negativeButton("打开网页") {
-                                        sysUtil.browse(this@AppDownActivity, htmlUrl)
-                                    }
-                                    positiveButton(R.string.text_download) {
-                                        when (fileList.size) {
-                                            0 -> snackbar("No file")
-                                            1 -> {
-                                                val downFile = fileList[0] as GithubReleaseItemAsset
-                                                val fileUrl = downFile.browser_download_url
-                                                val fileName = downFile.name
-                                                val fileDownloadedCount = downFile.download_count
-                                                val fileSize: String = convertUtil.fileSizeInt2string(downFile.size)
-                                                alert {
-                                                    title = fileName
-                                                    message = "Save to $savePath\nSize: $fileSize\nDownload times: $fileDownloadedCount"
-                                                    negativeButton("浏览器打开") {
-                                                        browse(fileUrl)
-                                                    }
-                                                    positiveButton(R.string.text_download) {
-                                                        downloadFile(fileUrl, fileName)
-                                                    }
-                                                }.show()
+                            var appName = idTwo ?: idOne
+                            alert {
+                                title = "请输入名称用于备注，不输入则为默认名称"
+                                message = "$site:$idOne${if (idTwo.isNullOrEmpty()) "" else "/$idTwo"}\n共有 ${appDownList.size} 个更新。"
+                                customView {
+                                    verticalLayout {
+                                        val inputName = editText(appName)
+                                        okButton {
+                                            appName = if (inputName.text.isEmpty()) appName else inputName.text.toString()
+                                            if (AppDownMod.DataBase().addFeed(appName, appDownList[0])) {
+                                                snackbar("添加成功，刷新订阅列表")
+                                            } else {
+                                                snackbar("添加失败，刷新订阅列表")
                                             }
+                                            initList()
                                         }
                                     }
-                                }.show()
-                            }
+                                }
+                            }.show()
                         }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-
                 }
             }
         }
     }
 
-    private fun checkAllUpdate() {
-        //TODO:check app feeds update
-
-    }
-
-    private fun checkUpdate(index: Int) {
-        //TODO:check app feed update
-
-    }
-
     private fun del(index: Int) {
         //TODO:delete app feed
+        val deleteFeed = appFeeds[index]
+        if (AppDownMod.DataBase().delFeed(index, deleteFeed)) {
+            snackbar("删除成功，刷新订阅列表")
+        } else {
+            snackbar("删除失败，刷新订阅列表")
+        }
+        initList()
+    }
+
+    private fun checkAllUpdate() {
+        //TODO:check app feeds update
+        appFeeds.map {
+            checkUpdate(it)
+        }
+
+    }
+
+    private fun checkUpdate(appDownFeed: AppDownFeed) {
+        //TODO:check app feed update
+
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {
@@ -227,7 +204,7 @@ class AppDownActivity : AppCompatActivity() {
 
     private fun downloadFile(url: String, fileName: String) {
         val downloadPath = "$savePath/$fileName"
-        val loadingProgressBarDownload: ProgressDialog = progressDialog(message = fileName, title = "Downloading...")
+        val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
         loadingProgressBarDownload.setCancelable(false)
         loadingProgressBarDownload.setCanceledOnTouchOutside(false)
         loadingProgressBarDownload.show()

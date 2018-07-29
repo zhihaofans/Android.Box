@@ -176,7 +176,7 @@ class BilibiliActivity : AppCompatActivity() {
                             defaultPart = input1.text.toString().toIntOrNull() ?: 1
                             val videoPartCidUrl = "https://biliquery.typcn.com/api/cid/$defaultVid/$defaultPart"
                             val client = OkHttpClient()
-                            val loadingProgressBar_cid: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                            val loadingProgressBar_cid = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                             loadingProgressBar_cid.setCancelable(false)
                             loadingProgressBar_cid.setCanceledOnTouchOutside(false)
                             loadingProgressBar_cid.show()
@@ -207,7 +207,7 @@ class BilibiliActivity : AppCompatActivity() {
                                         } else {
                                             runOnUiThread {
                                                 Logger.d(responseStr_cid)
-                                                val loadingProgressBar_comment: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                                                val loadingProgressBar_comment = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                                                 loadingProgressBar_comment.setCancelable(false)
                                                 loadingProgressBar_comment.setCanceledOnTouchOutside(false)
                                                 loadingProgressBar_comment.show()
@@ -301,7 +301,7 @@ class BilibiliActivity : AppCompatActivity() {
 
     private fun uHash2uid(userHash: String, client: OkHttpClient) {
         //用户hash转换成用户Id
-        val loadingProgressBar_hash: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        val loadingProgressBar_hash = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
         loadingProgressBar_hash.setCancelable(false)
         loadingProgressBar_hash.setCanceledOnTouchOutside(false)
         loadingProgressBar_hash.show()
@@ -378,7 +378,7 @@ class BilibiliActivity : AppCompatActivity() {
             selector("获取成功，用户uid为$uid", acts) { _, index ->
                 when (index) {
                     0 -> {
-                        val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                         loadingProgressBar.setCancelable(false)
                         loadingProgressBar.setCanceledOnTouchOutside(false)
                         loadingProgressBar.show()
@@ -497,7 +497,7 @@ class BilibiliActivity : AppCompatActivity() {
                         } else {
                             defaultVid = vid
                             //TODO:Bilibili Video Cover
-                            val loadingProgressBar: ProgressDialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                            val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                             loadingProgressBar.setCancelable(false)
                             loadingProgressBar.setCanceledOnTouchOutside(false)
                             loadingProgressBar.show()

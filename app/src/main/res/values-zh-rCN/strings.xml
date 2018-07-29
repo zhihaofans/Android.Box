@@ -73,4 +73,6 @@
     <string name="text_site_rsshub_v2ex_topics">V2EX-最新主题</string>
     <string name="text_download">下载</string>
     <string name="title_activity_app_down">应用下载</string>
+    <string name="text_delete">删除</string>
+    <string name="text_check_update">检查更新</string>
 </resources>

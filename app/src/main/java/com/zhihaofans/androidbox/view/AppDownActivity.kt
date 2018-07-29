@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -18,6 +19,8 @@ import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
+import kotlinx.android.synthetic.main.content_qrcode.view.*
+import kotlinx.android.synthetic.main.content_server_chan.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
@@ -26,13 +29,23 @@ class AppDownActivity : AppCompatActivity() {
     private val sysUtil = SystemUtil()
     private val savePath: String = sysUtil.getDownloadPath().path
     private val siteParser = AppDownMod.SiteParser()
+    private val convertUtil = ConvertUtil()
     private val dataBase = AppDownMod.DataBase()
     private var appFeeds = mutableListOf<AppDownFeed>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar)
+        initList()
         fab.setOnClickListener { view ->
+            val fabAction = mutableListOf("Add feed", getString(R.string.text_check_update))
+            selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
+                when (i) {
+                    0 -> add()
+                    1 -> checkAllUpdate()
+                }
+            }
+
         }
     }
 
@@ -46,17 +59,73 @@ class AppDownActivity : AppCompatActivity() {
         appFeeds.map {
             listData.add(it.name)
         }
-        listView_app.adapter = ArrayAdapter<String>(this@AppDownActivity, android.R.layout.simple_list_item_1, listData)
+        listView_app.adapter = sysUtil.listViewAdapter(this@AppDownActivity, listData)
         listView_app.onItemClick { _, _, index, _ ->
             val clickedApp = appFeeds[index]
-
+            alert {
+                title = clickedApp.name
+                message = "Version:${clickedApp.version}\nUpdate time:${clickedApp.updateTime}"
+                negativeButton(R.string.text_delete) {
+                    checkUpdate(index)
+                }
+                positiveButton(R.string.text_check_update) {
+                    del(index)
+                }
+            }
         }
         return true
     }
 
     private fun add() {
+        val feedSiteList = mutableListOf("Github release")
+        var site = ""
+        var idOne = "id"
+        var idTwo = idOne
+        selector("Site", feedSiteList) { _: DialogInterface, i: Int ->
+            when (i) {
+                0 -> {
+                    site = "GITHUB_RELEASES"
+                    idOne = "Author"
+                    idTwo = "Project"
+                }
+            }
+        }
+        if (site.isEmpty()) {
+            toast("Unknown site")
+        } else {
+            alert {
+                title = "Add feed"
+                customView {
+                    verticalLayout {
+                        textView(idOne)
+                        val inputOne = editText("feilongfl")
+                        textView(idTwo)
+                        val inputTwo = editText("Cimoc")
+                        okButton {
+                            val idOne = inputOne.text.toString()
+                            val idTwo = inputTwo.text.toString()
+                            when (site) {
+                                "GITHUB_RELEASES" -> {
+                                    if (idOne.isEmpty() || idTwo.isEmpty()) {
+                                        toast("请输入内容")
+                                    } else {
+                                        addFeed(site, idOne, idTwo)
+                                    }
+                                }
+                                else -> {
+                                    toast("Unknown site")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addFeed(site: String, idOne: String, idTwo: String? = null) {
         doAsync {
-            val appDownList = appDownSiteParser.getApp("GITHUB_RELEASES", "feilongfl", "Cimoc")
+            val appDownList = appDownSiteParser.getApp(site, idOne, idTwo)
             Logger.d("appDownList:${appDownList?.size}")
             uiThread {
                 try {
@@ -108,7 +177,7 @@ class AppDownActivity : AppCompatActivity() {
                                                 val fileUrl = downFile.browser_download_url
                                                 val fileName = downFile.name
                                                 val fileDownloadedCount = downFile.download_count
-                                                val fileSize: String = ConvertUtil.File().fileSizeInt2string(downFile.size)
+                                                val fileSize: String = convertUtil.fileSizeInt2string(downFile.size)
                                                 alert {
                                                     title = fileName
                                                     message = "Save to $savePath\nSize: $fileSize\nDownload times: $fileDownloadedCount"
@@ -132,6 +201,20 @@ class AppDownActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun checkAllUpdate() {
+        //TODO:check app feeds update
+
+    }
+
+    private fun checkUpdate(index: Int) {
+        //TODO:check app feed update
+
+    }
+
+    private fun del(index: Int) {
+        //TODO:delete app feed
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {

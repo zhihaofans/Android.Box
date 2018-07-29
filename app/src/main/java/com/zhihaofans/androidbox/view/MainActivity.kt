@@ -16,6 +16,7 @@ import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
+import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -28,6 +29,7 @@ import org.jetbrains.anko.startActivity
 class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private val sysUtil = SystemUtil()
+    private val convertUtil = ConvertUtil()
     private val globalSetting = GlobalSettingMod()
     private val updateWebUrl = "https://fir.im/fkw1"
     @SuppressLint("SetTextI18n")
@@ -41,9 +43,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_setting -> {
                     val settings = mutableListOf(
                             getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                    sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                    convertUtil.boolean2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
                             getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                    sysUtil.booleen2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                    convertUtil.boolean2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
                             "Crash page"
                     )
                     selector(getString(R.string.text_setting), settings) { _, i ->
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                                 globalSetting.forceUseChromeCustomTabs(!(globalSetting.forceUseChromeCustomTabs()))
                                 Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                                sysUtil.booleen2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                                convertUtil.boolean2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
                                         Snackbar.LENGTH_SHORT
                                 ).show()
                             }
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                                 globalSetting.imageUrlOpenWithBuiltinViewer(!(globalSetting.imageUrlOpenWithBuiltinViewer()))
                                 Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                                sysUtil.booleen2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                                convertUtil.boolean2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
                                         Snackbar.LENGTH_SHORT
                                 ).show()
                             }

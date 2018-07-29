@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Environment
 import android.support.customtabs.CustomTabsIntent
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
@@ -45,11 +46,6 @@ class SystemUtil {
         (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
     }
 
-    fun time2date(time: Long): String {
-        Logger.d(time)
-        return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
-    }
-
     fun chromeCustomTabs(context: Context, url: String, title: String = url) {
         val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
         val customTabsIntent: CustomTabsIntent = builder.build()
@@ -82,37 +78,12 @@ class SystemUtil {
         }
     }
 
-    fun booleen2string(boolean: Boolean, trueString: String, falseString: String): String {
-        return if (boolean) {
-            trueString
-        } else {
-            falseString
-        }
-    }
-
-    fun booleen2string(boolean: Boolean): String {
-        return boolean.toString()
-    }
-
-    fun fileSize2String(fs: Int): String {
-        var result = fs.toFloat()
-        var times = 0
-        while (result >= 1024) {
-            result /= 1024
-            times++
-        }
-        val units = mutableListOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB", "CB")
-        val sizeUnit = if (times >= units.size) "???" else units[times]
-        return "$result $sizeUnit"
-    }
-
     fun checkIfImageUrl(imageUrl: String): Boolean {
         return when (FileUtils.getFileSuffix(imageUrl).toLowerCase()) {
             "jpg", "jpeg", "bmp", "webp", "gif" -> true
             else -> false
         }
     }
-
 
     fun viewGetFocusable(editText: EditText) {
         editText.isFocusable = true
@@ -194,7 +165,6 @@ class SystemUtil {
         }
     }
 
-
     fun download(url: String, savePath: String, listener: FileDownloadListener) {
         FileDownloader.getImpl().create(url)
                 .setPath(savePath)
@@ -239,4 +209,7 @@ class SystemUtil {
         return openImageFile(context, File(file))
     }
 
+    fun listViewAdapter(context: Context, listData: List<String>): ArrayAdapter<String> {
+        return ArrayAdapter(context, android.R.layout.simple_list_item_1, listData)
+    }
 }

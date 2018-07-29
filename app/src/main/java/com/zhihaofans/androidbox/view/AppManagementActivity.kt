@@ -28,6 +28,7 @@ import java.util.*
 class AppManagementActivity : AppCompatActivity() {
     private var appList = ArrayList<Map<String, Any>>()
     private val sysUtil = SystemUtil()
+    private val convertUtil = ConvertUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
@@ -86,8 +87,8 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppPackageName: String = thisAppInfo.packageName
                     val thisAppVersionName: String = thisPackageInfo.versionName
                     val thisAppVersionCode: Int = thisPackageInfo.versionCode
-                    val thisAppFirstInstallTime: String = sysUtil.time2date(thisPackageInfo.firstInstallTime)
-                    val thisAppLastUpdateTime: String = sysUtil.time2date(thisPackageInfo.lastUpdateTime)
+                    val thisAppFirstInstallTime: String = convertUtil.time2date(thisPackageInfo.firstInstallTime)
+                    val thisAppLastUpdateTime: String = convertUtil.time2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
                     val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt() //TODO:以后加入自动转换单位功能
                     /*Logger.d(childItem["icon"])
@@ -112,7 +113,7 @@ class AppManagementActivity : AppCompatActivity() {
                                         thisAppPackageName,
                                         "$thisAppVersionName ($thisAppVersionCode)",
                                         thisApkPath,
-                                        ConvertUtil.File().fileSizeInt2string(thisApkSize),
+                                        convertUtil.fileSizeInt2string(thisApkSize),
                                         thisAppFirstInstallTime,
                                         thisAppLastUpdateTime
                                 )

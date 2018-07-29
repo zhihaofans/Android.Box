@@ -160,7 +160,9 @@ class NewsBoxActivity : AppCompatActivity() {
     }
 
     private fun listViewClearAll() {
-        if (listView_news.adapter != null && !listView_news.adapter.isEmpty && listView_news.adapter.count > 0) listView_news.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
+        if (listView_news.adapter != null && !listView_news.adapter.isEmpty && listView_news.adapter.count > 0) {
+            listView_news.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
+        }
     }
 
     private fun loading() {

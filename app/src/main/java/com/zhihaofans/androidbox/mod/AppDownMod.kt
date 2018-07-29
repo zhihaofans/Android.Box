@@ -5,8 +5,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.database.AppDownFeed
+import com.zhihaofans.androidbox.database.AppInfo
+import com.zhihaofans.androidbox.database.FileList
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
-import com.zhihaofans.androidbox.util.ConvertUtil
+import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -20,7 +22,6 @@ class AppDownMod {
 
     class SiteParser {
         private val g = Gson()
-        private val convertUtil = ConvertUtil()
         private var mcontext: Context? = null
         private val sites: List<Map<String, String>> = mutableListOf(
                 mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases")// Github releases
@@ -35,8 +36,8 @@ class AppDownMod {
             return sites
         }
 
-        fun getApp(site: String, idOne: String, idTwo: String? = null): MutableList<MutableMap<String, Any>>? {
-            val resultList = mutableListOf<MutableMap<String, Any>>()
+        fun getApp(site: String, idOne: String, idTwo: String? = null): MutableList<AppInfo>? {
+            val resultList = mutableListOf<AppInfo>()
             when (site) {
                 "GITHUB_RELEASES" -> {
                     when {
@@ -45,20 +46,41 @@ class AppDownMod {
                         else -> {
                             val githubReleaseResult = githubRelease(idOne, idTwo!!)
                             githubReleaseResult.map {
-                                resultList.add(mutableMapOf(
-                                        "html_url" to it.html_url,
-                                        "name" to it.name,
-                                        "tag_name" to it.tag_name,
-                                        "update_time" to it.published_at,
-                                        "file_list" to it.assets,
-                                        "description" to it.body
+                                resultList.add(this.app(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
+                                        it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
                                 ))
+
                             }
                             return resultList
                         }
                     }
                 }
                 else -> return null
+            }
+        }
+
+        private fun app(name: String, description: String = "", updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppInfo {
+            return AppInfo(name, description, updateTime, webUrl, fList ?: mutableListOf())
+        }
+
+        private fun fileList(site: String, list: MutableList<*>): MutableList<FileList>? {
+            val fList = mutableListOf<FileList>()
+            return when (site) {
+                "GITHUB_RELEASES" -> {
+                    list.map {
+                        val thisItem = it as GithubReleaseItemAsset
+                        fList.add(FileList(
+                                thisItem.id.toString(),
+                                thisItem.name,
+                                thisItem.browser_download_url,
+                                thisItem.download_count,
+                                thisItem.updated_at,
+                                thisItem.size
+                        ))
+                    }
+                    fList
+                }
+                else -> null
             }
         }
 
@@ -88,7 +110,7 @@ class AppDownMod {
 
     class DataBase {
         private val dataBaseName = "app_down"
-        val book = Paper.book(dataBaseName)
+        private val book = Paper.book(dataBaseName)
 
         private fun update(key: String, valve: Any): Boolean {
             book.write(key, valve)
@@ -116,9 +138,7 @@ class AppDownMod {
                 return false
             }
             val lastUpdate = appInfo[0]
-            val thisApp = AppDownFeed(dataBase.size, name, idOne, idTwo, site, (lastUpdate["name"] as String?)
-                    ?: (lastUpdate["tag_name"] as String?)
-                    ?: "", lastUpdate["update_time"] as String)
+            val thisApp = AppDownFeed(dataBase.size, name, idOne, idTwo, site, lastUpdate.name, lastUpdate.updateTime)
             dataBase.add(thisApp)
             book.write("feeds", dataBase)
             val dataBaseNew = this.getAppFeeds()

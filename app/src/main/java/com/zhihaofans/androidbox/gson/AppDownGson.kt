@@ -13,7 +13,7 @@ data class GithubReleaseItem(
         val html_url: String,
         val id: Int,
         val tag_name: String,
-        val name: String,
+        val name: String?,
         val published_at: String,
         val assets: MutableList<GithubReleaseItemAsset>,
         val body: String

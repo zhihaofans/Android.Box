@@ -47,7 +47,7 @@ class BilibiliActivity : AppCompatActivity() {
                 "视频弹幕查用户uid",
                 "视频封面下载"
         )
-        listView_bilibili.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listData)
+        listView_bilibili.adapter = sysUtil.listViewAdapter(this,  listData)
         listView_bilibili.onItemClick { _, _, index, _ ->
             if (defaultVid.startsWith("av")) {
                 defaultVid = defaultVid.substring(2, defaultVid.length - 1)

@@ -3,7 +3,7 @@ package com.zhihaofans.androidbox.database
 /**
  * Created by zhihaofans on 2018/7/25.
  */
-data class AppDownFeed(
+data class AppDownFeed(//数据库表
         val No: Int,
         val name: String,
         val id_one: String,

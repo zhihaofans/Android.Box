@@ -24,13 +24,14 @@ class AppDownActivity : AppCompatActivity() {
     private val savePath: String = sysUtil.getDownloadPathString()
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
+    private val siteParser = AppDownMod.SiteParser()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar)
         initList()
         fab.setOnClickListener { view ->
-            val fabAction = mutableListOf("Add feed", getString(R.string.text_delete))
+            val fabAction = mutableListOf("Add feed", getString(R.string.text_delete), "Fix database")
             selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> add()
@@ -47,6 +48,8 @@ class AppDownActivity : AppCompatActivity() {
                             }.show()
                         }
                     }
+                    2 -> fixDatabase()
+
                 }
             }
         }
@@ -92,12 +95,13 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun add() {
-        val feedSiteList = mutableListOf("Github release")
+        val sites = siteParser.getSites()
+        val feedSiteList = sites.map { it["name"].toString() }
         var site: String
         selector("Site", feedSiteList) { _: DialogInterface, i: Int ->
             when (i) {
                 0 -> {
-                    site = "GITHUB_RELEASES"
+                    site = sites[0]["id"].toString()
                     alert {
                         title = "Add feed"
                         customView {
@@ -229,7 +233,33 @@ class AppDownActivity : AppCompatActivity() {
                     }
                 }
                 appFeeds[index] = appDownFeed
+                dataBase.updateFeedList(appFeeds)
+                initList()
             }
+        }
+    }
+
+    private fun fixDatabase() {
+        val loadingProgressBarFixData = indeterminateProgressDialog("Loading database", "Try to fix database")
+        loadingProgressBarFixData.setCancelable(false)
+        loadingProgressBarFixData.setCanceledOnTouchOutside(false)
+        loadingProgressBarFixData.show()
+        initList()
+        if (appFeeds.size == 0) {
+            loadingProgressBarFixData.dismiss()
+        } else {
+            var i = 0
+            var fixedNo = 0
+            appFeeds.map {
+                if (it.No != i) {
+                    appFeeds[i] = AppDownFeed(i, it.name, it.id_one, it.id_two, it.site, it.version, it.updateTime, it.fileList)
+                    fixedNo++
+                }
+                i++
+                it
+            }
+            loadingProgressBarFixData.dismiss()
+            snackbar("修复完毕，发现 $fixedNo 个序号错误的订阅")
         }
     }
 

@@ -258,6 +258,7 @@ class AppDownActivity : AppCompatActivity() {
                 i++
                 it
             }
+            dataBase.updateFeedList(appFeeds)
             loadingProgressBarFixData.dismiss()
             snackbar("修复完毕，发现 $fixedNo 个序号错误的订阅")
         }

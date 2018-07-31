@@ -5,15 +5,17 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.database.AppDownFeed
-import com.zhihaofans.androidbox.database.AppInfo
+import com.zhihaofans.androidbox.database.AppUpdate
 import com.zhihaofans.androidbox.database.FileList
+import com.zhihaofans.androidbox.gson.CoolapkAppInfo
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
-import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.JsoupUtil
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.jsoup.Jsoup
 import java.io.IOException
 
 /**
@@ -25,7 +27,8 @@ class AppDownMod {
         private val g = Gson()
         private var mcontext: Context? = null
         private val sites: List<Map<String, String>> = mutableListOf(
-                mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases")// Github releases
+                mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
+                mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1")// Github releases
         )
 
         fun init(context: Context): Context? {
@@ -37,22 +40,38 @@ class AppDownMod {
             return sites
         }
 
-        fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppInfo>? {
-            val resultList = mutableListOf<AppInfo>()
+        fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppUpdate>? {
+            val siteId = getSites().map { it["id"] }
+            val resultList: MutableList<AppUpdate>
             when (site) {
-                "GITHUB_RELEASES" -> {
+                siteId[0] -> {
                     when {
                         idOne.isEmpty() -> throw Exception("Author cannot empty")
                         idTwo.isNullOrEmpty() -> throw Exception("project cannot empty or null")
                         else -> {
                             val githubReleaseResult = githubRelease(idOne, idTwo!!)
-                            githubReleaseResult.map {
-                                resultList.add(this.app(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
+                            resultList = githubReleaseResult.map {
+                                this.appUpdate(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
                                         idOne, idTwo, site, it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
-                                ))
-
-                            }
+                                )
+                            }.toMutableList()
                             return resultList
+                        }
+                    }
+                }
+                siteId[1] -> {
+                    when {
+                        idOne.isEmpty() -> throw Exception("Package name cannot empty")
+                        else -> {
+                            /*
+                            val coolapkReleaseResult = coolapkRelease(idOne)
+                            resultList = coolapkReleaseResult.map {
+                                this.appUpdate(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
+                                        idOne, idTwo, site, it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
+                                )
+                            }.toMutableList()
+                            */
+                            return mutableListOf()
                         }
                     }
                 }
@@ -60,12 +79,16 @@ class AppDownMod {
             }
         }
 
-        private fun app(appDownFeed: AppDownFeed) {
-
+        private fun appUpdate(appDownFeed: AppDownFeed): AppUpdate {
+            return this.appUpdate(appDownFeed.name, appDownFeed.id_one,
+                    appDownFeed.id_two, appDownFeed.site,
+                    appDownFeed.name, appDownFeed.updateTime,
+                    appDownFeed.updateTime, appDownFeed.fileList)
         }
 
-        private fun app(name: String, idOne: String, idTwo: String?, site: String, description: String?, updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppInfo {
-            return AppInfo(name, idOne, idTwo, site, description ?: "", updateTime, webUrl, fList
+        private fun appUpdate(name: String, idOne: String, idTwo: String?, site: String, description: String?,
+                              updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppUpdate {
+            return AppUpdate(name, idOne, idTwo, site, description ?: "", updateTime, webUrl, fList
                     ?: mutableListOf())
         }
 
@@ -90,7 +113,8 @@ class AppDownMod {
             }
         }
 
-        fun githubRelease(author: String, project: String): List<GithubReleaseItem> {
+        private fun githubRelease(author: String, project: String): List<GithubReleaseItem> {
+            val site = sites[0]["id"].toString()
             val apiUrl = "https://api.github.com/repos/$author/$project/releases"
             val releasesList = mutableListOf<GithubReleaseItem>()
             val client = OkHttpClient()
@@ -112,10 +136,25 @@ class AppDownMod {
                 releasesList
             }
         }
+
+        private fun coolapkRelease(packageName: String): CoolapkAppInfo? {
+            val appUpdates = mutableListOf<AppUpdate>()
+            val doc = Jsoup.connect("https://www.coolapk.com/apk/").get()
+            val jsoupUtil = JsoupUtil(doc)
+            val title = jsoupUtil.title()
+            return if (title == "出错了") {
+                val a = jsoupUtil.html("p.detail_app_title")
+                val appName = a.substring(0, a.indexOf("<span class=\"list_app_info\">"))
+                val appVersion = jsoupUtil.text("p.detail_app_title -> span.list_app_info")
+                //TODO:CoolapkAppInfo(appName,appVersion)
+                null
+            } else {
+                null
+            }
+        }
     }
 
     class DataBase {
-        private val sysUtil = SystemUtil()
         private val dataBaseName = "app_down"
         private var book = Paper.book(dataBaseName)
         private fun write(file: String, dataBase: Any) {
@@ -140,10 +179,10 @@ class AppDownMod {
             return getAppFeeds() == feeds
         }
 
-        fun addFeed(name: String, appInfo: AppInfo): Boolean {
+        fun addFeed(name: String, appUpdate: AppUpdate): Boolean {
             val dataBase = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBase")
-            dataBase.add(appDownFeed(name, appInfo))
+            dataBase.add(appDownFeed(name, appUpdate))
             this.write("feeds", dataBase)
             val dataBaseNew = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBaseNew")
@@ -164,8 +203,8 @@ class AppDownMod {
             }
         }
 
-        fun appDownFeed(name: String, appInfo: AppInfo): AppDownFeed {
-            return AppDownFeed(getAppFeeds().size, name, appInfo.idOne, appInfo.idTwo, appInfo.site, appInfo.name, appInfo.updateTime, appInfo.fileList)
+        fun appDownFeed(name: String, appUpdate: AppUpdate): AppDownFeed {
+            return AppDownFeed(getAppFeeds().size, name, appUpdate.idOne, appUpdate.idTwo, appUpdate.site, appUpdate.name, appUpdate.updateTime, appUpdate.fileList)
         }
     }
 }

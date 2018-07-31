@@ -1,12 +1,10 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
-import android.widget.ArrayAdapter
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
@@ -553,8 +551,8 @@ class BilibiliActivity : AppCompatActivity() {
                         return null
                     }
                     val ju = JsoupUtil(Jsoup.parse(html))
-                    videoCover = ju.safeAttr("head > meta[itemprop=\"image\"]", "content")
-                    if (videoCover.isEmpty()) videoCover = ju.safeAttr("head > meta[property=\"og:image\"]", "content")
+                    videoCover = ju.attr("head > meta[itemprop=\"image\"]", "content")
+                    if (videoCover.isEmpty()) videoCover = ju.attr("head > meta[property=\"og:image\"]", "content")
                 } catch (e: Exception) {
                     e.printStackTrace()
                     return null

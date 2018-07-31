@@ -14,7 +14,7 @@ data class AppDownFeed(//数据库表
         val fileList: MutableList<FileList>
 )
 
-data class AppInfo(
+data class AppUpdate(
         val name: String,
         val idOne: String,
         val idTwo: String?,

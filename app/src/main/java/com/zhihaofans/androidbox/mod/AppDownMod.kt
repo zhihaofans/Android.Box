@@ -5,11 +5,13 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.database.AppDownFeed
+import com.zhihaofans.androidbox.database.AppFeed
 import com.zhihaofans.androidbox.database.AppUpdate
 import com.zhihaofans.androidbox.database.FileList
 import com.zhihaofans.androidbox.gson.CoolapkAppInfo
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
+import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import io.paperdb.Paper
 import okhttp3.CacheControl
@@ -24,13 +26,14 @@ import java.io.IOException
 class AppDownMod {
 
     class SiteParser {
+        private val convertUtil = ConvertUtil()
         private val g = Gson()
         private var mcontext: Context? = null
         private val sites: List<Map<String, String>> = mutableListOf(
                 mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
                 mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1")// Github releases
         )
-
+        private val siteIds = sites.map { it["id"].toString() }
         fun init(context: Context): Context? {
             this.mcontext = context
             return this.mcontext
@@ -38,6 +41,10 @@ class AppDownMod {
 
         fun getSites(): List<Map<String, String>> {
             return sites
+        }
+
+        fun getSiteIds(): List<String> {
+            return siteIds
         }
 
         fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppUpdate>? {
@@ -52,7 +59,8 @@ class AppDownMod {
                             val githubReleaseResult = githubRelease(idOne, idTwo!!)
                             resultList = githubReleaseResult.map {
                                 this.appUpdate(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
-                                        idOne, idTwo, site, it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
+                                        idOne, idTwo, site, it.body, it.published_at, it.html_url,
+                                        this.fileList("GITHUB_RELEASES", it.assets)
                                 )
                             }.toMutableList()
                             return resultList
@@ -63,19 +71,28 @@ class AppDownMod {
                     when {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
-                            /*
                             val coolapkReleaseResult = coolapkRelease(idOne)
-                            resultList = coolapkReleaseResult.map {
-                                this.appUpdate(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
-                                        idOne, idTwo, site, it.body, it.published_at, it.html_url, this.fileList("GITHUB_RELEASES", it.assets)
-                                )
-                            }.toMutableList()
-                            */
-                            return mutableListOf()
+                            return appFeed(coolapkReleaseResult)
                         }
                     }
                 }
                 else -> return null
+            }
+        }
+
+        private fun appFeed(siteResult: Any): AppFeed? {
+            return when (siteResult.javaClass.toString()) {
+                "CoolapkAppInfo" -> {
+                    val coolapk = siteResult as CoolapkAppInfo
+                    AppFeed(coolapk.name, coolapk.packageName, null, siteIds[1],
+                            coolapk.version, coolapk.updateTime, coolapk.packageName,
+                            mutableListOf(AppUpdate(
+                                    coolapk.version, coolapk.version, coolapk.updateTime, coolapk.webUrl,
+                                    fileList(siteIds[1], coolapk)
+                            )
+                            ))
+                }
+                else -> null
             }
         }
 
@@ -88,15 +105,15 @@ class AppDownMod {
 
         private fun appUpdate(name: String, idOne: String, idTwo: String?, site: String, description: String?,
                               updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppUpdate {
-            return AppUpdate(name, idOne, idTwo, site, description ?: "", updateTime, webUrl, fList
+            return AppUpdate(name, description ?: "", updateTime, webUrl, fList
                     ?: mutableListOf())
         }
 
-        private fun fileList(site: String, list: MutableList<*>): MutableList<FileList>? {
+        private fun fileList(site: String, list: Any): MutableList<FileList> {
             val fList = mutableListOf<FileList>()
-            return when (site) {
-                "GITHUB_RELEASES" -> {
-                    list.map {
+            when (site) {
+                siteIds[0] -> {
+                    (list as MutableList<*>).map {
                         val thisItem = it as GithubReleaseItemAsset
                         fList.add(FileList(
                                 thisItem.id.toString(),
@@ -104,12 +121,18 @@ class AppDownMod {
                                 thisItem.browser_download_url,
                                 thisItem.download_count,
                                 thisItem.updated_at,
-                                thisItem.size
+                                thisItem.size, convertUtil.fileSizeInt2string(thisItem.size)
                         ))
                     }
-                    fList
+                    return fList
                 }
-                else -> null
+                siteIds[1] -> {
+                    val coolapk = list as CoolapkAppInfo
+                    return mutableListOf(FileList(coolapk.version, coolapk.version,
+                            coolapk.downloadUrl, 0, coolapk.updateTime, 0, "未知大小"
+
+                    ))
+                }
             }
         }
 
@@ -210,7 +233,8 @@ class AppDownMod {
         }
 
         fun appDownFeed(name: String, appUpdate: AppUpdate): AppDownFeed {
-            return AppDownFeed(getAppFeeds().size, name, appUpdate.idOne, appUpdate.idTwo, appUpdate.site, appUpdate.name, appUpdate.updateTime, appUpdate.fileList)
+            return AppDownFeed(getAppFeeds().size, name, appUpdate.idOne, appUpdate.idTwo,
+                    appUpdate.site, appUpdate.name, appUpdate.updateTime, appUpdate.fileList)
         }
     }
 }

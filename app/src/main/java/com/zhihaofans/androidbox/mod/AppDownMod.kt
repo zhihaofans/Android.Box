@@ -138,16 +138,22 @@ class AppDownMod {
         }
 
         private fun coolapkRelease(packageName: String): CoolapkAppInfo? {
-            val appUpdates = mutableListOf<AppUpdate>()
-            val doc = Jsoup.connect("https://www.coolapk.com/apk/").get()
+            val webUrl = "https://www.coolapk.com/apk/$packageName"
+            val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
             val title = jsoupUtil.title()
             return if (title == "出错了") {
+                val body = jsoupUtil.html("body")
                 val a = jsoupUtil.html("p.detail_app_title")
+                val b = body.indexOf("window.location.href = \"") + 24
+                val appinfoString = jsoupUtil.html("div.apk_left_title > p.apk_left_title_info:last")
+                val appInfos = appinfoString.split("<br>")
                 val appName = a.substring(0, a.indexOf("<span class=\"list_app_info\">"))
                 val appVersion = jsoupUtil.text("p.detail_app_title -> span.list_app_info")
-                //TODO:CoolapkAppInfo(appName,appVersion)
-                null
+                val downloadUrl = body.substring(b, body.indexOf("\"", b))
+                val author = if (appInfos.size != 4) "" else appInfos[3]
+                val updateTime = if (appInfos.size != 4) "" else appInfos[1]
+                CoolapkAppInfo(packageName, appName, appVersion, downloadUrl, updateTime, author, webUrl)
             } else {
                 null
             }

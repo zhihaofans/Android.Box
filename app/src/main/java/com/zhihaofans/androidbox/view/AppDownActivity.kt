@@ -252,7 +252,7 @@ class AppDownActivity : AppCompatActivity() {
             var fixedNo = 0
             appFeeds.map {
                 if (it.No != i) {
-                    appFeeds[i] = AppDownFeed(i, it.name, it.id_one, it.id_two, it.site, it.version, it.updateTime, it.fileList)
+                    appFeeds[i] = AppDownFeed(i, it.name, it.id_one, it.id_two, it.site, it.version, it.updateTime, null, it.fileList)
                     fixedNo++
                 }
                 i++

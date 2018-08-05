@@ -28,9 +28,13 @@ data class AppFeed(
 
 data class AppUpdate(
         val name: String,
+        val idOne: String,
+        val idTwo: String?,
+        val site: String,
         val description: String,
         val updateTime: String,
         val webUrl: String,
+        val packageName: String?,
         val fileList: MutableList<FileList>
 )
 

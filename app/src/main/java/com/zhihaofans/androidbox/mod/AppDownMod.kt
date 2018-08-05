@@ -87,7 +87,8 @@ class AppDownMod {
                     AppFeed(coolapk.name, coolapk.packageName, null, siteIds[1],
                             coolapk.version, coolapk.updateTime, coolapk.packageName,
                             mutableListOf(AppUpdate(
-                                    coolapk.version, coolapk.version, coolapk.updateTime, coolapk.webUrl,
+                                    coolapk.version, coolapk.packageName, null, siteIds[1],
+                                    coolapk.packageName, coolapk.updateTime, coolapk.webUrl, coolapk.packageName,
                                     fileList(siteIds[1], coolapk)
                             )
                             ))
@@ -105,13 +106,14 @@ class AppDownMod {
 
         private fun appUpdate(name: String, idOne: String, idTwo: String?, site: String, description: String?,
                               updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppUpdate {
-            return AppUpdate(name, description ?: "", updateTime, webUrl, fList
+            return AppUpdate(name, idOne, idTwo, site, description
+                    ?: "", updateTime, webUrl, null, fList
                     ?: mutableListOf())
         }
 
         private fun fileList(site: String, list: Any): MutableList<FileList> {
             val fList = mutableListOf<FileList>()
-            when (site) {
+            return when (site) {
                 siteIds[0] -> {
                     (list as MutableList<*>).map {
                         val thisItem = it as GithubReleaseItemAsset
@@ -124,15 +126,16 @@ class AppDownMod {
                                 thisItem.size, convertUtil.fileSizeInt2string(thisItem.size)
                         ))
                     }
-                    return fList
+                    fList
                 }
                 siteIds[1] -> {
                     val coolapk = list as CoolapkAppInfo
-                    return mutableListOf(FileList(coolapk.version, coolapk.version,
+                    mutableListOf(FileList(coolapk.version, coolapk.version,
                             coolapk.downloadUrl, 0, coolapk.updateTime, 0, "未知大小"
 
                     ))
                 }
+                else -> fList
             }
         }
 
@@ -234,7 +237,7 @@ class AppDownMod {
 
         fun appDownFeed(name: String, appUpdate: AppUpdate): AppDownFeed {
             return AppDownFeed(getAppFeeds().size, name, appUpdate.idOne, appUpdate.idTwo,
-                    appUpdate.site, appUpdate.name, appUpdate.updateTime, appUpdate.fileList)
+                    appUpdate.site, appUpdate.name, appUpdate.updateTime, appUpdate.packageName, appUpdate.fileList)
         }
     }
 }

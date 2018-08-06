@@ -95,13 +95,13 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun add() {
-        val sites = siteParser.getSites()
-        val feedSiteList = siteParser.getSiteIds()
+        val sites = siteParser.getSiteIds()
+        val feedSiteList = siteParser.getSiteNames()
         var site: String
         selector("Site", feedSiteList) { _: DialogInterface, i: Int ->
             when (i) {
                 0 -> {
-                    site = sites[0]["id"].toString()
+                    site = sites[i]
                     alert {
                         title = "Add feed"
                         customView {
@@ -130,13 +130,36 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
+                1 -> {
+                    site = sites[i]
+                    alert {
+                        title = "Add feed"
+                        customView {
+                            verticalLayout {
+                                textView("Package name:")
+                                val inputOne = editText("com.zhihaofans.shortcutapp")
+                                okButton {
+                                    val idOne = inputOne.text.toString()
+                                    if (idOne.isEmpty()) {
+                                        toast("请输入包名")
+                                    } else {
+                                        addFeed(site, idOne)
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }.show()
+                }
             }
 
         }
     }
 
     private fun addFeed(site: String, idOne: String, idTwo: String? = null) {
-        val loadingProgressBarAddFeed = indeterminateProgressDialog(message = "$site : " + if (idTwo.isNullOrEmpty()) idOne else idTwo, title = "Loading...")
+        val loadingProgressBarAddFeed = indeterminateProgressDialog(message = "$site : " +
+                if (idTwo.isNullOrEmpty()) idOne else idTwo, title = "Loading...")
         loadingProgressBarAddFeed.setCancelable(false)
         loadingProgressBarAddFeed.setCanceledOnTouchOutside(false)
         loadingProgressBarAddFeed.show()

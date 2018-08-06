@@ -34,6 +34,7 @@ class AppDownMod {
                 mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1")// Github releases
         )
         private val siteIds = sites.map { it["id"].toString() }
+        private val siteNames = sites.map { it["id"].toString() }
         fun init(context: Context): Context? {
             this.mcontext = context
             return this.mcontext
@@ -45,6 +46,10 @@ class AppDownMod {
 
         fun getSiteIds(): List<String> {
             return siteIds
+        }
+
+        fun getSiteNames(): List<String> {
+            return siteNames
         }
 
         fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppUpdate>? {

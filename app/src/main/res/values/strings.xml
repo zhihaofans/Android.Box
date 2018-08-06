@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Android.Box</string>
+    <string name="app_name">Android.Box</string>
     <string name="text_copy">Copy</string>
     <string name="text_finish">Finished</string>
     <string name="text_canceled_by_user">Cancel by user.</string>

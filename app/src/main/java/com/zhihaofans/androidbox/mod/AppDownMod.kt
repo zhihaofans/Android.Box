@@ -49,7 +49,7 @@ class AppDownMod {
 
         fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppUpdate>? {
             val siteId = getSites().map { it["id"] }
-            val resultList: MutableList<AppUpdate>
+            var resultList = mutableListOf<AppUpdate>()
             when (site) {
                 siteId[0] -> {
                     when {
@@ -63,7 +63,6 @@ class AppDownMod {
                                         this.fileList("GITHUB_RELEASES", it.assets)
                                 )
                             }.toMutableList()
-                            return resultList
                         }
                     }
                 }
@@ -72,29 +71,26 @@ class AppDownMod {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
                             val coolapkReleaseResult = coolapkRelease(idOne)
-                            return appFeed(coolapkReleaseResult)
+                            resultList.add(appUpdate(appFeed(coolapkReleaseResult!!)))
                         }
                     }
                 }
                 else -> return null
             }
+            return resultList
         }
 
-        private fun appFeed(siteResult: Any): AppFeed? {
-            return when (siteResult.javaClass.toString()) {
-                "CoolapkAppInfo" -> {
-                    val coolapk = siteResult as CoolapkAppInfo
-                    AppFeed(coolapk.name, coolapk.packageName, null, siteIds[1],
-                            coolapk.version, coolapk.updateTime, coolapk.packageName,
-                            mutableListOf(AppUpdate(
-                                    coolapk.version, coolapk.packageName, null, siteIds[1],
-                                    coolapk.packageName, coolapk.updateTime, coolapk.webUrl, coolapk.packageName,
-                                    fileList(siteIds[1], coolapk)
-                            )
-                            ))
-                }
-                else -> null
-            }
+        private fun appFeed(coolapk: CoolapkAppInfo): AppFeed {
+            return AppFeed(coolapk.name, coolapk.packageName, null, siteIds[1],
+                    coolapk.version, coolapk.updateTime, coolapk.packageName, coolapk.webUrl,
+                    mutableListOf(AppUpdate(
+                            coolapk.version, coolapk.packageName, null, siteIds[1],
+                            coolapk.packageName, coolapk.updateTime, coolapk.webUrl, coolapk.packageName,
+                            fileList(siteIds[1], coolapk)
+                    )
+                    ))
+
+
         }
 
         private fun appUpdate(appDownFeed: AppDownFeed): AppUpdate {
@@ -102,6 +98,13 @@ class AppDownMod {
                     appDownFeed.id_two, appDownFeed.site,
                     appDownFeed.name, appDownFeed.updateTime,
                     appDownFeed.updateTime, appDownFeed.fileList)
+        }
+
+        private fun appUpdate(appFeed: AppFeed): AppUpdate {
+            return this.appUpdate(appFeed.name, appFeed.id_one,
+                    appFeed.id_two, appFeed.site,
+                    appFeed.name, appFeed.updateTime,
+                    appFeed.webUrl, appFeed.appUpdate[0].fileList)
         }
 
         private fun appUpdate(name: String, idOne: String, idTwo: String?, site: String, description: String?,

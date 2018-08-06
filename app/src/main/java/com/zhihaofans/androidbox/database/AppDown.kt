@@ -23,6 +23,7 @@ data class AppFeed(
         val version: String,
         val updateTime: String,
         val packageName: String?,
+        val webUrl: String,
         val appUpdate: MutableList<AppUpdate>
 )
 

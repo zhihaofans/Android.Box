@@ -96,7 +96,7 @@ class AppDownActivity : AppCompatActivity() {
 
     private fun add() {
         val sites = siteParser.getSites()
-        val feedSiteList = sites.map { it["name"].toString() }
+        val feedSiteList = siteParser.getSiteIds()
         var site: String
         selector("Site", feedSiteList) { _: DialogInterface, i: Int ->
             when (i) {

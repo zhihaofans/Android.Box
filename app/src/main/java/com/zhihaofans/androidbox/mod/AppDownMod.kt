@@ -5,12 +5,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.database.AppDownFeed
-import com.zhihaofans.androidbox.database.AppFeed
-import com.zhihaofans.androidbox.database.AppUpdate
+import com.zhihaofans.androidbox.database.AppInfo
 import com.zhihaofans.androidbox.database.FileList
-import com.zhihaofans.androidbox.gson.CoolapkAppInfo
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
-import com.zhihaofans.androidbox.gson.GithubReleaseItemAsset
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import io.paperdb.Paper
@@ -26,6 +23,7 @@ import java.io.IOException
 class AppDownMod {
 
     class SiteParser {
+        private val s = Site()
         private val convertUtil = ConvertUtil()
         private val g = Gson()
         private var mcontext: Context? = null
@@ -34,7 +32,7 @@ class AppDownMod {
                 mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1")// Github releases
         )
         private val siteIds = sites.map { it["id"].toString() }
-        private val siteNames = sites.map { it["id"].toString() }
+        private val siteNames = sites.map { it["name"].toString() }
         fun init(context: Context): Context? {
             this.mcontext = context
             return this.mcontext
@@ -52,105 +50,36 @@ class AppDownMod {
             return siteNames
         }
 
-        fun getAppUpdates(site: String, idOne: String, idTwo: String? = null): MutableList<AppUpdate>? {
-            val siteId = getSites().map { it["id"] }
-            var resultList = mutableListOf<AppUpdate>()
+        fun getApp(site: String, idOne: String, idTwo: String? = null): AppInfo? {
             when (site) {
-                siteId[0] -> {
+                siteIds[0] -> {
                     when {
                         idOne.isEmpty() -> throw Exception("Author cannot empty")
                         idTwo.isNullOrEmpty() -> throw Exception("project cannot empty or null")
                         else -> {
-                            val githubReleaseResult = githubRelease(idOne, idTwo!!)
-                            resultList = githubReleaseResult.map {
-                                this.appUpdate(if (it.name.isNullOrEmpty()) it.tag_name else it.name.toString(),
-                                        idOne, idTwo, site, it.body, it.published_at, it.html_url,
-                                        this.fileList("GITHUB_RELEASES", it.assets)
-                                )
-                            }.toMutableList()
+                            return s.githubRelease(idOne, idTwo!!)
                         }
                     }
                 }
-                siteId[1] -> {
+                siteIds[1] -> {
                     when {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
-                            val coolapkReleaseResult = coolapkRelease(idOne)
-                            resultList.add(appUpdate(appFeed(coolapkReleaseResult!!)))
+                            return s.coolapkRelease(idOne)
                         }
                     }
                 }
-                else -> return null
             }
-            return resultList
+            return null
         }
 
-        private fun appFeed(coolapk: CoolapkAppInfo): AppFeed {
-            return AppFeed(coolapk.name, coolapk.packageName, null, siteIds[1],
-                    coolapk.version, coolapk.updateTime, coolapk.packageName, coolapk.webUrl,
-                    mutableListOf(AppUpdate(
-                            coolapk.version, coolapk.packageName, null, siteIds[1],
-                            coolapk.packageName, coolapk.updateTime, coolapk.webUrl, coolapk.packageName,
-                            fileList(siteIds[1], coolapk)
-                    )
-                    ))
+    }
 
-
-        }
-
-        private fun appUpdate(appDownFeed: AppDownFeed): AppUpdate {
-            return this.appUpdate(appDownFeed.name, appDownFeed.id_one,
-                    appDownFeed.id_two, appDownFeed.site,
-                    appDownFeed.name, appDownFeed.updateTime,
-                    appDownFeed.updateTime, appDownFeed.fileList)
-        }
-
-        private fun appUpdate(appFeed: AppFeed): AppUpdate {
-            return this.appUpdate(appFeed.name, appFeed.id_one,
-                    appFeed.id_two, appFeed.site,
-                    appFeed.name, appFeed.updateTime,
-                    appFeed.webUrl, appFeed.appUpdate[0].fileList)
-        }
-
-        private fun appUpdate(name: String, idOne: String, idTwo: String?, site: String, description: String?,
-                              updateTime: String, webUrl: String = "", fList: MutableList<FileList>?): AppUpdate {
-            return AppUpdate(name, idOne, idTwo, site, description
-                    ?: "", updateTime, webUrl, null, fList
-                    ?: mutableListOf())
-        }
-
-        private fun fileList(site: String, list: Any): MutableList<FileList> {
-            val fList = mutableListOf<FileList>()
-            return when (site) {
-                siteIds[0] -> {
-                    (list as MutableList<*>).map {
-                        val thisItem = it as GithubReleaseItemAsset
-                        fList.add(FileList(
-                                thisItem.id.toString(),
-                                thisItem.name,
-                                thisItem.browser_download_url,
-                                thisItem.download_count,
-                                thisItem.updated_at,
-                                thisItem.size, convertUtil.fileSizeInt2string(thisItem.size)
-                        ))
-                    }
-                    fList
-                }
-                siteIds[1] -> {
-                    val coolapk = list as CoolapkAppInfo
-                    mutableListOf(FileList(coolapk.version, coolapk.version,
-                            coolapk.downloadUrl, 0, coolapk.updateTime, 0, "未知大小"
-
-                    ))
-                }
-                else -> fList
-            }
-        }
-
-        private fun githubRelease(author: String, project: String): List<GithubReleaseItem> {
-            val site = sites[0]["id"].toString()
+    class Site {
+        private val g = Gson()
+        private val convertUtil = ConvertUtil()
+        fun githubRelease(author: String, project: String): AppInfo? {
             val apiUrl = "https://api.github.com/repos/$author/$project/releases"
-            val releasesList = mutableListOf<GithubReleaseItem>()
             val client = OkHttpClient()
             val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl)
             val request = requestBuilder.build()
@@ -158,36 +87,55 @@ class AppDownMod {
             return try {
                 val response = call.execute()
                 if (response.body() == null) {
-                    releasesList
+                    null
                 } else {
                     val jsonData = response.body()!!.string()
-                    val type = object : TypeToken<ArrayList<GithubReleaseItem>>() {}.type
-                    val githubRelease: List<GithubReleaseItem> = g.fromJson(jsonData, type)
-                    githubRelease
+                    val type = object : TypeToken<List<GithubReleaseItem>>() {}.type
+                    val github: List<GithubReleaseItem> = g.fromJson(jsonData, type)
+                    if (github.isEmpty()) {
+                        null
+                    } else {
+                        val lastRelease = github[0]
+                        AppInfo(author, project, project, "GITHUB_RELEASES", lastRelease.name.toString(), lastRelease.published_at, null,
+                                lastRelease.html_url, lastRelease.assets.map {
+                            FileList(
+                                    it.name,
+                                    it.browser_download_url,
+                                    it.download_count.toString(),
+                                    it.updated_at,
+                                    convertUtil.fileSizeInt2string(it.size)
+                            )
+                        }.toMutableList())
+                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                releasesList
+                null
             }
         }
 
-        private fun coolapkRelease(packageName: String): CoolapkAppInfo? {
+        fun coolapkRelease(packageName: String): AppInfo? {
             val webUrl = "https://www.coolapk.com/apk/$packageName"
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
             val title = jsoupUtil.title()
-            return if (title == "出错了") {
+            return if (title != "出错了") {
                 val body = jsoupUtil.html("body")
                 val a = jsoupUtil.html("p.detail_app_title")
                 val b = body.indexOf("window.location.href = \"") + 24
-                val appinfoString = jsoupUtil.html("div.apk_left_title > p.apk_left_title_info:last")
-                val appInfos = appinfoString.split("<br>")
+                val c = jsoupUtil.html("p.apk_topba_message").split(" / ")
+                val appInfos = jsoupUtil.html("div.apk_left_title > p.apk_left_title_info:eq(1)").split("<br>")
+                Logger.d("appInfos:$appInfos")
                 val appName = a.substring(0, a.indexOf("<span class=\"list_app_info\">"))
-                val appVersion = jsoupUtil.text("p.detail_app_title -> span.list_app_info")
+                val appVersion = jsoupUtil.text("p.detail_app_title > span.list_app_info")
+                val appSize = c[0]
                 val downloadUrl = body.substring(b, body.indexOf("\"", b))
-                val author = if (appInfos.size != 4) "" else appInfos[3]
-                val updateTime = if (appInfos.size != 4) "" else appInfos[1]
-                CoolapkAppInfo(packageName, appName, appVersion, downloadUrl, updateTime, author, webUrl)
+                //val author = if (appInfos.size != 4) "" else appInfos[3].split("：")[1]
+                val updateTime = if (appInfos.size != 4) "" else appInfos[1].split("：")[1]
+                val downCount = c[1]
+                AppInfo(packageName, null, appName, "COOLAPK_WEB", appVersion, updateTime, packageName, webUrl,
+                        mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))
+                )
             } else {
                 null
             }
@@ -197,7 +145,6 @@ class AppDownMod {
     class DataBase {
         private val dataBaseName = "app_down"
         private var book = Paper.book(dataBaseName)
-        private var dataBasePath = book.path
         private val g = Gson()
         private fun write(file: String, dataBase: Any) {
             book.write(file, dataBase)
@@ -221,10 +168,10 @@ class AppDownMod {
             return getAppFeeds() == feeds
         }
 
-        fun addFeed(name: String, appUpdate: AppUpdate): Boolean {
+        fun addFeed(appDownFeed: AppDownFeed): Boolean {
             val dataBase = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBase")
-            dataBase.add(appDownFeed(name, appUpdate))
+            dataBase.add(appDownFeed)
             this.write("feeds", dataBase)
             val dataBaseNew = this.getAppFeeds()
             Logger.d("appDownFeed:$dataBaseNew")
@@ -259,9 +206,11 @@ class AppDownMod {
             return g.toJson(dataBase)
         }
 
-        fun appDownFeed(name: String, appUpdate: AppUpdate): AppDownFeed {
-            return AppDownFeed(getAppFeeds().size, name, appUpdate.idOne, appUpdate.idTwo,
-                    appUpdate.site, appUpdate.name, appUpdate.updateTime, appUpdate.packageName, appUpdate.fileList)
+    }
+
+    class Other {
+        fun appInfo2AppFeed(name: String, appInfo: AppInfo): AppDownFeed {
+            return AppDownFeed(name, appInfo.id_one, appInfo.id_two, appInfo.site, appInfo.version, appInfo.updateTime, appInfo.packageName, appInfo.webUrl, appInfo.fileList)
         }
     }
 }

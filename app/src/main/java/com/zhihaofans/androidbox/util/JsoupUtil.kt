@@ -19,7 +19,7 @@ class JsoupUtil(inputDom: Document) {
         return ""
     }
     fun title(): String {
-        return this.text("head -> title")
+        return this.text("head > title")
     }
 
     fun html(cssQuery: String): String {

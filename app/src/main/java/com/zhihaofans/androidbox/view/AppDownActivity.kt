@@ -25,6 +25,7 @@ class AppDownActivity : AppCompatActivity() {
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()
+    private val other = AppDownMod.Other()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
@@ -49,11 +50,10 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }
                     2 -> {
-                        selector("数据库", listOf("修复", "导入", "导出")) { _: DialogInterface, ii: Int ->
+                        selector("数据库", listOf("导入", "导出")) { _: DialogInterface, ii: Int ->
                             when (ii) {
-                                0 -> fixDatabase()
-                                1 -> importDB()
-                                2 -> exportDB()
+                                0 -> importDB()
+                                1 -> exportDB()
                             }
                         }
                     }
@@ -75,7 +75,7 @@ class AppDownActivity : AppCompatActivity() {
                 alert {
                     title = clickedApp.name
                     message = "Version: ${clickedApp.version}\nUpdate time: ${clickedApp.updateTime}"
-                    negativeButton(R.string.text_download) {
+                    negativeButton(R.string.text_download) { _ ->
                         val fileList = clickedApp.fileList
                         selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
                             val file = fileList[fileIndex]
@@ -85,11 +85,16 @@ class AppDownActivity : AppCompatActivity() {
                             alert {
                                 title = getString(R.string.text_download) + "?"
                                 message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
-                                yesButton {
+                                positiveButton(R.string.text_download) {
                                     val url = file.url
-                                    downloadFile(url, fileName)
+                                    when (clickedApp.site) {
+                                        "COOLAPK_WEB" -> downloadFile(url, fileName, true)
+                                        else -> downloadFile(url, fileName)
+                                    }
                                 }
-                                noButton { }
+                                negativeButton(R.string.text_open_web) {
+                                    browse(clickedApp.webUrl)
+                                }
                             }.show()
                         }
                     }
@@ -120,17 +125,10 @@ class AppDownActivity : AppCompatActivity() {
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     val idTwo = inputTwo.text.toString()
-                                    when (site) {
-                                        "GITHUB_RELEASES" -> {
-                                            if (idOne.isEmpty() || idTwo.isEmpty()) {
-                                                toast("请输入内容")
-                                            } else {
-                                                addFeed(site, idOne, idTwo)
-                                            }
-                                        }
-                                        else -> {
-                                            toast("Unknown site")
-                                        }
+                                    if (idOne.isEmpty() || idTwo.isEmpty()) {
+                                        toast("请输入内容")
+                                    } else {
+                                        addFeed(site, idOne, idTwo)
                                     }
                                 }
                             }
@@ -138,7 +136,6 @@ class AppDownActivity : AppCompatActivity() {
                     }.show()
                 }
                 1 -> {
-                    /*
                     site = sites[i]
                     alert {
                         title = "Add feed"
@@ -159,9 +156,6 @@ class AppDownActivity : AppCompatActivity() {
                             }
                         }
                     }.show()
-
-                     */
-                    snackbar("暂不支持")
                 }
             }
 
@@ -175,31 +169,26 @@ class AppDownActivity : AppCompatActivity() {
         loadingProgressBarAddFeed.setCanceledOnTouchOutside(false)
         loadingProgressBarAddFeed.show()
         doAsync {
-            val appDownList = appDownSiteParser.getAppUpdates(site, idOne, idTwo)
-            Logger.d("appDownList:${appDownList?.size}")
+            val appInfo = appDownSiteParser.getApp(site, idOne, idTwo)
             uiThread {
                 loadingProgressBarAddFeed.dismiss()
                 try {
-                    when {
-                        appDownList == null -> {
+                    when (appInfo) {
+                        null -> {
                             snackbar("appDownList is null")
                             Logger.e("appDownList is null")
                         }
-                        appDownList.size == 0 -> {
-                            snackbar("appDownList is empty")
-                            Logger.e("appDownList is empty")
-                        }
                         else -> {
-                            var appName = idTwo ?: idOne
+                            var appName = appInfo.appName
                             alert {
                                 title = "请输入名称用于备注，不输入则为默认名称"
-                                message = "$site:$idOne${if (idTwo.isNullOrEmpty()) "" else "/$idTwo"}\n共有 ${appDownList.size} 个更新。"
+                                message = "$site:$idOne${if (idTwo.isNullOrEmpty()) "" else "/$idTwo"}"
                                 customView {
                                     verticalLayout {
                                         val inputName = editText(appName)
                                         okButton {
                                             appName = if (inputName.text.isEmpty()) appName else inputName.text.toString()
-                                            if (dataBase.addFeed(appName, appDownList[0])) {
+                                            if (dataBase.addFeed(other.appInfo2AppFeed(appName, appInfo))) {
                                                 snackbar("添加成功，刷新订阅列表")
                                             } else {
                                                 snackbar("添加失败，刷新订阅列表")
@@ -238,30 +227,24 @@ class AppDownActivity : AppCompatActivity() {
         loadingProgressBarUpdate.show()
         var appDownFeed = appFeeds[index]
         doAsync {
-            val appDownList = appDownSiteParser.getAppUpdates(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
+            val appInfo = appDownSiteParser.getApp(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
             uiThread {
-                Logger.d("appDownList:${appDownList?.size}")
                 loadingProgressBarUpdate.dismiss()
                 when {
-                    appDownList == null -> {
+                    appInfo == null -> {
                         snackbar("(checkUpdate)appDownList is null")
                         Logger.e("(checkUpdate)appDownList is null")
                     }
-                    appDownList.size == 0 -> {
-                        snackbar("(checkUpdate)appDownList is empty")
-                        Logger.e("(checkUpdate)appDownList is empty")
-                    }
                     else -> {
-                        if (appDownList[0].name == appDownFeed.version) {
-                            if (appDownList[0].updateTime == appDownFeed.updateTime) {
+                        if (appInfo.version == appDownFeed.version) {
+                            if (appInfo.updateTime == appDownFeed.updateTime) {
                                 snackbar("没有变动")
                             } else {
-                                appDownFeed = dataBase.appDownFeed(appDownFeed.name, appDownList[0])
+                                appDownFeed = other.appInfo2AppFeed(appDownFeed.name, appInfo)
                                 snackbar("发现最近一个版本更新时间发生变化")
-
                             }
                         } else {
-                            appDownFeed = dataBase.appDownFeed(appDownFeed.name, appDownList[0])
+                            appDownFeed = other.appInfo2AppFeed(appDownFeed.name, appInfo)
                             snackbar("发现新版本")
                         }
                     }
@@ -273,30 +256,6 @@ class AppDownActivity : AppCompatActivity() {
         }
     }
 
-    private fun fixDatabase() {
-        val loadingProgressBarFixData = indeterminateProgressDialog("Loading database", "Try to fix database")
-        loadingProgressBarFixData.setCancelable(false)
-        loadingProgressBarFixData.setCanceledOnTouchOutside(false)
-        loadingProgressBarFixData.show()
-        initList()
-        if (appFeeds.size == 0) {
-            loadingProgressBarFixData.dismiss()
-        } else {
-            var i = 0
-            var fixedNo = 0
-            appFeeds.map {
-                if (it.No != i) {
-                    appFeeds[i] = AppDownFeed(i, it.name, it.id_one, it.id_two, it.site, it.version, it.updateTime, null, it.fileList)
-                    fixedNo++
-                }
-                i++
-                it
-            }
-            dataBase.updateFeedList(appFeeds)
-            loadingProgressBarFixData.dismiss()
-            snackbar("修复完毕，发现 $fixedNo 个序号错误的订阅")
-        }
-    }
 
     private fun importDB() {
         alert {
@@ -345,6 +304,10 @@ class AppDownActivity : AppCompatActivity() {
 
     private fun snackbar(text: String, longTime: Boolean = false, button: String = "Button", listener: View.OnClickListener) {
         Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).setAction(button, listener).show()
+    }
+
+    private fun downloadFile(url: String, fileName: String, addApk2end: Boolean) {
+        downloadFile(url, fileName + if (addApk2end) ".apk" else "")
     }
 
     private fun downloadFile(url: String, fileName: String) {

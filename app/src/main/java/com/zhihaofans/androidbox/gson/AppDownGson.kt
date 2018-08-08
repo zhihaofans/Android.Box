@@ -30,13 +30,3 @@ data class GithubReleaseItemAsset(
         val browser_download_url: String
 
 )
-
-data class CoolapkAppInfo(
-        val packageName: String,
-        val name: String,
-        val version: String,
-        val downloadUrl: String,
-        val updateTime: String,
-        val author: String,
-        val webUrl: String
-)

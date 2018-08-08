@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -23,12 +22,12 @@ import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
-import java.io.*
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 /**
@@ -37,6 +36,10 @@ import java.util.*
  * @date 2018/1/5
  */
 class SystemUtil {
+    fun debug(context: Context): Boolean {
+        return this.isApkDebugable(context)
+    }
+
     fun isAppInstalled(context: Context, packageName: String): Boolean {
         return PackageUtils.isInsatalled(context, packageName)
     }

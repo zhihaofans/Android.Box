@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -16,9 +15,6 @@ import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
-import me.weyye.hipermission.HiPermission
-import me.weyye.hipermission.PermissionCallback
-import me.weyye.hipermission.PermissionItem
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
@@ -35,7 +31,7 @@ class AppDownActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initList()
         fab.setOnClickListener { view ->
-            val fabAction = mutableListOf("Add feed", getString(R.string.text_delete), "Fix database", "Backup database")
+            val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
             selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> add()
@@ -52,15 +48,21 @@ class AppDownActivity : AppCompatActivity() {
                             }.show()
                         }
                     }
-                    2 -> fixDatabase()
-                    3 -> backupDB()
+                    2 -> {
+                        selector("数据库", listOf("修复", "导入", "导出")) { _: DialogInterface, ii: Int ->
+                            when (ii) {
+                                0 -> fixDatabase()
+                                1 -> importDB()
+                                2 -> exportDB()
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
     private fun initList() {
-        Logger.d("export2json:" + dataBase.export2json())
         listView_app.adapter = null
         appFeeds = dataBase.getAppFeeds()
         if (appFeeds.size == 0) {
@@ -136,6 +138,7 @@ class AppDownActivity : AppCompatActivity() {
                     }.show()
                 }
                 1 -> {
+                    /*
                     site = sites[i]
                     alert {
                         title = "Add feed"
@@ -156,6 +159,9 @@ class AppDownActivity : AppCompatActivity() {
                             }
                         }
                     }.show()
+
+                     */
+                    snackbar("暂不支持")
                 }
             }
 
@@ -292,40 +298,45 @@ class AppDownActivity : AppCompatActivity() {
         }
     }
 
-    private fun backupDB() {
-        val loading = indeterminateProgressDialog("Permission", "Backup database")
-        loading.setCancelable(false)
-        loading.setCanceledOnTouchOutside(false)
-        loading.show()
-        HiPermission.create(this)
-                .permissions(mutableListOf(
-                        PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.text_permission_storage), R.drawable.permission_ic_storage)
-                ))
-                .checkMutiPermission(object : PermissionCallback {
-                    override fun onFinish() {
-                        loading.setMessage("Backup...")
-
+    private fun importDB() {
+        alert {
+            title = "导入数据库"
+            message = "请复制"
+            customView {
+                verticalLayout {
+                    val input = editText()
+                    input.setSingleLine(true)
+                    yesButton {
+                        if (dataBase.importJson(input.text.toString())) {
+                            initList()
+                            snackbar("导入成功")
+                        } else {
+                            snackbar("导入失败，请检查备份是否完整")
+                        }
                     }
+                    cancelButton { }
+                }
+            }
+        }.show()
+    }
 
-                    override fun onClose() {
-                        Logger.i("onClose")
-                        loading.dismiss()
-                        Snackbar.make(coordinatorLayout_appdown, "用户关闭权限申请", Snackbar.LENGTH_SHORT)
-                    }
-
-                    override fun onDeny(permission: String, position: Int) {
-                        Logger.d("onDeny")
-                        loading.dismiss()
-                        toast("权限申请失败")
-                        Snackbar.make(coordinatorLayout_appdown, "权限申请失败", Snackbar.LENGTH_SHORT)
-                    }
-
-                    override fun onGuarantee(permission: String, position: Int) {
-                        Logger.d("onGuarantee")
-                        loading.dismiss()
-                        Snackbar.make(coordinatorLayout_appdown, "Error:onGuarantee($position)", Snackbar.LENGTH_SHORT)
-                    }
-                })
+    private fun exportDB() {
+        val db = dataBase.export2json()
+        Logger.d("export2json:$db")
+        alert {
+            title = "导出数据库"
+            message = "请复制"
+            customView {
+                verticalLayout {
+                    val input = editText(db)
+                    input.setSingleLine(true)
+                }
+                positiveButton(R.string.text_copy) {
+                    ClipboardUtils.copy(this@AppDownActivity, db)
+                    snackbar("已复制")
+                }
+            }
+        }.show()
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {

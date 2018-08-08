@@ -198,6 +198,7 @@ class AppDownMod {
         private val dataBaseName = "app_down"
         private var book = Paper.book(dataBaseName)
         private var dataBasePath = book.path
+        private val g = Gson()
         private fun write(file: String, dataBase: Any) {
             book.write(file, dataBase)
         }
@@ -244,13 +245,18 @@ class AppDownMod {
             }
         }
 
+        fun importJson(json: String): Boolean {
+            return try {
+                val db = g.fromJson(json, Array<AppDownFeed>::class.java).toMutableList()
+                this.updateFeedList(db)
+            } catch (e: Exception) {
+                false
+            }
+        }
+
         fun export2json(): String {
             val dataBase = getAppFeeds()
-            val g = Gson()
-            val jsonList = dataBase.map {
-                g.toJson(it, AppDownFeed::class.java)
-            }
-            return g.toJson(jsonList)
+            return g.toJson(dataBase)
         }
 
         fun appDownFeed(name: String, appUpdate: AppUpdate): AppDownFeed {

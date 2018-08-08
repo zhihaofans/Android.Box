@@ -197,6 +197,7 @@ class AppDownMod {
     class DataBase {
         private val dataBaseName = "app_down"
         private var book = Paper.book(dataBaseName)
+        private var dataBasePath = book.path
         private fun write(file: String, dataBase: Any) {
             book.write(file, dataBase)
         }
@@ -241,6 +242,15 @@ class AppDownMod {
                 Logger.e("Not this feed item")
                 false
             }
+        }
+
+        fun export2json(): String {
+            val dataBase = getAppFeeds()
+            val g = Gson()
+            val jsonList = dataBase.map {
+                g.toJson(it, AppDownFeed::class.java)
+            }
+            return g.toJson(jsonList)
         }
 
         fun appDownFeed(name: String, appUpdate: AppUpdate): AppDownFeed {

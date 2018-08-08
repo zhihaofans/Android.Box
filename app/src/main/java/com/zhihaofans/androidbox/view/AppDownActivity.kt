@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -7,14 +8,17 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
+import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
-import com.wx.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
+import me.weyye.hipermission.HiPermission
+import me.weyye.hipermission.PermissionCallback
+import me.weyye.hipermission.PermissionItem
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
@@ -31,7 +35,7 @@ class AppDownActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initList()
         fab.setOnClickListener { view ->
-            val fabAction = mutableListOf("Add feed", getString(R.string.text_delete), "Fix database")
+            val fabAction = mutableListOf("Add feed", getString(R.string.text_delete), "Fix database", "Backup database")
             selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> add()
@@ -49,13 +53,14 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }
                     2 -> fixDatabase()
-
+                    3 -> backupDB()
                 }
             }
         }
     }
 
     private fun initList() {
+        Logger.d("export2json:" + dataBase.export2json())
         listView_app.adapter = null
         appFeeds = dataBase.getAppFeeds()
         if (appFeeds.size == 0) {
@@ -285,6 +290,42 @@ class AppDownActivity : AppCompatActivity() {
             loadingProgressBarFixData.dismiss()
             snackbar("修复完毕，发现 $fixedNo 个序号错误的订阅")
         }
+    }
+
+    private fun backupDB() {
+        val loading = indeterminateProgressDialog("Permission", "Backup database")
+        loading.setCancelable(false)
+        loading.setCanceledOnTouchOutside(false)
+        loading.show()
+        HiPermission.create(this)
+                .permissions(mutableListOf(
+                        PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.text_permission_storage), R.drawable.permission_ic_storage)
+                ))
+                .checkMutiPermission(object : PermissionCallback {
+                    override fun onFinish() {
+                        loading.setMessage("Backup...")
+
+                    }
+
+                    override fun onClose() {
+                        Logger.i("onClose")
+                        loading.dismiss()
+                        Snackbar.make(coordinatorLayout_appdown, "用户关闭权限申请", Snackbar.LENGTH_SHORT)
+                    }
+
+                    override fun onDeny(permission: String, position: Int) {
+                        Logger.d("onDeny")
+                        loading.dismiss()
+                        toast("权限申请失败")
+                        Snackbar.make(coordinatorLayout_appdown, "权限申请失败", Snackbar.LENGTH_SHORT)
+                    }
+
+                    override fun onGuarantee(permission: String, position: Int) {
+                        Logger.d("onGuarantee")
+                        loading.dismiss()
+                        Snackbar.make(coordinatorLayout_appdown, "Error:onGuarantee($position)", Snackbar.LENGTH_SHORT)
+                    }
+                })
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {

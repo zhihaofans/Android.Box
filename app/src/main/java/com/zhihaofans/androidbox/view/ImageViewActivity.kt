@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.ProgressDialog
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle

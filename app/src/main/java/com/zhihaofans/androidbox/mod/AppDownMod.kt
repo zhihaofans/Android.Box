@@ -24,8 +24,6 @@ class AppDownMod {
 
     class SiteParser {
         private val s = Site()
-        private val convertUtil = ConvertUtil()
-        private val g = Gson()
         private var mcontext: Context? = null
         private val sites: List<Map<String, String>> = mutableListOf(
                 mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
@@ -96,7 +94,10 @@ class AppDownMod {
                         null
                     } else {
                         val lastRelease = github[0]
-                        AppInfo(author, project, project, "GITHUB_RELEASES", lastRelease.name.toString(), lastRelease.published_at, null,
+                        Logger.d(lastRelease)
+
+                        AppInfo(author, project, project, "GITHUB_RELEASES", if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
+                                ?: lastRelease.tag_name), convertUtil.githubUtc2Local(lastRelease.published_at), null,
                                 lastRelease.html_url, lastRelease.assets.map {
                             FileList(
                                     it.name,
@@ -105,7 +106,8 @@ class AppDownMod {
                                     it.updated_at,
                                     convertUtil.fileSizeInt2string(it.size)
                             )
-                        }.toMutableList())
+                        }.toMutableList()
+                        )
                     }
                 }
             } catch (e: IOException) {
@@ -131,7 +133,7 @@ class AppDownMod {
                 val appSize = c[0]
                 val downloadUrl = body.substring(b, body.indexOf("\"", b))
                 //val author = if (appInfos.size != 4) "" else appInfos[3].split("：")[1]
-                val updateTime = if (appInfos.size != 4) "" else appInfos[1].split("：")[1]
+                val updateTime = if (appInfos.size != 4) "" else (appInfos[1].split("：")[1]).replace("-", "/")
                 val downCount = c[1]
                 AppInfo(packageName, null, appName, "COOLAPK_WEB", appVersion, updateTime, packageName, webUrl,
                         mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))
@@ -159,7 +161,6 @@ class AppDownMod {
         }
 
         fun getAppFeeds(): MutableList<AppDownFeed> {
-            Logger.d(book.path)
             return book.read("feeds", mutableListOf())
         }
 

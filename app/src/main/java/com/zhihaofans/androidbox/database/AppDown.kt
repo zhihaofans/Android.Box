@@ -27,12 +27,6 @@ data class AppInfo(
         val fileList: MutableList<FileList>
 )
 
-data class AppUpdate(
-        val name: String,
-        val description: String,
-        val updateTime: String,
-        val fileList: MutableList<FileList>
-)
 
 data class FileList(
         val name: String,

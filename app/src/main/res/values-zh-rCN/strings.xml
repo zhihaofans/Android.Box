@@ -77,4 +77,7 @@
     <string name="text_check_update">检查更新</string>
     <string name="app_name">安卓盒子</string>
     <string name="text_open_web">打开网页</string>
+    <string name="text_paste">粘贴</string>
+    <string name="text_import">导入</string>
+    <string name="text_export">导出</string>
 </resources>

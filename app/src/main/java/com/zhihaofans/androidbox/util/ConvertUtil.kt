@@ -1,11 +1,13 @@
 package com.zhihaofans.androidbox.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,11 +16,30 @@ import java.util.*
  * Created by zhihaofans on 2018/7/23.
  */
 class ConvertUtil {
+    @SuppressLint("SimpleDateFormat")
+    fun githubUtc2Local(utcTime: String): String {
+        var githubUtc = utcTime
+        githubUtc = githubUtc.replace("T", " ")
+        githubUtc = githubUtc.replace("Z", " ")
+        Logger.d("githubUtc:$githubUtc")
+        val utcFormater = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")//UTC时间格式
+        utcFormater.timeZone = TimeZone.getTimeZone("UTC")
+        var gpsUTCDate: Date? = null
+        try {
+            gpsUTCDate = utcFormater.parse(githubUtc)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        val localFormater = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")//当地时间格式
+        localFormater.timeZone = TimeZone.getDefault()
+        return localFormater.format(gpsUTCDate!!.time)
+    }
 
     fun time2date(time: Long): String {
         Logger.d(time)
         return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
     }
+
     fun drawable2bitmap(context: Context, src: Int): Bitmap? {
         return BitmapFactory.decodeResource(context.resources, src)
     }
@@ -34,6 +55,7 @@ class ConvertUtil {
             falseString
         }
     }
+
     fun fileSizeInt2string(fileSize: Int): String {
         var result = fileSize.toFloat()
         var times = 0

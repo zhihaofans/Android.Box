@@ -78,4 +78,7 @@
     <string name="text_delete">Delete</string>
     <string name="text_check_update">Check update</string>
     <string name="text_open_web">Open web</string>
+    <string name="text_paste">Paste</string>
+    <string name="text_import">Import</string>
+    <string name="text_export">Export</string>
 </resources>

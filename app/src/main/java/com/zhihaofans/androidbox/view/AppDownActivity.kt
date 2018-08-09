@@ -50,7 +50,7 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }
                     2 -> {
-                        selector("数据库", listOf("导入", "导出")) { _: DialogInterface, ii: Int ->
+                        selector("数据库", listOf(getString(R.string.text_import), getString(R.string.text_export))) { _: DialogInterface, ii: Int ->
                             when (ii) {
                                 0 -> importDB()
                                 1 -> exportDB()
@@ -74,23 +74,21 @@ class AppDownActivity : AppCompatActivity() {
                 val clickedApp = appFeeds[index]
                 alert {
                     title = clickedApp.name
-                    message = "Version: ${clickedApp.version}\nUpdate time: ${clickedApp.updateTime}"
+                    message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
                     negativeButton(R.string.text_download) { _ ->
                         val fileList = clickedApp.fileList
                         selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
                             val file = fileList[fileIndex]
-                            val fileName = clickedApp.site + "_" +
+                            var fileName = clickedApp.site + "_" +
                                     clickedApp.id_one + "_" + (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") +
                                     clickedApp.version + "_" + file.name
+                            if (!file.name.endsWith(".apk")) fileName += ".apk"
                             alert {
                                 title = getString(R.string.text_download) + "?"
                                 message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
                                 positiveButton(R.string.text_download) {
                                     val url = file.url
-                                    when (clickedApp.site) {
-                                        "COOLAPK_WEB" -> downloadFile(url, fileName, true)
-                                        else -> downloadFile(url, fileName)
-                                    }
+                                    downloadFile(url, fileName)
                                 }
                                 negativeButton(R.string.text_open_web) {
                                     browse(clickedApp.webUrl)
@@ -258,14 +256,15 @@ class AppDownActivity : AppCompatActivity() {
 
 
     private fun importDB() {
+        val pasteText = ClipboardUtils.getText(this@AppDownActivity)
         alert {
             title = "导入数据库"
-            message = "请复制"
+            message = if (pasteText.isNotEmpty()) "已自动粘贴剪切板文本" else "请输入数据库备份文本"
             customView {
                 verticalLayout {
-                    val input = editText()
+                    val input = editText(pasteText)
                     input.setSingleLine(true)
-                    yesButton {
+                    positiveButton(R.string.text_import) {
                         if (dataBase.importJson(input.text.toString())) {
                             initList()
                             snackbar("导入成功")
@@ -273,7 +272,6 @@ class AppDownActivity : AppCompatActivity() {
                             snackbar("导入失败，请检查备份是否完整")
                         }
                     }
-                    cancelButton { }
                 }
             }
         }.show()
@@ -283,8 +281,7 @@ class AppDownActivity : AppCompatActivity() {
         val db = dataBase.export2json()
         Logger.d("export2json:$db")
         alert {
-            title = "导出数据库"
-            message = "请复制"
+            title = getString(R.string.text_export)
             customView {
                 verticalLayout {
                     val input = editText(db)
@@ -292,10 +289,14 @@ class AppDownActivity : AppCompatActivity() {
                 }
                 positiveButton(R.string.text_copy) {
                     ClipboardUtils.copy(this@AppDownActivity, db)
-                    snackbar("已复制")
+                    snackbar(R.string.text_copy)
                 }
             }
         }.show()
+    }
+
+    private fun snackbar(text: Int, longTime: Boolean = false) {
+        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {

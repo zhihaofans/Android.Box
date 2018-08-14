@@ -10,6 +10,7 @@ import com.zhihaofans.androidbox.database.FileList
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
+import com.zhihaofans.androidbox.util.SystemUtil
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -120,20 +121,27 @@ class AppDownMod {
             val webUrl = "https://www.coolapk.com/apk/$packageName"
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
+            val sysUtil = SystemUtil()
+            Logger.d(doc.html())
             val title = jsoupUtil.title()
             return if (title != "出错了") {
                 val body = jsoupUtil.html("body")
                 val a = jsoupUtil.html("p.detail_app_title")
                 val b = body.indexOf("window.location.href = \"") + 24
                 val c = jsoupUtil.html("p.apk_topba_message").split(" / ")
-                val appInfos = jsoupUtil.html("div.apk_left_title > p.apk_left_title_info:eq(1)").split("<br>")
-                Logger.d("appInfos:$appInfos")
+                val appInfos = jsoupUtil.html("div.apk_left_title > p.apk_left_title_info", 1).split("<br>")
+                //Logger.d("appInfos:size:${appInfos.size}\n$appInfos")
                 val appName = a.substring(0, a.indexOf("<span class=\"list_app_info\">"))
                 val appVersion = jsoupUtil.text("p.detail_app_title > span.list_app_info")
                 val appSize = c[0]
                 val downloadUrl = body.substring(b, body.indexOf("\"", b))
                 //val author = if (appInfos.size != 4) "" else appInfos[3].split("：")[1]
-                val updateTime = if (appInfos.size != 4) "" else (appInfos[1].split("：")[1]).replace("-", "/")
+                val rawTime = if (appInfos.size != 4) "" else appInfos[appInfos.size - 3].split("：")[1]
+                var newTime = if (appInfos.size != 4) "" else rawTime.replace("-", "/")
+                if (newTime.endsWith("天前")) newTime = sysUtil.datePlus(sysUtil.nowDate(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
+                        ?: 0))
+                Logger.d("rawTime:$rawTime\nnewTime:$newTime")
+                val updateTime = if (newTime.isEmpty()) rawTime else newTime
                 val downCount = c[1]
                 AppInfo(packageName, null, appName, "COOLAPK_WEB", appVersion, updateTime, packageName, webUrl,
                         mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))

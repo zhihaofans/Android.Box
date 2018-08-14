@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -28,6 +29,9 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -35,6 +39,7 @@ import java.net.URL
  * @author zhihaofans
  * @date 2018/1/5
  */
+@SuppressLint("SimpleDateFormat")
 class SystemUtil {
     fun debug(context: Context): Boolean {
         return this.isApkDebugable(context)
@@ -227,6 +232,25 @@ class SystemUtil {
 
     fun listViewAdapter(context: Context, listData: List<String>): ArrayAdapter<String> {
         return ArrayAdapter(context, android.R.layout.simple_list_item_1, listData)
+    }
+
+    fun nowDate(full: Boolean = false): String {
+        val formatter = SimpleDateFormat(if (full) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd")
+        val curDate = Date()
+        return formatter.format(curDate)
+    }
+
+    fun datePlus(day: String, Num: Int): String {
+        Logger.d(day)
+        val df = SimpleDateFormat(if (day.indexOf(":") >= 0) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd")
+        var nowDate: Date? = null
+        try {
+            nowDate = df.parse(day)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        val newDate2 = Date(nowDate!!.time + Num.toLong() * 24 * 60 * 60 * 1000)
+        return df.format(newDate2)
     }
 
 }

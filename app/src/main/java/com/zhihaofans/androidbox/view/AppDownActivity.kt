@@ -140,7 +140,7 @@ class AppDownActivity : AppCompatActivity() {
                         customView {
                             verticalLayout {
                                 textView("Package name:")
-                                val inputOne = editText("com.zhihaofans.shortcutapp")
+                                val inputOne = editText(if (sysUtil.debug(this@AppDownActivity)) "com.linroid.zlive" else "com.zhihaofans.shortcutapp")
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {

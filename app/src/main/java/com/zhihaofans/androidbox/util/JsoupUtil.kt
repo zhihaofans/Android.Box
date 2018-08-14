@@ -18,6 +18,7 @@ class JsoupUtil(inputDom: Document) {
         }
         return ""
     }
+
     fun title(): String {
         return this.text("head > title")
     }
@@ -26,6 +27,18 @@ class JsoupUtil(inputDom: Document) {
         val a = dom!!.select(cssQuery)
         if (a.isNotEmpty()) {
             val html = a.html()
+            if (html.isNotEmpty()) {
+                return html
+            }
+        }
+        return ""
+    }
+
+    fun html(cssQuery: String, index: Int): String {
+        val a = dom!!.select(cssQuery)
+        if (a.isNotEmpty()) {
+            if (a.size == 1) return html(cssQuery)
+            val html = a[index].html()
             if (html.isNotEmpty()) {
                 return html
             }

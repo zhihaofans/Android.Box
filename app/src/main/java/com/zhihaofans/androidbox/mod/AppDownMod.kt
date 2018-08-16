@@ -6,7 +6,9 @@ import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.database.AppInfo
+import com.zhihaofans.androidbox.database.AppInfoResult
 import com.zhihaofans.androidbox.database.FileList
+import com.zhihaofans.androidbox.gson.FirimApiDownloadToken
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
@@ -56,7 +58,7 @@ class AppDownMod {
                         idOne.isEmpty() -> throw Exception("Author cannot empty")
                         idTwo.isNullOrEmpty() -> throw Exception("project cannot empty or null")
                         else -> {
-                            return s.githubRelease(idOne, idTwo!!)
+                            return s.Github(idOne, idTwo!!)
                         }
                     }
                 }
@@ -64,7 +66,7 @@ class AppDownMod {
                     when {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
-                            return s.coolapkRelease(idOne)
+                            return s.CoolapkV1(idOne)
                         }
                     }
                 }
@@ -77,7 +79,7 @@ class AppDownMod {
     class Site {
         private val g = Gson()
         private val convertUtil = ConvertUtil()
-        fun githubRelease(author: String, project: String): AppInfo? {
+        fun Github(author: String, project: String): AppInfo? {
             val apiUrl = "https://api.github.com/repos/$author/$project/releases"
             val client = OkHttpClient()
             val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl)
@@ -117,7 +119,7 @@ class AppDownMod {
             }
         }
 
-        fun coolapkRelease(packageName: String): AppInfo? {
+        fun CoolapkV1(packageName: String): AppInfo? {
             val webUrl = "https://www.coolapk.com/apk/$packageName"
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
@@ -148,6 +150,76 @@ class AppDownMod {
                 )
             } else {
                 null
+            }
+        }
+
+        fun FirimV1(appId: String, apiToken: String): AppInfoResult {
+            val apiUrl = "http://api.fir.im/apps/$appId/download_token?api_token=$apiToken"
+            val client = OkHttpClient()
+            val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl)
+            val request = requestBuilder.build()
+            val call = client.newCall(request)
+            val result = AppInfoResult(false, "", -1, null)
+            if (appId.isEmpty() || apiToken.isEmpty()) {
+                result.code = 1
+                result.message = "Error: App id or Api token is empty"
+                return result
+            }
+            try {
+                val response = call.execute()
+                if (response.body() == null) {
+                    null
+                } else {
+                    val jsonData = response.body()!!.string()
+                    result.message = "Error:Gson to firimV1"
+                    val firimV1 = g.fromJson(jsonData, FirimApiDownloadToken::class.java)
+                    result.message = ""
+                    if (firimV1.code != null) {
+                        result.code = 2
+                        result.message = "Error! Code:${firimV1.code}"
+                        val errors = firimV1.errors.exception
+                        var errorIndex = 0
+                        errors.map {
+                            result.message += when (errorIndex) {
+                                0 -> ", message:$it"
+                                else -> "|$it"
+                            }
+                            errorIndex++
+                            it
+                        }
+                    } else {
+                        val downloadToken = firimV1.download_token
+                        if (downloadToken.isNullOrEmpty()) {
+                            result.code = 3
+                            result.message = "Error: Download token is null or empty"
+                        } else {
+                            val downloadUrl = "http://download.fir.im/apps/$appId/install?download_token=$downloadToken"
+                            result.result = AppInfo(appId, apiToken, project, "FIRIM_V1", if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
+                                    ?: lastRelease.tag_name), convertUtil.githubUtc2Local(lastRelease.published_at), null,
+                                    lastRelease.html_url, lastRelease.assets.map {
+                                FileList(
+                                        it.name,
+                                        it.browser_download_url,
+                                        it.download_count.toString(),
+                                        it.updated_at,
+                                        convertUtil.fileSizeInt2string(it.size)
+                                )
+                            }.toMutableList()
+                            )
+                            result.success = true
+                            result.code = 0
+                            result.message = "Success"
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                result.code = -1
+                if (result.message.isNotEmpty()) {
+                    result.message = "Error:IOException"
+                }
+            } finally {
+                return result
             }
         }
     }

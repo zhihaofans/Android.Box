@@ -15,6 +15,13 @@ data class AppDownFeed(//数据库表
         val fileList: MutableList<FileList>
 )
 
+data class AppInfoResult(
+        var success: Boolean,
+        var message: String,
+        var code: Int,
+        var result: AppInfo?
+)
+
 data class AppInfo(
         val id_one: String,
         val id_two: String?,

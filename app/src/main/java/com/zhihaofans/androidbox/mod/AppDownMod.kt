@@ -154,9 +154,10 @@ class AppDownMod {
         }
 
         fun FirimV1(appId: String, apiToken: String): AppInfoResult {
-            val apiUrl = "http://api.fir.im/apps/$appId/download_token?api_token=$apiToken"
+            val tokenUrl = "http://api.fir.im/apps/$appId/download_token?api_token=$apiToken"
+            val apiUrl = "http://api.fir.im/apps/$appId?api_token=$apiToken"
             val client = OkHttpClient()
-            val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl)
+            val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(tokenUrl)
             val request = requestBuilder.build()
             val call = client.newCall(request)
             val result = AppInfoResult(false, "", -1, null)
@@ -168,7 +169,8 @@ class AppDownMod {
             try {
                 val response = call.execute()
                 if (response.body() == null) {
-                    null
+                    result.code = 1
+                    result.message = "Error: response.body is null"
                 } else {
                     val jsonData = response.body()!!.string()
                     result.message = "Error:Gson to firimV1"

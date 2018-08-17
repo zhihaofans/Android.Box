@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -8,19 +7,15 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import kotlinx.android.synthetic.main.activity_qrcode.*
-import kotlinx.android.synthetic.main.content_qrcode.*
-import me.weyye.hipermission.HiPermission
-import me.weyye.hipermission.PermissionCallback
-import me.weyye.hipermission.PermissionItem
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
 
@@ -148,28 +143,21 @@ class QrcodeActivity : AppCompatActivity() {
     }
 
     private fun getCameraPermission() {
-        val permissionItems = ArrayList<PermissionItem>()
-        permissionItems.add(PermissionItem(Manifest.permission.CAMERA, getString(R.string.text_permission_camera), R.drawable.permission_ic_camera))
-        HiPermission.create(this@QrcodeActivity)
-                .permissions(permissionItems)
-                .checkMutiPermission(object : PermissionCallback {
-                    override fun onClose() {
-                        Logger.i("onClose")
-                        Snackbar.make(coordinatorLayout_qrcode, "用户关闭权限申请", Snackbar.LENGTH_SHORT)
+        XXPermissions.with(this)
+                //.constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
+                //.permission(Permission.REQUEST_INSTALL_PACKAGES, Permission.SYSTEM_ALERT_WINDOW) //支持请求安装权限和悬浮窗权限
+                .permission(Permission.Group.CAMERA) //支持多个权限组进行请求，不指定则默以清单文件中的危险权限进行请求
+                .request(object : OnPermission {
+                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                        if (isAll) {
+                            qrcode.scan(0)
+                        } else {
+                            Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
+                        }
                     }
 
-                    override fun onFinish() {
-                        qrcode.scan(0)
-                    }
-
-                    override fun onDeny(permission: String, position: Int) {
-                        Logger.d("onDeny")
-                        Snackbar.make(coordinatorLayout_qrcode, "相机权限申请失败", Snackbar.LENGTH_SHORT)
-                    }
-
-                    override fun onGuarantee(permission: String, position: Int) {
-                        Logger.d("onGuarantee")
-                        Snackbar.make(coordinatorLayout_qrcode, "Error:onGuarantee($position)", Snackbar.LENGTH_SHORT)
+                    override fun noPermission(denied: List<String>, quick: Boolean) {
+                        Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
                     }
                 })
     }

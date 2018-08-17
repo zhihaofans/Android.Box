@@ -29,7 +29,6 @@ data class GithubReleaseItemAsset(
         val download_count: Int,
         val updated_at: String,
         val browser_download_url: String
-
 )
 
 // Fir.im v1

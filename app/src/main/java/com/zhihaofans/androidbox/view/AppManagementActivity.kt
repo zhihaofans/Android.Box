@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.Manifest
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.graphics.drawable.Drawable
@@ -15,13 +14,8 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import kotlinx.android.synthetic.main.activity_app_management.*
-import kotlinx.android.synthetic.main.content_app_management.*
-import me.weyye.hipermission.HiPermission
-import me.weyye.hipermission.PermissionCallback
-import me.weyye.hipermission.PermissionItem
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 
@@ -74,7 +68,7 @@ class AppManagementActivity : AppCompatActivity() {
                 //循环读取存到HashMap,再增加到ArrayList.一个HashMap就是一项
             }
             //参数:Context,ArrayList(item的集合),item的layout,包含ArrayList中Hashmap的key的数组,key所对应的值相对应的控件id
-            uiThread {
+            uiThread { it ->
                 listView_app.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
                 loading.hide()
                 listView_app.visibility = ListView.VISIBLE
@@ -134,25 +128,25 @@ class AppManagementActivity : AppCompatActivity() {
                                 }
                                 Logger.d(act_appInfo)
                                 //TODO:应用选项
-                                selector(getStr(R.string.text_app_info), act_appInfo, { _, ii ->
+                                selector(getStr(R.string.text_app_info), act_appInfo) { _, ii ->
                                     alert {
                                         customView {
                                             verticalLayout {
                                                 val input: String = editText(list_a[ii]).text.toString()
-                                                neutralPressed(R.string.text_share, {
+                                                neutralPressed(R.string.text_share) {
                                                     share(input)
-                                                })
-                                                negativeButton(R.string.text_cancel, {
+                                                }
+                                                negativeButton(R.string.text_cancel) {
 
-                                                })
-                                                positiveButton(R.string.text_copy, {
+                                                }
+                                                positiveButton(R.string.text_copy) {
                                                     ClipboardUtils.copy(this@AppManagementActivity, input)
                                                     Snackbar.make(coordinatorLayout_app, "ok", Snackbar.LENGTH_SHORT).show()
-                                                })
+                                                }
                                             }
                                         }
                                     }.show()
-                                })
+                                }
                             }
 
                             1 -> {
@@ -162,33 +156,8 @@ class AppManagementActivity : AppCompatActivity() {
                                             selector(childItem["appName"] as String, act_app, { _, ii ->
 
                                             })
-            */
-                                val permissionItems = ArrayList<PermissionItem>()
-                                permissionItems.add(PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.text_permission_storage), R.drawable.permission_ic_storage))
-                                HiPermission.create(this@AppManagementActivity)
-                                        .permissions(permissionItems)
-                                        .checkMutiPermission(object : PermissionCallback {
-                                            override fun onClose() {
-                                                Logger.i("onClose")
-                                                Snackbar.make(coordinatorLayout_app, "用户关闭权限申请", Snackbar.LENGTH_SHORT)
-                                            }
-
-                                            override fun onFinish() {
-                                                //TODO:apk file
-                                                //FileUtils.copyFile(thisApkPath, "")
-                                            }
-
-                                            override fun onDeny(permission: String, position: Int) {
-                                                Logger.d("onDeny")
-                                                toast("权限申请失败")
-                                                Snackbar.make(coordinatorLayout_app, "权限申请失败", Snackbar.LENGTH_SHORT)
-                                            }
-
-                                            override fun onGuarantee(permission: String, position: Int) {
-                                                Logger.d("onGuarantee")
-                                                Snackbar.make(coordinatorLayout_app, "Error:onGuarantee($position)", Snackbar.LENGTH_SHORT)
-                                            }
-                                        })
+                                */
+                                toast("未完成")
                             }
 
                             2 -> {

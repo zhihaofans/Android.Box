@@ -81,4 +81,5 @@
     <string name="text_paste">Paste</string>
     <string name="text_import">Import</string>
     <string name="text_export">Export</string>
+    <string name="text_check_permissions">Check permissions</string>
 </resources>

@@ -80,4 +80,5 @@
     <string name="text_paste">粘贴</string>
     <string name="text_import">导入</string>
     <string name="text_export">导出</string>
+    <string name="text_check_permissions">检查权限</string>
 </resources>

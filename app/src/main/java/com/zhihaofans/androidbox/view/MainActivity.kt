@@ -9,6 +9,9 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
@@ -18,12 +21,6 @@ import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.share
-import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -72,6 +69,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_manual_update -> {
                     sysUtil.browse(this@MainActivity, updateWebUrl)
+                }
+                R.id.menu_checkPermission -> {
+                    checkPermissions(true)
                 }
             }
             true
@@ -142,6 +142,7 @@ class MainActivity : AppCompatActivity() {
                 7 -> startActivity<AppDownActivity>()
             }
         }
+        checkPermissions()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -179,4 +180,31 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    fun checkPermissions(manual: Boolean = false) {
+        if (XXPermissions.isHasPermission(this, Permission.Group.STORAGE, Permission.Group.CAMERA)) {
+            if (manual) {
+                Snackbar.make(coordinatorLayout_main, "已授权需要的权限，应该可以正常使用", Snackbar.LENGTH_SHORT).show()
+            }
+        } else {
+            Snackbar.make(coordinatorLayout_main, "发现某个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
+        }
+    }
+
+    fun initPermissions() {
+        XXPermissions.with(this)
+                //.constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
+                //.permission(Permission.REQUEST_INSTALL_PACKAGES, Permission.SYSTEM_ALERT_WINDOW) //支持请求安装权限和悬浮窗权限
+                .permission(Permission.Group.STORAGE, Permission.Group.CAMERA) //支持多个权限组进行请求，不指定则默以清单文件中的危险权限进行请求
+                .request(object : OnPermission {
+                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                        var t = "${granted.size}个权限通过授权"
+                        if (!isAll) t += "，可能影响正常使用"
+                        Snackbar.make(coordinatorLayout_main, t, Snackbar.LENGTH_SHORT).show()
+                    }
+
+                    override fun noPermission(denied: List<String>, quick: Boolean) {
+                        Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
+                    }
+                })
+    }
 }

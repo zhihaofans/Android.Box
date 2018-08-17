@@ -1,11 +1,13 @@
 package com.zhihaofans.androidbox.view
 
-import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
@@ -14,13 +16,8 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import kotlinx.android.synthetic.main.activity_app_down.*
-import kotlinx.android.synthetic.main.content_app_down.*
-import me.weyye.hipermission.HiPermission
-import me.weyye.hipermission.PermissionCallback
-import me.weyye.hipermission.PermissionItem
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 class AppDownActivity : AppCompatActivity() {
     private val appDownSiteParser = AppDownMod.SiteParser()
@@ -81,69 +78,61 @@ class AppDownActivity : AppCompatActivity() {
                         title = clickedApp.name
                         message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
                         negativeButton(R.string.text_download) { _ ->
+                            selector("", mutableListOf("下载", "浏览器打开")) { _, act: Int ->
+                                when (act) {
+                                    0 -> {
+                                        XXPermissions.with(this@AppDownActivity)
+                                                .permission(Permission.Group.STORAGE)
+                                                .request(object : OnPermission {
+                                                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                                        if (isAll) {
+                                                            val fileList = clickedApp.fileList
+                                                            selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
+                                                                val file = fileList[fileIndex]
+                                                                val fileExt = ".apk"
+                                                                val fileNameList = mutableListOf(
+                                                                        clickedApp.name + fileExt,
+                                                                        clickedApp.name + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.name + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.name + "_" + file.name,
+                                                                        clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + "_" + file.name,
+                                                                        clickedApp.packageName + ".apk",
+                                                                        clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.packageName + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.id_one + "_" +
+                                                                                (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") + clickedApp.version + "_" + file.name
+                                                                )
+                                                                selector("文件名格式(结尾自动补充.apk)", fileNameList) { _, fileNameIndex: Int ->
+                                                                    var fileName = fileNameList[fileNameIndex]
+                                                                    if (!file.name.endsWith(".apk")) fileName += ".apk"
+                                                                    alert {
+                                                                        title = getString(R.string.text_download) + "?"
+                                                                        message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
+                                                                        positiveButton(R.string.text_download) {
+                                                                            val url = file.url
+                                                                            downloadFile(url, fileName)
+                                                                        }
+                                                                    }.show()
 
-                            val permissionItems = mutableListOf<PermissionItem>()
-                            permissionItems.add(PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.text_permission_storage), R.drawable.permission_ic_storage))
-                            HiPermission.create(this@AppDownActivity)
-                                    .permissions(permissionItems)
-                                    .checkMutiPermission(object : PermissionCallback {
-                                        override fun onClose() {
-                                            Logger.i("onClose")
-                                            snackbarE("用户关闭权限申请")
-                                        }
-
-                                        override fun onFinish() {
-
-                                            selector("", mutableListOf("下载", "浏览器打开")) { _, act: Int ->
-                                                when (act) {
-                                                    0 -> {
-                                                        val fileList = clickedApp.fileList
-                                                        selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
-                                                            val file = fileList[fileIndex]
-                                                            val fileExt = ".apk"
-                                                            val fileNameList = mutableListOf(
-                                                                    clickedApp.name + fileExt,
-                                                                    clickedApp.name + "_" + clickedApp.version + fileExt,
-                                                                    clickedApp.site + "_" + clickedApp.name + fileExt,
-                                                                    clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + fileExt,
-                                                                    clickedApp.site + "_" + clickedApp.name + "_" + file.name,
-                                                                    clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + "_" + file.name,
-                                                                    clickedApp.packageName + ".apk",
-                                                                    clickedApp.packageName + "_" + clickedApp.version + fileExt,
-                                                                    clickedApp.site + "_" + clickedApp.packageName + fileExt,
-                                                                    clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
-                                                                    clickedApp.site + "_" + clickedApp.id_one + "_" +
-                                                                            (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") + clickedApp.version + "_" + file.name
-                                                            )
-                                                            selector("文件名格式(结尾自动补充.apk)", fileNameList) { _, fileNameIndex: Int ->
-                                                                var fileName = fileNameList[fileNameIndex]
-                                                                if (!file.name.endsWith(".apk")) fileName += ".apk"
-                                                                alert {
-                                                                    title = getString(R.string.text_download) + "?"
-                                                                    message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
-                                                                    positiveButton(R.string.text_download) {
-                                                                        val url = file.url
-                                                                        downloadFile(url, fileName)
-                                                                    }
-                                                                }.show()
-
+                                                                }
                                                             }
+                                                        } else {
+                                                            snackbar("未授权储存权限，无法下载")
                                                         }
                                                     }
-                                                    1 -> browse(clickedApp.webUrl)
+
+                                                    override fun noPermission(denied: List<String>, quick: Boolean) {
+                                                        snackbar("未授权储存权限，无法下载")
+                                                    }
                                                 }
-                                            }
-                                        }
+                                                )
+                                    }
+                                    1 -> browse(clickedApp.webUrl)
+                                }
+                            }
 
-                                        override fun onDeny(permission: String, position: Int) {
-                                            Logger.d("onDeny")
-                                            snackbarE("权限申请失败")
-                                        }
-
-                                        override fun onGuarantee(permission: String, position: Int) {
-                                            Logger.d("onGuarantee($position)")
-                                        }
-                                    })
                         }
                         positiveButton(R.string.text_check_update) {
                             checkUpdate(index)

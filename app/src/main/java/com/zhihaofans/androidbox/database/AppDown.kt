@@ -38,7 +38,7 @@ data class AppInfo(
 data class FileList(
         val name: String,
         val url: String,
-        val downCount: String,
+        val downCount: String?,
         val time: String,
         val sizeStr: String?
 )

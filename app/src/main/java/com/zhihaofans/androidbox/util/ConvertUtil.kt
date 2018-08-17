@@ -35,7 +35,11 @@ class ConvertUtil {
         return localFormater.format(gpsUTCDate!!.time)
     }
 
-    fun time2date(time: Long): String {
+    fun unixTime2date(time: Int): String {
+        return unixTime2date(time.toLong())
+    }
+
+    fun unixTime2date(time: Long): String {
         Logger.d(time)
         return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
     }

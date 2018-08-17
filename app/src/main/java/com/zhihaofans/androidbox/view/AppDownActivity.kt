@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -15,6 +16,9 @@ import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
+import me.weyye.hipermission.HiPermission
+import me.weyye.hipermission.PermissionCallback
+import me.weyye.hipermission.PermissionItem
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
@@ -64,43 +68,93 @@ class AppDownActivity : AppCompatActivity() {
 
     private fun initList() {
         listView_app.adapter = null
-        appFeeds = dataBase.getAppFeeds()
-        if (appFeeds.size == 0) {
-            Logger.d("appFeeds.size=0")
-            snackbar("列表空白")
-        } else {
-            listView_app.adapter = sysUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
-            listView_app.onItemClick { _, _, index, _ ->
-                val clickedApp = appFeeds[index]
-                alert {
-                    title = clickedApp.name
-                    message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
-                    negativeButton(R.string.text_download) { _ ->
-                        val fileList = clickedApp.fileList
-                        selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
-                            val file = fileList[fileIndex]
-                            var fileName = clickedApp.site + "_" +
-                                    clickedApp.id_one + "_" + (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") +
-                                    clickedApp.version + "_" + file.name
-                            if (!file.name.endsWith(".apk")) fileName += ".apk"
-                            alert {
-                                title = getString(R.string.text_download) + "?"
-                                message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
-                                positiveButton(R.string.text_download) {
-                                    val url = file.url
-                                    downloadFile(url, fileName)
-                                }
-                                negativeButton(R.string.text_open_web) {
-                                    browse(clickedApp.webUrl)
-                                }
-                            }.show()
+        try {
+            appFeeds = dataBase.getAppFeeds()
+            if (appFeeds.size == 0) {
+                Logger.d("appFeeds.size=0")
+                snackbar("列表空白")
+            } else {
+                listView_app.adapter = sysUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
+                listView_app.onItemClick { _, _, index, _ ->
+                    val clickedApp = appFeeds[index]
+                    alert {
+                        title = clickedApp.name
+                        message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
+                        negativeButton(R.string.text_download) { _ ->
+
+                            val permissionItems = mutableListOf<PermissionItem>()
+                            permissionItems.add(PermissionItem(Manifest.permission.WRITE_EXTERNAL_STORAGE, getString(R.string.text_permission_storage), R.drawable.permission_ic_storage))
+                            HiPermission.create(this@AppDownActivity)
+                                    .permissions(permissionItems)
+                                    .checkMutiPermission(object : PermissionCallback {
+                                        override fun onClose() {
+                                            Logger.i("onClose")
+                                            snackbarE("用户关闭权限申请")
+                                        }
+
+                                        override fun onFinish() {
+
+                                            selector("", mutableListOf("下载", "浏览器打开")) { _, act: Int ->
+                                                when (act) {
+                                                    0 -> {
+                                                        val fileList = clickedApp.fileList
+                                                        selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
+                                                            val file = fileList[fileIndex]
+                                                            val fileExt = ".apk"
+                                                            val fileNameList = mutableListOf(
+                                                                    clickedApp.name + fileExt,
+                                                                    clickedApp.name + "_" + clickedApp.version + fileExt,
+                                                                    clickedApp.site + "_" + clickedApp.name + fileExt,
+                                                                    clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + fileExt,
+                                                                    clickedApp.site + "_" + clickedApp.name + "_" + file.name,
+                                                                    clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + "_" + file.name,
+                                                                    clickedApp.packageName + ".apk",
+                                                                    clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                                                                    clickedApp.site + "_" + clickedApp.packageName + fileExt,
+                                                                    clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                                                                    clickedApp.site + "_" + clickedApp.id_one + "_" +
+                                                                            (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") + clickedApp.version + "_" + file.name
+                                                            )
+                                                            selector("文件名格式(结尾自动补充.apk)", fileNameList) { _, fileNameIndex: Int ->
+                                                                var fileName = fileNameList[fileNameIndex]
+                                                                if (!file.name.endsWith(".apk")) fileName += ".apk"
+                                                                alert {
+                                                                    title = getString(R.string.text_download) + "?"
+                                                                    message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
+                                                                    positiveButton(R.string.text_download) {
+                                                                        val url = file.url
+                                                                        downloadFile(url, fileName)
+                                                                    }
+                                                                }.show()
+
+                                                            }
+                                                        }
+                                                    }
+                                                    1 -> browse(clickedApp.webUrl)
+                                                }
+                                            }
+                                        }
+
+                                        override fun onDeny(permission: String, position: Int) {
+                                            Logger.d("onDeny")
+                                            snackbarE("权限申请失败")
+                                        }
+
+                                        override fun onGuarantee(permission: String, position: Int) {
+                                            Logger.d("onGuarantee($position)")
+                                        }
+                                    })
                         }
-                    }
-                    positiveButton(R.string.text_check_update) {
-                        checkUpdate(index)
-                    }
-                }.show()
+                        positiveButton(R.string.text_check_update) {
+                            checkUpdate(index)
+                        }
+                    }.show()
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            toast("初始化失败，请尝试清空应用数据")
+            finish()
         }
     }
 
@@ -108,6 +162,7 @@ class AppDownActivity : AppCompatActivity() {
         val sites = siteParser.getSiteIds()
         val feedSiteList = siteParser.getSiteNames()
         var site: String
+        val alertTitle = "Add feed"
         selector("Site", feedSiteList) { _: DialogInterface, i: Int ->
             when (i) {
                 0 -> {
@@ -155,6 +210,29 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
+                2 -> {
+                    site = sites[i]
+                    alert {
+                        title = alertTitle
+                        customView {
+                            verticalLayout {
+                                textView("Package")
+                                val inputOne = editText("com.zhihaofans.androidbox")
+                                textView("Api token")
+                                val inputTwo = editText("")
+                                okButton {
+                                    val idOne = inputOne.text.toString()
+                                    val idTwo = inputTwo.text.toString()
+                                    if (idOne.isEmpty() || idTwo.isEmpty()) {
+                                        toast("请输入内容")
+                                    } else {
+                                        addFeed(site, idOne, idTwo)
+                                    }
+                                }
+                            }
+                        }
+                    }.show()
+                }
             }
 
         }
@@ -167,40 +245,46 @@ class AppDownActivity : AppCompatActivity() {
         loadingProgressBarAddFeed.setCanceledOnTouchOutside(false)
         loadingProgressBarAddFeed.show()
         doAsync {
-            val appInfo = appDownSiteParser.getApp(site, idOne, idTwo)
+            val appInfoResult = appDownSiteParser.getApp(site, idOne, idTwo)
             uiThread {
                 loadingProgressBarAddFeed.dismiss()
-                try {
-                    when (appInfo) {
-                        null -> {
-                            snackbar("appDownList is null")
-                            Logger.e("appDownList is null")
-                        }
-                        else -> {
-                            var appName = appInfo.appName
-                            alert {
-                                title = "请输入名称用于备注，不输入则为默认名称"
-                                message = "$site:$idOne${if (idTwo.isNullOrEmpty()) "" else "/$idTwo"}"
-                                customView {
-                                    verticalLayout {
-                                        val inputName = editText(appName)
-                                        okButton {
-                                            appName = if (inputName.text.isEmpty()) appName else inputName.text.toString()
-                                            if (dataBase.addFeed(other.appInfo2AppFeed(appName, appInfo))) {
-                                                snackbar("添加成功，刷新订阅列表")
-                                            } else {
-                                                snackbar("添加失败，刷新订阅列表")
+                if (appInfoResult == null) {
+                    snackbarE("错误，返回结果为null，我觉得是代码的问题")
+                } else {
+                    try {
+                        if (!appInfoResult.success) {
+                            snackbarE("错误，代码${appInfoResult.code}(${appInfoResult.message})")
+                        } else {
+                            val appInfo = appInfoResult.result
+                            if (appInfo == null) {
+                                snackbarE("错误，返回结果为null")
+
+                            } else {
+                                var appName = appInfo.appName
+                                alert {
+                                    title = "请输入名称用于备注，不输入则为默认名称"
+                                    message = "$site:$idOne${if (idTwo.isNullOrEmpty()) "" else "/$idTwo"}"
+                                    customView {
+                                        verticalLayout {
+                                            val inputName = editText(appName)
+                                            okButton {
+                                                appName = if (inputName.text.isEmpty()) appName else inputName.text.toString()
+                                                if (dataBase.addFeed(other.appInfo2AppFeed(appName, appInfo))) {
+                                                    snackbar("添加成功，刷新订阅列表")
+                                                } else {
+                                                    snackbar("添加失败，刷新订阅列表")
+                                                }
+                                                initList()
                                             }
-                                            initList()
                                         }
                                     }
-                                }
-                            }.show()
+                                }.show()
+                            }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        toast("Error")
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    toast("Error")
                 }
             }
         }
@@ -225,31 +309,36 @@ class AppDownActivity : AppCompatActivity() {
         loadingProgressBarUpdate.show()
         var appDownFeed = appFeeds[index]
         doAsync {
-            val appInfo = appDownSiteParser.getApp(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
+            val appInfoResult = appDownSiteParser.getApp(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
             uiThread {
                 loadingProgressBarUpdate.dismiss()
-                when {
-                    appInfo == null -> {
-                        snackbar("(checkUpdate)appDownList is null")
-                        Logger.e("(checkUpdate)appDownList is null")
-                    }
-                    else -> {
-                        if (appInfo.version == appDownFeed.version) {
-                            if (appInfo.updateTime == appDownFeed.updateTime) {
-                                snackbar("没有变动")
+                if (appInfoResult == null) {
+                    snackbarE("检测更新失败，返回结果为null，我觉得是代码的问题")
+                } else {
+                    if (!appInfoResult.success) {
+                        snackbarE("检查更新错误，代码${appInfoResult.code}(${appInfoResult.message})")
+                    } else {
+                        val appInfo = appInfoResult.result
+                        if (appInfo == null) {
+
+                        } else {
+                            if (appInfo.version == appDownFeed.version) {
+                                if (appInfo.updateTime == appDownFeed.updateTime) {
+                                    snackbar("没有变动")
+                                } else {
+                                    appDownFeed = other.appInfo2AppFeed(appDownFeed.name, appInfo)
+                                    snackbar("发现最近一个版本更新时间发生变化")
+                                }
                             } else {
                                 appDownFeed = other.appInfo2AppFeed(appDownFeed.name, appInfo)
-                                snackbar("发现最近一个版本更新时间发生变化")
+                                snackbar("发现新版本")
                             }
-                        } else {
-                            appDownFeed = other.appInfo2AppFeed(appDownFeed.name, appInfo)
-                            snackbar("发现新版本")
+                            appFeeds[index] = appDownFeed
+                            dataBase.updateFeedList(appFeeds)
+                            initList()
                         }
                     }
                 }
-                appFeeds[index] = appDownFeed
-                dataBase.updateFeedList(appFeeds)
-                initList()
             }
         }
     }
@@ -303,13 +392,15 @@ class AppDownActivity : AppCompatActivity() {
         Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
     }
 
+    private fun snackbarE(text: String, longTime: Boolean = false) {
+        Logger.e(text)
+        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+    }
+
     private fun snackbar(text: String, longTime: Boolean = false, button: String = "Button", listener: View.OnClickListener) {
         Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).setAction(button, listener).show()
     }
 
-    private fun downloadFile(url: String, fileName: String, addApk2end: Boolean) {
-        downloadFile(url, fileName + if (addApk2end) ".apk" else "")
-    }
 
     private fun downloadFile(url: String, fileName: String) {
         val downloadPath = "$savePath/Android.Box/$fileName"

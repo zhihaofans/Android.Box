@@ -8,7 +8,8 @@ import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.database.AppInfo
 import com.zhihaofans.androidbox.database.AppInfoResult
 import com.zhihaofans.androidbox.database.FileList
-import com.zhihaofans.androidbox.gson.FirimApiDownloadToken
+import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
+import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
@@ -30,7 +31,8 @@ class AppDownMod {
         private var mcontext: Context? = null
         private val sites: List<Map<String, String>> = mutableListOf(
                 mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
-                mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1")// Github releases
+                mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1"),// Github releases
+                mutableMapOf("id" to "FIRIM_V1", "name" to "Fir.im v1", "version" to "1")// Github releases
         )
         private val siteIds = sites.map { it["id"].toString() }
         private val siteNames = sites.map { it["name"].toString() }
@@ -51,22 +53,31 @@ class AppDownMod {
             return siteNames
         }
 
-        fun getApp(site: String, idOne: String, idTwo: String? = null): AppInfo? {
-            when (site) {
-                siteIds[0] -> {
+        fun getApp(site: String, idOne: String, idTwo: String? = null): AppInfoResult? {
+            when (siteIds.indexOf(site)) {
+                0 -> {
                     when {
                         idOne.isEmpty() -> throw Exception("Author cannot empty")
                         idTwo.isNullOrEmpty() -> throw Exception("project cannot empty or null")
                         else -> {
-                            return s.Github(idOne, idTwo!!)
+                            return s.Github(idOne, idTwo ?: "")
                         }
                     }
                 }
-                siteIds[1] -> {
+                1 -> {
                     when {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
                             return s.CoolapkV1(idOne)
+                        }
+                    }
+                }
+                2 -> {
+                    when {
+                        idOne.isEmpty() -> throw Exception("Package name cannot empty")
+                        idTwo.isNullOrEmpty() -> throw Exception("Api token cannot empty")
+                        else -> {
+                            return s.FirimV1(idOne, idTwo ?: "")
                         }
                     }
                 }
@@ -79,54 +90,63 @@ class AppDownMod {
     class Site {
         private val g = Gson()
         private val convertUtil = ConvertUtil()
-        fun Github(author: String, project: String): AppInfo? {
-            val apiUrl = "https://api.github.com/repos/$author/$project/releases"
-            val client = OkHttpClient()
-            val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl)
-            val request = requestBuilder.build()
-            val call = client.newCall(request)
-            return try {
-                val response = call.execute()
-                if (response.body() == null) {
-                    null
-                } else {
-                    val jsonData = response.body()!!.string()
-                    val type = object : TypeToken<List<GithubReleaseItem>>() {}.type
-                    val github: List<GithubReleaseItem> = g.fromJson(jsonData, type)
-                    if (github.isEmpty()) {
-                        null
+        private val defaultAppResult = AppInfoResult(false, "", -1, null)
+        fun Github(author: String, project: String): AppInfoResult {
+            val result = defaultAppResult
+            if (author.isEmpty() && project.isEmpty()) {
+                result.message = "错误，author或project为空"
+            } else {
+                val apiUrl = "https://api.github.com/repos/$author/$project/releases"
+                val client = OkHttpClient()
+                val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl)
+                val request = requestBuilder.build()
+                val call = client.newCall(request)
+                try {
+                    val response = call.execute()
+                    if (response.body() == null) {
+                        result.message = ""
                     } else {
-                        val lastRelease = github[0]
-                        Logger.d(lastRelease)
-
-                        AppInfo(author, project, project, "GITHUB_RELEASES", if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
-                                ?: lastRelease.tag_name), convertUtil.githubUtc2Local(lastRelease.published_at), null,
-                                lastRelease.html_url, lastRelease.assets.map {
-                            FileList(
-                                    it.name,
-                                    it.browser_download_url,
-                                    it.download_count.toString(),
-                                    it.updated_at,
-                                    convertUtil.fileSizeInt2string(it.size)
+                        val jsonData = response.body()!!.string()
+                        val type = object : TypeToken<List<GithubReleaseItem>>() {}.type
+                        val github: List<GithubReleaseItem> = g.fromJson(jsonData, type)
+                        if (github.isEmpty()) {
+                            result.message = "错误：github.isEmpty"
+                        } else {
+                            val lastRelease = github[0]
+                            Logger.d(lastRelease)
+                            result.result = AppInfo(author, project, project, "GITHUB_RELEASES", if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
+                                    ?: lastRelease.tag_name), convertUtil.githubUtc2Local(lastRelease.published_at), null,
+                                    lastRelease.html_url, lastRelease.assets.map {
+                                FileList(
+                                        it.name,
+                                        it.browser_download_url,
+                                        it.download_count.toString(),
+                                        it.updated_at,
+                                        convertUtil.fileSizeInt2string(it.size)
+                                )
+                            }.toMutableList()
                             )
-                        }.toMutableList()
-                        )
+                            result.success = true
+                            result.code = 0
+                        }
                     }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                null
             }
+            return result
         }
 
-        fun CoolapkV1(packageName: String): AppInfo? {
+        fun CoolapkV1(packageName: String): AppInfoResult {
             val webUrl = "https://www.coolapk.com/apk/$packageName"
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
             val sysUtil = SystemUtil()
+            val result = defaultAppResult
             Logger.d(doc.html())
             val title = jsoupUtil.title()
-            return if (title != "出错了") {
+            if (title != "出错了") {
                 val body = jsoupUtil.html("body")
                 val a = jsoupUtil.html("p.detail_app_title")
                 val b = body.indexOf("window.location.href = \"") + 24
@@ -145,23 +165,25 @@ class AppDownMod {
                 Logger.d("rawTime:$rawTime\nnewTime:$newTime")
                 val updateTime = if (newTime.isEmpty()) rawTime else newTime
                 val downCount = c[1]
-                AppInfo(packageName, null, appName, "COOLAPK_WEB", appVersion, updateTime, packageName, webUrl,
+                result.result = AppInfo(packageName, null, appName, "COOLAPK_WEB", appVersion, updateTime, packageName, webUrl,
                         mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))
                 )
+                result.success = true
+                result.code = 0
             } else {
-                null
+                result.message = "错误，找不到应用，服务器返回信息：$title"
             }
+            return result
         }
 
-        fun FirimV1(appId: String, apiToken: String): AppInfoResult {
-            val tokenUrl = "http://api.fir.im/apps/$appId/download_token?api_token=$apiToken"
-            val apiUrl = "http://api.fir.im/apps/$appId?api_token=$apiToken"
+        fun FirimV1(pageageName: String, apiToken: String): AppInfoResult {
+            val apiUrl = "https://api.fir.im/apps/latest/$pageageName?type=android&api_token=$apiToken"
+            Logger.d("apiUrl:$apiUrl")
             val client = OkHttpClient()
-            val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(tokenUrl)
-            val request = requestBuilder.build()
+            val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl).build()
             val call = client.newCall(request)
-            val result = AppInfoResult(false, "", -1, null)
-            if (appId.isEmpty() || apiToken.isEmpty()) {
+            val result = defaultAppResult
+            if (pageageName.isEmpty() || apiToken.isEmpty()) {
                 result.code = 1
                 result.message = "Error: App id or Api token is empty"
                 return result
@@ -173,45 +195,45 @@ class AppDownMod {
                     result.message = "Error: response.body is null"
                 } else {
                     val jsonData = response.body()!!.string()
-                    result.message = "Error:Gson to firimV1"
-                    val firimV1 = g.fromJson(jsonData, FirimApiDownloadToken::class.java)
-                    result.message = ""
-                    if (firimV1.code != null) {
-                        result.code = 2
-                        result.message = "Error! Code:${firimV1.code}"
-                        val errors = firimV1.errors.exception
-                        var errorIndex = 0
-                        errors.map {
-                            result.message += when (errorIndex) {
-                                0 -> ", message:$it"
-                                else -> "|$it"
-                            }
-                            errorIndex++
-                            it
-                        }
+                    if (jsonData.isEmpty()) {
+                        result.code = 1
+                        result.message = "Error: jsonData is null"
+
                     } else {
-                        val downloadToken = firimV1.download_token
-                        if (downloadToken.isNullOrEmpty()) {
-                            result.code = 3
-                            result.message = "Error: Download token is null or empty"
+                        result.message = "Error:Gson to firimV1"
+                        val firimApiLatestUpdateError = g.fromJson(jsonData, FirimApiLatestUpdateError::class.java)
+                        result.message = ""
+                        if (firimApiLatestUpdateError.code != null && firimApiLatestUpdateError.errors != null) {
+                            result.code = 2
+                            result.message = "Error! Code:${firimApiLatestUpdateError.code}"
+                            val errors = firimApiLatestUpdateError.errors.exception
+                            var errorIndex = 0
+                            errors.map {
+                                result.message += when (errorIndex) {
+                                    0 -> ", message:$it"
+                                    else -> "|$it"
+                                }
+                                errorIndex++
+                                it
+                            }
                         } else {
-                            val downloadUrl = "http://download.fir.im/apps/$appId/install?download_token=$downloadToken"
-                            result.result = AppInfo(appId, apiToken, project, "FIRIM_V1", if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
-                                    ?: lastRelease.tag_name), convertUtil.githubUtc2Local(lastRelease.published_at), null,
-                                    lastRelease.html_url, lastRelease.assets.map {
-                                FileList(
-                                        it.name,
-                                        it.browser_download_url,
-                                        it.download_count.toString(),
-                                        it.updated_at,
-                                        convertUtil.fileSizeInt2string(it.size)
-                                )
-                            }.toMutableList()
+                            result.message = "Error:Gson to firimV1"
+                            val latestUpdate = g.fromJson(jsonData, FirimApiLatestUpdate::class.java)
+                            result.message = ""
+                            Logger.d(latestUpdate.updated_at)
+                            val updateTime = convertUtil.unixTime2date("${latestUpdate.updated_at}000".toLong())
+                            result.result = AppInfo(pageageName, apiToken, latestUpdate.name, "FIRIM_V1",
+                                    latestUpdate.versionShort + "(${latestUpdate.version})",
+                                    updateTime, pageageName, latestUpdate.update_url,
+                                    mutableListOf(FileList(latestUpdate.versionShort + "(${latestUpdate.version})", latestUpdate.install_url,
+                                            null, updateTime, convertUtil.fileSizeInt2string(latestUpdate.binary.fsize)))
                             )
                             result.success = true
                             result.code = 0
                             result.message = "Success"
+
                         }
+
                     }
                 }
             } catch (e: IOException) {

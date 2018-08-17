@@ -173,6 +173,7 @@ class SystemUtil {
     }
 
     fun download(url: String, savePath: String, listener: FileDownloadListener) {
+        Logger.d("com.zhihaofans.androidbox.download ->\nurl:$url\nsavePath:$savePath")
         FileDownloader.getImpl().create(url)
                 .setPath(savePath)
                 .setListener(listener).start()

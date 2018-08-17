@@ -33,22 +33,27 @@ data class GithubReleaseItemAsset(
 )
 
 // Fir.im v1
-data class FirimApiDownloadToken(
-        val download_token: String?,
-        val code: Int?,
-        val errors: FirimApiErrorList
+data class FirimApiLatestUpdate(
+        val name: String,
+        val version: String,
+        val changelog: String,
+        val updated_at: Int,
+        val versionShort: String,
+        val build: String,
+        val installUrl: String,
+        val install_url: String,
+        val direct_install_url: String,
+        val update_url: String,
+        val binary: FirimApiLatestUpdateBinary
 )
 
-data class FirimApiAppInfo(
-        val id: String,
-        val type: String,
-        val name: String,
-        val desc: String,
-        val short: String,
-        val bundle_id: String,
-        val created_at: Int,
-        val icon_url: String,
-        val expired_at: Int
+data class FirimApiLatestUpdateError(
+        val errors: FirimApiErrorList?,
+        val code: Int?
+)
+
+data class FirimApiLatestUpdateBinary(
+        val fsize: Int
 )
 
 data class FirimApiErrorList(

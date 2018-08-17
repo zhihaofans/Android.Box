@@ -87,8 +87,8 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppPackageName: String = thisAppInfo.packageName
                     val thisAppVersionName: String = thisPackageInfo.versionName
                     val thisAppVersionCode: Int = thisPackageInfo.versionCode
-                    val thisAppFirstInstallTime: String = convertUtil.time2date(thisPackageInfo.firstInstallTime)
-                    val thisAppLastUpdateTime: String = convertUtil.time2date(thisPackageInfo.lastUpdateTime)
+                    val thisAppFirstInstallTime: String = convertUtil.unixTime2date(thisPackageInfo.firstInstallTime)
+                    val thisAppLastUpdateTime: String = convertUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
                     val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt() //TODO:以后加入自动转换单位功能
                     /*Logger.d(childItem["icon"])

@@ -89,7 +89,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.QrcodeActivity"
-            android:icon="@drawable/permission_ic_camera"
+            android:icon="@drawable/ic_camera"
             android:label="@string/text_qrcode_generate"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

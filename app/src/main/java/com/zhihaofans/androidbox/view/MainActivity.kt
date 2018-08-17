@@ -21,6 +21,12 @@ import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import org.jetbrains.anko.sdk25.coroutines.onItemClick
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity() {

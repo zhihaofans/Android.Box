@@ -16,6 +16,12 @@ import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import kotlinx.android.synthetic.main.activity_qrcode.*
+import kotlinx.android.synthetic.main.content_qrcode.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
+import org.jetbrains.anko.toast
 import java.util.*
 
 

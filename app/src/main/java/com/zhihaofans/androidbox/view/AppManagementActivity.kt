@@ -14,8 +14,10 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.android.synthetic.main.activity_app_management.*
+import kotlinx.android.synthetic.main.content_app_management.*
+import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import java.util.*
 
 

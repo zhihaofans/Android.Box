@@ -16,8 +16,10 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.android.synthetic.main.activity_app_down.*
+import kotlinx.android.synthetic.main.content_app_down.*
+import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
     private val appDownSiteParser = AppDownMod.SiteParser()

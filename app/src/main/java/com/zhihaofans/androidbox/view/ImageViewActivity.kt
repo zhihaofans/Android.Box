@@ -12,6 +12,9 @@ import com.facebook.drawee.drawable.ProgressBarDrawable
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
@@ -93,7 +96,7 @@ class ImageViewActivity : AppCompatActivity() {
                     layoutParams.height = (linearLayout_imageview.width.toFloat() / (imageInfo.width.toFloat() / imageInfo.height.toFloat())).toInt()
                     imageView.layoutParams = layoutParams
                     loadingProgressBar.dismiss()
-                    imageView.onLongClick {
+                    imageView.onLongClick { it ->
                         if (!(imageUrl.isNullOrEmpty())) {
                             val selectorItemList = mutableListOf(
                                     "下载",
@@ -103,70 +106,88 @@ class ImageViewActivity : AppCompatActivity() {
                             selector("", selectorItemList) { _, i ->
                                 when (i) {
                                     0 -> {
-                                        val fileName = FileUtils.getFileName(imageUrl)
-                                        val downloadPath: String = sysUtil.getPicturePathString()+ "/Android.Box/$fileName"
-                                        val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
-                                        loadingProgressBarDownload.setCancelable(false)
-                                        loadingProgressBarDownload.setCanceledOnTouchOutside(false)
-                                        loadingProgressBarDownload.show()
-                                        Logger.d("downloadPath:$downloadPath")
-                                        sysUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
-                                            override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                loadingProgressBarDownload.setTitle("Pending...")
-                                            }
+                                        XXPermissions.with(this@ImageViewActivity)
+                                                .permission(Permission.Group.STORAGE)
+                                                .request(object : OnPermission {
+                                                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                                        if (isAll) {
+                                                            val fileName = FileUtils.getFileName(imageUrl)
+                                                            val downloadPath: String = sysUtil.getPicturePathString() + "/Android.Box/$fileName"
+                                                            val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
+                                                            loadingProgressBarDownload.setCancelable(false)
+                                                            loadingProgressBarDownload.setCanceledOnTouchOutside(false)
+                                                            loadingProgressBarDownload.show()
+                                                            Logger.d("downloadPath:$downloadPath")
+                                                            sysUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
+                                                                override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                                                                    loadingProgressBarDownload.setTitle("Pending...")
+                                                                }
 
-                                            override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                                                loadingProgressBarDownload.setTitle("Connected")
+                                                                override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
+                                                                    loadingProgressBarDownload.setTitle("Connected")
 
-                                            }
+                                                                }
 
-                                            override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                if (totalBytes > 0) {
-                                                    loadingProgressBarDownload.max = totalBytes
-                                                    loadingProgressBarDownload.progress = soFarBytes
-                                                } else {
-                                                    loadingProgressBarDownload.max = 0
-                                                    loadingProgressBarDownload.progress = 1
-                                                }
-                                            }
+                                                                override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                                                                    if (totalBytes > 0) {
+                                                                        loadingProgressBarDownload.max = totalBytes
+                                                                        loadingProgressBarDownload.progress = soFarBytes
+                                                                    } else {
+                                                                        loadingProgressBarDownload.max = 0
+                                                                        loadingProgressBarDownload.progress = 1
+                                                                    }
+                                                                }
 
-                                            override fun blockComplete(task: BaseDownloadTask?) {}
+                                                                override fun blockComplete(task: BaseDownloadTask?) {}
 
-                                            override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                                                loadingProgressBarDownload.setTitle("Retry")
-                                                loadingProgressBarDownload.setMessage("Times: $retryingTimes")
-                                            }
+                                                                override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
+                                                                    loadingProgressBarDownload.setTitle("Retry")
+                                                                    loadingProgressBarDownload.setMessage("Times: $retryingTimes")
+                                                                }
 
-                                            override fun completed(task: BaseDownloadTask) {
-                                                loadingProgressBarDownload.dismiss()
-                                                alert {
-                                                    title = "下载完成"
-                                                    message = "文件路径:" + task.targetFilePath
-                                                    negativeButton(R.string.text_copy) {
-                                                        ClipboardUtils.copy(this@ImageViewActivity, task.targetFilePath)
-                                                        toast("复制成功")
+                                                                override fun completed(task: BaseDownloadTask) {
+                                                                    loadingProgressBarDownload.dismiss()
+                                                                    alert {
+                                                                        title = "下载完成"
+                                                                        message = "文件路径:" + task.targetFilePath
+                                                                        negativeButton(R.string.text_copy) {
+                                                                            ClipboardUtils.copy(this@ImageViewActivity, task.targetFilePath)
+                                                                            toast("复制成功")
+                                                                        }
+                                                                        positiveButton(R.string.text_open) {
+                                                                            sysUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+                                                                        }
+                                                                    }.show()
+
+                                                                }
+
+                                                                override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                                                                    loadingProgressBarDownload.dismiss()
+                                                                }
+
+                                                                override fun error(task: BaseDownloadTask, e: Throwable) {
+                                                                    e.printStackTrace()
+                                                                    Logger.d("Download error\nfileName:" + task.filename)
+                                                                    Snackbar.make(coordinatorLayout_imageView, "下载失败", Snackbar.LENGTH_SHORT).show()
+                                                                }
+
+                                                                override fun warn(task: BaseDownloadTask) {}
+                                                            })
+                                                        } else {
+                                                            Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                                XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
+                                                            }.show()
+                                                        }
                                                     }
-                                                    positiveButton(R.string.text_open) {
-                                                        sysUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+
+                                                    override fun noPermission(denied: MutableList<String>?, quick: Boolean) {
+                                                        Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                            XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
+                                                        }.show()
                                                     }
-                                                }.show()
-
-                                            }
-
-                                            override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                                                loadingProgressBarDownload.dismiss()
-                                            }
-
-                                            override fun error(task: BaseDownloadTask, e: Throwable) {
-                                                e.printStackTrace()
-                                                Logger.d("Download error\nfileName:" + task.filename)
-                                                Snackbar.make(coordinatorLayout_imageView, "下载失败", Snackbar.LENGTH_SHORT).show()
-                                            }
-
-                                            override fun warn(task: BaseDownloadTask) {}
-                                        })
+                                                })
                                     }
-                                    1 -> sysUtil.browseWithoutSet(this@ImageViewActivity, imageUrl.toString())
+                                    1 -> browse(imageUrl.toString())
                                     2 -> {
                                         ClipboardUtils.copy(this@ImageViewActivity, imageUrl)
                                         Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()

@@ -1,6 +1,6 @@
 ### 现有功能：
 
-一. 二维码生成与解析。暂不支持选择图片解析二维码，用的是这个二维码库 [[XQRCode](https://github.com/xuexiangjys/XQRCode)]。
+一. 二维码生成与解析。暂不支持选择图片文件解析二维码，用的是这个二维码库 [[XQRCode](https://github.com/xuexiangjys/XQRCode)]。
 
 二. Android SDK版本列表查看。最高支持 Android 8.1 (API 27, Oreo 奥利奥)，同时还显示当前设备的版本。
 
@@ -38,7 +38,7 @@
 
 7. [RSSHub](https://docs.rsshub.app/) :官方提供api，json格式。
 
-- [我以为我很浮夸的微博](https://weibo.com/u/6180475384)
+- [我以为我很浮夸的微博](https://weibo.com/u/6180475384) (计划下个版本移除)
 
 - [V2EX-最新主题](https://www.v2ex.com)
 
@@ -53,3 +53,14 @@
 2. 通过视频vid获取封面图片
 
 七. [Server酱](http://sc.ftqq.com/3.version) :可以推送消息至微信公众号。
+
+八. 应用下载：支持以下站点的应用昵称、版本、更新日期、网页地址、下载地址。
+
+1. GitHub release。通过调用[Github官方API](https://developer.github.com/)来获取GitHub 项目的release 列表，如:[zhihaofans/Android.Box的releases](https://github.com/zhihaofans/Android.Box/releases)。
+
+2. [酷安网v1](https://www.coolapk.com/)。通过对酷安网网页的解析获取应用信息，但是如果该应用被酷安官方屏蔽了网页显示的话就解析失败(只能在客户端看，网页显示404)
+
+3. [Fir.im v1](https://fir.im/)。通过调用[Fir.im官方API](https://fir.im/docs)项目信息，需要API  Token。我保证不会收集API  Token，API  Token仅保存于设备本地，并在卸载后由系统一同删除。
+
+4. [豌豆荚v1](https://www.wandoujia.com/apps)。通过对酷安网网页的解析获取应用信息。
+

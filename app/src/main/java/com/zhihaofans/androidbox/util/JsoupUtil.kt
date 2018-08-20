@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.util
 
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 
 /**
  * Created by zhihaofans on 2017/11/20.
@@ -55,5 +56,23 @@ class JsoupUtil(inputDom: Document) {
             }
         }
         return ""
+    }
+
+    fun body(): Elements? {
+        val webBody = dom!!.select("html > body")
+        return if (webBody.isEmpty()) {
+            null
+        } else {
+            webBody
+        }
+    }
+
+    fun link(cssQuery: String): String {
+        val link = dom!!.select(cssQuery)
+        return if (link.isEmpty()) {
+            ""
+        } else {
+            link.attr("href") ?: ""
+        }
     }
 }

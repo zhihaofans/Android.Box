@@ -22,7 +22,6 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
-    private val appDownSiteParser = AppDownMod.SiteParser()
     private val sysUtil = SystemUtil()
     private val savePath: String = sysUtil.getDownloadPathString()
     private var appFeeds = mutableListOf<AppDownFeed>()
@@ -33,6 +32,7 @@ class AppDownActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar)
+        siteParser.init(this@AppDownActivity)
         initList()
         fab.setOnClickListener { view ->
             val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
@@ -224,6 +224,26 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
+                3 -> {
+                    site = sites[i]
+                    alert {
+                        title = alertTitle
+                        customView {
+                            verticalLayout {
+                                textView("Package")
+                                val inputOne = editText("com.wandoujia.phoenix2")
+                                okButton {
+                                    val idOne = inputOne.text.toString()
+                                    if (idOne.isEmpty()) {
+                                        toast("请输入内容")
+                                    } else {
+                                        addFeed(site, idOne)
+                                    }
+                                }
+                            }
+                        }
+                    }.show()
+                }
             }
 
         }
@@ -236,8 +256,8 @@ class AppDownActivity : AppCompatActivity() {
         loadingProgressBarAddFeed.setCanceledOnTouchOutside(false)
         loadingProgressBarAddFeed.show()
         doAsync {
-            val appInfoResult = appDownSiteParser.getApp(site, idOne, idTwo)
-            uiThread {
+            val appInfoResult = siteParser.getApp(site, idOne, idTwo)
+            uiThread { it ->
                 loadingProgressBarAddFeed.dismiss()
                 if (appInfoResult == null) {
                     snackbarE("错误，返回结果为null，我觉得是代码的问题")
@@ -249,7 +269,6 @@ class AppDownActivity : AppCompatActivity() {
                             val appInfo = appInfoResult.result
                             if (appInfo == null) {
                                 snackbarE("错误，返回结果为null")
-
                             } else {
                                 var appName = appInfo.appName
                                 alert {
@@ -300,7 +319,7 @@ class AppDownActivity : AppCompatActivity() {
         loadingProgressBarUpdate.show()
         var appDownFeed = appFeeds[index]
         doAsync {
-            val appInfoResult = appDownSiteParser.getApp(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
+            val appInfoResult = siteParser.getApp(appDownFeed.site, appDownFeed.id_one, appDownFeed.id_two)
             uiThread {
                 loadingProgressBarUpdate.dismiss()
                 if (appInfoResult == null) {

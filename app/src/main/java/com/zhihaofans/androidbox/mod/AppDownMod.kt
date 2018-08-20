@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
+import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.database.AppInfo
 import com.zhihaofans.androidbox.database.AppInfoResult
@@ -29,15 +30,16 @@ class AppDownMod {
     class SiteParser {
         private val s = Site()
         private var mcontext: Context? = null
-        private val sites: List<Map<String, String>> = mutableListOf(
-                mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
-                mutableMapOf("id" to "COOLAPK_WEB", "name" to "Coolapk v1", "version" to "1"),// Github releases
-                mutableMapOf("id" to "FIRIM_V1", "name" to "Fir.im v1", "version" to "1")// Github releases
-        )
-        private val siteIds = sites.map { it["id"].toString() }
-        private val siteNames = sites.map { it["name"].toString() }
+        private var sites: List<Map<String, String>> = mutableListOf()
         fun init(context: Context): Context? {
             this.mcontext = context
+            sites = mutableListOf(
+                    mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
+                    mutableMapOf("id" to "COOLAPK_WEB", "name" to mcontext!!.getString(R.string.text_coolapk) + " v1", "version" to "1"),// Github releases
+                    mutableMapOf("id" to "FIRIM_V1", "name" to "Fir.im v1", "version" to "1"),// Fir.im v1 (Api)
+                    mutableMapOf("id" to "WANDOUJIA_V1", "name" to mcontext!!.getString(R.string.text_wandoujia) + " v1", "version" to "1")// Wandoujia v1
+            )
+            Logger.d(sites)
             return this.mcontext
         }
 
@@ -46,15 +48,17 @@ class AppDownMod {
         }
 
         fun getSiteIds(): List<String> {
-            return siteIds
+            return sites.map { it["id"].toString() }.toMutableList()
         }
 
         fun getSiteNames(): List<String> {
-            return siteNames
+            return sites.map { it["name"].toString() }.toMutableList()
         }
 
         fun getApp(site: String, idOne: String, idTwo: String? = null): AppInfoResult? {
-            when (siteIds.indexOf(site)) {
+            val i = getSiteIds().indexOf(site)
+            Logger.d("getApp:$site/$idOne/$idTwo\nno:$i\n${getSiteIds()}")
+            when (i) {
                 0 -> {
                     when {
                         idOne.isEmpty() -> throw Exception("Author cannot empty")
@@ -81,6 +85,14 @@ class AppDownMod {
                         }
                     }
                 }
+                3 -> {
+                    when {
+                        idOne.isEmpty() -> throw Exception("Package name cannot empty")
+                        else -> {
+                            return s.WandoujiaV1(idOne)
+                        }
+                    }
+                }
             }
             return null
         }
@@ -91,6 +103,7 @@ class AppDownMod {
         private val g = Gson()
         private val convertUtil = ConvertUtil()
         private val defaultAppResult = AppInfoResult(false, "", -1, null)
+        val sysUtil = SystemUtil()
         fun Github(author: String, project: String): AppInfoResult {
             val result = defaultAppResult
             if (author.isEmpty() && project.isEmpty()) {
@@ -114,7 +127,7 @@ class AppDownMod {
                         } else {
                             val lastRelease = github[0]
                             Logger.d(lastRelease)
-                            result.result = AppInfo(author, project, project, "GITHUB_RELEASES", if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
+                            result.result = AppInfo(author, project, project, "GITHUB_RELEASES", author, if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else (lastRelease.name
                                     ?: lastRelease.tag_name), convertUtil.githubUtc2Local(lastRelease.published_at), null,
                                     lastRelease.html_url, lastRelease.assets.map {
                                 FileList(
@@ -142,7 +155,6 @@ class AppDownMod {
             val webUrl = "https://www.coolapk.com/apk/$packageName"
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
-            val sysUtil = SystemUtil()
             val result = defaultAppResult
             Logger.d(doc.html())
             val title = jsoupUtil.title()
@@ -165,7 +177,7 @@ class AppDownMod {
                 Logger.d("rawTime:$rawTime\nnewTime:$newTime")
                 val updateTime = if (newTime.isEmpty()) rawTime else newTime
                 val downCount = c[1]
-                result.result = AppInfo(packageName, null, appName, "COOLAPK_WEB", appVersion, updateTime, packageName, webUrl,
+                result.result = AppInfo(packageName, null, appName, "COOLAPK_WEB", "", appVersion, updateTime, packageName, webUrl,
                         mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))
                 )
                 result.success = true
@@ -222,7 +234,7 @@ class AppDownMod {
                             result.message = ""
                             Logger.d(latestUpdate.updated_at)
                             val updateTime = convertUtil.unixTime2date("${latestUpdate.updated_at}000".toLong())
-                            result.result = AppInfo(pageageName, apiToken, latestUpdate.name, "FIRIM_V1",
+                            result.result = AppInfo(pageageName, apiToken, latestUpdate.name, "FIRIM_V1", "",
                                     latestUpdate.versionShort + "(${latestUpdate.version})",
                                     updateTime, pageageName, latestUpdate.update_url,
                                     mutableListOf(FileList(latestUpdate.versionShort + "(${latestUpdate.version})", latestUpdate.install_url,
@@ -245,6 +257,38 @@ class AppDownMod {
             } finally {
                 return result
             }
+        }
+
+        fun WandoujiaV1(packageName: String): AppInfoResult {
+            val webUrl = "https://www.wandoujia.com/apps/$packageName"
+            val doc = Jsoup.connect(webUrl).get()
+            val jsoupUtil = JsoupUtil(doc)
+            val result = defaultAppResult
+            Logger.d(doc.html())
+            val title = jsoupUtil.title()
+            val body = jsoupUtil.body()
+            if (body == null) {
+                result.message = "错误，找不到应用，服务器返回信息"
+            } else {
+                val webCode = body.attr("param-f") ?: "404"
+                if (webCode.isEmpty() || webCode != "detail" || title == "豌豆荚") {
+                    result.message = "错误，找不到应用，服务器返回信息"
+                } else {
+                    val appName = body.attr("data-title") ?: packageName
+                    val appVersion = jsoupUtil.html("dl.infos-list > dd", 3).replace("&nbsp;", "")
+                    val appSize = jsoupUtil.attr("dl.infos-list > dd > meta", "content")
+                    val downloadUrl = jsoupUtil.link("a.install-btn")
+                    val author = jsoupUtil.html("span.dev-sites")
+                    val updateTime = jsoupUtil.attr("time#baidu_time", "datetime")
+                    val downCount = jsoupUtil.html("span.item.install > i")
+                    result.result = AppInfo(packageName, null, appName, "WANDOUJIA_V1", author, appVersion, updateTime, packageName, webUrl,
+                            mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))
+                    )
+                    result.success = true
+                    result.code = 0
+                }
+            }
+            return result
         }
     }
 
@@ -315,7 +359,7 @@ class AppDownMod {
 
     class Other {
         fun appInfo2AppFeed(name: String, appInfo: AppInfo): AppDownFeed {
-            return AppDownFeed(name, appInfo.id_one, appInfo.id_two, appInfo.site, appInfo.version, appInfo.updateTime, appInfo.packageName, appInfo.webUrl, appInfo.fileList)
+            return AppDownFeed(name, appInfo.id_one, appInfo.id_two, appInfo.site, "", appInfo.version, appInfo.updateTime, appInfo.packageName, appInfo.webUrl, appInfo.fileList)
         }
     }
 }

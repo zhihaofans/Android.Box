@@ -14,19 +14,6 @@
     </shortcut>
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_camera"
-        android:shortcutDisabledMessage="@string/text_qrcode_generate"
-        android:shortcutId="qrcode_generate"
-        android:shortcutLongLabel="@string/text_qrcode_generate"
-        android:shortcutShortLabel="@string/text_qrcode_generate">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="com.zhihaofans.androidbox.mod.QrcodeGenerateShortcuts"
-            android:targetPackage="com.zhihaofans.androidbox" />
-        <categories android:name="android.shortcut.conversation" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
         android:icon="@drawable/ic_serverchan"
         android:shortcutDisabledMessage="@string/text_serverchan"
         android:shortcutId="serverchan"

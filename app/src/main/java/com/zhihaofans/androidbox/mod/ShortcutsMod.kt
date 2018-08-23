@@ -18,14 +18,6 @@ class QrcodeScanShortcuts : Activity() {
     }
 }
 
-class QrcodeGenerateShortcuts : Activity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        startActivity<QrcodeActivity>("method" to "QRCODE_GENERATE")
-        finish()
-    }
-}
-
 class ServerChanShortcuts : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

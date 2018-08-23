@@ -104,9 +104,6 @@
             android:name=".mod.QrcodeScanShortcuts"
             android:label="@string/text_qrcode_scan" />
         <activity
-            android:name=".mod.QrcodeGenerateShortcuts"
-            android:label="@string/text_qrcode_generate" />
-        <activity
             android:name=".mod.ServerChanShortcuts"
             android:label="@string/text_serverchan" />
         <activity

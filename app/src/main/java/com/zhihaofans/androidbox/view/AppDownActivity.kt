@@ -99,7 +99,7 @@ class AppDownActivity : AppCompatActivity() {
                                                                         clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + fileExt,
                                                                         clickedApp.site + "_" + clickedApp.name + "_" + file.name,
                                                                         clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + "_" + file.name,
-                                                                        clickedApp.packageName + ".apk",
+                                                                        clickedApp.packageName + fileExt,
                                                                         clickedApp.packageName + "_" + clickedApp.version + fileExt,
                                                                         clickedApp.site + "_" + clickedApp.packageName + fileExt,
                                                                         clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
@@ -108,13 +108,17 @@ class AppDownActivity : AppCompatActivity() {
                                                                 )
                                                                 selector("文件名格式(结尾自动补充.apk)", fileNameList) { _, fileNameIndex: Int ->
                                                                     var fileName = fileNameList[fileNameIndex]
-                                                                    if (!file.name.endsWith(".apk")) fileName += ".apk"
+                                                                    if (!fileName.endsWith(".apk")) fileName += ".apk"
                                                                     alert {
                                                                         title = getString(R.string.text_download) + "?"
-                                                                        message = sysUtil.getDownloadPathString() + "/Android.Box/" + fileName
-                                                                        positiveButton(R.string.text_download) {
-                                                                            val url = file.url
-                                                                            downloadFile(url, fileName)
+                                                                        customView {
+                                                                            verticalLayout {
+                                                                                val input = editText(sysUtil.getDownloadPathString() + "/Android.Box/" + fileName)
+                                                                                positiveButton(R.string.text_download) {
+                                                                                    val url = file.url
+                                                                                    downloadFile(url, input.text.toString())
+                                                                                }
+                                                                            }
                                                                         }
                                                                     }.show()
 

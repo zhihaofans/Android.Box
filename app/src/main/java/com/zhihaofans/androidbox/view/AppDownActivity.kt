@@ -244,6 +244,26 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
+                4 -> {
+                    site = sites[i]
+                    alert {
+                        title = alertTitle
+                        customView {
+                            verticalLayout {
+                                textView("Package")
+                                val inputOne = editText("com.tencent.android.qqdownloader")
+                                okButton {
+                                    val idOne = inputOne.text.toString()
+                                    if (idOne.isEmpty()) {
+                                        toast("请输入内容")
+                                    } else {
+                                        addFeed(site, idOne)
+                                    }
+                                }
+                            }
+                        }
+                    }.show()
+                }
             }
 
         }

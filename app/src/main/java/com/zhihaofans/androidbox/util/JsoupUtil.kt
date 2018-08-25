@@ -9,6 +9,10 @@ import org.jsoup.select.Elements
 class JsoupUtil(inputDom: Document) {
     private val dom: Document? = inputDom
 
+    fun img(cssQuery: String): String {
+        return this.attr(cssQuery, "src")
+    }
+
     fun attr(cssQuery: String, attrName: String): String {
         val a = dom!!.select(cssQuery)
         if (a.isNotEmpty()) {
@@ -35,7 +39,19 @@ class JsoupUtil(inputDom: Document) {
         return ""
     }
 
-    fun html(cssQuery: String, index: Int): String {
+    fun html(cssQuery: String, index: Int = 0): String {
+        val a: Elements = dom!!.select(cssQuery)
+        if (a.isNotEmpty()) {
+            if (a.size == 1) return a.html()
+            val html = a[index].html()
+            if (html.isNotEmpty()) {
+                return html
+            }
+        }
+        return ""
+    }
+
+    fun htmlorNull(cssQuery: String, index: Int = 0): String? {
         val a = dom!!.select(cssQuery)
         if (a.isNotEmpty()) {
             if (a.size == 1) return html(cssQuery)
@@ -44,7 +60,18 @@ class JsoupUtil(inputDom: Document) {
                 return html
             }
         }
-        return ""
+        return null
+    }
+
+    fun textorNull(cssQuery: String): String? {
+        val a = dom!!.select(cssQuery)
+        if (a.isNotEmpty()) {
+            val text = a.html()
+            if (text.isNotEmpty()) {
+                return text
+            }
+        }
+        return null
     }
 
     fun text(cssQuery: String): String {

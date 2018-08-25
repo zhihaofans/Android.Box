@@ -35,9 +35,10 @@ class AppDownMod {
             this.mcontext = context
             sites = mutableListOf(
                     mutableMapOf("id" to "GITHUB_RELEASES", "name" to "Github releases", "version" to "1"),// Github releases
-                    mutableMapOf("id" to "COOLAPK_WEB", "name" to mcontext!!.getString(R.string.text_coolapk) + " v1", "version" to "1"),// Github releases
+                    mutableMapOf("id" to "COOLAPK_WEB", "name" to mcontext!!.getString(R.string.text_coolapk) + " v1", "version" to "1"),// CoolApk Web
                     mutableMapOf("id" to "FIRIM_V1", "name" to "Fir.im v1", "version" to "1"),// Fir.im v1 (Api)
-                    mutableMapOf("id" to "WANDOUJIA_V1", "name" to mcontext!!.getString(R.string.text_wandoujia) + " v1", "version" to "1")// Wandoujia v1
+                    mutableMapOf("id" to "WANDOUJIA_V1", "name" to mcontext!!.getString(R.string.text_wandoujia) + " v1", "version" to "1"),// Wandoujia v1
+                    mutableMapOf("id" to "MYAPP", "name" to mcontext!!.getString(R.string.text_myapp) + " v1", "version" to "1")// Tencent yingyongbao
             )
             Logger.d(sites)
             return this.mcontext
@@ -90,6 +91,14 @@ class AppDownMod {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
                             return s.WandoujiaV1(idOne)
+                        }
+                    }
+                }
+                4 -> {
+                    when {
+                        idOne.isEmpty() -> throw Exception("Package name cannot empty")
+                        else -> {
+                            return s.MyApp(idOne)
                         }
                     }
                 }
@@ -286,6 +295,44 @@ class AppDownMod {
                     )
                     result.success = true
                     result.code = 0
+                }
+            }
+            return result
+        }
+
+        fun MyApp(packageName: String): AppInfoResult {
+            val webUrl = "http://android.myapp.com/myapp/detail.htm?apkName=$packageName"
+            val result = defaultAppResult
+            if (packageName.isEmpty()) return result
+            val doc = Jsoup.connect(webUrl).get()
+            val jsoupUtil = JsoupUtil(doc)
+            Logger.d(doc.html())
+            val body = jsoupUtil.body()
+            if (body == null) {
+                result.message = "错误，找不到应用，服务器返回空白信息"
+            } else {
+                val emptyElement = jsoupUtil.textorNull("search-none-text")
+                if (emptyElement.isNullOrEmpty()) {
+                    val appName = jsoupUtil.htmlorNull("div.det-name-int") ?: packageName
+                    val appIcon = jsoupUtil.img("div.det-icon >img")
+                    Logger.d("appIcon:$appIcon")
+                    val appSize = jsoupUtil.html("div.det-size")
+                    val downloadUrl = jsoupUtil.attr("det-down-btn", "data-apkurl")
+                    Logger.d("downloadUrl:$downloadUrl")
+                    val appVersion = jsoupUtil.html("div.det-othinfo-data", 0)
+                    val updateUnixTime = jsoupUtil.attr("#J_ApkPublishTime", "data-apkpublishtime").toLong()
+                    val updateTime = convertUtil.unixTime2date(updateUnixTime * 1000)
+                    Logger.d("updateUnixTime:$updateUnixTime")
+                    Logger.d("updateTime:$updateTime")
+                    val author = jsoupUtil.html("div.det-othinfo-data", 2)
+                    val downCount = jsoupUtil.html("div.det-ins-num")
+                    result.result = AppInfo(packageName, null, appName, "MYAPP", author, appVersion, updateTime, packageName, webUrl,
+                            mutableListOf(FileList(appVersion, downloadUrl, downCount, updateTime, appSize))
+                    )
+                    result.success = true
+                    result.code = 0
+                } else {
+                    result.message = "错误，找不到应用，服务器返回信息($emptyElement)"
                 }
             }
             return result

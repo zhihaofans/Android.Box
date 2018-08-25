@@ -317,7 +317,7 @@ class AppDownMod {
                     val appIcon = jsoupUtil.img("div.det-icon >img")
                     Logger.d("appIcon:$appIcon")
                     val appSize = jsoupUtil.html("div.det-size")
-                    val downloadUrl = jsoupUtil.attr("det-down-btn", "data-apkurl")
+                    val downloadUrl = jsoupUtil.attr("a.det-down-btn", "data-apkurl")
                     Logger.d("downloadUrl:$downloadUrl")
                     val appVersion = jsoupUtil.html("div.det-othinfo-data", 0)
                     val updateUnixTime = jsoupUtil.attr("#J_ApkPublishTime", "data-apkpublishtime").toLong()

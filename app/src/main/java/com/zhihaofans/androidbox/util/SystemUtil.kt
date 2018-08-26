@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.FileProvider
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -209,13 +210,13 @@ class SystemUtil {
     }
 
     fun getDownloadPath(): File {
-
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     }
 
     fun getDownloadPathString(): String {
         return getDownloadPath().path
     }
+
 
     fun openImageFile(context: Context, file: File): Intent {
         val intent = Intent("android.intent.action.VIEW")
@@ -254,4 +255,12 @@ class SystemUtil {
         return df.format(newDate2)
     }
 
+    fun installApk(context: Context, filePath: String) {
+        val apkFile = File(filePath)
+        val intent = Intent(Intent.ACTION_VIEW)
+        val apkUri: Uri = FileProvider.getUriForFile(context.applicationContext, "com.zhihaofans.androidbox.fileProvider", apkFile)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
+        context.startActivity(intent)
+    }
 }

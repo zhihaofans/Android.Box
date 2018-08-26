@@ -85,4 +85,7 @@
     <string name="text_wandoujia">Wandoujia</string>
     <string name="text_coolapk">CoolApk</string>
     <string name="text_myapp">Tencent app store</string>
+    <string name="text_feed">Feed</string>
+    <string name="text_news">News</string>
+    <string name="text_app">App</string>
 </resources>

@@ -113,6 +113,10 @@
             android:name=".view.AppDownActivity"
             android:label="@string/title_activity_app_down"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.FeedActivity"
+            android:label="@string/text_feed"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

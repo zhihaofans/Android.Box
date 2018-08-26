@@ -18,6 +18,15 @@ import java.io.IOException
 class NewsBoxMod {
     private var nowContext: Context? = null
 
+    data class News(
+            val title: String,
+            val url: String
+    )
+
+    data class ChannelInfo(
+            val id: String,
+            val name: String
+    )
     class newsBoxCommon {
         fun httpGet4String(url: String, headers: MutableMap<String, String>? = null): String {
             val client = OkHttpClient()

@@ -113,7 +113,7 @@ class AppDownActivity : AppCompatActivity() {
                                                                         title = getString(R.string.text_download) + "?"
                                                                         customView {
                                                                             verticalLayout {
-                                                                                val input = editText(savePath + fileName)
+                                                                                val input = editText(fileName)
                                                                                 positiveButton(R.string.text_download) {
                                                                                     val url = file.url
                                                                                     downloadFile(url, input.text.toString())
@@ -442,11 +442,12 @@ class AppDownActivity : AppCompatActivity() {
         } else if (fileName.isEmpty()) {
             snackbar("下载失败：文件名空白")
         } else {
-            val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
+            val filePath = savePath + fileName
+            val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
             loadingProgressBarDownload.setCancelable(false)
             loadingProgressBarDownload.setCanceledOnTouchOutside(false)
             loadingProgressBarDownload.show()
-            sysUtil.download(url, fileName, object : FileDownloadListener() {
+            sysUtil.download(url, filePath, object : FileDownloadListener() {
                 override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                     loadingProgressBarDownload.setTitle("Pending...")
                 }

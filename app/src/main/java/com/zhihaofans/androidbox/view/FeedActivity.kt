@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
@@ -78,14 +79,13 @@ class FeedActivity : AppCompatActivity() {
                             if (cache == null) {
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
-                                initListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                                initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
                             }
                         }
                     }
                 } else {
-                    initListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                    initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
                 }
-                loadingProgressBar.dismiss()
             }
             else -> {
                 listView_feed.removeAllItems()
@@ -93,17 +93,16 @@ class FeedActivity : AppCompatActivity() {
                 snackbar(coordinatorLayout_feed, "不支持")
             }
         }
-        if (firstRun) {
-            snackbar(coordinatorLayout_feed, "初始化完毕")
-        }
     }
 
-    private fun initListView(titleList: List<String>, urlList: List<String>) {
+    private fun initListView(progressDialog: ProgressDialog, titleList: List<String>, urlList: List<String>) {
         listView_feed.removeAllItems()
         listView_feed.init(this@FeedActivity, titleList)
         listView_feed.onItemClick { _, _, index, _ ->
             sysUtil.browse(this@FeedActivity, urlList[index], titleList[index])
         }
+        progressDialog.dismiss()
+        snackbar(coordinatorLayout_feed, "加载完毕")
     }
 }
 

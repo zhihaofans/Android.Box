@@ -2,7 +2,9 @@ package com.zhihaofans.androidbox.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
+import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
@@ -178,6 +180,23 @@ class SystemUtil {
         FileDownloader.getImpl().create(url)
                 .setPath(savePath)
                 .setListener(listener).start()
+    }
+
+    fun downloadAndroid(context: Context, url: String, savePath: String, title: String = ""): Long {
+        val downloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        val request = DownloadManager.Request(Uri.parse(url))
+        request.setDestinationInExternalPublicDir("dirType", savePath)
+        request.setTitle(if (title.isEmpty()) {
+            "下载中"
+        } else {
+            title
+        })
+        request.setDescription(savePath)
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+        val downloadId = downloadManager.enqueue(request)
+        Logger.d("downloadAndroid\nurl:$url\nsaveTo:$savePath\ntitle:$title\ndownloadId:$downloadId")
+        downloadManager
+        return downloadId
     }
 
     fun getBitmapFromURL(src: String): Bitmap? {

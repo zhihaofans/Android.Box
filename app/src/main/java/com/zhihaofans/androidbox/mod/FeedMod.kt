@@ -14,6 +14,22 @@ class FeedMod {
         private var cache: Cache? = null
         private var siteList = mutableListOf<SiteInfo>()
         private var siteChannelList = mutableMapOf<String, MutableList<ChannelInfo>>()
+        var page: Int
+            get() {
+                return if (cache == null) {
+                    -1
+                } else {
+                    cache!!.nowPage
+                }
+            }
+            set(value) {
+                if (cache != null) {
+                    this@News.getCache(cache!!.siteId, cache!!.siteChannelId, value)
+                } else {
+                    throw NullPointerException("Cache is null")
+                }
+            }
+
         fun init(context: Context) {
             mContext = context
             sites = NewsBoxMod.sites(mContext!!)
@@ -56,7 +72,6 @@ class FeedMod {
             return cache
         }
 
-
         fun getCache(oldCache: Cache): Cache? {
             return getCache(oldCache.siteId, oldCache.siteChannelId, oldCache.nowPage)
         }
@@ -84,6 +99,14 @@ class FeedMod {
                 }
             } else {
                 return cache
+            }
+        }
+
+        fun changePage(page: Int): Cache? {
+            return if (cache == null) {
+                null
+            } else {
+                this@News.getCache(cache!!.siteId, cache!!.siteChannelId, page)
             }
         }
 
@@ -119,6 +142,11 @@ class FeedMod {
         data class NewsInfo(
                 val title: String,
                 val url: String
+        )
+
+        data class Update(
+                val type: Int,//0:refresh, 1:change page
+                val data: Any? = null
         )
     }
 

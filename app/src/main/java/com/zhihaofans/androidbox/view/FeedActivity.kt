@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.view
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
@@ -16,6 +15,7 @@ import kotlinx.android.synthetic.main.content_feed.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
+import org.jetbrains.anko.selector
 import org.jetbrains.anko.uiThread
 
 
@@ -29,8 +29,39 @@ class FeedActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         init()
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            when (nowTabPosition) {
+                0 -> {
+                    val newsCache = newsBox.getCache()
+                    if (newsCache == null) {
+                        snackbar(coordinatorLayout_feed, "空白订阅数据")
+                        selector("", mutableListOf(getString(R.string.text_refresh))) { _, pos ->
+                            when (pos) {
+                                0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
+                            }
+                        }
+                    } else {
+                        val menu = mutableListOf(
+                                getString(R.string.text_refresh),
+                                getString(R.string.text_next_page)
+                        )
+                        if (newsBox.page > 1) {
+                            menu.add(1, getString(R.string.text_previous_page))
+                        }
+                        selector("", menu) { _, pos ->
+                            if (menu.size == 3) {
+                                when (pos) {
+                                    1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage--))
+                                }
+                            } else {
+                                when (pos) {
+                                    0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
+                                    menu.size - 1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage++))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -49,10 +80,10 @@ class FeedActivity : AppCompatActivity() {
     private fun init() {
         newsBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
-        initFeed(0, true)
+        initFeed(0)
     }
 
-    private fun initFeed(index: Int, firstRun: Boolean = false) {
+    private fun initFeed(index: Int) {
         val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
@@ -61,22 +92,13 @@ class FeedActivity : AppCompatActivity() {
             0 -> {
                 var cache = newsBox.getCache()
                 if (cache == null) {
-                    var siteIndex = 0
-                    var channelIndex = 0
-                    var page = 0
                     val siteList = newsBox.getSiteList()
-                    if (!firstRun) {
-                        //TODO:选择新闻站点
-                    }
-                    val thisSite = siteList[siteIndex]
-                    if (!firstRun) {
-                        //TODO:选择新闻站点的频道
-                    }
-                    val channels = newsBox.getChannel(thisSite.id)
+                    val thisSite = siteList[0]
                     doAsync {
-                        cache = newsBox.getCache(thisSite.id, channels[channelIndex].id, page)
+                        cache = newsBox.getCache(thisSite.id, newsBox.getChannel(thisSite.id)[0].id, 1)
                         uiThread { _ ->
                             if (cache == null) {
+                                loadingProgressBar.dismiss()
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
                                 initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
@@ -91,6 +113,44 @@ class FeedActivity : AppCompatActivity() {
                 listView_feed.removeAllItems()
                 loadingProgressBar.dismiss()
                 snackbar(coordinatorLayout_feed, "不支持")
+            }
+        }
+    }
+
+    private fun updateFeed(index: Int, data: Any) {
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
+        when (index) {
+            0 -> {
+                val update = data as FeedMod.News.Update
+                var cache = newsBox.getCache()
+                if (cache == null) {
+                    snackbar(coordinatorLayout_feed, "空白订阅数据")
+                } else {
+                    when (update.type) {
+                        0 -> {
+                            doAsync {
+                                cache = newsBox.refreshCache()
+                                uiThread { _ ->
+                                    if (cache == null) {
+                                        loadingProgressBar.dismiss()
+                                        snackbar(coordinatorLayout_feed, "空白数据")
+                                    } else {
+                                        initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                                    }
+                                }
+                            }
+                        }
+                        1 -> {
+
+                        }
+                    }
+                }
+            }
+            else -> {
+                loadingProgressBar.dismiss()
             }
         }
     }

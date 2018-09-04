@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
@@ -34,29 +35,34 @@ class FeedActivity : AppCompatActivity() {
                     val newsCache = newsBox.getCache()
                     if (newsCache == null) {
                         snackbar(coordinatorLayout_feed, "空白订阅数据")
-                        selector("", mutableListOf(getString(R.string.text_refresh))) { _, pos ->
+                        selector("", mutableListOf(getString(R.string.text_select_site), getString(R.string.text_refresh))) { _, pos ->
                             when (pos) {
-                                0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
+                                0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(2))
+                                1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
+
                             }
                         }
                     } else {
                         val menu = mutableListOf(
+                                getString(R.string.text_select_site),
                                 getString(R.string.text_refresh),
                                 getString(R.string.text_next_page)
                         )
                         if (newsBox.page > 1) {
-                            menu.add(1, getString(R.string.text_previous_page))
+                            menu.add(2, getString(R.string.text_previous_page))
                         }
                         selector("", menu) { _, pos ->
-                            if (menu.size == 3) {
-                                when (pos) {
-                                    1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage--))
+                            when (pos) {
+                                0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(2))
+                                1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
+                                2 -> {
+                                    if (menu.size == 4) {
+                                        this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage--))
+                                    } else {
+                                        this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage++))
+                                    }
                                 }
-                            } else {
-                                when (pos) {
-                                    0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
-                                    menu.size - 1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage++))
-                                }
+                                3 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage++))
                             }
                         }
                     }
@@ -77,13 +83,14 @@ class FeedActivity : AppCompatActivity() {
         })
     }
 
+
     private fun init() {
         newsBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
         initFeed(0)
     }
 
-    private fun initFeed(index: Int) {
+    private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
         val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
@@ -91,11 +98,17 @@ class FeedActivity : AppCompatActivity() {
         when (index) {
             0 -> {
                 var cache = newsBox.getCache()
-                if (cache == null) {
+                if (cache == null || noCache) {
                     val siteList = newsBox.getSiteList()
-                    val thisSite = siteList[0]
+                    val newsInit: FeedMod.News.Init = if (data == null) {
+                        val thisSite = siteList[0]
+                        val channelList = newsBox.getChannel(thisSite.id)
+                        FeedMod.News.Init(thisSite.id, channelList[0].id, 1)
+                    } else {
+                        data as FeedMod.News.Init
+                    }
                     doAsync {
-                        cache = newsBox.getCache(thisSite.id, newsBox.getChannel(thisSite.id)[0].id, 1)
+                        cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread { _ ->
                             if (cache == null) {
                                 loadingProgressBar.dismiss()
@@ -144,8 +157,39 @@ class FeedActivity : AppCompatActivity() {
                             }
                         }
                         1 -> {
-
+                            //TODO:更改 page
+                            val page = update.data as Int
+                            Logger.d("page:$page")
+                            doAsync {
+                                cache = newsBox.changePage(page)
+                                uiThread { _ ->
+                                    if (cache == null) {
+                                        loadingProgressBar.dismiss()
+                                        snackbar(coordinatorLayout_feed, "空白数据")
+                                    } else {
+                                        initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                                    }
+                                }
+                            }
                         }
+                        2 -> {
+                            //TODO:更改 site
+                            loadingProgressBar.dismiss()
+                            val siteList = newsBox.getSiteList()
+                            selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
+                                val siteId = siteList[i].id
+                                val channelList = newsBox.getChannel(siteId)
+                                var channelId = channelList[0].id
+                                if (channelList.size > 1) {
+                                    selector(getString(R.string.text_channel), channelList.map { it.name }) { _, channelIndex ->
+                                        channelId = channelList[channelIndex].id
+                                    }
+                                }
+                                val a = mutableMapOf<String, String>()
+                                initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
+                            }
+                        }
+                        else -> loadingProgressBar.dismiss()
                     }
                 }
             }

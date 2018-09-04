@@ -178,7 +178,7 @@ class siteInfo_sspai(_context: Context) {
                 )
                 try {
                     newsListJson = nbc.httpGet4String(thisUrl, headers)
-                    Logger.d("newsListJson:$newsListJson")
+                    //Logger.d("newsListJson:$newsListJson")
                     val newsIndex = g.fromJson(newsListJson, SspaiArticleGson::class.java)
                     val newsListIndex = newsIndex.list
                     if (newsListIndex.size == 0) {

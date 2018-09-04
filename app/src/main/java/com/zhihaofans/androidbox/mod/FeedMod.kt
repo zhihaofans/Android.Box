@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.util.isNullorEmpty
 
 /**
@@ -13,6 +14,7 @@ class FeedMod {
         private var sites: NewsBoxMod.sites? = null
         private var cache: Cache? = null
         private var siteList = mutableListOf<SiteInfo>()
+        private var siteListNew = mutableListOf<SiteInfoNew>()
         private var siteChannelList = mutableMapOf<String, MutableList<ChannelInfo>>()
         var page: Int
             get() {
@@ -38,9 +40,11 @@ class FeedMod {
             }.toMutableList()
             siteList.map { site ->
                 val thisSite = site.id
-                siteChannelList[thisSite] = sites!!.getSiteChannelList(thisSite)!!.map {
+                val channelList = sites!!.getSiteChannelList(thisSite)!!.map {
                     ChannelInfo(it["channelId"]!!, it["channelName"]!!)
                 }.toMutableList()
+                siteListNew.add(SiteInfoNew(site.id, site.name, channelList))
+                siteChannelList[thisSite] = channelList
             }
         }
 
@@ -49,16 +53,12 @@ class FeedMod {
         }
 
         fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<NewsInfo>? {
+            Logger.d("getNewsList:$siteId/$channelId/$page")
             val newsL = sites!!.getNewsList(siteId, channelId, page)
             return newsL?.map { NewsInfo(it["title"]!!, it["web_url"]!!) }?.toMutableList()
 
         }
 
-        fun firstRun() {
-            val thisSite = siteList[0]
-            val channelId = getChannel(thisSite.id)[0].id
-            getCache(thisSite.id, channelId, 0)
-        }
 
         fun getSiteList(): MutableList<SiteInfo> {
             return siteList
@@ -103,10 +103,12 @@ class FeedMod {
         }
 
         fun changePage(page: Int): Cache? {
+            Logger.d("changerPage:$page")
             return if (cache == null) {
                 null
             } else {
-                this@News.getCache(cache!!.siteId, cache!!.siteChannelId, page)
+                cache = this@News.getCache(cache!!.siteId, cache!!.siteChannelId, page)
+                cache
             }
         }
 
@@ -134,6 +136,12 @@ class FeedMod {
                 val name: String
         )
 
+        data class SiteInfoNew(
+                val id: String,
+                val name: String,
+                val channel: MutableList<ChannelInfo>
+        )
+
         data class ChannelInfo(
                 val id: String,
                 val name: String
@@ -144,8 +152,14 @@ class FeedMod {
                 val url: String
         )
 
+        data class Init(
+                val siteId: String,
+                val channelId: String,
+                val page: Int
+        )
+
         data class Update(
-                val type: Int,//0:refresh, 1:change page
+                val type: Int,//0:refresh, 1:change page, 2.change site
                 val data: Any? = null
         )
     }

@@ -401,10 +401,6 @@ class siteInfo_rsshub(_context: Context) {
     fun getchannelList(): MutableList<MutableMap<String, String>> {
         return mutableListOf(
                 mutableMapOf(
-                        "channelId" to "rsshub_weibo_user_6180475384",
-                        "channelName" to context.getString(R.string.text_site_rsshub_weibo_user_6180475384)
-                ),
-                mutableMapOf(
                         "channelId" to "rsshub_v2ex_topics",
                         "channelName" to context.getString(R.string.text_site_rsshub_v2ex_topics)
                 ),
@@ -423,7 +419,6 @@ class siteInfo_rsshub(_context: Context) {
         val newsListJson: String
         val newsList = mutableListOf<MutableMap<String, String>>()
         val thisUrl = when (channelId) {
-            "rsshub_weibo_user_6180475384" -> "https://rsshub.app/weibo/user2/6180475384.json"
             "rsshub_v2ex_topics" -> "https://rsshub.app/v2ex/topics/latest.json"
             "rsshub_douban_movie_playing" -> "https://rsshub.app/douban/movie/playing.json"
             else -> return null

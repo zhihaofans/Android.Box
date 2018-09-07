@@ -77,7 +77,7 @@ class FeedMod {
         }
 
         fun getCache(siteId: String, channelId: String, page: Int): Cache? {
-            if (cache == null) {
+            if (cache == null || siteId != cache!!.siteId || channelId != cache!!.siteChannelId || page != cache!!.nowPage) {
                 val newsList = getNewsList(siteId, channelId, page)
                 return if (newsList.isNullorEmpty()) {
                     null
@@ -103,12 +103,14 @@ class FeedMod {
         }
 
         fun changePage(page: Int): Cache? {
-            Logger.d("changerPage:$page")
-            return if (cache == null) {
-                null
-            } else {
-                cache = this@News.getCache(cache!!.siteId, cache!!.siteChannelId, page)
-                cache
+            Logger.d("changePage:$page")
+            return when {
+                cache == null -> null
+                page == cache!!.nowPage -> cache
+                else -> {
+                    cache = this@News.getCache(cache!!.siteId, cache!!.siteChannelId, page)
+                    cache
+                }
             }
         }
 

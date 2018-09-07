@@ -56,13 +56,11 @@ class FeedActivity : AppCompatActivity() {
                                 0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(2))
                                 1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
                                 2 -> {
-                                    if (menu.size == 4) {
-                                        this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage--))
-                                    } else {
-                                        this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage++))
-                                    }
+                                    val pageTemp = newsCache.nowPage + if (menu.size == 4) -1 else 1
+                                    Logger.d("pageTemp:$pageTemp")
+                                    this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, pageTemp))
                                 }
-                                3 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage++))
+                                3 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage + 1))
                             }
                         }
                     }
@@ -99,15 +97,15 @@ class FeedActivity : AppCompatActivity() {
             0 -> {
                 var cache = newsBox.getCache()
                 if (cache == null || noCache) {
-                    val siteList = newsBox.getSiteList()
                     val newsInit: FeedMod.News.Init = if (data == null) {
-                        val thisSite = siteList[0]
+                        val thisSite = newsBox.getSiteList()[0]
                         val channelList = newsBox.getChannel(thisSite.id)
                         FeedMod.News.Init(thisSite.id, channelList[0].id, 1)
                     } else {
                         data as FeedMod.News.Init
                     }
                     doAsync {
+                        Logger.d("newsInit")
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread { _ ->
                             if (cache == null) {
@@ -159,7 +157,7 @@ class FeedActivity : AppCompatActivity() {
                         1 -> {
                             //TODO:更改 page
                             val page = update.data as Int
-                            Logger.d("page:$page")
+                            Logger.d("updateFeed->page:$page")
                             doAsync {
                                 cache = newsBox.changePage(page)
                                 uiThread { _ ->
@@ -167,6 +165,7 @@ class FeedActivity : AppCompatActivity() {
                                         loadingProgressBar.dismiss()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
+                                        listView_feed.removeAllItems()
                                         initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
                                     }
                                 }
@@ -183,10 +182,13 @@ class FeedActivity : AppCompatActivity() {
                                 if (channelList.size > 1) {
                                     selector(getString(R.string.text_channel), channelList.map { it.name }) { _, channelIndex ->
                                         channelId = channelList[channelIndex].id
+                                        Logger.d("ChangeSite:$siteId/$channelId")
+                                        initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                     }
+                                } else {
+                                    Logger.d("ChangeSite:$siteId/$channelId")
+                                    initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                 }
-                                val a = mutableMapOf<String, String>()
-                                initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                             }
                         }
                         else -> loadingProgressBar.dismiss()

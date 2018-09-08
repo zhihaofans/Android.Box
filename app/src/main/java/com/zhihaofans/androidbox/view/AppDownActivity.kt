@@ -23,7 +23,7 @@ import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
     private val sysUtil = SystemUtil()
-    private val savePath: String = sysUtil.getDownloadPathString() + "/Android.Box/"
+    private val savePath: String = sysUtil.getDownloadPathString() + "Android.Box/"
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()

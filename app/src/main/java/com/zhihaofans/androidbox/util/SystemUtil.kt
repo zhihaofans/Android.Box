@@ -217,7 +217,8 @@ class SystemUtil {
 
     fun getAppPrivateDirectory(context: Context): String? {
         val m = context.packageManager
-        return m.getPackageInfo(context.packageName, 0).applicationInfo.dataDir
+        val p = m.getPackageInfo(context.packageName, 0).applicationInfo.dataDir
+        return if (p.endsWith("/")) p else "$p/"
     }
 
     fun getPicturePath(): File {
@@ -225,7 +226,8 @@ class SystemUtil {
     }
 
     fun getPicturePathString(): String {
-        return getPicturePath().path
+        val p = getPicturePath().path
+        return if (p.endsWith("/")) p else "$p/"
     }
 
     fun getDownloadPath(): File {
@@ -233,7 +235,8 @@ class SystemUtil {
     }
 
     fun getDownloadPathString(): String {
-        return getDownloadPath().path
+        val p = getDownloadPath().path
+        return if (p.endsWith("/")) p else "$p/"
     }
 
 

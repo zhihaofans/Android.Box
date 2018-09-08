@@ -4,7 +4,10 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
+import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
@@ -13,16 +16,14 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.uiThread
 
 
 class FeedActivity : AppCompatActivity() {
     private var nowTabPosition = 0
     private val newsBox = FeedMod.News()
+    private val appBox = FeedMod.App()
     private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +85,7 @@ class FeedActivity : AppCompatActivity() {
 
     private fun init() {
         newsBox.init(this@FeedActivity)
+        appBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
         initFeed(0)
     }
@@ -209,6 +211,79 @@ class FeedActivity : AppCompatActivity() {
         }
         progressDialog.dismiss()
         snackbar(coordinatorLayout_feed, "加载完毕")
+    }
+
+    private fun downloadFile(url: String, fileName: String) {
+        when {
+            url.isEmpty() -> snackbar("下载失败：下载地址空白")
+            fileName.isEmpty() -> snackbar("下载失败：文件名空白")
+            else -> {
+                val filePath = appBox.savePath + fileName
+                val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
+                loadingProgressBarDownload.setCancelable(false)
+                loadingProgressBarDownload.setCanceledOnTouchOutside(false)
+                loadingProgressBarDownload.show()
+                sysUtil.download(url, filePath, object : FileDownloadListener() {
+                    override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                        loadingProgressBarDownload.setTitle("Pending...")
+                    }
+
+                    override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
+                        loadingProgressBarDownload.setTitle("Connected")
+
+                    }
+
+                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                        if (totalBytes > 0) {
+                            loadingProgressBarDownload.max = totalBytes
+                            loadingProgressBarDownload.progress = soFarBytes
+                        } else {
+                            loadingProgressBarDownload.max = 0
+                            loadingProgressBarDownload.progress = 1
+                        }
+                    }
+
+                    override fun blockComplete(task: BaseDownloadTask?) {}
+
+                    override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
+                        loadingProgressBarDownload.setTitle("Retry")
+                        loadingProgressBarDownload.setMessage("Times: $retryingTimes")
+                    }
+
+                    override fun completed(task: BaseDownloadTask) {
+                        loadingProgressBarDownload.dismiss()
+                        alert {
+                            title = "下载完成"
+                            message = "文件路径:" + task.targetFilePath
+                            positiveButton(R.string.text_copy) {
+                                ClipboardUtils.copy(this@FeedActivity, task.targetFilePath)
+                                toast("复制成功")
+                            }
+                            negativeButton(R.string.text_open) {
+                            }
+                        }.show()
+
+                    }
+
+                    override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                        loadingProgressBarDownload.dismiss()
+                    }
+
+                    override fun error(task: BaseDownloadTask, e: Throwable) {
+                        e.printStackTrace()
+                        Logger.d("Download error\nfileName:" + task.filename)
+                        loadingProgressBarDownload.dismiss()
+                        snackbar("下载失败")
+                    }
+
+                    override fun warn(task: BaseDownloadTask) {}
+                })
+            }
+        }
+    }
+
+    private fun snackbar(msg: String) {
+        snackbar(coordinatorLayout_feed, msg)
     }
 }
 

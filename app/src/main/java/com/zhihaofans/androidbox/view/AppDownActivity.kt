@@ -23,7 +23,7 @@ import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
     private val sysUtil = SystemUtil()
-    private val savePath: String = sysUtil.getDownloadPathString()
+    private val savePath: String = sysUtil.getDownloadPathString() + "/Android.Box/"
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()
@@ -105,7 +105,13 @@ class AppDownActivity : AppCompatActivity() {
                                                                         clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
                                                                         clickedApp.site + "_" + clickedApp.id_one + "_" +
                                                                                 (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") + clickedApp.version + "_" + file.name
-                                                                )
+                                                                ).map {
+                                                                    if (it.endsWith(".apk")) {
+                                                                        it
+                                                                    } else {
+                                                                        "$it.apk"
+                                                                    }
+                                                                }
                                                                 selector("文件名格式(结尾自动补充.apk)", fileNameList) { _, fileNameIndex: Int ->
                                                                     var fileName = fileNameList[fileNameIndex]
                                                                     if (!fileName.endsWith(".apk")) fileName += ".apk"
@@ -437,71 +443,71 @@ class AppDownActivity : AppCompatActivity() {
 
 
     private fun downloadFile(url: String, fileName: String) {
-        if (url.isEmpty()) {
-            snackbar("下载失败：下载地址空白")
-        } else if (fileName.isEmpty()) {
-            snackbar("下载失败：文件名空白")
-        } else {
-            val filePath = savePath + fileName
-            val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
-            loadingProgressBarDownload.setCancelable(false)
-            loadingProgressBarDownload.setCanceledOnTouchOutside(false)
-            loadingProgressBarDownload.show()
-            sysUtil.download(url, filePath, object : FileDownloadListener() {
-                override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                    loadingProgressBarDownload.setTitle("Pending...")
-                }
-
-                override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                    loadingProgressBarDownload.setTitle("Connected")
-
-                }
-
-                override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                    if (totalBytes > 0) {
-                        loadingProgressBarDownload.max = totalBytes
-                        loadingProgressBarDownload.progress = soFarBytes
-                    } else {
-                        loadingProgressBarDownload.max = 0
-                        loadingProgressBarDownload.progress = 1
+        when {
+            url.isEmpty() -> snackbar("下载失败：下载地址空白")
+            fileName.isEmpty() -> snackbar("下载失败：文件名空白")
+            else -> {
+                val filePath = savePath + fileName
+                val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
+                loadingProgressBarDownload.setCancelable(false)
+                loadingProgressBarDownload.setCanceledOnTouchOutside(false)
+                loadingProgressBarDownload.show()
+                sysUtil.download(url, filePath, object : FileDownloadListener() {
+                    override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                        loadingProgressBarDownload.setTitle("Pending...")
                     }
-                }
 
-                override fun blockComplete(task: BaseDownloadTask?) {}
+                    override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
+                        loadingProgressBarDownload.setTitle("Connected")
 
-                override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                    loadingProgressBarDownload.setTitle("Retry")
-                    loadingProgressBarDownload.setMessage("Times: $retryingTimes")
-                }
+                    }
 
-                override fun completed(task: BaseDownloadTask) {
-                    loadingProgressBarDownload.dismiss()
-                    alert {
-                        title = "下载完成"
-                        message = "文件路径:" + task.targetFilePath
-                        positiveButton(R.string.text_copy) {
-                            ClipboardUtils.copy(this@AppDownActivity, task.targetFilePath)
-                            toast("复制成功")
+                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                        if (totalBytes > 0) {
+                            loadingProgressBarDownload.max = totalBytes
+                            loadingProgressBarDownload.progress = soFarBytes
+                        } else {
+                            loadingProgressBarDownload.max = 0
+                            loadingProgressBarDownload.progress = 1
                         }
-                        negativeButton(R.string.text_open) {
-                        }
-                    }.show()
+                    }
 
-                }
+                    override fun blockComplete(task: BaseDownloadTask?) {}
 
-                override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                    loadingProgressBarDownload.dismiss()
-                }
+                    override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
+                        loadingProgressBarDownload.setTitle("Retry")
+                        loadingProgressBarDownload.setMessage("Times: $retryingTimes")
+                    }
 
-                override fun error(task: BaseDownloadTask, e: Throwable) {
-                    e.printStackTrace()
-                    Logger.d("Download error\nfileName:" + task.filename)
-                    loadingProgressBarDownload.dismiss()
-                    Snackbar.make(coordinatorLayout_appdown, "下载失败", Snackbar.LENGTH_SHORT).show()
-                }
+                    override fun completed(task: BaseDownloadTask) {
+                        loadingProgressBarDownload.dismiss()
+                        alert {
+                            title = "下载完成"
+                            message = "文件路径:" + task.targetFilePath
+                            positiveButton(R.string.text_copy) {
+                                ClipboardUtils.copy(this@AppDownActivity, task.targetFilePath)
+                                toast("复制成功")
+                            }
+                            negativeButton(R.string.text_open) {
+                            }
+                        }.show()
 
-                override fun warn(task: BaseDownloadTask) {}
-            })
+                    }
+
+                    override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
+                        loadingProgressBarDownload.dismiss()
+                    }
+
+                    override fun error(task: BaseDownloadTask, e: Throwable) {
+                        e.printStackTrace()
+                        Logger.d("Download error\nfileName:" + task.filename)
+                        loadingProgressBarDownload.dismiss()
+                        Snackbar.make(coordinatorLayout_appdown, "下载失败", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                    override fun warn(task: BaseDownloadTask) {}
+                })
+            }
         }
     }
 }

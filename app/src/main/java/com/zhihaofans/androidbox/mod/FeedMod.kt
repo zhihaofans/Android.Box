@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.orhanobut.logger.Logger
+import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.isNullorEmpty
 
 /**
@@ -168,6 +169,8 @@ class FeedMod {
 
     class App {
         private var mContext: Context? = null
+        private val sysUtil = SystemUtil()
+        val savePath = sysUtil.getDownloadPathString() + "/Android.Box/"
         fun init(context: Context) {
             mContext = context
         }
@@ -181,5 +184,6 @@ class FeedMod {
                 siteParser
             }
         }
+
     }
 }

@@ -13,7 +13,7 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 60
-        versionName "0.0.56"
+        versionName "0.0.57"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

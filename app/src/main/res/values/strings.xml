@@ -61,14 +61,8 @@
     <string name="text_qrcode_scan">Scan QR code</string>
     <string name="text_qrcode_generate">Generate QR code</string>
     <string name="text_permission_camera">Camera permission</string>
-    <string name="text_site_pingwest_forwardrecommend">Pingwest forwarding recommendation</string>
-    <string name="text_site_pingwest">Pingwest</string>
     <string name="text_setting_open_image_url_with_buildin_viewer">Open image url with build-in viewer</string>
     <string name="text_manual_update">Manual update</string>
-    <string name="text_site_allgl">all.gl</string>
-    <string name="text_site_allgl_all">all.gl - All</string>
-    <string name="text_site_guandn_index">Guandn - homepage</string>
-    <string name="text_site_guandn">Guandn</string>
     <string name="text_site_rsshub">RSSHub</string>
     <string name="text_site_rsshub_douban_movie_playing">Douban playing movie</string>
     <string name="text_site_rsshub_v2ex_topics">V2EX - topics</string>

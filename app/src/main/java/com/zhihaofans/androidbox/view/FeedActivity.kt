@@ -40,7 +40,6 @@ class FeedActivity : AppCompatActivity() {
                             when (pos) {
                                 0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(2))
                                 1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
-
                             }
                         }
                     } else {

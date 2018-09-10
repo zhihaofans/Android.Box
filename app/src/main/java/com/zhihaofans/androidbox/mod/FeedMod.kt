@@ -170,7 +170,7 @@ class FeedMod {
     class App {
         private var mContext: Context? = null
         private val sysUtil = SystemUtil()
-        val savePath = sysUtil.getDownloadPathString() + "/Android.Box/"
+        val savePath = sysUtil.getDownloadPathString() + "Android.Box/"
         fun init(context: Context) {
             mContext = context
         }

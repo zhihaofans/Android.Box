@@ -80,4 +80,9 @@
     <string name="text_news">新闻</string>
     <string name="text_feed">订阅</string>
     <string name="text_app">应用</string>
+    <string name="text_site_rsshub_jike_editors_choice">即刻-精选</string>
+    <string name="text_site_rsshub_juejin_trending_android">掘金Android本月最热</string>
+    <string name="text_site_rsshub_bangumi_calendar_today">Bangumi 每日放送</string>
+    <string name="text_site_rsshub_new_rss">RSSHub有新的RSS支持</string>
+    <string name="text_site_rsshub_guokr_scientific">果壳网 科学人</string>
 </resources>

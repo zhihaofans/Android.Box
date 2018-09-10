@@ -137,18 +137,6 @@ class NewsBoxMod {
                             "name" to context.getString(R.string.text_site_gank_io)
                     ),
                     mutableMapOf(
-                            "id" to "pingwest",
-                            "name" to context.getString(R.string.text_site_pingwest)
-                    ),
-                    mutableMapOf(
-                            "id" to "all.gl",
-                            "name" to context.getString(R.string.text_site_allgl)
-                    ),
-                    mutableMapOf(
-                            "id" to "guandn",
-                            "name" to context.getString(R.string.text_site_guandn)
-                    ),
-                    mutableMapOf(
                             "id" to "rsshub",
                             "name" to context.getString(R.string.text_site_rsshub)
                     )

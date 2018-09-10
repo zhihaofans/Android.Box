@@ -81,4 +81,9 @@
     <string name="text_feed">Feed</string>
     <string name="text_news">News</string>
     <string name="text_app">App</string>
+    <string name="text_site_rsshub_jike_editors_choice">jike - Editor\'s Choice</string>
+    <string name="text_site_rsshub_juejin_trending_android">juejin Android trending</string>
+    <string name="text_site_rsshub_bangumi_calendar_today">Bangumi calendar today</string>
+    <string name="text_site_rsshub_new_rss">New RSS on RSSHub</string>
+    <string name="text_site_rsshub_guokr_scientific">Guokr scientific</string>
 </resources>

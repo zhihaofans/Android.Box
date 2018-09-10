@@ -203,7 +203,6 @@ class siteInfo_sspai(_context: Context) {
 }
 
 
-
 class siteInfo_rsshub(_context: Context) {
 
     private val nbc = NewsBoxMod.newsBoxCommon()
@@ -218,6 +217,26 @@ class siteInfo_rsshub(_context: Context) {
                 mutableMapOf(
                         "channelId" to "rsshub_douban_movie_playing",
                         "channelName" to context.getString(R.string.text_site_rsshub_douban_movie_playing)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_jike_editor_choice",
+                        "channelName" to context.getString(R.string.text_site_rsshub_jike_editors_choice)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_juejin_trending_android",
+                        "channelName" to context.getString(R.string.text_site_rsshub_juejin_trending_android)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_bangumi_calendar_today",
+                        "channelName" to context.getString(R.string.text_site_rsshub_bangumi_calendar_today)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_new_rss",
+                        "channelName" to context.getString(R.string.text_site_rsshub_new_rss)
+                ),
+                mutableMapOf(
+                        "channelId" to "rsshub_guokr_scientific",
+                        "channelName" to context.getString(R.string.text_site_rsshub_guokr_scientific)
                 )
         )
     }
@@ -232,6 +251,11 @@ class siteInfo_rsshub(_context: Context) {
         val thisUrl = when (channelId) {
             "rsshub_v2ex_topics" -> "https://rsshub.app/v2ex/topics/latest.json"
             "rsshub_douban_movie_playing" -> "https://rsshub.app/douban/movie/playing.json"
+            "rsshub_jike_editor_choice" -> "https://rsshub.app/jike/topic/54dffb40e4b0f57466e675f0.json"
+            "rsshub_juejin_trending_android" -> "https://rsshub.app/juejin/trending/android/monthly.json"
+            "rsshub_bangumi_calendar_today" -> "https://rsshub.app/bangumi/calendar/today.json"
+            "rsshub_new_rss" -> "https://rsshub.app/rsshub/rss.json"
+            "rsshub_guokr_scientific" -> "https://rsshub.app/guokr/scientific.json"
             else -> return null
         }
         if (thisUrl.isEmpty()) return null

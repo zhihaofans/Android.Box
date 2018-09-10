@@ -115,15 +115,6 @@ class NewsBoxMod {
                 "gank.io" -> {
                     siteInfo_gankio(context).getNewsList(channelId, page)
                 }
-                "pingwest" -> {
-                    siteInfo_pingwest(context).getNewsList(channelId, page)
-                }
-                "all.gl" -> {
-                    siteInfo_allgl(context).getNewsList(channelId, page)
-                }
-                "guandn" -> {
-                    siteInfo_guandn(context).getNewsList(channelId, page)
-                }
                 "rsshub" -> {
                     siteInfo_rsshub(context).getNewsList(channelId, page)
                 }
@@ -169,9 +160,6 @@ class NewsBoxMod {
                 "sspai" -> siteInfo_sspai(context).getchannelList()
                 "dgtle" -> siteInfo_dgtle(context).getchannelList()
                 "gank.io" -> siteInfo_gankio(context).getchannelList()
-                "pingwest" -> siteInfo_pingwest(context).getchannelList()
-                "all.gl" -> siteInfo_allgl(context).getchannelList()
-                "guandn" -> siteInfo_guandn(context).getchannelList()
                 "rsshub" -> siteInfo_rsshub(context).getchannelList()
                 else -> null
             }

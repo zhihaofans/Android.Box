@@ -2,6 +2,8 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.orhanobut.logger.Logger
+import com.wx.android.common.util.ClipboardUtils
+import com.zhihaofans.androidbox.database.AppDownFeed
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.isNullorEmpty
 
@@ -125,6 +127,10 @@ class FeedMod {
             }
         }
 
+        fun getListView(titleList: List<String>, urlList: List<String>): ListView {
+            return ListView(titleList.toMutableList(), urlList.toMutableList())
+        }
+
         data class Cache(
                 var newsList: MutableList<NewsInfo>,
                 var siteId: String,
@@ -165,25 +171,95 @@ class FeedMod {
                 val type: Int,//0:refresh, 1:change page, 2.change site
                 val data: Any? = null
         )
+
+        data class ListView(
+                val titleList: MutableList<String>,
+                val urlList: MutableList<String>
+        )
     }
 
     class App {
         private var mContext: Context? = null
+        private var siteParser: AppDownMod.SiteParser? = null
         private val sysUtil = SystemUtil()
-        val savePath = sysUtil.getDownloadPathString() + "Android.Box/"
+        private val dataBase = AppDownMod.DataBase()
+        private val savePath = sysUtil.getDownloadPathString() + "Android.Box/"
+        private var appFeeds = mutableListOf<AppDownFeed>()
         fun init(context: Context) {
             mContext = context
+            siteParser = this@App.initSiteParser()
+            initAppList()
         }
 
-        fun SiteParser(): AppDownMod.SiteParser? {
-            return if (mContext == null) {
-                null
+        fun initAppList(): MutableList<AppDownFeed> {
+            appFeeds = dataBase.getAppFeeds()
+            return appFeeds
+        }
+
+        fun getAppList(): AppList {
+            return AppList(appFeeds)
+        }
+
+        fun fileNameList(clickedApp: AppDownFeed, fileIndex: Int, fileExt: String): MutableList<String> {
+            val fileList = clickedApp.fileList
+            val file = fileList[fileIndex]
+            return mutableListOf(
+                    clickedApp.name + fileExt,
+                    clickedApp.name + "_" + clickedApp.version + fileExt,
+                    clickedApp.site + "_" + clickedApp.name + fileExt,
+                    clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + fileExt,
+                    clickedApp.site + "_" + clickedApp.name + "_" + file.name,
+                    clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + "_" + file.name,
+                    clickedApp.packageName + fileExt,
+                    clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                    clickedApp.site + "_" + clickedApp.packageName + fileExt,
+                    clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                    clickedApp.site + "_" + clickedApp.id_one + "_" +
+                            (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") + clickedApp.version + "_" + file.name
+            ).map {
+                if (it.endsWith(".apk")) {
+                    it
+                } else {
+                    "$it.apk"
+                }
+            }.toMutableList()
+        }
+
+        fun getSavePath(): String = savePath
+
+
+        fun importDB(dataBaseStr: String): Boolean {
+            return if (mContext != null) {
+                val pasteText = ClipboardUtils.getText(mContext)
+                dataBase.importJson(dataBaseStr)
             } else {
-                val siteParser = AppDownMod.SiteParser()
-                siteParser.init(mContext!!)
-                siteParser
+                false
             }
         }
 
+        fun exportDB(): String {
+            val db = dataBase.export2json()
+            Logger.d("export2json:$db")
+            return db
+        }
+
+        private fun initSiteParser(): AppDownMod.SiteParser? {
+            return if (mContext == null) {
+                null
+            } else {
+                val sp = AppDownMod.SiteParser()
+                sp.init(mContext!!)
+                sp
+            }
+        }
+
+        data class AppList(
+                val data: MutableList<AppDownFeed>
+        )
+
+        data class Update(
+                val type: Int,//0:checkUpdate, 1:add, 2:del, 3:import database, 4:export database
+                val data: Any? = null
+        )
     }
 }

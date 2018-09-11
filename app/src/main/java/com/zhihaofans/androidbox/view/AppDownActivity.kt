@@ -112,7 +112,7 @@ class AppDownActivity : AppCompatActivity() {
                                                                         "$it.apk"
                                                                     }
                                                                 }
-                                                                selector("文件名格式(结尾自动补充.apk)", fileNameList) { _, fileNameIndex: Int ->
+                                                                selector("文件名格式", fileNameList) { _, fileNameIndex: Int ->
                                                                     var fileName = fileNameList[fileNameIndex]
                                                                     if (!fileName.endsWith(".apk")) fileName += ".apk"
                                                                     alert {

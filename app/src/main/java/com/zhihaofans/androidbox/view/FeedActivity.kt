@@ -1,9 +1,13 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
@@ -65,6 +69,23 @@ class FeedActivity : AppCompatActivity() {
                         }
                     }
                 }
+                1 -> {
+                    val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
+                    selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
+                        when (i) {
+                            0 -> updateFeed(1, FeedMod.App.Update(1)) // Add
+                            1 -> updateFeed(1, FeedMod.App.Update(2)) // Delete
+                            2 -> {
+                                selector("数据库", listOf(getString(R.string.text_import), getString(R.string.text_export))) { _: DialogInterface, ii: Int ->
+                                    when (ii) {
+                                        0 -> updateFeed(1, FeedMod.App.Update(3))
+                                        1 -> updateFeed(1, FeedMod.App.Update(4))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -94,6 +115,7 @@ class FeedActivity : AppCompatActivity() {
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
+        listView_feed.removeAllItems()
         when (index) {
             0 -> {
                 var cache = newsBox.getCache()
@@ -113,12 +135,28 @@ class FeedActivity : AppCompatActivity() {
                                 loadingProgressBar.dismiss()
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
-                                initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                                initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                             }
                         }
                     }
                 } else {
-                    initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                    initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                }
+            }
+            1 -> {
+                val appFeeds = appBox.initAppList()
+                try {
+                    if (appFeeds.size == 0) {
+                        Logger.d("appFeeds.size=0")
+                        loadingProgressBar.dismiss()
+                        snackbar("列表空白")
+                    } else {
+                        initListView(loadingProgressBar, FeedMod.App.AppList(appFeeds))
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    loadingProgressBar.dismiss()
+                    snackbar("应用下载初始化失败，请尝试清空应用数据")
                 }
             }
             else -> {
@@ -150,7 +188,7 @@ class FeedActivity : AppCompatActivity() {
                                         loadingProgressBar.dismiss()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
-                                        initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                                        initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
@@ -167,7 +205,7 @@ class FeedActivity : AppCompatActivity() {
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
                                         listView_feed.removeAllItems()
-                                        initListView(loadingProgressBar, cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url })
+                                        initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
@@ -202,11 +240,98 @@ class FeedActivity : AppCompatActivity() {
         }
     }
 
-    private fun initListView(progressDialog: ProgressDialog, titleList: List<String>, urlList: List<String>) {
+    private fun initListView(progressDialog: ProgressDialog, data: Any) {
         listView_feed.removeAllItems()
-        listView_feed.init(this@FeedActivity, titleList)
-        listView_feed.onItemClick { _, _, index, _ ->
-            sysUtil.browse(this@FeedActivity, urlList[index], titleList[index])
+        when (tabLayout.selectedTabPosition) {
+            0 -> {
+                val newsList = data as FeedMod.News.ListView
+                listView_feed.init(this@FeedActivity, newsList.titleList)
+                listView_feed.onItemClick { _, _, index, _ ->
+                    sysUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
+                }
+            }
+            1 -> {
+                doAsync { }
+                val appFeeds = (data as FeedMod.App.AppList).data
+                listView_feed.init(this@FeedActivity, appFeeds.map { it.name })
+                listView_feed.onItemClick { _, _, index, _ ->
+                    val clickedApp = appFeeds[index]
+                    alert {
+                        title = clickedApp.name
+                        message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
+                        negativeButton(R.string.text_download) { _ ->
+                            selector("", mutableListOf("下载", "浏览器打开")) { _, act: Int ->
+                                when (act) {
+                                    0 -> {
+                                        XXPermissions.with(this@FeedActivity)
+                                                .permission(Permission.Group.STORAGE)
+                                                .request(object : OnPermission {
+                                                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                                        if (isAll) {
+                                                            val fileList = clickedApp.fileList
+                                                            selector(getString(R.string.text_download), fileList.map { it.name }) { _: DialogInterface, fileIndex: Int ->
+                                                                val file = fileList[fileIndex]
+                                                                val fileExt = ".apk"
+                                                                val fileNameList = mutableListOf(
+                                                                        clickedApp.name + fileExt,
+                                                                        clickedApp.name + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.name + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.name + "_" + file.name,
+                                                                        clickedApp.site + "_" + clickedApp.name + "_" + clickedApp.version + "_" + file.name,
+                                                                        clickedApp.packageName + fileExt,
+                                                                        clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.packageName + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.packageName + "_" + clickedApp.version + fileExt,
+                                                                        clickedApp.site + "_" + clickedApp.id_one + "_" +
+                                                                                (if (clickedApp.id_two == null) "" else clickedApp.id_two + "_") + clickedApp.version + "_" + file.name
+                                                                ).map {
+                                                                    if (it.endsWith(".apk")) {
+                                                                        it
+                                                                    } else {
+                                                                        "$it.apk"
+                                                                    }
+                                                                }
+                                                                selector("文件名格式", fileNameList) { _, fileNameIndex: Int ->
+                                                                    var fileName = fileNameList[fileNameIndex]
+                                                                    if (!fileName.endsWith(".apk")) fileName += ".apk"
+                                                                    alert {
+                                                                        title = getString(R.string.text_download) + "?"
+                                                                        customView {
+                                                                            verticalLayout {
+                                                                                val input = editText(fileName)
+                                                                                positiveButton(R.string.text_download) {
+                                                                                    val url = file.url
+                                                                                    downloadFile(url, input.text.toString())
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }.show()
+
+                                                                }
+                                                            }
+                                                        } else {
+                                                            snackbar("未授权储存权限，无法下载")
+                                                        }
+                                                    }
+
+                                                    override fun noPermission(denied: List<String>, quick: Boolean) {
+                                                        snackbar("未授权储存权限，无法下载")
+                                                    }
+                                                }
+                                                )
+                                    }
+                                    1 -> browse(clickedApp.webUrl)
+                                }
+                            }
+
+                        }
+                        positiveButton(R.string.text_check_update) {
+                            updateFeed(1, FeedMod.App.Update(0))
+                        }
+                    }.show()
+                }
+            }
         }
         progressDialog.dismiss()
         snackbar(coordinatorLayout_feed, "加载完毕")
@@ -217,7 +342,7 @@ class FeedActivity : AppCompatActivity() {
             url.isEmpty() -> snackbar("下载失败：下载地址空白")
             fileName.isEmpty() -> snackbar("下载失败：文件名空白")
             else -> {
-                val filePath = appBox.savePath + fileName
+                val filePath = appBox.getSavePath() + fileName
                 val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
                 loadingProgressBarDownload.setCancelable(false)
                 loadingProgressBarDownload.setCanceledOnTouchOutside(false)

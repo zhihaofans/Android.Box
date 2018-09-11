@@ -28,13 +28,13 @@
     <shortcut
         android:enabled="true"
         android:icon="@mipmap/ic_launcher"
-        android:shortcutDisabledMessage="@string/text_newsbox"
+        android:shortcutDisabledMessage="@string/text_feed"
         android:shortcutId="newbox"
-        android:shortcutLongLabel="@string/text_newsbox"
-        android:shortcutShortLabel="@string/text_newsbox">
+        android:shortcutLongLabel="@string/text_feed"
+        android:shortcutShortLabel="@string/text_feed">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.zhihaofans.androidbox.mod.NewsboxShortcuts"
+            android:targetClass="com.zhihaofans.androidbox.mod.FeedShortcuts"
             android:targetPackage="com.zhihaofans.androidbox" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>

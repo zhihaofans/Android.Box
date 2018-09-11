@@ -100,6 +100,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".mod.QrcodeScanShortcuts"
             android:label="@string/text_qrcode_scan" />
@@ -107,8 +108,8 @@
             android:name=".mod.ServerChanShortcuts"
             android:label="@string/text_serverchan" />
         <activity
-            android:name=".mod.NewsboxShortcuts"
-            android:label="@string/text_newsbox" />
+            android:name=".mod.FeedShortcuts"
+            android:label="@string/text_feed" />
         <activity
             android:name=".view.AppDownActivity"
             android:label="@string/title_activity_app_down"

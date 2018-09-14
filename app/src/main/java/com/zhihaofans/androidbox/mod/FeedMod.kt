@@ -196,9 +196,7 @@ class FeedMod {
             return appFeeds
         }
 
-        fun getAppList(): AppList {
-            return AppList(appFeeds)
-        }
+        fun getAppList(): AppList = AppList(appFeeds)
 
         fun fileNameList(clickedApp: AppDownFeed, fileIndex: Int, fileExt: String): MutableList<String> {
             val fileList = clickedApp.fileList
@@ -237,11 +235,7 @@ class FeedMod {
             }
         }
 
-        fun exportDB(): String {
-            val db = dataBase.export2json()
-            Logger.d("export2json:$db")
-            return db
-        }
+        fun exportDB(): String = dataBase.export2json()
 
         private fun initSiteParser(): AppDownMod.SiteParser? {
             return if (mContext == null) {

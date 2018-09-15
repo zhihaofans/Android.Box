@@ -107,16 +107,13 @@ class siteInfo_dgtle(_context: Context) {
         if (page < 1) {
             _page = 1
         }
-        val thisUrl: String? = when (channelId) {
+        val thisUrl: String = when (channelId) {
             "dgtle_news" -> {
                 "https://api.yii.dgtle.com/v2/news?perpage=24&page=$_page"
             }
             else -> null
-        }
+        } ?: return null
 
-        if (thisUrl == null) {
-            return null
-        }
         val headers = mutableMapOf(
                 "content-type" to "application/json, text/javascript, */*; q=0.01",
                 "user-agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"

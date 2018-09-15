@@ -101,7 +101,6 @@ class siteInfo_dgtle(_context: Context) {
     }
 
     fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
-        var newsListJson = ""
         var _page = page
         val newsList = mutableListOf<MutableMap<String, String>>()
         if (page < 1) {
@@ -119,7 +118,7 @@ class siteInfo_dgtle(_context: Context) {
                 "user-agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
         )
         try {
-            newsListJson = nbc.httpGet4String(thisUrl, headers)
+            val newsListJson = nbc.httpGet4String(thisUrl, headers)
             Logger.d("newsListJson:$newsListJson")
             val newsIndex = g.fromJson(newsListJson, DgtleIndexGson::class.java)
             val newsListIndex = newsIndex.list

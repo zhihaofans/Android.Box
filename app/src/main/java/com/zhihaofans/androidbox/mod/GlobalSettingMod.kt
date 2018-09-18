@@ -10,9 +10,9 @@ class GlobalSettingMod {
     private val settingSP = EasySharedPreferences.load(SettingSP::class.java)
     // Force use Chrome Cust Tabs
     fun forceUseChromeCustomTabs(): Boolean {
-        val _b = settingSP.browser_use_chrome_custom_tabs
-        forceUseChromeCustomTabs(_b)
-        return _b
+        val b = settingSP.browser_use_chrome_custom_tabs
+        forceUseChromeCustomTabs(b)
+        return b
     }
 
     fun forceUseChromeCustomTabs(force: Boolean): Boolean {
@@ -25,9 +25,9 @@ class GlobalSettingMod {
 
     // Image link open with built-in picture viewer
     fun imageUrlOpenWithBuiltinViewer(): Boolean {
-        val _b = settingSP.image_url_open_with_builtin_viewer
-        imageUrlOpenWithBuiltinViewer(_b)
-        return _b
+        val b = settingSP.image_url_open_with_builtin_viewer
+        imageUrlOpenWithBuiltinViewer(b)
+        return b
     }
 
     fun imageUrlOpenWithBuiltinViewer(boolean: Boolean): Boolean {

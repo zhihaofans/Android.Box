@@ -12,6 +12,7 @@ import com.zhihaofans.androidbox.database.FileList
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
+import com.zhihaofans.androidbox.kotlinEx.find
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -38,7 +39,8 @@ class AppDownMod {
                     mutableMapOf("id" to "COOLAPK_WEB", "name" to mcontext!!.getString(R.string.text_coolapk) + " v1", "version" to "1"),// CoolApk Web
                     mutableMapOf("id" to "FIRIM_V1", "name" to "Fir.im v1", "version" to "1"),// Fir.im v1 (Api)
                     mutableMapOf("id" to "WANDOUJIA_V1", "name" to mcontext!!.getString(R.string.text_wandoujia) + " v1", "version" to "1"),// Wandoujia v1
-                    mutableMapOf("id" to "MYAPP", "name" to mcontext!!.getString(R.string.text_myapp) + " v1", "version" to "1")// Tencent yingyongbao
+                    mutableMapOf("id" to "MYAPP", "name" to mcontext!!.getString(R.string.text_myapp) + " v1", "version" to "1"),// Tencent yingyongbao
+                    mutableMapOf("id" to "APKPURE", "name" to "ApkPure" + " v1", "version" to "1")// ApkPure
             )
             Logger.d(sites)
             return this.mcontext
@@ -99,6 +101,14 @@ class AppDownMod {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
                             return s.MyApp(idOne)
+                        }
+                    }
+                }
+                5 -> {
+                    when {
+                        idOne.isEmpty() -> throw Exception("Package name cannot empty")
+                        else -> {
+                            return s.ApkPure(idOne)
                         }
                     }
                 }
@@ -333,6 +343,56 @@ class AppDownMod {
                     result.code = 0
                 } else {
                     result.message = "错误，找不到应用，服务器返回信息($emptyElement)"
+                }
+            }
+            return result
+        }
+
+        fun ApkPure(packageName: String): AppInfoResult {
+            val webUrl = "https://apkpure.com/cn/$packageName"
+            val result = defaultAppResult
+            if (packageName.isEmpty()) return result
+            val doc = Jsoup.connect(webUrl).get()
+            val jsoupUtil = JsoupUtil(doc)
+            Logger.d(doc.html())
+            val body = jsoupUtil.body()
+            if (body == null) {
+                result.message = "错误，找不到应用，服务器返回空白信息"
+            } else {
+                val webTitle = jsoupUtil.titleOrNull()
+                if (webTitle.isNullOrEmpty() || webTitle == "404") {
+                    result.message = "错误，找不到应用"
+                } else {
+                    val appInfoElement = jsoupUtil.findInElementsText("script[type=\"text/javascript\"]", "var comment_config = {")
+                    if (appInfoElement.size != 1) {
+                        result.message = "错误，获取应用信息失败 (appInfoElement.size != 1)"
+                    } else {
+                        val appInfoStr = appInfoElement[0].text()
+                        if (appInfoStr.isEmpty()) {
+                            result.message = "错误，获取应用信息失败 (appInfoStr.isEmpty)"
+                        } else {
+                            var appInfoStartFrom = appInfoStr.find("var comment_config = {")
+                            if (appInfoStartFrom == -1) {
+                                result.message = "错误，获取应用信息失败 (appInfoStartFrom.size == 1)"
+                            } else {
+                                appInfoStartFrom += 22
+                                val appName = jsoupUtil.textorNull("div.title-like > h1")
+                                        ?: packageName
+                                val appIcon = jsoupUtil.img("div.icon > img")
+                                val appSize = jsoupUtil.text(".ny-down > a > span.fsize > span")
+                                val author = jsoupUtil.html("ul.version-ul > li > p", 1)
+                                val appVersion = jsoupUtil.html("ul.version-ul > li > p", 3)
+                                val updateTime = jsoupUtil.html("ul.version-ul > li > p", 5)
+                                val mobileUrl = "https://m.apkpure.com/store/apps/details?id=$packageName"
+                                result.result = AppInfo(packageName, null, appName, "APKPURE",
+                                        author, appVersion, updateTime, packageName, mobileUrl, mutableListOf()
+                                )
+                                result.success = true
+                                result.code = 0
+                            }
+
+                        }
+                    }
                 }
             }
             return result

@@ -260,9 +260,12 @@ class FeedActivity : AppCompatActivity() {
                         title = clickedApp.name
                         message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
                         negativeButton(R.string.text_download) { _ ->
-                            selector("", mutableListOf("下载", "浏览器打开")) { _, act: Int ->
+                            val acts = mutableListOf("浏览器打开", "下载")
+                            if (clickedApp.fileList.isEmpty()) acts.removeAt(1)
+                            selector("", acts) { _, act: Int ->
                                 when (act) {
-                                    0 -> {
+                                    0 -> browse(clickedApp.webUrl)
+                                    1 -> {
                                         XXPermissions.with(this@FeedActivity)
                                                 .permission(Permission.Group.STORAGE)
                                                 .request(object : OnPermission {
@@ -321,7 +324,6 @@ class FeedActivity : AppCompatActivity() {
                                                 }
                                                 )
                                     }
-                                    1 -> browse(clickedApp.webUrl)
                                 }
                             }
 

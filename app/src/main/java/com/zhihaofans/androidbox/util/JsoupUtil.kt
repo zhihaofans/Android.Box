@@ -1,20 +1,21 @@
 package com.zhihaofans.androidbox.util
 
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 /**
  * Created by zhihaofans on 2017/11/20.
  */
-class JsoupUtil(inputDom: Document) {
-    private val dom: Document? = inputDom
+class JsoupUtil(inputDoc: Document) {
+    private val doc: Document? = inputDoc
 
     fun img(cssQuery: String): String {
         return this.attr(cssQuery, "src")
     }
 
     fun attr(cssQuery: String, attrName: String): String {
-        val a = dom!!.select(cssQuery)
+        val a = doc!!.select(cssQuery)
         if (a.isNotEmpty()) {
             val attr = a.attr(attrName)
             if (attr.isNotEmpty()) {
@@ -28,8 +29,12 @@ class JsoupUtil(inputDom: Document) {
         return this.text("head > title")
     }
 
+    fun titleOrNull(): String? {
+        return this.textorNull("head > title")
+    }
+
     fun html(cssQuery: String): String {
-        val a = dom!!.select(cssQuery)
+        val a = doc!!.select(cssQuery)
         if (a.isNotEmpty()) {
             val html = a.html()
             if (html.isNotEmpty()) {
@@ -40,7 +45,7 @@ class JsoupUtil(inputDom: Document) {
     }
 
     fun html(cssQuery: String, index: Int = 0): String {
-        val a: Elements = dom!!.select(cssQuery)
+        val a: Elements = doc!!.select(cssQuery)
         if (a.isNotEmpty()) {
             if (a.size == 1) return a.html()
             val html = a[index].html()
@@ -52,7 +57,7 @@ class JsoupUtil(inputDom: Document) {
     }
 
     fun htmlorNull(cssQuery: String, index: Int = 0): String? {
-        val a = dom!!.select(cssQuery)
+        val a = doc!!.select(cssQuery)
         if (a.isNotEmpty()) {
             if (a.size == 1) return html(cssQuery)
             val html = a[index].html()
@@ -64,7 +69,7 @@ class JsoupUtil(inputDom: Document) {
     }
 
     fun textorNull(cssQuery: String): String? {
-        val a = dom!!.select(cssQuery)
+        val a = doc!!.select(cssQuery)
         if (a.isNotEmpty()) {
             val text = a.html()
             if (text.isNotEmpty()) {
@@ -75,7 +80,7 @@ class JsoupUtil(inputDom: Document) {
     }
 
     fun text(cssQuery: String): String {
-        val a = dom!!.select(cssQuery)
+        val a = doc!!.select(cssQuery)
         if (a.isNotEmpty()) {
             val text = a.html()
             if (text.isNotEmpty()) {
@@ -86,7 +91,7 @@ class JsoupUtil(inputDom: Document) {
     }
 
     fun body(): Elements? {
-        val webBody = dom!!.select("html > body")
+        val webBody = doc!!.select("html > body")
         return if (webBody.isEmpty()) {
             null
         } else {
@@ -95,11 +100,28 @@ class JsoupUtil(inputDom: Document) {
     }
 
     fun link(cssQuery: String): String {
-        val link = dom!!.select(cssQuery)
+        val link = doc!!.select(cssQuery)
         return if (link.isEmpty()) {
             ""
         } else {
             link.attr("href") ?: ""
         }
+    }
+
+    fun findInElementsText(cssQuery: String, findString: String, matchFull: Boolean = false): List<Element> {
+        val findResult = mutableListOf<Element>()
+        val elements = doc!!.select(cssQuery)
+        if (elements.size > 0) {
+            elements.map {
+                if (matchFull) {
+                    if (it.text() == findString) findResult.add(it)
+                } else {
+                    if (it.text().indexOf(findString) != -1) findResult.add(it)
+                }
+
+            }
+
+        }
+        return findResult
     }
 }

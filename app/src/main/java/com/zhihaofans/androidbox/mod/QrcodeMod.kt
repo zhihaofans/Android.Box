@@ -37,7 +37,7 @@ class QrcodeMod {
     }
 
     fun scan(qrcodeFrame: Int) {
-        //0:调用自带(未完成) 1:调用mark.qrcode 2:调用org.noear.scan
+        //0:调用自带 1:调用mark.qrcode 2:调用org.noear.scan
         when (qrcodeFrame) {
             0 -> {
                 val intent = Intent(activity, CaptureActivity::class.java)

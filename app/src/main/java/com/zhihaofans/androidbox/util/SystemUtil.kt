@@ -3,14 +3,17 @@ package com.zhihaofans.androidbox.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.FileProvider
 import android.view.inputmethod.InputMethodManager
@@ -285,4 +288,29 @@ class SystemUtil {
         intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
         context.startActivity(intent)
     }
+
+    @SuppressLint("Recycle")
+    fun getRealFilePath(context: Context, uri: Uri?): String? {
+        if (uri == null) return null
+        val scheme: String? = uri.scheme
+        var data: String? = null
+        when {
+            scheme == null -> data = uri.path
+            ContentResolver.SCHEME_FILE == scheme -> data = uri.path
+            ContentResolver.SCHEME_CONTENT == scheme -> {
+                val cursor: Cursor? = context.contentResolver.query(uri, arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null, null)
+                if (null != cursor) {
+                    if (cursor.moveToFirst()) {
+                        val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                        if (index > -1) {
+                            data = cursor.getString(index)
+                        }
+                    }
+                    cursor.close()
+                }
+            }
+        }
+        return data
+    }
+
 }

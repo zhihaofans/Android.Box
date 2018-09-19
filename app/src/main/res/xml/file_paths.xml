@@ -3,4 +3,7 @@
     <external-path
         name="download"
         path="download/Android.Box/" />
+    <external-path
+        name="image"
+        path="/" />
 </paths>

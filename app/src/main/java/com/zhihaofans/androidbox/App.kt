@@ -7,6 +7,7 @@ import com.liulishuo.filedownloader.FileDownloader
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.util.SystemUtil
 import io.paperdb.Paper
 
@@ -33,6 +34,7 @@ class App : Application() {
         Paper.init(this)
         Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)
+        XQRCode.debug(true)
     }
 
 

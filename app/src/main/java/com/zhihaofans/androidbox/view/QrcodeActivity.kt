@@ -16,6 +16,7 @@ import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -86,6 +87,25 @@ class QrcodeActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    666 -> {
+                        if (data != null) {
+                            val uri = data.data//得到uri，后面就是将uri转化成file的过程。
+                            val realUri = sysUtil.getRealFilePath(this@QrcodeActivity, uri)
+                            Logger.d("uri:${uri.path}")
+                            Logger.d("realUri:$realUri")
+                            val qrcodeResult = XQRCode.getAnalyzeQRCodeResult(realUri)
+                            if (qrcodeResult == null) {
+                                snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
+                            } else {
+                                val qrcodeStr = qrcodeResult.text
+                                Logger.d("qrcodeStr:$qrcodeStr")
+                                editText_qrcode_content.setText(qrcodeStr)
+                                snackbar(coordinatorLayout_qrcode, "解析完毕")
+                            }
+                        } else {
+                            snackbar(coordinatorLayout_qrcode, "返回空白数据")
+                        }
+                    }
                 }
             }
             Activity.RESULT_CANCELED -> {
@@ -102,11 +122,13 @@ class QrcodeActivity : AppCompatActivity() {
 
     private fun qrcodeMenu() = selector(getString(R.string.text_qrcode), mutableListOf(
             getString(R.string.text_qrcode_scan),
-            getString(R.string.text_qrcode_generate)
+            getString(R.string.text_qrcode_generate),
+            "Open image file"
     )) { _, i ->
         when (i) {
             0 -> getCameraPermission()
             1 -> generateQR()
+            2 -> openFile()
         }
     }
 
@@ -166,5 +188,16 @@ class QrcodeActivity : AppCompatActivity() {
                         Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
                     }
                 })
+    }
+
+    private fun openFile() {
+        val photoPickerIntent = Intent(Intent.ACTION_PICK)
+        photoPickerIntent.type = "image/*"
+        startActivityForResult(photoPickerIntent, 666)
+
+        //val intent = Intent(Intent.ACTION_GET_CONTENT)
+        //intent.type = "image/*"//设置类型，我这里是任意类型，任意后缀的可以这样写。
+        //intent.addCategory(Intent.CATEGORY_OPENABLE)
+        //startActivityForResult(intent, 666)
     }
 }

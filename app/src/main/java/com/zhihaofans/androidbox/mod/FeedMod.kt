@@ -3,7 +3,7 @@ package com.zhihaofans.androidbox.mod
 import android.content.Context
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
-import com.zhihaofans.androidbox.database.AppDownFeed
+import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.isNullorEmpty
 

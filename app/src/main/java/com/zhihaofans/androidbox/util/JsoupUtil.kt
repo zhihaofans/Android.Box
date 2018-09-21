@@ -1,5 +1,7 @@
 package com.zhihaofans.androidbox.util
 
+import com.orhanobut.logger.Logger
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -123,5 +125,14 @@ class JsoupUtil(inputDoc: Document) {
 
         }
         return findResult
+    }
+
+    fun httpGet4Jsoup(url: String, headers: MutableMap<String, String>? = null, timeout: Int = 10000): Document {
+        Logger.d("httpGet4Jsoup:$url,$headers,$timeout")
+        val doc = Jsoup.connect(url)
+                .headers(headers)
+                .timeout(timeout)
+                .get()
+        return doc
     }
 }

@@ -100,7 +100,6 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".mod.QrcodeScanShortcuts"
             android:label="@string/text_qrcode_scan" />
@@ -118,6 +117,10 @@
             android:name=".view.FeedActivity"
             android:label="@string/text_feed"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.ExpressActivity"
+            android:label="@string/title_activity_express"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

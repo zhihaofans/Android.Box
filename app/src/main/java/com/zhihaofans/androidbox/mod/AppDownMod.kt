@@ -5,10 +5,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.database.AppDownFeed
-import com.zhihaofans.androidbox.database.AppInfo
-import com.zhihaofans.androidbox.database.AppInfoResult
-import com.zhihaofans.androidbox.database.FileList
+import com.zhihaofans.androidbox.data.AppDownFeed
+import com.zhihaofans.androidbox.data.AppInfo
+import com.zhihaofans.androidbox.data.AppInfoResult
+import com.zhihaofans.androidbox.data.FileList
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem

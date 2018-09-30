@@ -9,7 +9,7 @@ class ExpressActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_express)
+        //setContentView(R.layout.activity_express)
         setSupportActionBar(toolbar_express)
 
         fab.setOnClickListener { view ->

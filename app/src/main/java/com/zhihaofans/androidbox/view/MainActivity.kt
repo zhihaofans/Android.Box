@@ -125,10 +125,11 @@ class MainActivity : AppCompatActivity() {
                             "Android 7.0 (API 24, Nougat 牛轧糖)",
                             "Android 7.1.x (API 25, Nougat 牛轧糖)",
                             "Android 8.0 (API 26, Oreo 奥利奥)",
-                            "Android 8.1 (API 27, Oreo 奥利奥)"
+                            "Android 8.1 (API 27, Oreo 奥利奥)",
+                            "Android 9.0（API 27, Pie 派)"
                     )
                     val nowSdk = Build.VERSION.SDK_INT
-                    selector("你是${sdks[nowSdk - 1]}", sdks) { _, i ->
+                    selector("你是" + if (nowSdk <= sdks.size) sdks[nowSdk - 1] else "UNKNOWN", sdks) { _, i ->
                         val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
                         selector(sdks[i], acts) { _, ii ->
                             when (ii) {

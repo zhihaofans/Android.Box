@@ -29,7 +29,6 @@ class App : Application() {
         MCrashMonitor.init(this, true) { file ->
             //可以在这里保存标识，下次再次进入把日志发送给服务器
             if (isDebug) Logger.d("应用发生了错误，CrashMonitor回调:" + file.absolutePath)
-            MCrashMonitor.startCrashShowPage(this)
         }
         Paper.init(this)
         Fresco.initialize(this)

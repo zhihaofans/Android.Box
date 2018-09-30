@@ -12,7 +12,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
-import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
 import com.zhihaofans.androidbox.mod.FeedMod

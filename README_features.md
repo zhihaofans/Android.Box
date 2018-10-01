@@ -1,8 +1,8 @@
 ### 现有功能：
 
-一. 二维码生成与解析。暂不支持选择图片文件解析二维码，用的是这个二维码库 [[XQRCode](https://github.com/xuexiangjys/XQRCode)]。
+一. 二维码生成与解析。 支持选择图片文件解析二维码，用的是这个二维码库 [[XQRCode](https://github.com/xuexiangjys/XQRCode)]。
 
-二. Android SDK版本列表查看。最高支持 Android 8.1 (API 27, Oreo 奥利奥)，同时还显示当前设备的版本。
+二. Android SDK版本列表查看。最高支持 `Android 9.0（API 27, Pie 派)`，同时还显示当前设备的版本。
 
 三. 应用管理。现在只支持查看应用名称、包名、版本、安装包路径、安装包大小、安装时间、最后更新时间。
 
@@ -24,21 +24,7 @@
 
 - 福利
 
-4. [品玩](http://www.pingwest.com/) :官网抓取其api来用，json格式。
-
-- 转发推荐
-
-5. [全球聚合](http://all.gl/) :官网抓取其网页来解析，html格式。
-
-- 全部
-
-6. [观点](http://www.guandn.com/) :官网抓取其api来用，json格式。
-
-- 首页
-
-7. [RSSHub](https://docs.rsshub.app/) :官方提供api，json格式。
-
-- [我以为我很浮夸的微博](https://weibo.com/u/6180475384) (计划下个版本移除)
+4. [RSSHub](https://docs.rsshub.app/) :官方提供api，json格式。
 
 - [V2EX-最新主题](https://www.v2ex.com)
 
@@ -62,5 +48,5 @@
 
 3. [Fir.im v1](https://fir.im/)。通过调用[Fir.im官方API](https://fir.im/docs)项目信息，需要API  Token。我保证不会收集API  Token，API  Token仅保存于设备本地，并在卸载后由系统一同删除。
 
-4. [豌豆荚v1](https://www.wandoujia.com/apps)。通过对酷安网网页的解析获取应用信息。
+4. [豌豆荚v1](https://www.wandoujia.com/apps)。通过对豌豆荚网页的解析获取应用信息。
 

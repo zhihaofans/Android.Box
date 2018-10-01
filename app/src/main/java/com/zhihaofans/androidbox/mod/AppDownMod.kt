@@ -12,10 +12,12 @@ import com.zhihaofans.androidbox.data.FileList
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
+import com.zhihaofans.androidbox.gson.RsshubFirimGson
 import com.zhihaofans.androidbox.kotlinEx.find
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.remove
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -40,7 +42,8 @@ class AppDownMod {
                     mutableMapOf("id" to "FIRIM_V1", "name" to "Fir.im v1", "version" to "1"),// Fir.im v1 (Api)
                     mutableMapOf("id" to "WANDOUJIA_V1", "name" to mcontext!!.getString(R.string.text_wandoujia) + " v1", "version" to "1"),// Wandoujia v1
                     mutableMapOf("id" to "MYAPP", "name" to mcontext!!.getString(R.string.text_myapp) + " v1", "version" to "1"),// Tencent yingyongbao
-                    mutableMapOf("id" to "APKPURE", "name" to "ApkPure" + " v1", "version" to "1")// ApkPure
+                    //mutableMapOf("id" to "APKPURE", "name" to "ApkPure" + " v1", "version" to "1")// ApkPure
+                    mutableMapOf("id" to "FIRIM_V2", "name" to "Fir.im v2", "version" to "1")// Fir.im v2 (RSSHub)
             )
             Logger.d(sites)
             return this.mcontext
@@ -108,7 +111,7 @@ class AppDownMod {
                     when {
                         idOne.isEmpty() -> throw Exception("Package name cannot empty")
                         else -> {
-                            return s.ApkPure(idOne)
+                            return s.FirimV2(idOne)
                         }
                     }
                 }
@@ -396,6 +399,63 @@ class AppDownMod {
                 }
             }
             return result
+        }
+
+        fun FirimV2(projectId: String): AppInfoResult {
+            val apiUrl = "https://rsshub.app/fir/update/$projectId.json"
+            Logger.d("apiUrl:$apiUrl")
+            val client = OkHttpClient()
+            val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl).build()
+            val call = client.newCall(request)
+            val result = defaultAppResult
+            if (projectId.isEmpty()) {
+                result.code = 1
+                result.message = "Error: Project id or Api token is empty"
+                return result
+            }
+            try {
+                val response = call.execute()
+                if (response.body() == null) {
+                    result.code = 1
+                    result.message = "Error: response.body is null"
+                } else {
+                    val jsonData = response.body()!!.string()
+                    if (jsonData.isEmpty()) {
+                        result.code = 1
+                        result.message = "Error: jsonData is null"
+                    } else {
+                        result.message = "Error:Gson to firimV2"
+                        val rsshubFirimGsons = g.fromJson(jsonData, RsshubFirimGson::class.java)
+                        if (rsshubFirimGsons.title == "RSSHub" || rsshubFirimGsons.home_page_url == "https://github.com/DIYgod/RSSHub") {
+                            result.message = "Error:Title is RSSHub"
+                        } else if (rsshubFirimGsons.items.size == 0) {
+                            result.message = "Error:Not item"
+                        } else {
+                            result.message = ""
+                            val webUrl = rsshubFirimGsons.home_page_url
+                            val updateItem = rsshubFirimGsons.items[0]
+                            val updateTime = updateItem.date_published.remove("&#34;")
+                                    .replace("-", "/")
+                                    .replace("T", " ")
+                                    .replace(".000Z", "")
+                            val updateVersion = updateItem.title
+                            result.result = AppInfo(projectId, null, rsshubFirimGsons.title, "FIRIM_V2", "",
+                                    updateVersion, updateTime, null, webUrl, mutableListOf())
+                            result.success = true
+                            result.code = 0
+                            result.message = "Success"
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                result.code = -1
+                if (result.message.isNotEmpty()) {
+                    result.message = "Error:IOException"
+                }
+            } finally {
+                return result
+            }
         }
     }
 

@@ -58,3 +58,18 @@ data class FirimApiLatestUpdateBinary(
 data class FirimApiErrorList(
         val exception: MutableList<String>
 )
+
+
+// RSSHub
+data class RsshubFirimGson(
+        val items: MutableList<RsshubFirimItemGson>,
+        val title: String,
+        val home_page_url: String
+)
+
+data class RsshubFirimItemGson(
+        val url: String,
+        val title: String,
+        val summary: String,
+        val date_published: String
+)

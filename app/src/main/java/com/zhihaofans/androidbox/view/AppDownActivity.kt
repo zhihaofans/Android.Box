@@ -281,7 +281,7 @@ class AppDownActivity : AppCompatActivity() {
                         customView {
                             verticalLayout {
                                 textView("Package")
-                                val inputOne = editText("com.zhihaofans.shortcutapp")
+                                val inputOne = editText("fkw1")
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {

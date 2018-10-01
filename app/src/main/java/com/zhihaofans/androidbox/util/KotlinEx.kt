@@ -34,3 +34,5 @@ class ListView {
     }
 
 }
+
+fun String.remove(removeString: String, ignoreCase: Boolean = false) = this.replace(removeString, "", ignoreCase)

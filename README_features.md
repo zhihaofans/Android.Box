@@ -44,9 +44,12 @@
 
 1. GitHub release。通过调用[Github官方API](https://developer.github.com/)来获取GitHub 项目的release 列表，如:[zhihaofans/Android.Box的releases](https://github.com/zhihaofans/Android.Box/releases)。
 
-2. [酷安网v1](https://www.coolapk.com/)。通过对酷安网网页的解析获取应用信息，但是如果该应用被酷安官方屏蔽了网页显示的话就解析失败(只能在客户端看，网页显示404)
+2. [酷安网v1](https://www.coolapk.com/)。通过对网页的解析获取应用信息，但是如果该应用被酷安官方屏蔽了网页显示的话就解析失败(只能在客户端看，网页显示404)
 
 3. [Fir.im v1](https://fir.im/)。通过调用[Fir.im官方API](https://fir.im/docs)项目信息，需要API  Token。我保证不会收集API  Token，API  Token仅保存于设备本地，并在卸载后由系统一同删除。
 
 4. [豌豆荚v1](https://www.wandoujia.com/apps)。通过对豌豆荚网页的解析获取应用信息。
 
+5. [腾讯应用宝v1](https://app.qq.com)。通过对网页的解析获取应用信息，下载地址具有时效性，暂时不能强制更新。
+
+6. [Fir.im v2](https://fir.im/)。RSSHub提供，返回信息较少

@@ -10,14 +10,14 @@ import org.jsoup.select.Elements
  * Created by zhihaofans on 2017/11/20.
  */
 class JsoupUtil(inputDoc: Document) {
-    private val doc: Document? = inputDoc
+    private val doc: Document = inputDoc
 
     fun img(cssQuery: String): String {
         return this.attr(cssQuery, "src")
     }
 
     fun attr(cssQuery: String, attrName: String): String {
-        val a = doc!!.select(cssQuery)
+        val a = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             val attr = a.attr(attrName)
             if (attr.isNotEmpty()) {
@@ -25,6 +25,17 @@ class JsoupUtil(inputDoc: Document) {
             }
         }
         return ""
+    }
+
+    fun attrOrNull(cssQuery: String, attrName: String): String? {
+        val a = doc.select(cssQuery)
+        if (a.isNotEmpty()) {
+            val attr = a.attr(attrName)
+            if (attr.isNotEmpty()) {
+                return attr
+            }
+        }
+        return null
     }
 
     fun title(): String {
@@ -36,7 +47,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun html(cssQuery: String): String {
-        val a = doc!!.select(cssQuery)
+        val a = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             val html = a.html()
             if (html.isNotEmpty()) {
@@ -47,7 +58,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun html(cssQuery: String, index: Int = 0): String {
-        val a: Elements = doc!!.select(cssQuery)
+        val a: Elements = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             if (a.size == 1) return a.html()
             val html = a[index].html()
@@ -59,7 +70,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun htmlorNull(cssQuery: String, index: Int = 0): String? {
-        val a = doc!!.select(cssQuery)
+        val a = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             if (a.size == 1) return html(cssQuery)
             val html = a[index].html()
@@ -71,7 +82,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun textorNull(cssQuery: String): String? {
-        val a = doc!!.select(cssQuery)
+        val a = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             val text = a.html()
             if (text.isNotEmpty()) {
@@ -82,7 +93,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun text(cssQuery: String): String {
-        val a = doc!!.select(cssQuery)
+        val a = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             val text = a.html()
             if (text.isNotEmpty()) {
@@ -93,7 +104,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun body(): Elements? {
-        val webBody = doc!!.select("html > body")
+        val webBody = doc.select("html > body")
         return if (webBody.isEmpty()) {
             null
         } else {
@@ -102,7 +113,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun link(cssQuery: String): String {
-        val link = doc!!.select(cssQuery)
+        val link = doc.select(cssQuery)
         return if (link.isEmpty()) {
             ""
         } else {
@@ -112,7 +123,7 @@ class JsoupUtil(inputDoc: Document) {
 
     fun findInElementsText(cssQuery: String, findString: String, matchFull: Boolean = false): List<Element> {
         val findResult = mutableListOf<Element>()
-        val elements = doc!!.select(cssQuery)
+        val elements = doc.select(cssQuery)
         if (elements.size > 0) {
             elements.map {
                 if (matchFull) {
@@ -129,10 +140,9 @@ class JsoupUtil(inputDoc: Document) {
 
     fun httpGet4Jsoup(url: String, headers: MutableMap<String, String>? = null, timeout: Int = 10000): Document {
         Logger.d("httpGet4Jsoup:$url,$headers,$timeout")
-        val doc = Jsoup.connect(url)
+        return Jsoup.connect(url)
                 .headers(headers)
                 .timeout(timeout)
                 .get()
-        return doc
     }
 }

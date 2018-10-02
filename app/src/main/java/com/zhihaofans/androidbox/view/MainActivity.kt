@@ -82,16 +82,17 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        val listData = mutableListOf<String>(
+        val listData = listOf(
                 getString(R.string.text_qrcode),
                 getString(R.string.text_androidsdk),
                 getString(R.string.text_appmanagement),
                 getString(R.string.text_newsbox),
                 getString(R.string.text_weather),
                 getString(R.string.text_bilibili),
-                "ServerChan",
+                getString(R.string.text_serverchan),
                 getString(R.string.title_activity_app_down),
-                getString(R.string.text_feed)
+                getString(R.string.text_feed),
+                getString(R.string.title_activity_xxdown)
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.onItemClick { _, _, index, _ ->
@@ -149,6 +150,7 @@ class MainActivity : AppCompatActivity() {
                 6 -> startActivity<ServerChanActivity>()
                 7 -> startActivity<AppDownActivity>()
                 8 -> startActivity<FeedActivity>()
+                9 -> startActivity<XXDownActivity>()
             }
         }
         checkPermissions()

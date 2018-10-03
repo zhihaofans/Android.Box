@@ -13,7 +13,6 @@ import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.util.ConvertUtil
-import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*
@@ -23,7 +22,6 @@ import java.util.*
 
 class AppManagementActivity : AppCompatActivity() {
     private var appList = ArrayList<Map<String, Any>>()
-    private val sysUtil = SystemUtil()
     private val convertUtil = ConvertUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

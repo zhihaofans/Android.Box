@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -21,7 +20,6 @@ import java.util.*
 
 class ServerChanActivity : AppCompatActivity() {
     private val g = Gson()
-    private val sysUtil = SystemUtil()
     //private val serverChanKey = "SCU6647T00deca519cb008cd7e66b6da08d8fd5058c8159b9e0cc"
     private var serverChanKey: String = ""
     private val saveDataSP = EasySharedPreferences.load(SaveDataSP::class.java)
@@ -102,7 +100,7 @@ class ServerChanActivity : AppCompatActivity() {
                         editText_title.setOnEditorActionListener { v, actionId, event ->
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                                 if (editText_title.text.isNotEmpty()) {
-                                    sysUtil.viewGetFocusable(editText_desp)
+                                    SystemUtil.viewGetFocusable(editText_desp)
                                 }
                             }
                             false

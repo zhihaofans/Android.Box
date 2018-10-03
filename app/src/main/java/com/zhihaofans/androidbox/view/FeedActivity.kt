@@ -28,7 +28,6 @@ class FeedActivity : AppCompatActivity() {
     private var nowTabPosition = 0
     private val newsBox = FeedMod.News()
     private val appBox = FeedMod.App()
-    private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
@@ -247,7 +246,7 @@ class FeedActivity : AppCompatActivity() {
                 val newsList = data as FeedMod.News.ListView
                 listView_feed.init(this@FeedActivity, newsList.titleList)
                 listView_feed.onItemClick { _, _, index, _ ->
-                    sysUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
+                    SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
                 }
             }
             1 -> {
@@ -349,7 +348,7 @@ class FeedActivity : AppCompatActivity() {
                 loadingProgressBarDownload.setCancelable(false)
                 loadingProgressBarDownload.setCanceledOnTouchOutside(false)
                 loadingProgressBarDownload.show()
-                sysUtil.download(url, filePath, object : FileDownloadListener() {
+                SystemUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         loadingProgressBarDownload.setTitle("Pending...")
                     }

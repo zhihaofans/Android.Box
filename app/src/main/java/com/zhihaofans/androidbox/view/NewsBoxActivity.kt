@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -22,7 +21,6 @@ import org.jetbrains.anko.uiThread
 
 
 class NewsBoxActivity : AppCompatActivity() {
-    private val sysUtil = SystemUtil()
     private val newsBoxMod = NewsBoxMod()
     private val sites = NewsBoxMod.sites(this@NewsBoxActivity)
     private val saveDataSP = EasySharedPreferences.load(SaveDataSP::class.java)
@@ -196,7 +194,7 @@ class NewsBoxActivity : AppCompatActivity() {
                     listView_news.onItemClick { _, _, index, _ ->
                         val clickedUrl: String = siteDataList[index]["web_url"].toString()
                         Logger.d(clickedUrl)
-                        sysUtil.browse(this@NewsBoxActivity, clickedUrl, siteDataList[index]["title"].toString())
+                        SystemUtil.browse(this@NewsBoxActivity, clickedUrl, siteDataList[index]["title"].toString())
                     }
                 }
                 loadingProgressBar.dismiss()

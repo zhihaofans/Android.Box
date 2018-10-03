@@ -181,9 +181,8 @@ class FeedMod {
     class App {
         private var mContext: Context? = null
         private var siteParser: AppDownMod.SiteParser? = null
-        private val sysUtil = SystemUtil()
         private val dataBase = AppDownMod.DataBase()
-        private val savePath = sysUtil.getDownloadPathString() + "Android.Box/"
+        private val savePath = SystemUtil.getDownloadPathString() + "Android.Box/"
         private var appFeeds = mutableListOf<AppDownFeed>()
         fun init(context: Context) {
             mContext = context

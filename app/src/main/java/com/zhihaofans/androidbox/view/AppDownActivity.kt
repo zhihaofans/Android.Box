@@ -22,8 +22,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
-    private val sysUtil = SystemUtil()
-    private val savePath: String = sysUtil.getDownloadPathString() + "Android.Box/"
+    private val savePath: String = SystemUtil.getDownloadPathString() + "Android.Box/"
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()
@@ -73,7 +72,7 @@ class AppDownActivity : AppCompatActivity() {
                 Logger.d("appFeeds.size=0")
                 snackbar("列表空白")
             } else {
-                listView_app.adapter = sysUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
+                listView_app.adapter = SystemUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
                 listView_app.onItemClick { _, _, index, _ ->
                     val clickedApp = appFeeds[index]
                     alert {
@@ -196,7 +195,7 @@ class AppDownActivity : AppCompatActivity() {
                         customView {
                             verticalLayout {
                                 textView("Package name:")
-                                val inputOne = editText(if (sysUtil.debug(this@AppDownActivity)) "com.linroid.zlive" else "com.zhihaofans.shortcutapp")
+                                val inputOne = editText(if (SystemUtil.debug(this@AppDownActivity)) "com.linroid.zlive" else "com.zhihaofans.shortcutapp")
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {
@@ -472,7 +471,7 @@ class AppDownActivity : AppCompatActivity() {
                 loadingProgressBarDownload.setCancelable(false)
                 loadingProgressBarDownload.setCanceledOnTouchOutside(false)
                 loadingProgressBarDownload.show()
-                sysUtil.download(url, filePath, object : FileDownloadListener() {
+                SystemUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         loadingProgressBarDownload.setTitle("Pending...")
                     }

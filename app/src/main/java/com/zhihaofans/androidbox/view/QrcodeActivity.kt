@@ -28,7 +28,6 @@ import java.util.*
 
 class QrcodeActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
-    private val sysUtil = SystemUtil()
     private var methodId: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +49,7 @@ class QrcodeActivity : AppCompatActivity() {
         button_open.onClick {
             if (editText_qrcode_content.text.isNotEmpty()) {
                 try {
-                    sysUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
+                    SystemUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
                 } catch (e: Exception) {
                     toast("打开失败，错误的地址")
                     //throw RuntimeException("No a correct url.", e)
@@ -90,7 +89,7 @@ class QrcodeActivity : AppCompatActivity() {
                     666 -> {
                         if (data != null) {
                             val uri = data.data//得到uri，后面就是将uri转化成file的过程。
-                            val realUri = sysUtil.getRealFilePath(this@QrcodeActivity, uri)
+                            val realUri = SystemUtil.getRealFilePath(this@QrcodeActivity, uri)
                             Logger.d("uri:${uri.path}")
                             Logger.d("realUri:$realUri")
                             val qrcodeResult = XQRCode.getAnalyzeQRCodeResult(realUri)

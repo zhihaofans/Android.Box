@@ -30,7 +30,6 @@ import org.jetbrains.anko.sdk25.coroutines.onLongClick
 
 class ImageViewActivity : AppCompatActivity() {
     private var imageUrl: String? = ""
-    private val sysUtil = SystemUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
@@ -150,7 +149,7 @@ class ImageViewActivity : AppCompatActivity() {
     }
 
     private fun download(fileName: String, engine: Int) {
-        val downloadPath: String = sysUtil.getPicturePathString() + "/Android.Box/$fileName"
+        val downloadPath: String = SystemUtil.getPicturePathString() + "/Android.Box/$fileName"
         Logger.d("downloadPath:$downloadPath")
         val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
         loadingProgressBarDownload.setCancelable(false)
@@ -158,7 +157,7 @@ class ImageViewActivity : AppCompatActivity() {
         loadingProgressBarDownload.show()
         when (engine) {
             0 -> {
-                sysUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
+                SystemUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         loadingProgressBarDownload.setTitle("Pending...")
                     }
@@ -195,7 +194,7 @@ class ImageViewActivity : AppCompatActivity() {
                                 toast("复制成功")
                             }
                             positiveButton(R.string.text_open) {
-                                sysUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+                                SystemUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
                             }
                         }.show()
 
@@ -215,7 +214,7 @@ class ImageViewActivity : AppCompatActivity() {
                 })
             }
             1 -> {
-                val downloadId = sysUtil.downloadAndroid(this@ImageViewActivity, imageUrl!!, downloadPath, fileName)
+                val downloadId = SystemUtil.downloadAndroid(this@ImageViewActivity, imageUrl!!, downloadPath, fileName)
 
             }
         }

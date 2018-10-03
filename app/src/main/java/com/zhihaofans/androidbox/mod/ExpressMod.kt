@@ -17,7 +17,6 @@ class ExpressMod {
     private var apiKey = ""
     private var apiCustomer = ""
     private var mContext: Context? = null
-    private val sysUril = SystemUtil()
     private val g = Gson()
     fun init(context: Context, apiInfo: ApiInfo) {
         mContext = context
@@ -39,7 +38,7 @@ class ExpressMod {
         val params = hashMapOf<String, String>("param" to param, "sign" to sign, "customer" to customer)
         val apiUrl = "https://poll.kuaidi100.com/poll/query.do"
         val expressResult = ExpressResult(false, "", null)
-        val serverResult = sysUril.httpPost4String(apiUrl, params)
+        val serverResult = SystemUtil.httpPost4String(apiUrl, params)
         return if (serverResult.isNullOrEmpty()) {
             expressResult
         } else {

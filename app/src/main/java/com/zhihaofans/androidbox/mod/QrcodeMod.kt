@@ -16,7 +16,6 @@ import com.zhihaofans.androidbox.util.SystemUtil
 class QrcodeMod {
     private var activity: Activity = Activity()
     var isInstallQrPlugin = false
-    private val sys = SystemUtil()
     fun setActivity(activity: Activity) {
         this@QrcodeMod.activity = activity
         XQRCode.debug(false)
@@ -28,8 +27,8 @@ class QrcodeMod {
     }
 
     fun getInstalledPlugin(context: Context): Int {
-        if (sys.isAppInstalled(context, "mark.qrcode")) return 1
-        if (sys.isAppInstalled(context, "org.noear.scan")) return 2
+        if (SystemUtil.isAppInstalled(context, "mark.qrcode")) return 1
+        if (SystemUtil.isAppInstalled(context, "org.noear.scan")) return 2
         return -1
     }
 

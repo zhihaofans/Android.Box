@@ -31,7 +31,6 @@ import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
-    private val sysUtil = SystemUtil()
     private val convertUtil = ConvertUtil()
     private val globalSetting = GlobalSettingMod()
     private val updateWebUrl = "https://fir.im/fkw1"
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.menu_manual_update -> {
-                    sysUtil.browse(this@MainActivity, updateWebUrl)
+                    SystemUtil.browse(this@MainActivity, updateWebUrl)
                 }
                 R.id.menu_checkPermission -> {
                     checkPermissions(true)
@@ -171,7 +170,7 @@ class MainActivity : AppCompatActivity() {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts) { _, index ->
                                         when (index) {
-                                            0 -> sysUtil.browse(this@MainActivity, result)
+                                            0 -> SystemUtil.browse(this@MainActivity, result)
                                             1 -> ClipboardUtils.copy(this@MainActivity, result)
                                             2 -> share(result)
                                         }

@@ -125,7 +125,6 @@ class AppDownMod {
         private val g = Gson()
         private val convertUtil = ConvertUtil()
         private val defaultAppResult = AppInfoResult(false, "", -1, null)
-        val sysUtil = SystemUtil()
         fun Github(author: String, project: String): AppInfoResult {
             val result = defaultAppResult
             if (author.isEmpty() && project.isEmpty()) {
@@ -194,7 +193,7 @@ class AppDownMod {
                 //val author = if (appInfos.size != 4) "" else appInfos[3].split("：")[1]
                 val rawTime = if (appInfos.size != 4) "" else appInfos[appInfos.size - 3].split("：")[1]
                 var newTime = if (appInfos.size != 4) "" else rawTime.replace("-", "/")
-                if (newTime.endsWith("天前")) newTime = sysUtil.datePlus(sysUtil.nowDate(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
+                if (newTime.endsWith("天前")) newTime = SystemUtil.datePlus(SystemUtil.nowDate(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
                         ?: 0))
                 Logger.d("rawTime:$rawTime\nnewTime:$newTime")
                 val updateTime = if (newTime.isEmpty()) rawTime else newTime

@@ -29,7 +29,6 @@ import java.util.*
 class BilibiliActivity : AppCompatActivity() {
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
     private val g = Gson()
-    private val sysUtil = SystemUtil()
     private var defaultVid: String = "17027625"
     private var defaultPart: Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +44,7 @@ class BilibiliActivity : AppCompatActivity() {
                 "视频弹幕查用户uid",
                 "视频封面下载"
         )
-        listView_bilibili.adapter = sysUtil.listViewAdapter(this,  listData)
+        listView_bilibili.adapter = SystemUtil.listViewAdapter(this, listData)
         listView_bilibili.onItemClick { _, _, index, _ ->
             if (defaultVid.startsWith("av")) {
                 defaultVid = defaultVid.substring(2, defaultVid.length - 1)
@@ -66,7 +65,7 @@ class BilibiliActivity : AppCompatActivity() {
                 toast("你分享了个空白链接")
             } else {
                 Logger.d("url:$st")
-                val urlCheck = sysUtil.getUrlFromBiliShare(st)
+                val urlCheck = SystemUtil.getUrlFromBiliShare(st)
                 Logger.d("urlCheck:$urlCheck")
                 if (urlCheck == null) {
                     toast("你分享的不是链接")
@@ -164,7 +163,7 @@ class BilibiliActivity : AppCompatActivity() {
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
-                        sysUtil.closeKeyborad(this@BilibiliActivity)
+                        SystemUtil.closeKeyborad(this@BilibiliActivity)
                         if (input.text.isNullOrEmpty() || input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
@@ -230,7 +229,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 val input_search = editText("")
                                                                                 input_search.setSingleLine(true)
                                                                                 okButton {
-                                                                                    sysUtil.closeKeyborad(this@BilibiliActivity)
+                                                                                    SystemUtil.closeKeyborad(this@BilibiliActivity)
                                                                                     val search_key: String = input_search.text.toString()
                                                                                     if (search_key.isEmpty()) {
                                                                                         _search("请输入搜索内容")
@@ -367,7 +366,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun bilibiliCommentHash2uidJx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
-        sysUtil.closeKeyborad(this)
+        SystemUtil.closeKeyborad(this)
         runOnUiThread {
             val uid = data[0].id
             val acts = mutableListOf(
@@ -435,7 +434,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 getString(R.string.text_share)
                                                                         )) { _, index_b ->
                                                                             when (index_b) {
-                                                                                0 -> sysUtil.browse(this@BilibiliActivity, userCard.face)
+                                                                                0 -> SystemUtil.browse(this@BilibiliActivity, userCard.face)
                                                                                 1 -> copy(userCard.face)
                                                                                 2 -> share(userCard.face)
                                                                             }
@@ -445,7 +444,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                         if (userCard.attention > 0) {
                                                                             val followers: MutableList<String> = userCard.attentions.map { it.toString() }.toMutableList()
                                                                             selector("uid按关注倒序显示", followers) { _, index_c ->
-                                                                                sysUtil.browse(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
+                                                                                SystemUtil.browse(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
                                                                             }
                                                                         } else {
                                                                             Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()
@@ -488,7 +487,7 @@ class BilibiliActivity : AppCompatActivity() {
                     val input = editText(defaultVid)
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
-                        sysUtil.closeKeyborad(this@BilibiliActivity)
+                        SystemUtil.closeKeyborad(this@BilibiliActivity)
                         val vid = input.text.toString()
                         if (vid.isEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", Snackbar.LENGTH_SHORT).show()
@@ -507,7 +506,7 @@ class BilibiliActivity : AppCompatActivity() {
                                         Snackbar.make(coordinatorLayout_bilibili, "获取视频封面失败,返回地址空白", Snackbar.LENGTH_SHORT).show()
                                     } else {
                                         doAsync {
-                                            val imageBitmap = sysUtil.getBitmapFromURL(coverUri.toString())
+                                            val imageBitmap = SystemUtil.getBitmapFromURL(coverUri.toString())
                                             uiThread {
                                                 loadingProgressBar.dismiss()
                                                 Snackbar.make(coordinatorLayout_bilibili, "获取视频封面成功", Snackbar.LENGTH_SHORT).show()
@@ -515,7 +514,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                         getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share)
                                                 )) { _, i ->
                                                     when (i) {
-                                                        0 -> sysUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
+                                                        0 -> SystemUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
                                                         1 -> {
                                                             ClipboardUtils.copy(this@BilibiliActivity, coverUri.toString())
                                                             Snackbar.make(coordinatorLayout_bilibili, "复制成功", Snackbar.LENGTH_SHORT).show()
@@ -582,7 +581,7 @@ class BilibiliActivity : AppCompatActivity() {
             }
             else -> return null
         }
-        if (!videoCover.isNullOrEmpty()) videoCover = sysUtil.urlAutoHttps(videoCover, true)
+        if (!videoCover.isNullOrEmpty()) videoCover = SystemUtil.urlAutoHttps(videoCover, true)
         Logger.d(videoCover)
         return videoCover
     }

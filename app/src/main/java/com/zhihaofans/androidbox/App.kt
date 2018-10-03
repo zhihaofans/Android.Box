@@ -18,13 +18,12 @@ import io.paperdb.Paper
  * @date 2018/1/9
  */
 class App : Application() {
-    private val sysUtil = SystemUtil()
     private var isDebug = false
     override fun onCreate() {
         super.onCreate()
         Logger.addLogAdapter(AndroidLogAdapter())
         EasyAndroid.init(applicationContext)
-        isDebug = sysUtil.isApkDebugable(this)
+        isDebug = SystemUtil.isApkDebugable(this)
         Logger.d("Debug:$isDebug")
         MCrashMonitor.init(this, true) { file ->
             //可以在这里保存标识，下次再次进入把日志发送给服务器

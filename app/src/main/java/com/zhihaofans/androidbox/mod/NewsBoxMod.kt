@@ -68,6 +68,9 @@ class NewsBoxMod {
                 "rsshub" -> {
                     siteInfo_rsshub(context).getNewsList(channelId, page)
                 }
+                "wanandroid" -> {
+                    siteInfo_wanandroid(context).getNewsList(channelId, page)
+                }
                 else -> null
             }
         }
@@ -89,6 +92,10 @@ class NewsBoxMod {
                     mutableMapOf(
                             "id" to "rsshub",
                             "name" to context.getString(R.string.text_site_rsshub)
+                    ),
+                    mutableMapOf(
+                            "id" to "wanandroid",
+                            "name" to context.getString(R.string.text_site_wanandroid)
                     )
             )
         }
@@ -99,6 +106,7 @@ class NewsBoxMod {
                 "dgtle" -> siteInfo_dgtle(context).getchannelList()
                 "gank.io" -> siteInfo_gankio(context).getchannelList()
                 "rsshub" -> siteInfo_rsshub(context).getchannelList()
+                "wanandroid" -> siteInfo_wanandroid(context).getchannelList()
                 else -> null
             }
         }

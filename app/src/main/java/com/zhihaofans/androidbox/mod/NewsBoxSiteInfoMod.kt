@@ -4,10 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.gson.DgtleIndexGson
-import com.zhihaofans.androidbox.gson.GankIoAllGson
-import com.zhihaofans.androidbox.gson.RsshubGson
-import com.zhihaofans.androidbox.gson.SspaiArticleGson
+import com.zhihaofans.androidbox.gson.*
 
 
 /**
@@ -198,7 +195,6 @@ class siteInfo_sspai(_context: Context) {
     }
 }
 
-
 class siteInfo_rsshub(_context: Context) {
 
     private val nbc = NewsBoxMod.newsBoxCommon()
@@ -274,6 +270,66 @@ class siteInfo_rsshub(_context: Context) {
         } catch (e: Exception) {
             e.printStackTrace()
             return null
+        }
+    }
+}
+
+class siteInfo_wanandroid(_context: Context) {
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val g = Gson()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "wanandroid_index",
+                        "channelName" to context.getString(R.string.text_site_wanandroid)
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        var newsListJson = ""
+        var _page = page
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        if (page < 1) {
+            _page = 1
+        }
+        when (channelId) {
+            "wanandroid_index" -> {
+                val thisUrl = "http://www.wanandroid.com/article/list/${_page - 1}/json"
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json;charset=UTF-8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                Logger.d(thisUrl)
+                try {
+                    newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    Logger.d("newsListJson:$newsListJson")
+                    if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
+                        val newsIndex = g.fromJson(newsListJson, WanandroidGson::class.java)
+                        if (newsIndex.errorCode != 0) {
+                            return null
+                        }
+                        val newsListIndex = newsIndex.data
+                        if (newsListIndex.size == 0) {
+                            return null
+                        }
+                        newsListIndex.datas.map {
+                            newsList.add(mutableMapOf(
+                                    "title" to it.title,
+                                    "web_url" to it.link
+                            ))
+                        }
+                    } else {
+                        return null
+                    }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
         }
     }
 }

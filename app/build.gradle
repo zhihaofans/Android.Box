@@ -10,7 +10,6 @@ android {
     defaultConfig {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 25
-        //noinspection OldTargetApi
         targetSdkVersion 28
         versionCode 69
         versionName "0.0.63.218124"

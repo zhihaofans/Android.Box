@@ -85,7 +85,6 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_qrcode),
                 getString(R.string.text_androidsdk),
                 getString(R.string.text_appmanagement),
-                getString(R.string.text_newsbox),
                 getString(R.string.text_weather),
                 getString(R.string.text_bilibili),
                 getString(R.string.text_serverchan),
@@ -143,13 +142,12 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 2 -> startActivity<AppManagementActivity>()
-                3 -> startActivity<NewsBoxActivity>()
-                4 -> startActivity<WeatherActivity>()
-                5 -> startActivity<BilibiliActivity>()
-                6 -> startActivity<ServerChanActivity>()
-                7 -> startActivity<AppDownActivity>()
-                8 -> startActivity<FeedActivity>()
-                9 -> startActivity<XXDownActivity>()
+                3 -> startActivity<WeatherActivity>()
+                4 -> startActivity<BilibiliActivity>()
+                5 -> startActivity<ServerChanActivity>()
+                6 -> startActivity<AppDownActivity>()
+                7 -> startActivity<FeedActivity>()
+                8 -> startActivity<XXDownActivity>()
             }
         }
         checkPermissions()

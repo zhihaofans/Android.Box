@@ -18,6 +18,7 @@ import java.io.IOException
 class WeatherActivity : AppCompatActivity() {
     private val g = Gson()
     private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
+    private val defaultTitle = title
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
@@ -31,7 +32,7 @@ class WeatherActivity : AppCompatActivity() {
 
     fun loading() {
         //val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-
+        title = "Loading..."
         val client = OkHttpClient()
         val url = "https://api.seniverse.com/v3/weather/now.json?key=y0rkk7s0r2lxzfbi&location=ip&language=zh-Hans"
         request.url(url)
@@ -65,6 +66,7 @@ class WeatherActivity : AppCompatActivity() {
                                     weatherResult.now.text,
                                     weatherResult.now.temperature + " 度"
                             ))
+                            title = defaultTitle
                         }
                     }
                 } else {

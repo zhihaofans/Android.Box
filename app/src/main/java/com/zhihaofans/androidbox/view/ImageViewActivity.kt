@@ -23,10 +23,12 @@ import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.snackbar
+import dev.utils.app.ContentResolverUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
+import java.io.File
 
 
 class ImageViewActivity : AppCompatActivity() {
@@ -187,6 +189,11 @@ class ImageViewActivity : AppCompatActivity() {
 
                     override fun completed(task: BaseDownloadTask) {
                         loadingProgressBarDownload.dismiss()
+                        if (ContentResolverUtils.notifyMediaStore(File(task.targetFilePath))) {
+                            snackbar(coordinatorLayout_imageView, "已通知系统相册刷新缓存")
+                        } else {
+                            snackbar(coordinatorLayout_imageView, "已通知系统相册刷新缓存，但系统返回刷新失败，请手动刷新")
+                        }
                         alert {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
@@ -199,7 +206,7 @@ class ImageViewActivity : AppCompatActivity() {
                                     SystemUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
-                                    snackbar(coordinatorLayout_imageView, "安装失败")
+                                    snackbar(coordinatorLayout_imageView, "打开失败")
                                 }
                             }
                         }.show()

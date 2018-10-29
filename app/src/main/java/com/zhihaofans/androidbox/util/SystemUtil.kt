@@ -251,7 +251,7 @@ class SystemUtil {
 
         fun openImageFile(context: Context, file: File): Intent {
             val intent = Intent("android.intent.action.VIEW")
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             val contentUri = FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file)
             intent.setDataAndType(contentUri, "image/*")
             context.startActivity(intent)

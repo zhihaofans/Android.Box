@@ -22,6 +22,7 @@ import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
@@ -194,7 +195,12 @@ class ImageViewActivity : AppCompatActivity() {
                                 toast("复制成功")
                             }
                             positiveButton(R.string.text_open) {
-                                SystemUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+                                try {
+                                    SystemUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    snackbar(coordinatorLayout_imageView, "安装失败")
+                                }
                             }
                         }.show()
 

@@ -251,10 +251,9 @@ class SystemUtil {
 
         fun openImageFile(context: Context, file: File): Intent {
             val intent = Intent("android.intent.action.VIEW")
-            intent.addCategory("android.intent.category.DEFAULT")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            val uri = Uri.fromFile(file)
-            intent.setDataAndType(uri, "image/*")
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            val contentUri = FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file)
+            intent.setDataAndType(contentUri, "image/*")
             context.startActivity(intent)
             return intent
         }
@@ -286,19 +285,14 @@ class SystemUtil {
             return df.format(newDate2)
         }
 
-        fun installApk(context: Context, filePath: String) {
-            val installIntent = IntentUtils.getInstallAppIntent(filePath, context.packageName + ".fileprovider")
-            context.startActivity(installIntent)
-        }
+        fun installApk(context: Context, filePath: String) = context.startActivity(IntentUtils.getInstallAppIntent(filePath, context.packageName + ".fileprovider"))
 
-        fun installApk1(context: Context, filePath: String) {
-            AppUtils.installApp(filePath, context.packageName + ".fileprovider")
-        }
+        fun installApk1(context: Context, filePath: String) = AppUtils.installApp(filePath, context.packageName + ".fileprovider")
 
         fun installApk2(context: Context, filePath: String) {
             val apkFile = File(filePath)
             val intent = Intent(Intent.ACTION_VIEW)
-            val apkUri: Uri = FileProvider.getUriForFile(context.applicationContext, "com.zhihaofans.androidbox.fileprovider", apkFile)
+            val apkUri: Uri = FileProvider.getUriForFile(context.applicationContext, context.packageName + ".fileprovider", apkFile)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
             context.startActivity(intent)

@@ -27,6 +27,8 @@ import com.wx.android.common.util.PackageUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.GlobalSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
+import dev.utils.app.AppUtils
+import dev.utils.app.IntentUtils
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -285,23 +287,33 @@ class SystemUtil {
         }
 
         fun installApk(context: Context, filePath: String) {
+            val installIntent = IntentUtils.getInstallAppIntent(filePath, context.packageName + ".fileprovider")
+            context.startActivity(installIntent)
+        }
+
+        fun installApk1(context: Context, filePath: String) {
+            AppUtils.installApp(filePath, context.packageName + ".fileprovider")
+        }
+
+        fun installApk2(context: Context, filePath: String) {
             val apkFile = File(filePath)
             val intent = Intent(Intent.ACTION_VIEW)
-            val apkUri: Uri = FileProvider.getUriForFile(context.applicationContext, "com.zhihaofans.androidbox.fileProvider", apkFile)
+            val apkUri: Uri = FileProvider.getUriForFile(context.applicationContext, "com.zhihaofans.androidbox.fileprovider", apkFile)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive")
             context.startActivity(intent)
         }
+
 
         @SuppressLint("Recycle")
         fun getRealFilePath(context: Context, uri: Uri?): String? {
             if (uri == null) return null
             val scheme: String? = uri.scheme
             var data: String? = null
-            when {
-                scheme == null -> data = uri.path
-                ContentResolver.SCHEME_FILE == scheme -> data = uri.path
-                ContentResolver.SCHEME_CONTENT == scheme -> {
+            when (scheme) {
+                null -> data = uri.path
+                ContentResolver.SCHEME_FILE -> data = uri.path
+                ContentResolver.SCHEME_CONTENT -> {
                     val cursor: Cursor? = context.contentResolver.query(uri, arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null, null)
                     if (null != cursor) {
                         if (cursor.moveToFirst()) {

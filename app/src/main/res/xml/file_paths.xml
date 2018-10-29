@@ -4,6 +4,12 @@
         name="download"
         path="download/Android.Box/" />
     <external-path
-        name="image"
-        path="/" />
+        name="data_app"
+        path="/data/app/com.zhihaofans.androidbox/" />
+    <external-path
+        name="files_root"
+        path="Android/data/" />
+    <external-path
+        name="external_storage_root"
+        path="." />
 </paths>

@@ -11,8 +11,8 @@ android {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 25
         targetSdkVersion 28
-        versionCode 69
-        versionName "0.0.63.218124"
+        versionCode 70
+        versionName "0.0.64"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.liulishuo.filedownloader:library:1.7.4'
     implementation 'io.paperdb:paperdb:2.6'
     implementation 'com.hjq:xxpermissions:3.6'
+    implementation 'com.github.afkT:DevUtils:1.0.8@aar'
 }
 kotlin {
     experimental {

@@ -7,8 +7,8 @@ import com.liulishuo.filedownloader.FileDownloader
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
-import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.DevUtils
 import io.paperdb.Paper
 
 
@@ -25,14 +25,14 @@ class App : Application() {
         EasyAndroid.init(applicationContext)
         isDebug = SystemUtil.isApkDebugable(this)
         Logger.d("Debug:$isDebug")
-        MCrashMonitor.init(this, true) { file ->
+        MCrashMonitor.init(this, isDebug) { file ->
             //可以在这里保存标识，下次再次进入把日志发送给服务器
             if (isDebug) Logger.d("应用发生了错误，CrashMonitor回调:" + file.absolutePath)
         }
         Paper.init(this)
         Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)
-        XQRCode.debug(true)
+        DevUtils.init(applicationContext)
     }
 
 

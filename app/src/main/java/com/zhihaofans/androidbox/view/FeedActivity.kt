@@ -385,6 +385,12 @@ class FeedActivity : AppCompatActivity() {
                                 toast("复制成功")
                             }
                             negativeButton(R.string.text_open) {
+                                try {
+                                    SystemUtil.installApk(this@FeedActivity, task.targetFilePath)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    snackbar("安装失败")
+                                }
                             }
                         }.show()
 

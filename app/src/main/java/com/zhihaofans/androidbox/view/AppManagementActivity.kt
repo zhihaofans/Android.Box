@@ -84,7 +84,7 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppFirstInstallTime: String = convertUtil.unixTime2date(thisPackageInfo.firstInstallTime)
                     val thisAppLastUpdateTime: String = convertUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
-                    val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt() //TODO:以后加入自动转换单位功能
+                    val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt()
                     /*Logger.d(childItem["icon"])
                     alert {
                         customView {
@@ -127,7 +127,6 @@ class AppManagementActivity : AppCompatActivity() {
                                     _a++
                                 }
                                 Logger.d(act_appInfo)
-                                //TODO:应用选项
                                 selector(getStr(R.string.text_app_info), act_appInfo) { _, ii ->
                                     alert {
                                         customView {

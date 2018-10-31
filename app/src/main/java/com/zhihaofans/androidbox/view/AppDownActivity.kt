@@ -350,7 +350,6 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun del(index: Int) {
-        //TODO:delete app feed
         val deleteFeed = appFeeds[index]
         if (dataBase.delFeed(index, deleteFeed)) {
             snackbar("删除成功，刷新订阅列表")
@@ -361,7 +360,6 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun checkUpdate(index: Int) {
-        //TODO:check app feed update
         val loadingProgressBarUpdate = indeterminateProgressDialog(appFeeds[index].name, "Checking update...")
         loadingProgressBarUpdate.setCancelable(false)
         loadingProgressBarUpdate.setCanceledOnTouchOutside(false)

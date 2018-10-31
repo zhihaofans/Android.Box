@@ -493,7 +493,6 @@ class BilibiliActivity : AppCompatActivity() {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", Snackbar.LENGTH_SHORT).show()
                         } else {
                             defaultVid = vid
-                            //TODO:Bilibili Video Cover
                             val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                             loadingProgressBar.setCancelable(false)
                             loadingProgressBar.setCanceledOnTouchOutside(false)

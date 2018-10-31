@@ -72,8 +72,8 @@ class FeedActivity : AppCompatActivity() {
                     val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
                     selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                         when (i) {
-                            0 -> updateFeed(1, FeedMod.App.Update(1)) // Add
-                            1 -> updateFeed(1, FeedMod.App.Update(2)) // Delete
+                            0 -> updateFeed(1, FeedMod.App.Update(1)) // TODO:Add
+                            1 -> updateFeed(1, FeedMod.App.Update(2)) // TODO:Delete
                             2 -> {
                                 selector("数据库", listOf(getString(R.string.text_import), getString(R.string.text_export))) { _: DialogInterface, ii: Int ->
                                     when (ii) {
@@ -193,7 +193,6 @@ class FeedActivity : AppCompatActivity() {
                             }
                         }
                         1 -> {
-                            //TODO:更改 page
                             val page = update.data as Int
                             Logger.d("updateFeed->page:$page")
                             doAsync {
@@ -210,7 +209,6 @@ class FeedActivity : AppCompatActivity() {
                             }
                         }
                         2 -> {
-                            //TODO:更改 site
                             loadingProgressBar.dismiss()
                             val siteList = newsBox.getSiteList()
                             selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
@@ -232,6 +230,11 @@ class FeedActivity : AppCompatActivity() {
                         else -> loadingProgressBar.dismiss()
                     }
                 }
+            }
+            1 -> {
+                // TODO:App updateFeed
+                loadingProgressBar.dismiss()
+
             }
             else -> {
                 loadingProgressBar.dismiss()

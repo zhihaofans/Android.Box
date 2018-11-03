@@ -40,7 +40,7 @@ class siteInfo_gankio(_context: Context) {
         if (page < 1) {
             _page = 1
         }
-        val thisUrl: String? = when (channelId) {
+        val thisUrl: String = when (channelId) {
             "gank_io_all" -> {
                 "http://gank.io/api/data/all/20/$_page"
             }
@@ -51,11 +51,8 @@ class siteInfo_gankio(_context: Context) {
                 "http://gank.io/api/data/福利/20/$_page"
             }
             else -> null
-        }
+        } ?: return null
 
-        if (thisUrl == null) {
-            return null
-        }
         val headers = mutableMapOf(
                 "content-type" to "application/json, text/javascript, */*; q=0.01",
                 "user-agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
@@ -158,7 +155,6 @@ class siteInfo_sspai(_context: Context) {
     }
 
     fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
-        var newsListJson = ""
         var _page = page
         val newsList = mutableListOf<MutableMap<String, String>>()
         if (page < 1) {
@@ -172,7 +168,7 @@ class siteInfo_sspai(_context: Context) {
                         Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                 )
                 try {
-                    newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    val newsListJson = nbc.httpGet4String(thisUrl, headers)
                     //Logger.d("newsListJson:$newsListJson")
                     val newsIndex = g.fromJson(newsListJson, SspaiArticleGson::class.java)
                     val newsListIndex = newsIndex.list
@@ -289,7 +285,6 @@ class siteInfo_wanandroid(_context: Context) {
     }
 
     fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
-        var newsListJson = ""
         var _page = page
         val newsList = mutableListOf<MutableMap<String, String>>()
         if (page < 1) {
@@ -304,7 +299,7 @@ class siteInfo_wanandroid(_context: Context) {
                 )
                 Logger.d(thisUrl)
                 try {
-                    newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    val newsListJson = nbc.httpGet4String(thisUrl, headers)
                     Logger.d("newsListJson:$newsListJson")
                     if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
                         val newsIndex = g.fromJson(newsListJson, WanandroidGson::class.java)
@@ -351,7 +346,6 @@ class siteInfo_diycode(_context: Context) {
 
     fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
         val jsonParser = JsonParser()
-        var newsListJson = ""
         var _page = page
         val newsList = mutableListOf<MutableMap<String, String>>()
         if (page < 1) {
@@ -366,7 +360,7 @@ class siteInfo_diycode(_context: Context) {
                 )
                 Logger.d(thisUrl)
                 try {
-                    newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    val newsListJson = nbc.httpGet4String(thisUrl, headers)
                     if (newsListJson.isEmpty()) return null
                     if (newsListJson.startsWith("{") && newsListJson.startsWith("}")) {
                         val error = g.fromJson(newsListJson, DiycodeNewErrorGson::class.java)
@@ -382,6 +376,64 @@ class siteInfo_diycode(_context: Context) {
                         ))
                     }
 
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}
+
+class siteInfoZhihuDaily(_context: Context) {
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val g = Gson()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "zhihu_daily",
+                        "channelName" to context.getString(R.string.text_site_zhihu_daily)
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        when (channelId) {
+            "zhihu_daily" -> {
+                val thisUrl = "https://news-at.zhihu.com/api/4/news/latest"
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json;charset=UTF-8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                Logger.d(thisUrl)
+                try {
+                    val newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    Logger.d("newsListJson:$newsListJson")
+                    if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
+                        val newsIndex = g.fromJson(newsListJson, ZhihuDailyGson::class.java)
+                        Logger.d("siteInfoZhihuDaily.getNewsList.date:" + newsIndex.date)
+                        newsIndex.top_stories.map {
+                            newsList.add(mutableMapOf(
+                                    "title" to it.title,
+                                    "web_url" to "https://daily.zhihu.com/story/${it.id}"
+                            ))
+                        }
+                        newsIndex.stories.map {
+                            newsList.add(mutableMapOf(
+                                    "title" to it.title,
+                                    "web_url" to "https://daily.zhihu.com/story/${it.id}"
+                            ))
+                        }
+                        if (newsList.size == 0) {
+                            return null
+                        }
+                    } else {
+                        return null
+                    }
                     return newsList
                 } catch (e: Exception) {
                     e.printStackTrace()

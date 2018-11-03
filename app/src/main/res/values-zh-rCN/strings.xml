@@ -88,4 +88,5 @@
     <string name="title_activity_express">快递</string>
     <string name="title_activity_xxdown">万物皆可下载</string>
     <string name="text_site_wanandroid">玩Android</string>
+    <string name="text_site_zhihu_daily">知乎日报</string>
 </resources>

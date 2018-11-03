@@ -131,3 +131,18 @@ data class DiycodeNewItemUserGson(
         val name: String,
         val avatar_url: String
 )
+
+// zhihu daily
+data class ZhihuDailyGson(
+        val date: String,
+        val stories: List<ZhihuDailyStoriesGson>,
+        val top_stories: List<ZhihuDailyStoriesGson>
+)
+
+data class ZhihuDailyStoriesGson(
+        val images: List<String>,
+        val type: Int,
+        val id: Int,
+        val ga_prefix: String,
+        val title: String
+)

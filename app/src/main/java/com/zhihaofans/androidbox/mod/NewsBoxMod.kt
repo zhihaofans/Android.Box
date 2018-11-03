@@ -36,16 +36,16 @@ class NewsBoxMod {
             }
             val request = requestBuilder.build()
             val call = client.newCall(request)
-            try {
+            return try {
                 val response = call.execute()
                 if (response.body() == null) {
-                    return ""
+                    ""
                 } else {
-                    return response.body()!!.string()
+                    response.body()!!.string()
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                return ""
+                ""
             }
 
         }
@@ -74,6 +74,9 @@ class NewsBoxMod {
                 }
                 "diycode" -> {
                     siteInfo_diycode(context).getNewsList(channelId, page)
+                }
+                "zhihu_daily" -> {
+                    siteInfoZhihuDaily(context).getNewsList(channelId, page)
                 }
                 else -> null
             }
@@ -104,6 +107,10 @@ class NewsBoxMod {
                     mutableMapOf(
                             "id" to "diycode",
                             "name" to "diycode"
+                    ),
+                    mutableMapOf(
+                            "id" to "zhihu_daily",
+                            "name" to context.getString(R.string.text_site_zhihu_daily)
                     )
             )
         }
@@ -116,6 +123,7 @@ class NewsBoxMod {
                 "rsshub" -> siteInfo_rsshub(context).getchannelList()
                 "wanandroid" -> siteInfo_wanandroid(context).getchannelList()
                 "diycode" -> siteInfo_diycode(context).getchannelList()
+                "zhihu_daily" -> siteInfoZhihuDaily(context).getchannelList()
                 else -> null
             }
         }

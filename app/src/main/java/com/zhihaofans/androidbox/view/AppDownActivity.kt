@@ -19,7 +19,6 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class AppDownActivity : AppCompatActivity() {
     private val savePath: String = SystemUtil.getDownloadPathString() + "Android.Box/"
@@ -73,7 +72,7 @@ class AppDownActivity : AppCompatActivity() {
                 snackbar("列表空白")
             } else {
                 listView_app.adapter = SystemUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
-                listView_app.onItemClick { _, _, index, _ ->
+                listView_app.setOnItemClickListener { _, _, index, _ ->
                     val clickedApp = appFeeds[index]
                     alert {
                         title = clickedApp.name

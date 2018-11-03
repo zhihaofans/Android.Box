@@ -16,7 +16,6 @@ import com.zhihaofans.androidbox.util.ConvertUtil
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import java.util.*
 
 
@@ -72,7 +71,7 @@ class AppManagementActivity : AppCompatActivity() {
                 listView_app.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
                 loading.hide()
                 listView_app.visibility = ListView.VISIBLE
-                listView_app.onItemClick { _, _, index, _ ->
+                listView_app.setOnItemClickListener { _, _, index, _ ->
                     val childItem = appList[index]
                     val thisPackageInfo: PackageInfo = childItem["packageInfo"] as PackageInfo
                     val thisAppInfo: ApplicationInfo = thisPackageInfo.applicationInfo

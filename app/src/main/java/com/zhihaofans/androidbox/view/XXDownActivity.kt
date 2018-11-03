@@ -14,7 +14,6 @@ import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 class XXDownActivity : AppCompatActivity() {
     private var resultList = mutableListOf<XXDownResultUrlData>()
@@ -57,7 +56,7 @@ class XXDownActivity : AppCompatActivity() {
                                                     listView_xxdown.removeAllItems()
                                                     resultList = xxDownResultData.url.toMutableList()
                                                     listView_xxdown.init(this@XXDownActivity, resultList.map { it.url })
-                                                    listView_xxdown.onItemClick { _, _, pos, _ ->
+                                                    listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
                                                         SystemUtil.browse(this@XXDownActivity, resultList[pos].url)
                                                     }
                                                     loadingProgressBar.dismiss()

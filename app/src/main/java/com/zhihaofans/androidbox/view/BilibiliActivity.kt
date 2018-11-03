@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
 import okhttp3.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -45,7 +44,7 @@ class BilibiliActivity : AppCompatActivity() {
                 "视频封面下载"
         )
         listView_bilibili.adapter = SystemUtil.listViewAdapter(this, listData)
-        listView_bilibili.onItemClick { _, _, index, _ ->
+        listView_bilibili.setOnItemClickListener { _, _, index, _ ->
             if (defaultVid.startsWith("av")) {
                 defaultVid = defaultVid.substring(2, defaultVid.length - 1)
             }

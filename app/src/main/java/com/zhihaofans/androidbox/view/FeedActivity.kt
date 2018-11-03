@@ -21,7 +21,6 @@ import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onItemClick
 
 
 class FeedActivity : AppCompatActivity() {
@@ -248,7 +247,7 @@ class FeedActivity : AppCompatActivity() {
             0 -> {
                 val newsList = data as FeedMod.News.ListView
                 listView_feed.init(this@FeedActivity, newsList.titleList)
-                listView_feed.onItemClick { _, _, index, _ ->
+                listView_feed.setOnItemClickListener { _, _, index, _ ->
                     SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
                 }
             }
@@ -256,7 +255,7 @@ class FeedActivity : AppCompatActivity() {
                 doAsync { }
                 val appFeeds = (data as FeedMod.App.AppList).data
                 listView_feed.init(this@FeedActivity, appFeeds.map { it.name })
-                listView_feed.onItemClick { _, _, index, _ ->
+                listView_feed.setOnItemClickListener { _, _, index, _ ->
                     val clickedApp = appFeeds[index]
                     alert {
                         title = clickedApp.name

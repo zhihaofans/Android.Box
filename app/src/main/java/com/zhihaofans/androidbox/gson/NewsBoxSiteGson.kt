@@ -49,29 +49,6 @@ data class SspaiArticleListGson(
         val promote_intro: String
 )
 
-// 品玩(pingwest)
-data class PingwestForwardRecommendGson(
-        val id: String,
-        val title: String,
-        val content: String,
-        val link: String,
-        val img: String,
-        val source: String,
-        val zuozhe: String,
-        val orglink: String
-)
-
-// 观点(guandn)
-data class GuandnIndexGson(
-        val source: MutableList<GuandnIndexListGson>
-)
-
-data class GuandnIndexListGson(
-        val title: String,
-        val identification: String
-
-)
-
 // RSSHub
 data class RsshubGson(
         val items: MutableList<RsshubItemGson>
@@ -129,4 +106,28 @@ data class WanandroidDataItemGson(
 data class WanandroidDataItemTagGson(
         val name: String,
         val url: String
+)
+
+// diycode
+data class DiycodeNewErrorGson(
+        val error: String?
+)
+
+data class DiycodeNewItemGson(
+        val id: Int,
+        val title: String,
+        val created_at: String,
+        val updated_at: String,
+        val user: DiycodeNewItemUserGson,
+        val node_name: String,
+        val node_id: Int,
+        val address: String,
+        val replies_count: Int
+)
+
+data class DiycodeNewItemUserGson(
+        val id: Int,
+        val login: String,
+        val name: String,
+        val avatar_url: String
 )

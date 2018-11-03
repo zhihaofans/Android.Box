@@ -24,6 +24,7 @@ class NewsBoxMod {
             val id: String,
             val name: String
     )
+
     class newsBoxCommon {
         fun httpGet4String(url: String, headers: MutableMap<String, String>? = null): String {
             val client = OkHttpClient()
@@ -71,6 +72,9 @@ class NewsBoxMod {
                 "wanandroid" -> {
                     siteInfo_wanandroid(context).getNewsList(channelId, page)
                 }
+                "diycode" -> {
+                    siteInfo_diycode(context).getNewsList(channelId, page)
+                }
                 else -> null
             }
         }
@@ -96,6 +100,10 @@ class NewsBoxMod {
                     mutableMapOf(
                             "id" to "wanandroid",
                             "name" to context.getString(R.string.text_site_wanandroid)
+                    ),
+                    mutableMapOf(
+                            "id" to "diycode",
+                            "name" to "diycode"
                     )
             )
         }
@@ -107,6 +115,7 @@ class NewsBoxMod {
                 "gank.io" -> siteInfo_gankio(context).getchannelList()
                 "rsshub" -> siteInfo_rsshub(context).getchannelList()
                 "wanandroid" -> siteInfo_wanandroid(context).getchannelList()
+                "diycode" -> siteInfo_diycode(context).getchannelList()
                 else -> null
             }
         }

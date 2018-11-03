@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
@@ -323,6 +324,64 @@ class siteInfo_wanandroid(_context: Context) {
                     } else {
                         return null
                     }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}
+
+
+class siteInfo_diycode(_context: Context) {
+    private val nbc = NewsBoxMod.newsBoxCommon()
+    private val g = Gson()
+    private val context = _context
+    fun getchannelList(): MutableList<MutableMap<String, String>> {
+        return mutableListOf(
+                mutableMapOf(
+                        "channelId" to "diycode_news",
+                        "channelName" to "diycode news"
+                )
+        )
+    }
+
+    fun getNewsList(channelId: String, page: Int): MutableList<MutableMap<String, String>>? {
+        val jsonParser = JsonParser()
+        var newsListJson = ""
+        var _page = page
+        val newsList = mutableListOf<MutableMap<String, String>>()
+        if (page < 1) {
+            _page = 1
+        }
+        when (channelId) {
+            "diycode_news" -> {
+                val thisUrl = "https://diycode.cc/api/v3/news.json?node_id=1&limit=20&offset=${20 * (_page - 1)}"
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json;charset=UTF-8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                Logger.d(thisUrl)
+                try {
+                    newsListJson = nbc.httpGet4String(thisUrl, headers)
+                    if (newsListJson.isEmpty()) return null
+                    if (newsListJson.startsWith("{") && newsListJson.startsWith("}")) {
+                        val error = g.fromJson(newsListJson, DiycodeNewErrorGson::class.java)
+                        if (error.error != null) return null
+                    }
+                    val jsonAarray = jsonParser.parse(newsListJson).asJsonArray
+                    if (jsonAarray.size() == 0) return null
+                    jsonAarray.map {
+                        val newsItem = g.fromJson(it, DiycodeNewItemGson::class.java)
+                        newsList.add(mutableMapOf(
+                                "title" to newsItem.title,
+                                "web_url" to newsItem.address
+                        ))
+                    }
+
                     return newsList
                 } catch (e: Exception) {
                     e.printStackTrace()

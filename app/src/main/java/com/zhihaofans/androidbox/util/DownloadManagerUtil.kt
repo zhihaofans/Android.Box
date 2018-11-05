@@ -9,7 +9,7 @@ import com.orhanobut.logger.Logger
 /**
  * Created by zhihaofans on 2018/8/28.
  */
-class DownloadUtil {
+class DownloadManagerUtil {
     fun downloadAndroid(context: Context, url: String, savePath: String, title: String = ""): Long {
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request = DownloadManager.Request(Uri.parse(url))

@@ -14,8 +14,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.FileProvider
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.FileProvider
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText

@@ -3,7 +3,7 @@ package com.zhihaofans.androidbox.util
 import android.R
 import android.app.Activity
 import android.content.Context
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -20,7 +20,7 @@ fun MutableList<*>?.isNullorEmpty(): Boolean {
 }
 
 fun Activity.snackbar(view: View, message: String) {
-    Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+    com.google.android.material.snackbar.Snackbar.make(view, message, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
 }
 
 class ListView {

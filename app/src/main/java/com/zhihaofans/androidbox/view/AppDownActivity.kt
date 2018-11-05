@@ -2,8 +2,8 @@ package com.zhihaofans.androidbox.view
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
@@ -441,20 +441,20 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun snackbar(text: Int, longTime: Boolean = false) {
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_appdown, text, if (longTime) com.google.android.material.snackbar.Snackbar.LENGTH_LONG else com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_appdown, text, if (longTime) com.google.android.material.snackbar.Snackbar.LENGTH_LONG else com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
     }
 
     private fun snackbarE(text: String, longTime: Boolean = false) {
         Logger.e(text)
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_appdown, text, if (longTime) com.google.android.material.snackbar.Snackbar.LENGTH_LONG else com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
     }
 
     private fun snackbar(text: String, longTime: Boolean = false, button: String = "Button", listener: View.OnClickListener) {
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).setAction(button, listener).show()
+        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_appdown, text, if (longTime) com.google.android.material.snackbar.Snackbar.LENGTH_LONG else com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction(button, listener).show()
     }
 
 
@@ -518,7 +518,7 @@ class AppDownActivity : AppCompatActivity() {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
                         loadingProgressBarDownload.dismiss()
-                        Snackbar.make(coordinatorLayout_appdown, "下载失败", Snackbar.LENGTH_SHORT).show()
+                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_appdown, "下载失败", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                     }
 
                     override fun warn(task: BaseDownloadTask) {}

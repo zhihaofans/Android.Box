@@ -1,8 +1,8 @@
 package com.zhihaofans.androidbox.view
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_express.*
 
 class ExpressActivity : AppCompatActivity() {
@@ -13,7 +13,7 @@ class ExpressActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_express)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            com.google.android.material.snackbar.Snackbar.make(view, "Replace with your own action", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
     }

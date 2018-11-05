@@ -2,8 +2,8 @@ package com.zhihaofans.androidbox.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.text.InputType
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
@@ -36,7 +36,7 @@ class BilibiliActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            com.google.android.material.snackbar.Snackbar.make(view, "Replace with your own action", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
         val listData = mutableListOf(
@@ -164,9 +164,9 @@ class BilibiliActivity : AppCompatActivity() {
                     yesButton {
                         SystemUtil.closeKeyborad(this@BilibiliActivity)
                         if (input.text.isNullOrEmpty() || input1.text.isNullOrEmpty()) {
-                            Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
+                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
-                            Snackbar.make(coordinatorLayout_bilibili, "Part必须大于0", Snackbar.LENGTH_SHORT).show()
+                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "Part必须大于0", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                         } else {
                             defaultVid = input.text.toString()
                             defaultPart = input1.text.toString().toIntOrNull() ?: 1
@@ -183,7 +183,7 @@ class BilibiliActivity : AppCompatActivity() {
                                 override fun onFailure(_call: Call, e: IOException) {
                                     runOnUiThread {
                                         loadingProgressBar_cid.dismiss()
-                                        Snackbar.make(coordinatorLayout_bilibili, "获取失败", Snackbar.LENGTH_SHORT).show()
+                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取失败", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                     }
                                     e.printStackTrace()
                                 }
@@ -198,7 +198,7 @@ class BilibiliActivity : AppCompatActivity() {
                                         val responseStr_cid = resBody_cid.string()
                                         if (responseStr_cid.isEmpty()) {
                                             runOnUiThread {
-                                                Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
+                                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                             }
                                         } else {
                                             runOnUiThread {
@@ -211,7 +211,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                 if (bilibiliVideoGson.error == 0) {
                                                     if (bilibiliVideoGson.cid.isNullOrEmpty()) {
                                                         loadingProgressBar_comment.dismiss()
-                                                        Snackbar.make(coordinatorLayout_bilibili, "获取cid失败,空白结果", Snackbar.LENGTH_SHORT).show()
+                                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取cid失败,空白结果", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
 
                                                     } else {
                                                         val commentUrl = "https://comment.bilibili.com/${bilibiliVideoGson.cid}.xml"
@@ -268,7 +268,7 @@ class BilibiliActivity : AppCompatActivity() {
 
                                                                     loadingProgressBar_comment.dismiss()
                                                                     if (comments.size == 0) {
-                                                                        Snackbar.make(coordinatorLayout_bilibili, "空白弹幕列表", Snackbar.LENGTH_SHORT).show()
+                                                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "空白弹幕列表", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                                                     } else {
                                                                         _search()
                                                                     }
@@ -281,7 +281,7 @@ class BilibiliActivity : AppCompatActivity() {
                                         }
                                     } else {
                                         runOnUiThread {
-                                            Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果出现代码错误", Snackbar.LENGTH_SHORT).show()
+                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果出现代码错误", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                         }
                                     }
                                 }
@@ -310,7 +310,7 @@ class BilibiliActivity : AppCompatActivity() {
             override fun onFailure(_call: Call, e: IOException) {
                 runOnUiThread {
                     loadingProgressBar_hash.dismiss()
-                    Snackbar.make(coordinatorLayout_bilibili, "获取失败", Snackbar.LENGTH_SHORT).show()
+                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取失败", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                 }
                 e.printStackTrace()
             }
@@ -326,7 +326,7 @@ class BilibiliActivity : AppCompatActivity() {
                     val responseStr_hash = resBody_hash.string()
                     if (responseStr_hash.isEmpty()) {
                         runOnUiThread {
-                            Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
+                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                         }
                     } else {
                         val bilibiliDanmuGetHashGson = g.fromJson(responseStr_hash, BilibiliDanmuGetHashGson::class.java) as BilibiliDanmuGetHashGson
@@ -334,7 +334,7 @@ class BilibiliActivity : AppCompatActivity() {
                             val data = bilibiliDanmuGetHashGson.data
                             if (data.size == 0) {
                                 runOnUiThread {
-                                    Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果列表空白", Snackbar.LENGTH_SHORT).show()
+                                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回结果列表空白", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                 }
                             } else if (data.size == 1) {
                                 bilibiliCommentHash2uidJx(data, client)
@@ -351,12 +351,12 @@ class BilibiliActivity : AppCompatActivity() {
                                 }
                             }
                         } else {
-                            Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回错误代码(${bilibiliDanmuGetHashGson.error})", Snackbar.LENGTH_SHORT).show()
+                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取uid失败，服务器返回错误代码(${bilibiliDanmuGetHashGson.error})", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 } else {
                     runOnUiThread {
-                        Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
+                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取视频cid失败，服务器返回空白结果", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -386,7 +386,7 @@ class BilibiliActivity : AppCompatActivity() {
                             override fun onFailure(call: Call, e: IOException) {
                                 runOnUiThread {
                                     loadingProgressBar.dismiss()
-                                    Snackbar.make(coordinatorLayout_bilibili, "获取用户信息失败", Snackbar.LENGTH_SHORT).show()
+                                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取用户信息失败", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                 }
                                 e.printStackTrace()
                             }
@@ -402,14 +402,14 @@ class BilibiliActivity : AppCompatActivity() {
                                             responseStr = resBody.string()
                                             uiThread {
                                                 if (responseStr.isEmpty()) {
-                                                    Snackbar.make(coordinatorLayout_bilibili, "获取用户信息失败，服务器返回空白结果", Snackbar.LENGTH_SHORT).show()
+                                                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取用户信息失败，服务器返回空白结果", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
 
                                                 } else {
                                                     val bilibiliUserInfoResultGson = g.fromJson(responseStr, BilibiliUserInfoResultGson::class.java) as BilibiliUserInfoResultGson
                                                     if (bilibiliUserInfoResultGson.code == 0) {
                                                         val userCard: BilibiliUserInfoResultCardGson = bilibiliUserInfoResultGson.data.card
                                                         if (userCard.mid != uid.toString()) {
-                                                            Snackbar.make(coordinatorLayout_bilibili, "发生错误，所请求的id与服务器返回用户id不同(请求id:$uid|返回id:${userCard.mid}|返回用户昵称:${userCard.name})", Snackbar.LENGTH_SHORT).show()
+                                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "发生错误，所请求的id与服务器返回用户id不同(请求id:$uid|返回id:${userCard.mid}|返回用户昵称:${userCard.name})", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
 
                                                         } else {
                                                             val acts_result = mutableListOf(
@@ -446,14 +446,14 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 SystemUtil.browse(this@BilibiliActivity, "https://space.bilibili.com/${followers[index_c]}")
                                                                             }
                                                                         } else {
-                                                                            Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", Snackbar.LENGTH_SHORT).show()
+                                                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "Ta没有关注", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                                                         }
                                                                     }
                                                                     5 -> {
                                                                         if (userCard.fans > 0) {
-                                                                            Snackbar.make(coordinatorLayout_bilibili, "暂不支持查看粉丝列表", Snackbar.LENGTH_SHORT).show()
+                                                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "暂不支持查看粉丝列表", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                                                         } else {
-                                                                            Snackbar.make(coordinatorLayout_bilibili, "Ta没有粉丝", Snackbar.LENGTH_SHORT).show()
+                                                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "Ta没有粉丝", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                                                         }
                                                                     }
                                                                 }
@@ -461,7 +461,7 @@ class BilibiliActivity : AppCompatActivity() {
 
                                                         }
                                                     } else {
-                                                        Snackbar.make(coordinatorLayout_bilibili, "返回错误(${bilibiliUserInfoResultGson.message})", Snackbar.LENGTH_SHORT).show()
+                                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "返回错误(${bilibiliUserInfoResultGson.message})", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
 
                                                     }
                                                 }
@@ -489,7 +489,7 @@ class BilibiliActivity : AppCompatActivity() {
                         SystemUtil.closeKeyborad(this@BilibiliActivity)
                         val vid = input.text.toString()
                         if (vid.isEmpty()) {
-                            Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", Snackbar.LENGTH_SHORT).show()
+                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                         } else {
                             defaultVid = vid
                             val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
@@ -501,13 +501,13 @@ class BilibiliActivity : AppCompatActivity() {
                                 uiThread {
                                     if (coverUri.isNullOrEmpty()) {
                                         loadingProgressBar.dismiss()
-                                        Snackbar.make(coordinatorLayout_bilibili, "获取视频封面失败,返回地址空白", Snackbar.LENGTH_SHORT).show()
+                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取视频封面失败,返回地址空白", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                     } else {
                                         doAsync {
                                             val imageBitmap = SystemUtil.getBitmapFromURL(coverUri.toString())
                                             uiThread {
                                                 loadingProgressBar.dismiss()
-                                                Snackbar.make(coordinatorLayout_bilibili, "获取视频封面成功", Snackbar.LENGTH_SHORT).show()
+                                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "获取视频封面成功", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                                 selector("获取视频封面成功", listOf(
                                                         getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share)
                                                 )) { _, i ->
@@ -515,7 +515,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                         0 -> SystemUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
                                                         1 -> {
                                                             ClipboardUtils.copy(this@BilibiliActivity, coverUri.toString())
-                                                            Snackbar.make(coordinatorLayout_bilibili, "复制成功", Snackbar.LENGTH_SHORT).show()
+                                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "复制成功", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                                         }
                                                         2 -> share(coverUri.toString())
                                                     }
@@ -586,6 +586,6 @@ class BilibiliActivity : AppCompatActivity() {
 
     private fun copy(string: String) {//复制到剪切板
         ClipboardUtils.copy(this@BilibiliActivity, string)
-        Snackbar.make(coordinatorLayout_bilibili, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
+        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_bilibili, "已复制到剪切板", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
     }
 }

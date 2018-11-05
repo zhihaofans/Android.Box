@@ -1,8 +1,8 @@
 package com.zhihaofans.androidbox.view
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.ArrayAdapter
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
@@ -41,7 +41,7 @@ class WeatherActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
                 //loadingProgressBar.dismiss()
                 runOnUiThread {
-                    Snackbar.make(coordinatorLayout_weather, "获取信息失败", Snackbar.LENGTH_SHORT).show()
+                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_weather, "获取信息失败", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                 }
                 e.printStackTrace()
             }
@@ -56,7 +56,7 @@ class WeatherActivity : AppCompatActivity() {
                     if (weatherNowGson.results == null || weatherNowGson.results.size == 0) {
                         Logger.e("Get weather error\n$url\nCode:${weatherNowGson.status_code}\nMessage:${weatherNowGson.status}")
                         runOnUiThread {
-                            Snackbar.make(coordinatorLayout_weather, weatherNowGson.status, Snackbar.LENGTH_SHORT).show()
+                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_weather, weatherNowGson.status, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                         }
                     } else {
                         val weatherResult: WeatherNowResultGson = weatherNowGson.results[0]
@@ -71,7 +71,7 @@ class WeatherActivity : AppCompatActivity() {
                     }
                 } else {
                     runOnUiThread {
-                        Snackbar.make(coordinatorLayout_weather, "空白数据", Snackbar.LENGTH_SHORT).show()
+                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_weather, "空白数据", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                     }
                 }
                 Logger.d(responseStr)

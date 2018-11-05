@@ -5,8 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
 import com.hjq.permissions.OnPermission
@@ -53,18 +53,18 @@ class MainActivity : AppCompatActivity() {
                         when (i) {
                             0 -> {
                                 globalSetting.forceUseChromeCustomTabs(!(globalSetting.forceUseChromeCustomTabs()))
-                                Snackbar.make(coordinatorLayout_main,
+                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_use_cct_for_web) + ":" +
                                                 convertUtil.boolean2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
-                                        Snackbar.LENGTH_SHORT
+                                        com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                             1 -> {
                                 globalSetting.imageUrlOpenWithBuiltinViewer(!(globalSetting.imageUrlOpenWithBuiltinViewer()))
-                                Snackbar.make(coordinatorLayout_main,
+                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
                                                 convertUtil.boolean2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
-                                        Snackbar.LENGTH_SHORT
+                                        com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                             2 -> MCrashMonitor.startCrashListPage(this)
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
                             when (ii) {
                                 0 -> {
                                     ClipboardUtils.copy(this@MainActivity, sdks[i])
-                                    Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
+                                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, R.string.text_finish, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                                 }
                                 1 -> share(sdks[i])
                             }
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                             if (data.hasExtra("data")) {
                                 val result: String = data.getStringExtra("data")
                                 Logger.d(result)
-                                Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more) {
+                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, result, com.google.android.material.snackbar.Snackbar.LENGTH_LONG).setAction(R.string.text_more) {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts) { _, index ->
                                         when (index) {
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            Activity.RESULT_CANCELED -> Snackbar.make(coordinatorLayout_main, R.string.text_canceled_by_user, Snackbar.LENGTH_SHORT).show()
+            Activity.RESULT_CANCELED -> com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, R.string.text_canceled_by_user, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -190,10 +190,10 @@ class MainActivity : AppCompatActivity() {
     fun checkPermissions(manual: Boolean = false) {
         if (XXPermissions.isHasPermission(this, Permission.Group.STORAGE, Permission.Group.CAMERA)) {
             if (manual) {
-                Snackbar.make(coordinatorLayout_main, "已授权需要的权限，应该可以正常使用", Snackbar.LENGTH_SHORT).show()
+                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, "已授权需要的权限，应该可以正常使用", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
             }
         } else {
-            Snackbar.make(coordinatorLayout_main, "发现某个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
+            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, "发现某个权限未授权，可能影响正常使用", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
         }
     }
 
@@ -206,11 +206,11 @@ class MainActivity : AppCompatActivity() {
                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                         var t = "${granted.size}个权限通过授权"
                         if (!isAll) t += "，可能影响正常使用"
-                        Snackbar.make(coordinatorLayout_main, t, Snackbar.LENGTH_SHORT).show()
+                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, t, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
                     }
 
                     override fun noPermission(denied: List<String>, quick: Boolean) {
-                        Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
+                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
                     }
                 })
     }

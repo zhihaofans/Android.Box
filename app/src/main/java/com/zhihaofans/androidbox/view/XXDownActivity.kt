@@ -2,7 +2,7 @@ package com.zhihaofans.androidbox.view
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
 import com.zhihaofans.androidbox.data.XXDownSiteList

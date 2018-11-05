@@ -11,6 +11,7 @@ import com.facebook.drawee.drawable.ProgressBarDrawable
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -118,14 +119,14 @@ class ImageViewActivity : AppCompatActivity() {
                                                             val fileName = FileUtils.getFileName(imageUrl)
                                                             download(fileName, 0)
                                                         } else {
-                                                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_imageView, "需要储存权限", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                            Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
                                                                 XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
                                                             }.show()
                                                         }
                                                     }
 
                                                     override fun noPermission(denied: MutableList<String>?, quick: Boolean) {
-                                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_imageView, "需要储存权限", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                        Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
                                                             XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
                                                         }.show()
                                                     }
@@ -134,7 +135,7 @@ class ImageViewActivity : AppCompatActivity() {
                                     1 -> browse(imageUrl.toString())
                                     2 -> {
                                         ClipboardUtils.copy(this@ImageViewActivity, imageUrl)
-                                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_imageView, "ok", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                                        Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()
                                     }
                                 }
                             }
@@ -222,7 +223,7 @@ class ImageViewActivity : AppCompatActivity() {
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
-                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_imageView, "下载失败", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(coordinatorLayout_imageView, "下载失败", Snackbar.LENGTH_SHORT).show()
                     }
 
                     override fun warn(task: BaseDownloadTask) {}

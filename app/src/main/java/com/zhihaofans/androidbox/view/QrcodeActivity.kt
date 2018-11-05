@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -108,7 +109,7 @@ class QrcodeActivity : AppCompatActivity() {
             }
             Activity.RESULT_CANCELED -> {
                 when (methodId) {
-                    null -> com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_qrcode, R.string.text_canceled_by_user, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                    null -> Snackbar.make(coordinatorLayout_qrcode, R.string.text_canceled_by_user, Snackbar.LENGTH_SHORT).show()
                     else -> {
                         toast(R.string.text_canceled_by_user)
                         finish()
@@ -161,10 +162,10 @@ class QrcodeActivity : AppCompatActivity() {
             if (qrcodeData !== null) {
                 imageView_qrcode.setImageDrawable(BitmapDrawable(resources, qrcodeData))
             } else {
-                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_qrcode, "生成二维码失败，返回null数据", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(coordinatorLayout_qrcode, "生成二维码失败，返回null数据", Snackbar.LENGTH_SHORT).show()
             }
         } else {
-            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_qrcode, "请输入内容", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(coordinatorLayout_qrcode, "请输入内容", Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -178,12 +179,12 @@ class QrcodeActivity : AppCompatActivity() {
                         if (isAll) {
                             qrcode.scan(0)
                         } else {
-                            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
+                            Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
                         }
                     }
 
                     override fun noPermission(denied: List<String>, quick: Boolean) {
-                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
+                        Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
                     }
                 })
     }

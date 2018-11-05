@@ -4,9 +4,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.FileUtils
@@ -29,7 +29,7 @@ class AppManagementActivity : AppCompatActivity() {
         appListInit()
         this@AppManagementActivity.title = getStr(R.string.text_appmanagement)
         fab.setOnClickListener { view ->
-            com.google.android.material.snackbar.Snackbar.make(view, "Replace with your own action", com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
     }
@@ -139,7 +139,7 @@ class AppManagementActivity : AppCompatActivity() {
                                                 }
                                                 positiveButton(R.string.text_copy) {
                                                     ClipboardUtils.copy(this@AppManagementActivity, input)
-                                                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_app, "ok", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                                                    Snackbar.make(coordinatorLayout_app, "ok", Snackbar.LENGTH_SHORT).show()
                                                 }
                                             }
                                         }

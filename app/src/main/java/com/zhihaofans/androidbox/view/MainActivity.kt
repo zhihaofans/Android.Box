@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -16,6 +17,7 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.ConvertUtil
@@ -44,27 +46,27 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_setting -> {
                     val settings = mutableListOf(
                             getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                    convertUtil.boolean2string(appSettingMod.forceUseChromeCustomTabs, getString(R.string.text_yes), getString(R.string.text_no)),
+                                    appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
                             getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                    convertUtil.boolean2string(appSettingMod.imageUrlOpenWithBuiltinViewer, getString(R.string.text_yes), getString(R.string.text_no)),
+                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)),
                             "Crash page"
                     )
                     selector(getString(R.string.text_setting), settings) { _, i ->
                         when (i) {
                             0 -> {
                                 appSettingMod.forceUseChromeCustomTabs = !(appSettingMod.forceUseChromeCustomTabs)
-                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main,
+                                Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                                convertUtil.boolean2string(appSettingMod.forceUseChromeCustomTabs, getString(R.string.text_yes), getString(R.string.text_no)),
-                                        com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                                                appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
+                                        Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                             1 -> {
                                 appSettingMod.imageUrlOpenWithBuiltinViewer = !(appSettingMod.imageUrlOpenWithBuiltinViewer)
-                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main,
+                                Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                                convertUtil.boolean2string(appSettingMod.imageUrlOpenWithBuiltinViewer, getString(R.string.text_yes), getString(R.string.text_no)),
-                                        com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                                                appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)),
+                                        Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                             2 -> MCrashMonitor.startCrashListPage(this)
@@ -133,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                             when (ii) {
                                 0 -> {
                                     ClipboardUtils.copy(this@MainActivity, sdks[i])
-                                    com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, R.string.text_finish, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                                    Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
                                 }
                                 1 -> share(sdks[i])
                             }
@@ -163,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                             if (data.hasExtra("data")) {
                                 val result: String = data.getStringExtra("data")
                                 Logger.d(result)
-                                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, result, com.google.android.material.snackbar.Snackbar.LENGTH_LONG).setAction(R.string.text_more) {
+                                Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more) {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts) { _, index ->
                                         when (index) {
@@ -178,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            Activity.RESULT_CANCELED -> com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, R.string.text_canceled_by_user, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+            Activity.RESULT_CANCELED -> Snackbar.make(coordinatorLayout_main, R.string.text_canceled_by_user, Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -190,10 +192,10 @@ class MainActivity : AppCompatActivity() {
     fun checkPermissions(manual: Boolean = false) {
         if (XXPermissions.isHasPermission(this, Permission.Group.STORAGE, Permission.Group.CAMERA)) {
             if (manual) {
-                com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, "已授权需要的权限，应该可以正常使用", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(coordinatorLayout_main, "已授权需要的权限，应该可以正常使用", Snackbar.LENGTH_SHORT).show()
             }
         } else {
-            com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, "发现某个权限未授权，可能影响正常使用", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
+            Snackbar.make(coordinatorLayout_main, "发现某个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
         }
     }
 
@@ -206,11 +208,11 @@ class MainActivity : AppCompatActivity() {
                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                         var t = "${granted.size}个权限通过授权"
                         if (!isAll) t += "，可能影响正常使用"
-                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, t, com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(coordinatorLayout_main, t, Snackbar.LENGTH_SHORT).show()
                     }
 
                     override fun noPermission(denied: List<String>, quick: Boolean) {
-                        com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
+                        Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
                     }
                 })
     }

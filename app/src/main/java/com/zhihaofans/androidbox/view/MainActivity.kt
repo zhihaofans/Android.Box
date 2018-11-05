@@ -5,10 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -17,7 +16,7 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.AppUtils
 import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.mod.GlobalSettingMod
+import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -31,7 +30,7 @@ import org.jetbrains.anko.startActivity
 class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private val convertUtil = ConvertUtil()
-    private val globalSetting = GlobalSettingMod()
+    private val appSettingMod = AppSettingMod()
     private val updateWebUrl = "https://fir.im/fkw1"
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,31 +38,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
         setSupportActionBar(toolbar_main)
+        appSettingMod.init(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
                     val settings = mutableListOf(
                             getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                    convertUtil.boolean2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                    convertUtil.boolean2string(appSettingMod.forceUseChromeCustomTabs, getString(R.string.text_yes), getString(R.string.text_no)),
                             getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                    convertUtil.boolean2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                    convertUtil.boolean2string(appSettingMod.imageUrlOpenWithBuiltinViewer, getString(R.string.text_yes), getString(R.string.text_no)),
                             "Crash page"
                     )
                     selector(getString(R.string.text_setting), settings) { _, i ->
                         when (i) {
                             0 -> {
-                                globalSetting.forceUseChromeCustomTabs(!(globalSetting.forceUseChromeCustomTabs()))
+                                appSettingMod.forceUseChromeCustomTabs = !(appSettingMod.forceUseChromeCustomTabs)
                                 com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                                convertUtil.boolean2string(globalSetting.forceUseChromeCustomTabs(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                                convertUtil.boolean2string(appSettingMod.forceUseChromeCustomTabs, getString(R.string.text_yes), getString(R.string.text_no)),
                                         com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                             1 -> {
-                                globalSetting.imageUrlOpenWithBuiltinViewer(!(globalSetting.imageUrlOpenWithBuiltinViewer()))
+                                appSettingMod.imageUrlOpenWithBuiltinViewer = !(appSettingMod.imageUrlOpenWithBuiltinViewer)
                                 com.google.android.material.snackbar.Snackbar.make(coordinatorLayout_main,
                                         getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                                convertUtil.boolean2string(globalSetting.imageUrlOpenWithBuiltinViewer(), getString(R.string.text_yes), getString(R.string.text_no)),
+                                                convertUtil.boolean2string(appSettingMod.imageUrlOpenWithBuiltinViewer, getString(R.string.text_yes), getString(R.string.text_no)),
                                         com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
                                 ).show()
                             }

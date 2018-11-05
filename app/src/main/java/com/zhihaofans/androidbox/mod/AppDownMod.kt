@@ -14,10 +14,10 @@ import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.RsshubFirimGson
 import com.zhihaofans.androidbox.kotlinEx.find
+import com.zhihaofans.androidbox.kotlinEx.remove
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.remove
 import io.paperdb.Paper
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient

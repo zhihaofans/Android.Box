@@ -8,9 +8,9 @@ import com.zhihaofans.androidbox.data.XXDownResultUrlData
 import com.zhihaofans.androidbox.data.XXDownSiteList
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
 import org.jetbrains.anko.*
@@ -35,7 +35,7 @@ class XXDownActivity : AppCompatActivity() {
                         verticalLayout {
                             val et = editText(defaultUrlList[i])
                             et.setSingleLine(true)
-                            okButton { _ ->
+                            okButton {
                                 val input = et.text.toString()
                                 if (input.isEmpty()) {
                                     snackbar(view, "空白内容")
@@ -46,7 +46,7 @@ class XXDownActivity : AppCompatActivity() {
                                     loadingProgressBar.show()
                                     doAsync {
                                         val xxDownResultData = XXDownMod.get(i, input)
-                                        uiThread { _ ->
+                                        uiThread {
                                             if (xxDownResultData == null) {
                                                 loadingProgressBar.dismiss()
                                                 snackbar(coordinatorLayout_xxdown, "错误：返回结果为NULL")
@@ -55,7 +55,7 @@ class XXDownActivity : AppCompatActivity() {
                                                     resultList.clear()
                                                     listView_xxdown.removeAllItems()
                                                     resultList = xxDownResultData.url.toMutableList()
-                                                    listView_xxdown.init(this@XXDownActivity, resultList.map { it.url })
+                                                    listView_xxdown.init(this@XXDownActivity, resultList.map { i -> i.url })
                                                     listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
                                                         SystemUtil.browse(this@XXDownActivity, resultList[pos].url)
                                                     }

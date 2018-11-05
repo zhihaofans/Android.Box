@@ -2,15 +2,14 @@ package com.zhihaofans.androidbox.view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.text.InputFilter
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import com.haoge.easyandroid.easy.EasySharedPreferences
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.database.SaveDataSP
 import com.zhihaofans.androidbox.gson.ServerChanGson
+import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import okhttp3.*
 import org.jetbrains.anko.*
@@ -21,18 +20,18 @@ import java.util.*
 class ServerChanActivity : AppCompatActivity() {
     private val g = Gson()
     //private val serverChanKey = "SCU6647T00deca519cb008cd7e66b6da08d8fd5058c8159b9e0cc"
-    private var serverChanKey: String = ""
-    private val saveDataSP = EasySharedPreferences.load(SaveDataSP::class.java)
+    private val appSettingMod = AppSettingMod()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /*setContentView(R.layout.activity_server_chan)
         setSupportActionBar(toolbar)*/
-        val savedKey: String? = saveDataSP.server_chan_key
+        appSettingMod.init(this)
+        val savedKey: String? = appSettingMod.serverChanKey
         if (savedKey.isNullOrEmpty()) {
             updateKey()
         } else {
-            serverChanKey = savedKey!!
+            appSettingMod.serverChanKey = savedKey
             init()
         }
     }
@@ -51,20 +50,20 @@ class ServerChanActivity : AppCompatActivity() {
         askPush(defaultTitle, defaultDesp)
     }
 
-    private fun updateKey(oldKey: String = "") {
+    private fun updateKey(oldKey: String? = null) {
         alert("", "请输入SCKEY") {
             customView {
                 verticalLayout {
-                    val editText_title = editText(oldKey)
-                    editText_title.setSingleLine(true)
+                    val editTextTitle = editText(oldKey).apply { setSingleLine(true) }
                     positiveButton(R.string.text_save) {
-                        val input_key: String = editText_title.text.toString()
-                        if (input_key.isNotEmpty()) {
-                            serverChanKey = input_key
-                            saveDataSP.server_chan_key = input_key
-                            saveDataSP.apply {
+                        val inputKey: String = editTextTitle.text.toString()
+                        if (inputKey.isNotEmpty()) {
+                            appSettingMod.serverChanKey = inputKey
+                            if (appSettingMod.serverChanKey == inputKey) {
                                 toast("保存成功")
-                                init()
+                            } else {
+                                toast("保存失败")
+                                finish()
                             }
                         } else {
                             toast("SCKEY不能为空")
@@ -85,39 +84,40 @@ class ServerChanActivity : AppCompatActivity() {
     }
 
     private fun askPush(title: String = "", desp: String = "") {
-        if (serverChanKey.isEmpty()) {
-            updateKey(serverChanKey)
+        if (appSettingMod.serverChanKey.isNullOrEmpty()) {
+            updateKey(appSettingMod.serverChanKey)
         } else {
             alert("Title必须输入", "Server Chan") {
                 customView {
                     verticalLayout {
                         textView("Title:(最多256字符)")
-                        val editText_title = editText(title)
+                        val editTextTitle = editText(title)
                         textView("Description:(最长64Kb,支持MarkDown)")
-                        val editText_desp = editText(desp)
-                        editText_title.setSingleLine(true)
-                        editText_title.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(256))
-                        editText_title.setOnEditorActionListener { v, actionId, event ->
+                        val editTextDesp = editText(desp).apply {
+                            setSingleLine(true)
+                            filters = arrayOf<InputFilter>(InputFilter.LengthFilter(256))
+                        }
+                        editTextTitle.setOnEditorActionListener { v, actionId, event ->
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                                if (editText_title.text.isNotEmpty()) {
-                                    SystemUtil.viewGetFocusable(editText_desp)
+                                if (editTextTitle.text.isNotEmpty()) {
+                                    SystemUtil.viewGetFocusable(editTextDesp)
                                 }
                             }
                             false
                         }
-                        editText_desp.setSingleLine(false)
+                        editTextDesp.setSingleLine(false)
                         // editText_desp.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                        editText_desp.setHorizontallyScrolling(false)
-                        editText_desp.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(64000))
+                        editTextDesp.setHorizontallyScrolling(false)
+                        editTextDesp.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(64000))
                         positiveButton(R.string.text_send) {
-                            val input_title: String = editText_title.text.toString()
-                            val input_desp: String = editText_desp.text.toString()
+                            val input_title: String = editTextTitle.text.toString()
+                            val input_desp: String = editTextDesp.text.toString()
                             if (input_title.isNotEmpty() && input_title.length <= 256) {
-                                pushMsg(serverChanKey, input_title, input_desp)
+                                pushMsg(appSettingMod.serverChanKey!!, input_title, input_desp)
                             }
                         }
                         negativeButton("修改SCKEY") {
-                            updateKey(serverChanKey)
+                            updateKey(appSettingMod.serverChanKey)
                         }
                     }
                 }

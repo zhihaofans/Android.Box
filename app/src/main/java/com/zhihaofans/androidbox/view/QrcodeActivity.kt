@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
@@ -14,9 +13,9 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.sdk25.coroutines.onClick

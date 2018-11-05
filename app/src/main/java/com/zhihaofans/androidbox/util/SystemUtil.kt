@@ -14,18 +14,18 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.FileProvider
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.FileProvider
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
 import com.wx.android.common.util.FileUtils
 import com.wx.android.common.util.PackageUtils
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.mod.GlobalSettingMod
+import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
@@ -84,13 +84,14 @@ class SystemUtil {
         }
 
         fun browse(context: Context, url: String, title: String = url) {
-            val globalSetting = GlobalSettingMod()
+            val appSettingMod = AppSettingMod()
+            appSettingMod.init(context)
             if (this.checkUrl(url) == null) {
                 throw Exception("No a correct url.")
             }
-            if (globalSetting.imageUrlOpenWithBuiltinViewer() && this.checkIfImageUrl(url)) {
+            if (appSettingMod.imageUrlOpenWithBuiltinViewer && this.checkIfImageUrl(url)) {
                 context.startActivity<ImageViewActivity>("image" to url, "title" to title)
-            } else if (globalSetting.forceUseChromeCustomTabs()) {
+            } else if (appSettingMod.forceUseChromeCustomTabs) {
                 this.chromeCustomTabs(context, url)
             } else {
                 context.browse(url)

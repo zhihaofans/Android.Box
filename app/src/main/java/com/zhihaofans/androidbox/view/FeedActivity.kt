@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.view
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
@@ -15,9 +14,9 @@ import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FeedMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.snackbar
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
 import org.jetbrains.anko.*

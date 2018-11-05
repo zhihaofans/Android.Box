@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.view
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.controller.BaseControllerListener
@@ -21,13 +20,12 @@ import com.orhanobut.logger.Logger
 import com.wx.android.common.util.ClipboardUtils
 import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.snackbar
 import dev.utils.app.ContentResolverUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import java.io.File
 
 
@@ -38,16 +36,20 @@ class ImageViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_image_view)
         setSupportActionBar(toolbar)
         try {
-            imageUrl = intent.extras.getString("image", null)
-            val imageTitle = intent.extras.getString("title", null)
-            if (imageUrl == null) {
-                toast("null image")
+            if (intent.extras !== null) {
                 finish()
             } else {
-                if (!(imageTitle.isNullOrEmpty())) {
-                    this@ImageViewActivity.title = imageTitle
+                imageUrl = intent.extras.getString("image", null)
+                val imageTitle = intent.extras.getString("title", null)
+                if (imageUrl == null) {
+                    toast("null image")
+                    finish()
+                } else {
+                    if (!(imageTitle.isNullOrEmpty())) {
+                        this@ImageViewActivity.title = imageTitle
+                    }
+                    initImage(imageUrl)
                 }
-                initImage(imageUrl)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -98,7 +100,7 @@ class ImageViewActivity : AppCompatActivity() {
                     layoutParams.height = (linearLayout_imageview.width.toFloat() / (imageInfo.width.toFloat() / imageInfo.height.toFloat())).toInt()
                     imageView.layoutParams = layoutParams
                     loadingProgressBar.dismiss()
-                    imageView.onLongClick { it ->
+                    imageView.setOnClickListener {
                         if (!(imageUrl.isNullOrEmpty())) {
                             val selectorItemList = mutableListOf(
                                     "下载",

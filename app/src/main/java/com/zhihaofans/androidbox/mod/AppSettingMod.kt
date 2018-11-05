@@ -1,10 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.content.edit
-import com.zhihaofans.androidbox.kotlinEx.getBooleanOrFalse
-import com.zhihaofans.androidbox.kotlinEx.getStringOrNull
+import com.zhihaofans.androidbox.kotlinEx.isNotNull
 import com.zhihaofans.androidbox.util.SharedPreferencesUtil
 
 /**
@@ -12,45 +9,23 @@ import com.zhihaofans.androidbox.util.SharedPreferencesUtil
  */
 class AppSettingMod {
     private val sharedPreferencesUtil = SharedPreferencesUtil()
-    private var sharedPreferences: SharedPreferences? = null
     private var mContext: Context? = null
 
     // Setting
     var serverChanKey: String?
-        get() {
-            if (sharedPreferences == null) return null
-            return sharedPreferences!!.getStringOrNull("SERVER_CHAN_KEY")
-        }
+        get() = sharedPreferencesUtil.getString("SERVER_CHAN_KEY")
         set(key) {
-            if (sharedPreferences != null) {
-                sharedPreferences!!.edit {
-                    putString("SERVER_CHAN_KEY", key)
-                }
-            }
+            if (key.isNotNull()) sharedPreferencesUtil.putString("SERVER_CHAN_KEY", key!!)
         }
     var forceUseChromeCustomTabs: Boolean
-        get() {
-            if (sharedPreferences == null) return false
-            return sharedPreferences!!.getBooleanOrFalse("BROWSER_USE_CHROME_CUSTOM_TABS")
-        }
+        get() = sharedPreferencesUtil.getBoolean("BROWSER_USE_CHROME_CUSTOM_TABS") ?: false
         set(value) {
-            if (sharedPreferences != null) {
-                sharedPreferences!!.edit {
-                    putBoolean("BROWSER_USE_CHROME_CUSTOM_TABS", value)
-                }
-            }
+            sharedPreferencesUtil.putBoolean("BROWSER_USE_CHROME_CUSTOM_TABS", value)
         }
     var imageUrlOpenWithBuiltinViewer: Boolean
-        get() {
-            if (sharedPreferences == null) return false
-            return sharedPreferences!!.getBooleanOrFalse("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER")
-        }
+        get() = sharedPreferencesUtil.getBoolean("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER") ?: false
         set(value) {
-            if (sharedPreferences != null) {
-                sharedPreferences!!.edit {
-                    putBoolean("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER", value)
-                }
-            }
+            sharedPreferencesUtil.putBoolean("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER", value)
         }
 
 
@@ -58,8 +33,6 @@ class AppSettingMod {
     fun init(context: Context): Boolean {
         mContext = context
         if (mContext == null) return false
-        sharedPreferences = sharedPreferencesUtil.init(mContext!!)
-        if (sharedPreferences == null) return false
         return true
     }
 

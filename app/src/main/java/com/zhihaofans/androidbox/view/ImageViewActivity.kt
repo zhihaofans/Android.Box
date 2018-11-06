@@ -1,9 +1,11 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.PendingIntent
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.TaskStackBuilder
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.controller.ControllerListener
@@ -21,6 +23,7 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.ClipboardUtil
+import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.ContentResolverUtils
 import dev.utils.common.FileUtils
@@ -33,6 +36,7 @@ import java.io.File
 class ImageViewActivity : AppCompatActivity() {
     private var imageUrl: String? = ""
     private var clipboardUtil: ClipboardUtil? = null
+    private val notificationUtil = NotificationUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
@@ -157,6 +161,7 @@ class ImageViewActivity : AppCompatActivity() {
     }
 
     private fun download(fileName: String, engine: Int) {
+        notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = SystemUtil.getPicturePathString() + "/Android.Box/$fileName"
         Logger.d("downloadPath:$downloadPath")
         val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
@@ -165,6 +170,10 @@ class ImageViewActivity : AppCompatActivity() {
         loadingProgressBarDownload.show()
         when (engine) {
             0 -> {
+                val notification = notificationUtil.createProgress("正在下载", fileName)
+                if (notification == null) {
+                    notificationUtil.create("错误！", "创建下载通知失败")
+                }
                 SystemUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         loadingProgressBarDownload.setTitle("Pending...")
@@ -179,6 +188,9 @@ class ImageViewActivity : AppCompatActivity() {
                         if (totalBytes > 0) {
                             loadingProgressBarDownload.max = totalBytes
                             loadingProgressBarDownload.progress = soFarBytes
+                            if (notification !== null) {
+                                notificationUtil.setProgressNotificationLength(notification, soFarBytes, totalBytes)
+                            }
                         } else {
                             loadingProgressBarDownload.max = 0
                             loadingProgressBarDownload.progress = 1
@@ -194,6 +206,16 @@ class ImageViewActivity : AppCompatActivity() {
 
                     override fun completed(task: BaseDownloadTask) {
                         loadingProgressBarDownload.dismiss()
+                        if (notification !== null) notificationUtil.delete(notification.notificationId)
+                        val stackBuilder = TaskStackBuilder.create(this@ImageViewActivity)
+                        val resultPendingIntent = stackBuilder.apply {
+                            addNextIntent(SystemUtil.getOpenImageFileIntent(this@ImageViewActivity, File(task.targetFilePath)))
+                        }.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                        if (resultPendingIntent == null) {
+                            notificationUtil.create("错误！", "创建打开图片通知失败")
+                        } else {
+                            notificationUtil.createIntent("下载完毕", "点击打开图片", resultPendingIntent, true)
+                        }
                         if (ContentResolverUtils.notifyMediaStore(File(task.targetFilePath))) {
                             snackbar(coordinatorLayout_imageView, "已通知系统相册刷新缓存")
                         } else {

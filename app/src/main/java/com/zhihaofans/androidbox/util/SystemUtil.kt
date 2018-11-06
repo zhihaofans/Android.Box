@@ -259,12 +259,16 @@ class SystemUtil {
             return if (file.exists() && file.isFile) file.length() else -1
         }
 
-
-        fun openImageFile(context: Context, file: File): Intent {
+        fun getOpenImageFileIntent(context: Context, file: File): Intent {
             val intent = Intent("android.intent.action.VIEW")
             intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             val contentUri = FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file)
             intent.setDataAndType(contentUri, "image/*")
+            return intent
+        }
+
+        fun openImageFile(context: Context, file: File): Intent {
+            val intent = this.getOpenImageFileIntent(context, file)
             context.startActivity(intent)
             return intent
         }
@@ -295,6 +299,8 @@ class SystemUtil {
             val newDate2 = Date(nowDate!!.time + Num.toLong() * 24 * 60 * 60 * 1000)
             return df.format(newDate2)
         }
+
+        fun getInstallIntent(context: Context, filePath: String): Intent = IntentUtils.getInstallAppIntent(filePath, context.packageName + ".fileprovider")
 
         fun installApk(context: Context, filePath: String) = context.startActivity(IntentUtils.getInstallAppIntent(filePath, context.packageName + ".fileprovider"))
 

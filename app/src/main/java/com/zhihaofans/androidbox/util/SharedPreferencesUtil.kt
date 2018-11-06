@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.orhanobut.logger.Logger
+import com.zhihaofans.androidbox.kotlinEx.isNotNull
 
 
 /**
@@ -24,15 +26,17 @@ class SharedPreferencesUtil {
         sharedPreferences!!.edit {
             putString(key, value)
         }
-        return true
+        return this.getString(key, null).isNotNull()
     }
 
     fun putBoolean(key: String, value: Boolean): Boolean {
+        Logger.d("sharedPreferences:$sharedPreferences")
         if (sharedPreferences == null) return false
         sharedPreferences!!.edit {
             putBoolean(key, value)
+            Logger.d("putBoolean:$key,$value")
         }
-        return true
+        return this.getBoolean(key, !value) == value
     }
 
     fun putInt(key: String, value: Int): Boolean {

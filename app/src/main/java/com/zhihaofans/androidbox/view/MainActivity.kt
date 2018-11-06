@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private val appSettingMod = AppSettingMod()
     private var clipboardUtil: ClipboardUtil? = null
     private val updateWebUrl = "https://fir.im/fkw1"
+    private val notificationUtil = NotificationUtil()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_main)
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
+        notificationUtil.init(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
@@ -56,20 +58,30 @@ class MainActivity : AppCompatActivity() {
                     selector(getString(R.string.text_setting), settings) { _, i ->
                         when (i) {
                             0 -> {
-                                appSettingMod.forceUseChromeCustomTabs = !(appSettingMod.forceUseChromeCustomTabs)
-                                Snackbar.make(coordinatorLayout_main,
-                                        getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                                appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
-                                        Snackbar.LENGTH_SHORT
-                                ).show()
+                                if (appSettingMod.forceUseChromeCustomTabs(!appSettingMod.forceUseChromeCustomTabs)) {
+                                    Snackbar.make(coordinatorLayout_main,
+                                            "ok:" + getString(R.string.text_setting_use_cct_for_web) + ":" +
+                                                    appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
+                                            Snackbar.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Snackbar.make(coordinatorLayout_main,
+                                            "no:" + getString(R.string.text_setting_use_cct_for_web) + ":" +
+                                                    appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
+                                            Snackbar.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                             1 -> {
-                                appSettingMod.imageUrlOpenWithBuiltinViewer = !(appSettingMod.imageUrlOpenWithBuiltinViewer)
-                                Snackbar.make(coordinatorLayout_main,
-                                        getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                                appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)),
-                                        Snackbar.LENGTH_SHORT
-                                ).show()
+                                if (appSettingMod.imageUrlOpenWithBuiltinViewer(!appSettingMod.imageUrlOpenWithBuiltinViewer)) {
+                                    coordinatorLayout_main.snackbar(
+                                            "ok:" + getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
+                                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)))
+                                } else {
+                                    coordinatorLayout_main.snackbar(
+                                            "No:" + getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
+                                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)))
+                                }
                             }
                             2 -> MCrashMonitor.startCrashListPage(this)
                         }
@@ -154,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                 8 -> startActivity<XXDownActivity>()
                 9 -> {
                     try {
-                        val noId = NotificationUtil.create(this, "test", "测试")
+                        val noId = notificationUtil.create("test", "测试", true)
                         if (noId == null) {
                             coordinatorLayout_main.snackbar("失败!")
                         } else {
@@ -205,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    fun checkPermissions(manual: Boolean = false) {
+    private fun checkPermissions(manual: Boolean = false) {
         if (XXPermissions.isHasPermission(this, Permission.Group.STORAGE, Permission.Group.CAMERA)) {
             if (manual) {
                 Snackbar.make(coordinatorLayout_main, "已授权需要的权限，应该可以正常使用", Snackbar.LENGTH_SHORT).show()

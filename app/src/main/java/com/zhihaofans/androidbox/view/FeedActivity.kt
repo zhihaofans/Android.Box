@@ -1,9 +1,11 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.PendingIntent
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.TaskStackBuilder
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -16,6 +18,7 @@ import com.zhihaofans.androidbox.kotlinEx.removeAllItems
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FeedMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
+import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
@@ -27,11 +30,13 @@ class FeedActivity : AppCompatActivity() {
     private val newsBox = FeedMod.News()
     private val appBox = FeedMod.App()
     private var clipboardUtil: ClipboardUtil? = null
+    private val notificationUtil = NotificationUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
         setSupportActionBar(toolbar)
         clipboardUtil = ClipboardUtil(this)
+        notificationUtil.init(this)
         init()
         fab_feed.setOnClickListener {
             when (nowTabPosition) {
@@ -347,39 +352,41 @@ class FeedActivity : AppCompatActivity() {
             fileName.isEmpty() -> snackbar("下载失败：文件名空白")
             else -> {
                 val filePath = appBox.getSavePath() + fileName
-                val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
-                loadingProgressBarDownload.setCancelable(false)
-                loadingProgressBarDownload.setCanceledOnTouchOutside(false)
-                loadingProgressBarDownload.show()
+                val notification = notificationUtil.createProgress("正在下载", fileName)
                 SystemUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Pending...")
                     }
 
                     override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Connected")
 
                     }
 
                     override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        if (totalBytes > 0) {
-                            loadingProgressBarDownload.max = totalBytes
-                            loadingProgressBarDownload.progress = soFarBytes
-                        } else {
-                            loadingProgressBarDownload.max = 0
-                            loadingProgressBarDownload.progress = 1
+                        if (totalBytes > 0 && notification !== null) {
+                            notificationUtil.setProgressNotificationLength(notification, soFarBytes, totalBytes)
                         }
                     }
 
                     override fun blockComplete(task: BaseDownloadTask?) {}
 
                     override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Retry")
-                        loadingProgressBarDownload.setMessage("Times: $retryingTimes")
+                        coordinatorLayout_feed.snackbar("Retry,Times: $retryingTimes")
+                        if (notification !== null) {
+                            notificationUtil.delete(notification.notificationId)
+                        }
                     }
 
                     override fun completed(task: BaseDownloadTask) {
-                        loadingProgressBarDownload.dismiss()
+                        if (notification !== null) notificationUtil.delete(notification.notificationId)
+                        val stackBuilder = TaskStackBuilder.create(this@FeedActivity)
+                        val resultPendingIntent = stackBuilder.apply {
+                            addNextIntent(SystemUtil.getInstallIntent(this@FeedActivity, task.targetFilePath))
+                        }.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                        if (resultPendingIntent == null) {
+                            notificationUtil.create("错误！", "创建安装通知失败")
+                        } else {
+                            notificationUtil.createIntent("下载完毕", "点击安装", resultPendingIntent, true)
+                        }
                         alert {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
@@ -400,14 +407,20 @@ class FeedActivity : AppCompatActivity() {
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.dismiss()
+                        coordinatorLayout_feed.snackbar("paused")
+                        if (notification !== null) {
+                            notificationUtil.delete(notification.notificationId)
+                        }
+
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
-                        loadingProgressBarDownload.dismiss()
-                        snackbar("下载失败")
+                        if (notification !== null) {
+                            notificationUtil.delete(notification.notificationId)
+                        }
+                        notificationUtil.create("下载失败", task.filename)
                     }
 
                     override fun warn(task: BaseDownloadTask) {}
@@ -417,7 +430,7 @@ class FeedActivity : AppCompatActivity() {
     }
 
     private fun snackbar(msg: String) {
-        snackbar(coordinatorLayout_feed, msg)
+        coordinatorLayout_feed.snackbar(msg)
     }
 }
 

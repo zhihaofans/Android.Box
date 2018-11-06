@@ -18,21 +18,39 @@ class AppSettingMod {
             if (key.isNotNull()) sharedPreferencesUtil.putString("SERVER_CHAN_KEY", key!!)
         }
     var forceUseChromeCustomTabs: Boolean
-        get() = sharedPreferencesUtil.getBoolean("BROWSER_USE_CHROME_CUSTOM_TABS") ?: false
+        get() = forceUseChromeCustomTabs()
         set(value) {
-            sharedPreferencesUtil.putBoolean("BROWSER_USE_CHROME_CUSTOM_TABS", value)
+            forceUseChromeCustomTabs(value)
         }
     var imageUrlOpenWithBuiltinViewer: Boolean
-        get() = sharedPreferencesUtil.getBoolean("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER") ?: false
+        get() = imageUrlOpenWithBuiltinViewer()
         set(value) {
             sharedPreferencesUtil.putBoolean("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER", value)
         }
 
+    fun forceUseChromeCustomTabs(boolean: Boolean? = null): Boolean {
+        val key = "BROWSER_USE_CHROME_CUSTOM_TABS"
+        return if (boolean == null) {
+            sharedPreferencesUtil.getBoolean(key) ?: false
+        } else {
+            sharedPreferencesUtil.putBoolean(key, boolean)
+        }
+    }
+
+    fun imageUrlOpenWithBuiltinViewer(boolean: Boolean? = null): Boolean {
+        val key = "IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER"
+        return if (boolean == null) {
+            sharedPreferencesUtil.getBoolean(key) ?: false
+        } else {
+            sharedPreferencesUtil.putBoolean(key, boolean)
+        }
+    }
 
     // Function
     fun init(context: Context): Boolean {
         mContext = context
         if (mContext == null) return false
+        sharedPreferencesUtil.init(mContext!!)
         return true
     }
 

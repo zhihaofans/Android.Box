@@ -14,14 +14,13 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.AppUtils
-import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
-import com.zhihaofans.androidbox.util.ConvertUtil
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.selector
@@ -31,15 +30,16 @@ import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
-    private val convertUtil = ConvertUtil()
     private val appSettingMod = AppSettingMod()
+    private var clipboardUtil: ClipboardUtil? = null
     private val updateWebUrl = "https://fir.im/fkw1"
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        toolbar_main.subtitle = "v" + AppUtils.getVersionName(this@MainActivity)
+        toolbar_main.subtitle = "v" + AppUtils.getAppVersionName()
         setSupportActionBar(toolbar_main)
+        clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                         selector(sdks[i], acts) { _, ii ->
                             when (ii) {
                                 0 -> {
-                                    ClipboardUtils.copy(this@MainActivity, sdks[i])
+                                    clipboardUtil?.copy(sdks[i])
                                     Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
                                 }
                                 1 -> share(sdks[i])
@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
                                     selector("", acts) { _, index ->
                                         when (index) {
                                             0 -> SystemUtil.browse(this@MainActivity, result)
-                                            1 -> ClipboardUtils.copy(this@MainActivity, result)
+                                            1 -> clipboardUtil?.copy(result)
                                             2 -> share(result)
                                         }
                                     }

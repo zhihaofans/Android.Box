@@ -11,15 +11,14 @@ import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.toast
@@ -29,24 +28,23 @@ import java.util.*
 class QrcodeActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private var methodId: String? = null
+    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
         setSupportActionBar(toolbar)
         qrcode.setActivity(this@QrcodeActivity, true)
-
-        fab_qrcode.setOnClickListener { view ->
-            qrcodeMenu()
-        }
+        clipboardUtil = ClipboardUtil(this)
+        fab_qrcode.setOnClickListener { qrcodeMenu() }
         checkMethod()
-        imageView_qrcode.onClick {
+        imageView_qrcode.setOnClickListener {
             if (editText_qrcode_content.text.isEmpty()) {
                 getCameraPermission()
             } else {
                 qrcodeMenu()
             }
         }
-        button_open.onClick {
+        button_open.setOnClickListener {
             if (editText_qrcode_content.text.isNotEmpty()) {
                 try {
                     SystemUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
@@ -57,8 +55,8 @@ class QrcodeActivity : AppCompatActivity() {
                 }
             }
         }
-        button_copy.onClick { if (editText_qrcode_content.text.isNotEmpty()) ClipboardUtils.copy(this@QrcodeActivity, editText_qrcode_content.text.toString()) }
-        button_share.onClick { if (editText_qrcode_content.text.isNotEmpty()) share(editText_qrcode_content.text.toString()) }
+        button_copy.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) clipboardUtil?.copy(editText_qrcode_content.text.toString()) }
+        button_share.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) share(editText_qrcode_content.text.toString()) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

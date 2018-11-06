@@ -9,7 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 fun CoordinatorLayout.snackbar(message: String) = Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
 
 fun CoordinatorLayout.snackbar(message: Int) = Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
-fun CoordinatorLayout.LongSnackbar(message: String) = Snackbar.make(this, message, Snackbar.LENGTH_LONG).show()
-fun CoordinatorLayout.LongSnackbar(message: Int) = Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
-fun CoordinatorLayout.IndefiniteSnackbar(message: String) = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE).show()
-fun CoordinatorLayout.IndefiniteSnackbar(message: Int) = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE).show()
+fun CoordinatorLayout.longSnackbar(message: String) = Snackbar.make(this, message, Snackbar.LENGTH_LONG).show()
+fun CoordinatorLayout.longSnackbar(message: Int) = Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
+fun CoordinatorLayout.indefiniteSnackbar(message: String) = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE).show()
+fun CoordinatorLayout.indefiniteSnackbar(message: Int) = Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE).show()

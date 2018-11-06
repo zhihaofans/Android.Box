@@ -1,6 +1,6 @@
 package com.zhihaofans.androidbox.mod
 
-import com.wx.logger.Logger
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
 import com.zhihaofans.androidbox.data.XXDownSiteList

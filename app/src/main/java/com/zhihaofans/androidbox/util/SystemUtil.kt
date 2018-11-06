@@ -22,13 +22,12 @@ import androidx.core.content.FileProvider
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.FileUtils
-import com.wx.android.common.util.PackageUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
+import dev.utils.common.FileUtils
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -58,7 +57,7 @@ class SystemUtil {
         }
 
         fun isAppInstalled(context: Context, packageName: String): Boolean {
-            return PackageUtils.isInsatalled(context, packageName)
+            return AppUtils.isAppInstalled(packageName)
         }
 
         fun closeKeyborad(activity: Activity) {
@@ -247,6 +246,14 @@ class SystemUtil {
         fun getDownloadPathString(): String {
             val p = getDownloadPath().path
             return if (p.endsWith("/")) p else "$p/"
+        }
+
+        fun getFileSize(path: String): Long {
+            if (path.isEmpty()) {
+                return -1
+            }
+            val file = File(path)
+            return if (file.exists() && file.isFile) file.length() else -1
         }
 
 

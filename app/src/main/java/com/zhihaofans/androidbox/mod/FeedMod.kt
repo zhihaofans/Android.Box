@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.kotlinEx.isNullorEmpty
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -227,7 +226,6 @@ class FeedMod {
 
         fun importDB(dataBaseStr: String): Boolean {
             return if (mContext != null) {
-                val pasteText = ClipboardUtils.getText(mContext)
                 dataBase.importJson(dataBaseStr)
             } else {
                 false

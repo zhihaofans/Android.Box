@@ -8,11 +8,12 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
-import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
+import com.zhihaofans.androidbox.kotlinEx.snackbar
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ConvertUtil
+import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*
@@ -22,10 +23,12 @@ import java.util.*
 class AppManagementActivity : AppCompatActivity() {
     private var appList = ArrayList<Map<String, Any>>()
     private val convertUtil = ConvertUtil()
+    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
         setSupportActionBar(toolbar)
+        clipboardUtil = ClipboardUtil(this@AppManagementActivity)
         appListInit()
         this@AppManagementActivity.title = getStr(R.string.text_appmanagement)
         fab.setOnClickListener { view ->
@@ -83,7 +86,7 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppFirstInstallTime: String = convertUtil.unixTime2date(thisPackageInfo.firstInstallTime)
                     val thisAppLastUpdateTime: String = convertUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
-                    val thisApkSize: Int = FileUtils.getFileSize(thisApkPath).toInt()
+                    val thisApkSize: Int = SystemUtil.getFileSize(thisApkPath).toInt()
                     /*Logger.d(childItem["icon"])
                     alert {
                         customView {
@@ -138,8 +141,12 @@ class AppManagementActivity : AppCompatActivity() {
 
                                                 }
                                                 positiveButton(R.string.text_copy) {
-                                                    ClipboardUtils.copy(this@AppManagementActivity, input)
-                                                    Snackbar.make(coordinatorLayout_app, "ok", Snackbar.LENGTH_SHORT).show()
+                                                    if (clipboardUtil == null) {
+                                                        coordinatorLayout_app.snackbar("fail")
+                                                    } else {
+                                                        clipboardUtil!!.copy(input)
+                                                        coordinatorLayout_app.snackbar("ok")
+                                                    }
                                                 }
                                             }
                                         }

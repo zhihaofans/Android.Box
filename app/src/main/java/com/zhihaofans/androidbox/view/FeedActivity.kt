@@ -10,12 +10,12 @@ import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FeedMod
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
@@ -26,12 +26,14 @@ class FeedActivity : AppCompatActivity() {
     private var nowTabPosition = 0
     private val newsBox = FeedMod.News()
     private val appBox = FeedMod.App()
+    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
         setSupportActionBar(toolbar)
+        clipboardUtil = ClipboardUtil(this)
         init()
-        fab_feed.setOnClickListener { view ->
+        fab_feed.setOnClickListener {
             when (nowTabPosition) {
                 0 -> {
                     val newsCache = newsBox.getCache()
@@ -382,7 +384,7 @@ class FeedActivity : AppCompatActivity() {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
                             positiveButton(R.string.text_copy) {
-                                ClipboardUtils.copy(this@FeedActivity, task.targetFilePath)
+                                clipboardUtil?.copy(task.targetFilePath)
                                 toast("复制成功")
                             }
                             negativeButton(R.string.text_open) {

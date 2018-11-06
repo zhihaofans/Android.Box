@@ -2,9 +2,9 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.google.gson.Gson
-import com.wx.android.common.util.MD5Utils
 import com.zhihaofans.androidbox.data.*
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.common.encrypt.MD5Utils
 
 
 /**
@@ -34,7 +34,7 @@ class ExpressMod {
         val param = "{\"com\":\"$siteId\",\"num\":\"$expressId\"}"
         val customer = apiCustomer
         val key = apiKey
-        val sign = MD5Utils.encodeMD5(param + key + customer)
+        val sign = MD5Utils.md5(param + key + customer)
         val params = hashMapOf<String, String>("param" to param, "sign" to sign, "customer" to customer)
         val apiUrl = "https://poll.kuaidi100.com/poll/query.do"
         val expressResult = ExpressResult(false, "", null)

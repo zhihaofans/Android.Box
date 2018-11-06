@@ -18,12 +18,12 @@ import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
-import com.wx.android.common.util.FileUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.ContentResolverUtils
+import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
@@ -32,16 +32,16 @@ import java.io.File
 
 class ImageViewActivity : AppCompatActivity() {
     private var imageUrl: String? = ""
+    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
         setSupportActionBar(toolbar)
+        clipboardUtil = ClipboardUtil(this)
         try {
             if (intent.extras !== null) {
-                finish()
-            } else {
-                imageUrl = intent.extras.getString("image", null)
-                val imageTitle = intent.extras.getString("title", null)
+                imageUrl = intent.extras!!.getString("image", null)
+                val imageTitle = intent.extras!!.getString("title", null)
                 if (imageUrl == null) {
                     toast("null image")
                     finish()
@@ -51,6 +51,8 @@ class ImageViewActivity : AppCompatActivity() {
                     }
                     initImage(imageUrl)
                 }
+            } else {
+                finish()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -102,7 +104,7 @@ class ImageViewActivity : AppCompatActivity() {
                     imageView.layoutParams = layoutParams
                     loadingProgressBar.dismiss()
                     imageView.setOnClickListener {
-                        if (!(imageUrl.isNullOrEmpty())) {
+                        if (!imageUrl.isNullOrEmpty()) {
                             val selectorItemList = mutableListOf(
                                     "下载",
                                     "浏览器打开",
@@ -134,7 +136,7 @@ class ImageViewActivity : AppCompatActivity() {
                                     }
                                     1 -> browse(imageUrl.toString())
                                     2 -> {
-                                        ClipboardUtils.copy(this@ImageViewActivity, imageUrl)
+                                        clipboardUtil?.copy(imageUrl!!)
                                         Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()
                                     }
                                 }
@@ -201,7 +203,7 @@ class ImageViewActivity : AppCompatActivity() {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
                             negativeButton(R.string.text_copy) {
-                                ClipboardUtils.copy(this@ImageViewActivity, task.targetFilePath)
+                                clipboardUtil?.copy(task.targetFilePath)
                                 toast("复制成功")
                             }
                             positiveButton(R.string.text_open) {

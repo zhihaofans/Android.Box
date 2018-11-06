@@ -11,10 +11,12 @@ import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.AppDownFeed
+import com.zhihaofans.androidbox.kotlinEx.longSnackbar
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppDownMod
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
@@ -26,11 +28,13 @@ class AppDownActivity : AppCompatActivity() {
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()
     private val other = AppDownMod.Other()
+    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar)
         siteParser.init(this@AppDownActivity)
+        clipboardUtil = ClipboardUtil(this@AppDownActivity)
         initList()
         fab.setOnClickListener { view ->
             val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
@@ -401,25 +405,29 @@ class AppDownActivity : AppCompatActivity() {
 
 
     private fun importDB() {
-        val pasteText = ClipboardUtils.getText(this@AppDownActivity)
-        alert {
-            title = "导入数据库"
-            message = if (pasteText.isNotEmpty()) "已自动粘贴剪切板文本" else "请输入数据库备份文本"
-            customView {
-                verticalLayout {
-                    val input = editText(pasteText)
-                    input.setSingleLine(true)
-                    positiveButton(R.string.text_import) {
-                        if (dataBase.importJson(input.text.toString())) {
-                            initList()
-                            snackbar("导入成功")
-                        } else {
-                            snackbar("导入失败，请检查备份是否完整")
+        if (clipboardUtil == null) {
+            coordinatorLayout_appdown.snackbar("加载剪切板失败")
+        } else {
+            val pasteText = clipboardUtil!!.paste()
+            alert {
+                title = "导入数据库"
+                message = if (pasteText.isNullOrEmpty()) "请输入数据库备份文本" else "已自动粘贴剪切板文本"
+                customView {
+                    verticalLayout {
+                        val input = editText(pasteText)
+                        input.setSingleLine(true)
+                        positiveButton(R.string.text_import) {
+                            if (dataBase.importJson(input.text.toString())) {
+                                initList()
+                                snackbar("导入成功")
+                            } else {
+                                snackbar("导入失败，请检查备份是否完整")
+                            }
                         }
                     }
                 }
-            }
-        }.show()
+            }.show()
+        }
     }
 
     private fun exportDB() {
@@ -433,8 +441,12 @@ class AppDownActivity : AppCompatActivity() {
                     input.setSingleLine(true)
                 }
                 positiveButton(R.string.text_copy) {
-                    ClipboardUtils.copy(this@AppDownActivity, db)
-                    snackbar(R.string.text_copy)
+                    if (clipboardUtil == null) {
+                        snackbar("加载剪切板失败")
+                    } else {
+                        clipboardUtil!!.copy(db)
+                        snackbar(R.string.text_copy)
+                    }
                 }
             }
         }.show()
@@ -445,7 +457,11 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+        if (longTime) {
+            coordinatorLayout_appdown.longSnackbar(text)
+        } else {
+            coordinatorLayout_appdown.snackbar(text)
+        }
     }
 
     private fun snackbarE(text: String, longTime: Boolean = false) {
@@ -501,8 +517,12 @@ class AppDownActivity : AppCompatActivity() {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
                             positiveButton(R.string.text_copy) {
-                                ClipboardUtils.copy(this@AppDownActivity, task.targetFilePath)
-                                toast("复制成功")
+                                if (clipboardUtil == null) {
+                                    snackbar("加载剪切板失败")
+                                } else {
+                                    clipboardUtil!!.copy(task.targetFilePath)
+                                    snackbar("复制成功")
+                                }
                             }
                             negativeButton(R.string.text_open) {
                             }

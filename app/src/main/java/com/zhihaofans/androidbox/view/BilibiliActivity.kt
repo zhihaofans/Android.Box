@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
-import com.wx.android.common.util.ClipboardUtils
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
+import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
@@ -30,11 +30,12 @@ class BilibiliActivity : AppCompatActivity() {
     private val g = Gson()
     private var defaultVid: String = "17027625"
     private var defaultPart: Int = 1
+    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bilibili)
         setSupportActionBar(toolbar)
-
+        clipboardUtil = ClipboardUtil(this@BilibiliActivity)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
@@ -514,7 +515,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                     when (i) {
                                                         0 -> SystemUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
                                                         1 -> {
-                                                            ClipboardUtils.copy(this@BilibiliActivity, coverUri.toString())
+                                                            clipboardUtil?.copy(coverUri.toString())
                                                             Snackbar.make(coordinatorLayout_bilibili, "复制成功", Snackbar.LENGTH_SHORT).show()
                                                         }
                                                         2 -> share(coverUri.toString())
@@ -585,7 +586,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun copy(string: String) {//复制到剪切板
-        ClipboardUtils.copy(this@BilibiliActivity, string)
+        clipboardUtil?.copy(string)
         Snackbar.make(coordinatorLayout_bilibili, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
     }
 }

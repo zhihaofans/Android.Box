@@ -52,11 +52,15 @@ import java.util.*
 @SuppressLint("SimpleDateFormat")
 class SystemUtil {
     companion object {
+        fun unixTimeStamp(): Long = System.currentTimeMillis() / 1000L
+
+
+        fun unixTimeStampMill(): Long = System.currentTimeMillis()
         fun debug(context: Context): Boolean {
             return this.isApkDebugable(context)
         }
 
-        fun isAppInstalled(context: Context, packageName: String): Boolean {
+        fun isAppInstalled(packageName: String): Boolean {
             return AppUtils.isAppInstalled(packageName)
         }
 
@@ -64,7 +68,7 @@ class SystemUtil {
             (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
         }
 
-        fun chromeCustomTabs(context: Context, url: String, title: String = url) {
+        fun chromeCustomTabs(context: Context, url: String) {
             val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
             val customTabsIntent: CustomTabsIntent = builder.build()
             builder.setToolbarColor(context.getColor(R.color.colorPrimaryDark))
@@ -76,7 +80,7 @@ class SystemUtil {
             if (imageView && this.checkIfImageUrl(url)) {
                 context.startActivity<ImageViewActivity>("image" to url, "title" to title)
             } else if (customTabs) {
-                this.chromeCustomTabs(context, url, title)
+                this.chromeCustomTabs(context, url)
             } else {
                 context.browse(url)
             }
@@ -173,7 +177,7 @@ class SystemUtil {
         fun urlAutoHttps(url: String?, https: Boolean): String? {
             return if (url.isNullOrEmpty()) {
                 null
-            } else if (url!!.startsWith("//")) {
+            } else if (url.startsWith("//")) {
                 if (https) {
                     "https:$url"
                 } else {
@@ -204,7 +208,6 @@ class SystemUtil {
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
             val downloadId = downloadManager.enqueue(request)
             Logger.d("downloadAndroid\nurl:$url\nsaveTo:$savePath\ntitle:$title\ndownloadId:$downloadId")
-            downloadManager
             return downloadId
         }
 

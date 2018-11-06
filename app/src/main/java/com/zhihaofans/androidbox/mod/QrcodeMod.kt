@@ -1,11 +1,9 @@
 package com.zhihaofans.androidbox.mod
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import com.xuexiang.xqrcode.XQRCode
 import com.xuexiang.xqrcode.ui.CaptureActivity
-import com.zhihaofans.androidbox.util.SystemUtil
 
 
 /**
@@ -25,13 +23,6 @@ class QrcodeMod {
         this@QrcodeMod.activity = activity
         XQRCode.debug(debug)
     }
-
-    fun getInstalledPlugin(context: Context): Int {
-        if (SystemUtil.isAppInstalled(context, "mark.qrcode")) return 1
-        if (SystemUtil.isAppInstalled(context, "org.noear.scan")) return 2
-        return -1
-    }
-
     fun file() {
     }
 

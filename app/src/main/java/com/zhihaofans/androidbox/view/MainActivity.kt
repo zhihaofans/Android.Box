@@ -15,10 +15,12 @@ import com.hjq.permissions.XXPermissions
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
+import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -91,7 +93,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_serverchan),
                 getString(R.string.title_activity_app_down),
                 getString(R.string.text_feed),
-                getString(R.string.title_activity_xxdown)
+                getString(R.string.title_activity_xxdown),
+                "测试通知"
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.setOnItemClickListener { _, _, index, _ ->
@@ -149,6 +152,19 @@ class MainActivity : AppCompatActivity() {
                 6 -> startActivity<AppDownActivity>()
                 7 -> startActivity<FeedActivity>()
                 8 -> startActivity<XXDownActivity>()
+                9 -> {
+                    try {
+                        val noId = NotificationUtil.create(this, "test", "测试")
+                        if (noId == null) {
+                            coordinatorLayout_main.snackbar("失败!")
+                        } else {
+                            coordinatorLayout_main.snackbar("成功")
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        coordinatorLayout_main.snackbar("失败")
+                    }
+                }
             }
         }
         checkPermissions()

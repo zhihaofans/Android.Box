@@ -2,11 +2,12 @@ package com.zhihaofans.androidbox.view
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import androidx.core.graphics.drawable.toBitmap
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
@@ -14,6 +15,9 @@ import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.AppUtils
+import dev.utils.app.image.ImageUtils
+import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*
@@ -30,10 +34,9 @@ class AppManagementActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         clipboardUtil = ClipboardUtil(this@AppManagementActivity)
         appListInit()
-        this@AppManagementActivity.title = getStr(R.string.text_appmanagement)
+        this@AppManagementActivity.title = getString(R.string.text_appmanagement)
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
         }
     }
 
@@ -87,20 +90,8 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppLastUpdateTime: String = convertUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
                     val thisApkSize: Int = SystemUtil.getFileSize(thisApkPath).toInt()
-                    /*Logger.d(childItem["icon"])
-                    alert {
-                        customView {
-                            verticalLayout {
-                                imageView(childItem["icon"] as Drawable)
-                                textView(childItem["appName"] as String)
-                                textView(childItem["packageName"] as String)
-                            }
-                        }
-                        okButton { }
-                    }.show()*/
-
-                    val act_app = listOf(getStr(R.string.text_app_info), getStr(R.string.text_app_apk), getStr(R.string.text_icon))
-                    selector(childItem["appName"] as String, act_app) { _, i ->
+                    val actApp = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk), getString(R.string.text_icon))
+                    selector(childItem["appName"] as String, actApp) { _, i ->
                         when (i) {
                             0 -> {
                                 //app info
@@ -114,13 +105,13 @@ class AppManagementActivity : AppCompatActivity() {
                                         thisAppLastUpdateTime
                                 )
                                 val list_b = mutableListOf(
-                                        getStr(R.string.text_app_name),
-                                        getStr(R.string.text_app_packagename),
-                                        getStr(R.string.text_app_version),
-                                        getStr(R.string.text_app_apkpath),
-                                        getStr(R.string.text_app_size),
-                                        getStr(R.string.text_app_firstinstalltime),
-                                        getStr(R.string.text_app_lastupdatetime)
+                                        getString(R.string.text_app_name),
+                                        getString(R.string.text_app_packagename),
+                                        getString(R.string.text_app_version),
+                                        getString(R.string.text_app_apkpath),
+                                        getString(R.string.text_app_size),
+                                        getString(R.string.text_app_firstinstalltime),
+                                        getString(R.string.text_app_lastupdatetime)
                                 )
                                 val act_appInfo = mutableListOf<String>()
                                 var _a = 0
@@ -129,7 +120,7 @@ class AppManagementActivity : AppCompatActivity() {
                                     _a++
                                 }
                                 Logger.d(act_appInfo)
-                                selector(getStr(R.string.text_app_info), act_appInfo) { _, ii ->
+                                selector(getString(R.string.text_app_info), act_appInfo) { _, ii ->
                                     alert {
                                         customView {
                                             verticalLayout {
@@ -155,18 +146,50 @@ class AppManagementActivity : AppCompatActivity() {
                             }
 
                             1 -> {
-                                //apk file
-                                /*
-                                            val act_apk = listOf(getStr(R.string.text_app_info), getStr(R.string.text_app_apk), getStr(R.string.text_icon))
-                                            selector(childItem["appName"] as String, act_app, { _, ii ->
-
-                                            })
-                                */
-                                toast("未完成")
+                                val apkPath = AppUtils.getAppPath(thisAppPackageName)
+                                val apkLength = ConvertUtil().fileSizeInt2string(SystemUtil.getFileSize(apkPath))
+                                val saveTo = SystemUtil.getDownloadPathString() + "Android.Box/"
+                                val savePath = "$saveTo$thisAppName-$thisAppPackageName-$thisAppVersionName.apk"
+                                alert {
+                                    title = "是否导出安装包"
+                                    message = "应用名称：$thisAppName\n包名：$thisAppPackageName\n版本：$thisAppVersionName ($thisAppVersionCode)\n安装包大小：$apkLength\n保存至：$saveTo"
+                                    noButton { coordinatorLayout_app.snackbar("取消导出") }
+                                    yesButton {
+                                        doAsync {
+                                            val exportSu = FileUtils.copyFile(apkPath, savePath, true)
+                                            runOnUiThread {
+                                                if (exportSu) {
+                                                    coordinatorLayout_app.snackbar("OK:$savePath")
+                                                } else {
+                                                    coordinatorLayout_app.snackbar("no")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }.show()
                             }
 
                             2 -> {
-                                //app icon
+                                //TODO:app icon
+                                val saveTo = SystemUtil.getDownloadPathString() + "Android.Box/"
+                                val savePath = "$saveTo$thisAppName-$thisAppPackageName-icon.png"
+                                alert {
+                                    title = "是否导出应用图标"
+                                    message = "应用名称：$thisAppName\n包名：$thisAppPackageName\n版本：$thisAppVersionName ($thisAppVersionCode)\n保存至：$saveTo"
+                                    noButton { coordinatorLayout_app.snackbar("取消导出") }
+                                    yesButton {
+                                        doAsync {
+                                            val exportSu = ImageUtils.save(thisAppIcon.toBitmap(), savePath, Bitmap.CompressFormat.PNG)
+                                            runOnUiThread {
+                                                if (exportSu) {
+                                                    coordinatorLayout_app.snackbar("OK:$savePath")
+                                                } else {
+                                                    coordinatorLayout_app.snackbar("no")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }.show()
                             }
                         }
                     }
@@ -181,10 +204,6 @@ class AppManagementActivity : AppCompatActivity() {
             finish()
         }
 
-    }
-
-    private fun getStr(strCode: Int): String {
-        return getString(strCode)
     }
 
 

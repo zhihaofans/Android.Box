@@ -60,6 +60,7 @@ class ConvertUtil {
         }
     }
 
+    fun fileSizeInt2string(fileSize: Long): String = this.fileSizeInt2string(fileSize.toInt())
     fun fileSizeInt2string(fileSize: Int): String {
         var result = fileSize.toFloat()
         var times = 0

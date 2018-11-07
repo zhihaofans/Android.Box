@@ -170,7 +170,6 @@ class AppManagementActivity : AppCompatActivity() {
                             }
 
                             2 -> {
-                                //TODO:app icon
                                 val saveTo = SystemUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-icon.png"
                                 alert {

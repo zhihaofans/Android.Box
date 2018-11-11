@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                             "Android 7.1.x (API 25, Nougat 牛轧糖)",
                             "Android 8.0 (API 26, Oreo 奥利奥)",
                             "Android 8.1 (API 27, Oreo 奥利奥)",
-                            "Android 9.0（API 27, Pie 派)"
+                            "Android 9.0（API 28, Pie 派)"
                     )
                     val nowSdk = Build.VERSION.SDK_INT
                     selector("你是" + if (nowSdk <= sdks.size) sdks[nowSdk - 1] else "UNKNOWN", sdks) { _, i ->

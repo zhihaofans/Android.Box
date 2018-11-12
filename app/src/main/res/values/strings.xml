@@ -90,4 +90,6 @@
     <string name="title_activity_xxdown">XX Down</string>
     <string name="text_site_wanandroid">WanAndroid</string>
     <string name="text_site_zhihu_daily">Zhihu Daily</string>
+    <string name="title_activity_web">Web browser</string>
+    <string name="text_buildin_web_browser">Build-in web browser</string>
 </resources>

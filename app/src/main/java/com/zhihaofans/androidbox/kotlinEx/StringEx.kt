@@ -7,3 +7,4 @@ fun String.find(string: String, startIndex: Int = 0, ignoreCase: Boolean = false
 
 fun String.remove(removeString: String, ignoreCase: Boolean = false) = this.replace(removeString, "", ignoreCase)
 fun String?.isNotNull() = this != null
+fun String?.isNotNullAndEmpty() = !this.isNullOrEmpty()

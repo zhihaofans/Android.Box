@@ -25,6 +25,7 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
+import com.zhihaofans.androidbox.view.WebActivity
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.common.FileUtils
@@ -76,28 +77,23 @@ class SystemUtil {
             customTabsIntent.launchUrl(context, Uri.parse(url))
         }
 
-        fun browseWithoutSet(context: Context, url: String, title: String = url, imageView: Boolean = false, customTabs: Boolean = false) {
-            if (imageView && this.checkIfImageUrl(url)) {
-                context.startActivity<ImageViewActivity>("image" to url, "title" to title)
-            } else if (customTabs) {
-                this.chromeCustomTabs(context, url)
-            } else {
-                context.browse(url)
-            }
-        }
-
         fun browse(context: Context, url: String, title: String = url) {
             val appSettingMod = AppSettingMod()
             appSettingMod.init(context)
             if (this.checkUrl(url) == null) {
-                throw Exception("No a correct url.")
+                throw Exception("Need Url.")
             }
             if (appSettingMod.imageUrlOpenWithBuiltinViewer && this.checkIfImageUrl(url)) {
                 context.startActivity<ImageViewActivity>("image" to url, "title" to title)
-            } else if (appSettingMod.forceUseChromeCustomTabs) {
-                this.chromeCustomTabs(context, url)
+            } else if (appSettingMod.buildinX5Browser) {
+                context.startActivity<WebActivity>("url" to url, "title" to title)
             } else {
-                context.browse(url)
+                try {
+                    this.chromeCustomTabs(context, url)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    context.browse(url)
+                }
             }
         }
 

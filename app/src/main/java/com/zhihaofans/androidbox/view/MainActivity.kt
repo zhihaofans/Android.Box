@@ -49,8 +49,8 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.menu_setting -> {
                     val settings = mutableListOf(
-                            getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                    appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
+                            getString(R.string.text_buildin_web_browser) + ":" +
+                                    appSettingMod.buildinX5Browser.string(getString(R.string.text_yes), getString(R.string.text_no)),
                             getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
                                     appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)),
                             "Crash page"
@@ -58,30 +58,28 @@ class MainActivity : AppCompatActivity() {
                     selector(getString(R.string.text_setting), settings) { _, i ->
                         when (i) {
                             0 -> {
-                                if (appSettingMod.forceUseChromeCustomTabs(!appSettingMod.forceUseChromeCustomTabs)) {
-                                    Snackbar.make(coordinatorLayout_main,
-                                            "ok:" + getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                                    appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
-                                            Snackbar.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    Snackbar.make(coordinatorLayout_main,
-                                            "no:" + getString(R.string.text_setting_use_cct_for_web) + ":" +
-                                                    appSettingMod.forceUseChromeCustomTabs.string(getString(R.string.text_yes), getString(R.string.text_no)),
-                                            Snackbar.LENGTH_SHORT
-                                    ).show()
-                                }
+                                coordinatorLayout_main.snackbar(
+                                        if (appSettingMod.buildinX5Browser(!appSettingMod.buildinX5Browser)) {
+                                            "ok"
+                                        } else {
+                                            "no"
+                                        }
+                                                + ":" + getString(R.string.text_buildin_web_browser) + ":" +
+                                                appSettingMod.buildinX5Browser.string(getString(R.string.text_yes),
+                                                        getString(R.string.text_no))
+                                )
                             }
                             1 -> {
-                                if (appSettingMod.imageUrlOpenWithBuiltinViewer(!appSettingMod.imageUrlOpenWithBuiltinViewer)) {
-                                    coordinatorLayout_main.snackbar(
-                                            "ok:" + getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)))
-                                } else {
-                                    coordinatorLayout_main.snackbar(
-                                            "No:" + getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)))
-                                }
+                                coordinatorLayout_main.snackbar(
+                                        if (appSettingMod.imageUrlOpenWithBuiltinViewer(!appSettingMod.imageUrlOpenWithBuiltinViewer)) {
+                                            "ok"
+                                        } else {
+                                            "no"
+                                        }
+                                                + ":" + getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
+                                                appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes),
+                                                        getString(R.string.text_no))
+                                )
                             }
                             2 -> MCrashMonitor.startCrashListPage(this)
                         }

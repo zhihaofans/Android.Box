@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -34,13 +35,14 @@ import java.io.File
 
 
 class ImageViewActivity : AppCompatActivity() {
-    private var imageUrl: String? = ""
+    private var imageUrl: String? = null
     private var clipboardUtil: ClipboardUtil? = null
     private val notificationUtil = NotificationUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         clipboardUtil = ClipboardUtil(this)
         try {
             if (intent.extras !== null) {
@@ -62,6 +64,16 @@ class ImageViewActivity : AppCompatActivity() {
             e.printStackTrace()
             toast("Try to get image uri fail.")
             finish()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -98,7 +110,8 @@ class ImageViewActivity : AppCompatActivity() {
                         return
                     }
                     val qualityInfo = imageInfo.qualityInfo
-                    Logger.d("Final image received! " + "Size ${imageInfo.width} x ${imageInfo.height}\n" +
+                    Logger.d("Final image received! " +
+                            "Size ${imageInfo.width} x ${imageInfo.height}\n" +
                             "Quality level ${qualityInfo.quality}, good enough: ${qualityInfo.isOfGoodEnoughQuality}, full quality: ${qualityInfo.isOfFullQuality}\n"
                     )
 
@@ -110,9 +123,10 @@ class ImageViewActivity : AppCompatActivity() {
                     imageView.setOnClickListener {
                         if (!imageUrl.isNullOrEmpty()) {
                             val selectorItemList = mutableListOf(
-                                    "下载",
+                                    getString(R.string.text_download),
                                     "浏览器打开",
-                                    "复制图片地址"
+                                    getString(R.string.text_copy),
+                                    getString(R.string.text_share)
                             )
                             selector("", selectorItemList) { _, i ->
                                 when (i) {
@@ -143,6 +157,7 @@ class ImageViewActivity : AppCompatActivity() {
                                         clipboardUtil?.copy(imageUrl!!)
                                         Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()
                                     }
+                                    3 -> share(imageUrl!!)
                                 }
                             }
                         }
@@ -254,8 +269,7 @@ class ImageViewActivity : AppCompatActivity() {
                 })
             }
             1 -> {
-                val downloadId = SystemUtil.downloadAndroid(this@ImageViewActivity, imageUrl!!, downloadPath, fileName)
-
+                //val downloadId = SystemUtil.downloadAndroid(this@ImageViewActivity, imageUrl!!, downloadPath, fileName)
             }
         }
     }

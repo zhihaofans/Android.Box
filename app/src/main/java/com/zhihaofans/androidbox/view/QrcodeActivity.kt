@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
@@ -57,6 +59,19 @@ class QrcodeActivity : AppCompatActivity() {
         }
         button_copy.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) clipboardUtil?.copy(editText_qrcode_content.text.toString()) }
         button_share.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) share(editText_qrcode_content.text.toString()) }
+        editText_qrcode_content.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                generateQR()
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -87,17 +102,21 @@ class QrcodeActivity : AppCompatActivity() {
                     666 -> {
                         if (data != null) {
                             val uri = data.data//得到uri，后面就是将uri转化成file的过程。
-                            val realUri = SystemUtil.getRealFilePath(this@QrcodeActivity, uri)
-                            Logger.d("uri:${uri.path}")
-                            Logger.d("realUri:$realUri")
-                            val qrcodeResult = XQRCode.getAnalyzeQRCodeResult(realUri)
-                            if (qrcodeResult == null) {
-                                snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
+                            if (uri == null) {
+                                coordinatorLayout_qrcode.snackbar("解析失败(uri=null)")
                             } else {
-                                val qrcodeStr = qrcodeResult.text
-                                Logger.d("qrcodeStr:$qrcodeStr")
-                                editText_qrcode_content.setText(qrcodeStr)
-                                snackbar(coordinatorLayout_qrcode, "解析完毕")
+                                val realUri = SystemUtil.getRealFilePath(this@QrcodeActivity, uri)
+                                Logger.d("uri:${uri.path}")
+                                Logger.d("realUri:$realUri")
+                                val qrcodeResult = XQRCode.getAnalyzeQRCodeResult(realUri)
+                                if (qrcodeResult == null) {
+                                    snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
+                                } else {
+                                    val qrcodeStr = qrcodeResult.text
+                                    Logger.d("qrcodeStr:$qrcodeStr")
+                                    editText_qrcode_content.setText(qrcodeStr)
+                                    snackbar(coordinatorLayout_qrcode, "解析完毕")
+                                }
                             }
                         } else {
                             snackbar(coordinatorLayout_qrcode, "返回空白数据")
@@ -140,11 +159,13 @@ class QrcodeActivity : AppCompatActivity() {
             }
         } else {
             try {
-                methodId = intent.extras.getString("method", null)
-                if (!methodId.isNullOrEmpty()) {
-                    when (methodId) {
-                        "QRCODE_SCAN" -> getCameraPermission()
-                        "QRCODE_GENERATE" -> generateQR()
+                if (intent.extras !== null) {
+                    methodId = intent.extras!!.getString("method", null)
+                    if (!methodId.isNullOrEmpty()) {
+                        when (methodId) {
+                            "QRCODE_SCAN" -> getCameraPermission()
+                            "QRCODE_GENERATE" -> generateQR()
+                        }
                     }
                 }
             } catch (e: Exception) {

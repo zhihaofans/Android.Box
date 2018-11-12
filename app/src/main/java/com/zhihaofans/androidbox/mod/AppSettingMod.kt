@@ -17,32 +17,36 @@ class AppSettingMod {
         set(key) {
             if (key.isNotNull()) sharedPreferencesUtil.putString("SERVER_CHAN_KEY", key!!)
         }
-    var forceUseChromeCustomTabs: Boolean
-        get() = forceUseChromeCustomTabs()
-        set(value) {
-            forceUseChromeCustomTabs(value)
-        }
     var imageUrlOpenWithBuiltinViewer: Boolean
         get() = imageUrlOpenWithBuiltinViewer()
         set(value) {
-            sharedPreferencesUtil.putBoolean("IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER", value)
+            imageUrlOpenWithBuiltinViewer(value)
         }
-
-    fun forceUseChromeCustomTabs(boolean: Boolean? = null): Boolean {
-        val key = "BROWSER_USE_CHROME_CUSTOM_TABS"
-        return if (boolean == null) {
-            sharedPreferencesUtil.getBoolean(key) ?: false
-        } else {
-            sharedPreferencesUtil.putBoolean(key, boolean)
+    var buildinX5Browser: Boolean
+        get() = buildinX5Browser()
+        set(value) {
+            buildinX5Browser(value)
         }
-    }
 
     fun imageUrlOpenWithBuiltinViewer(boolean: Boolean? = null): Boolean {
         val key = "IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER"
-        return if (boolean == null) {
-            sharedPreferencesUtil.getBoolean(key) ?: false
-        } else {
-            sharedPreferencesUtil.putBoolean(key, boolean)
+        sharedPreferencesUtil.apply {
+            return if (boolean == null) {
+                getBoolean(key) ?: true
+            } else {
+                putBoolean(key, boolean)
+            }
+        }
+    }
+
+    fun buildinX5Browser(boolean: Boolean? = null): Boolean {
+        val key = "BUILD_IN_X5_BROWSER"
+        sharedPreferencesUtil.apply {
+            return if (boolean == null) {
+                getBoolean(key) ?: true
+            } else {
+                putBoolean(key, boolean)
+            }
         }
     }
 

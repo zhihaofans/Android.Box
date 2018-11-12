@@ -58,6 +58,7 @@ dependencies {
     implementation 'com.github.afkT:DevUtils:1.0.9@aar'
     implementation 'androidx.core:core-ktx:1.0.0'
     implementation 'io.paperdb:paperdb:2.6'
+    implementation 'com.github.Victory-Over:SuperWeb:v1.0.2'
 }
 kotlin {
     experimental {

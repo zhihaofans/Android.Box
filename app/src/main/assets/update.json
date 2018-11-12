@@ -1,9 +1,9 @@
 {
   "source": [
     "https://android-1251125924.cos.ap-guangzhou.myqcloud.com/com.zhihaofans.androidbox/update.json",
-    "https://github.com/zhihaofans/Android.Box/raw/master/update.json",
-    "https://gitlab.com/zhihaofans/Android.Box/raw/master/update.json",
-    "https://gitee.com/zhihaofans/Android.Box/raw/master/update.json"
+    "https://github.com/zhihaofans/Android.Box/raw/master/app/src/main/assets/update.json",
+    "https://gitlab.com/zhihaofans/Android.Box/raw/master/app/src/main/assets/update.json",
+    "https://gitee.com/zhihaofans/Android.Box/raw/master/app/src/main/assets/update.json"
   ],
   "version": {
     "code": 76,

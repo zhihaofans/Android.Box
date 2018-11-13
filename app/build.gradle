@@ -25,6 +25,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                // 显示app名称+当前版本号
+                def fileName = "Android.Box-${variant.versionName}"
+                // 如果是debug版本，加入beta版本号
+                if ('debug' == variant.buildType.name) {
+                    fileName = fileName + "-debug.apk"
+                } else {
+                    fileName = fileName + ".apk"
+                }
+                outputFileName = fileName
+            }
+        }
+    }
 }
 
 dependencies {

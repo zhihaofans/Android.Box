@@ -19,15 +19,14 @@ import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
+import com.zhihaofans.androidbox.mod.ZhihaofansMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.share
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,15 +35,14 @@ class MainActivity : AppCompatActivity() {
     private var clipboardUtil: ClipboardUtil? = null
     private val updateWebUrl = "https://fir.im/fkw1"
     private val notificationUtil = NotificationUtil()
+    private val zhihaofansMod = ZhihaofansMod()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         toolbar_main.subtitle = "v" + AppUtils.getAppVersionName()
         setSupportActionBar(toolbar_main)
-        clipboardUtil = ClipboardUtil(this)
-        appSettingMod.init(this)
-        notificationUtil.init(this)
+        init()
         toolbar_main.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_setting -> {
@@ -225,7 +223,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initPermissions() {
+    private fun init() {
+        clipboardUtil = ClipboardUtil(this)
+        appSettingMod.init(this)
+        notificationUtil.init(this)
+        zhihaofansMod.init(this)
+        //checkUpdate()
+    }
+
+    private fun initPermissions() {
         XXPermissions.with(this)
                 //.constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
                 //.permission(Permission.REQUEST_INSTALL_PACKAGES, Permission.SYSTEM_ALERT_WINDOW) //支持请求安装权限和悬浮窗权限
@@ -241,5 +247,41 @@ class MainActivity : AppCompatActivity() {
                         Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
                     }
                 })
+    }
+
+    private fun checkUpdate() {
+        doAsync {
+            val update = zhihaofansMod.Update()
+            uiThread {
+                when (update.checkUpdate()) {
+                    true -> {
+                        val updateData = update.getUpdateData()
+                        if (updateData == null) {
+                            coordinatorLayout_main.snackbar("检测更新失败")
+                        } else {
+                            coordinatorLayout_main.snackbar("发现更新")
+                            val updateSiteList = mutableListOf<String>()
+                            val webUrlList = mutableListOf<String>()
+                            updateData.web_url.map { url ->
+                                val u = SystemUtil.checkUrl(url)
+                                if (u != null) {
+                                    updateSiteList.add(u.host)
+                                    webUrlList.add(url)
+                                }
+                            }
+                            if (webUrlList.size == 0) {
+                                coordinatorLayout_main.snackbar("错误：有0个有效更新站点")
+                            } else {
+                                selector("选择更新站点", updateSiteList) { _, i ->
+                                    browse(webUrlList[i])
+                                }
+                            }
+                        }
+                    }
+                    false -> coordinatorLayout_main.snackbar("没有更新")
+                    else -> coordinatorLayout_main.snackbar("检测更新失败")
+                }
+            }
+        }
     }
 }

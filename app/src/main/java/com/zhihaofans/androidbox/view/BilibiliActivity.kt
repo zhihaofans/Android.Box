@@ -10,7 +10,6 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
 import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.JsoupUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
@@ -41,8 +40,7 @@ class BilibiliActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         val listData = mutableListOf(
-                "视频弹幕查用户uid",
-                "视频封面下载"
+                "视频弹幕查用户uid"
         )
         listView_bilibili.adapter = SystemUtil.listViewAdapter(this, listData)
         listView_bilibili.setOnItemClickListener { _, _, index, _ ->
@@ -51,7 +49,6 @@ class BilibiliActivity : AppCompatActivity() {
             }
             when (index) {
                 0 -> bilibiliCommentHash2uid()
-                1 -> getVideoCoverUri()
             }
         }
         checkShare()
@@ -479,111 +476,6 @@ class BilibiliActivity : AppCompatActivity() {
         }
     }
 
-    private fun getVideoCoverUri() {
-        alert("仅输入av后面的数字", "视频id") {
-            customView {
-                verticalLayout {
-                    textView("id:")
-                    val input = editText(defaultVid)
-                    input.inputType = InputType.TYPE_CLASS_NUMBER
-                    yesButton {
-                        SystemUtil.closeKeyborad(this@BilibiliActivity)
-                        val vid = input.text.toString()
-                        if (vid.isEmpty()) {
-                            Snackbar.make(coordinatorLayout_bilibili, "请输入视频id", Snackbar.LENGTH_SHORT).show()
-                        } else {
-                            defaultVid = vid
-                            val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-                            loadingProgressBar.setCancelable(false)
-                            loadingProgressBar.setCanceledOnTouchOutside(false)
-                            loadingProgressBar.show()
-                            doAsync {
-                                val coverUri: String? = getVideoCoverUriJx(defaultVid, 1)
-                                uiThread {
-                                    if (coverUri.isNullOrEmpty()) {
-                                        loadingProgressBar.dismiss()
-                                        Snackbar.make(coordinatorLayout_bilibili, "获取视频封面失败,返回地址空白", Snackbar.LENGTH_SHORT).show()
-                                    } else {
-                                        doAsync {
-                                            val imageBitmap = SystemUtil.getBitmapFromURL(coverUri.toString())
-                                            uiThread {
-                                                loadingProgressBar.dismiss()
-                                                Snackbar.make(coordinatorLayout_bilibili, "获取视频封面成功", Snackbar.LENGTH_SHORT).show()
-                                                selector("获取视频封面成功", listOf(
-                                                        getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share)
-                                                )) { _, i ->
-                                                    when (i) {
-                                                        0 -> SystemUtil.browse(this@BilibiliActivity, coverUri.toString(), "av$defaultVid")
-                                                        1 -> {
-                                                            clipboardUtil?.copy(coverUri.toString())
-                                                            Snackbar.make(coordinatorLayout_bilibili, "复制成功", Snackbar.LENGTH_SHORT).show()
-                                                        }
-                                                        2 -> share(coverUri.toString())
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                noButton { }
-            }
-        }.show()
-    }
-
-    private fun getVideoCoverUriJx(vid: String, type: Int): String? {
-        var videoCover: String? = null
-        var html: String? = null
-        val g = Gson()
-        val client = OkHttpClient()
-        when (type) {
-            0 -> {
-                try {
-                    val response = client.newCall(Request.Builder().get().url("https://www.bilibili.com/video/$vid/").build()).execute()
-                    html = response.body()!!.string()
-                    Logger.d(html)
-                    if (html.isNullOrEmpty()) {
-                        return null
-                    }
-                    val ju = JsoupUtil(Jsoup.parse(html))
-                    videoCover = ju.attr("head > meta[itemprop=\"image\"]", "content")
-                    if (videoCover.isEmpty()) videoCover = ju.attr("head > meta[property=\"og:image\"]", "content")
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    return null
-                }
-            }
-            1 -> {
-                try {
-                    val url = "https://www.galmoe.com/t.php?aid=$vid"
-                    Logger.d(url)
-                    val response = client.newCall(Request.Builder().get().url(url).build()).execute()
-                    Logger.d("code:${response.code()}")
-                    if (response.isSuccessful) {
-                        val body = response.body()
-                        Logger.d(body)
-                        val rejson: String? = body?.string()
-                        Logger.d(rejson)
-                        val biliBiliGalmoeGson = g.fromJson(rejson, BiliBiliGalmoeGson::class.java)
-                        if (biliBiliGalmoeGson.result == 1) videoCover = biliBiliGalmoeGson.url
-                    } else {
-                        Logger.e("code:${response.code()}")
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Logger.e("error:$e")
-                }
-
-            }
-            else -> return null
-        }
-        if (!videoCover.isNullOrEmpty()) videoCover = SystemUtil.urlAutoHttps(videoCover, true)
-        Logger.d(videoCover)
-        return videoCover
-    }
 
     private fun copy(string: String) {//复制到剪切板
         clipboardUtil?.copy(string)

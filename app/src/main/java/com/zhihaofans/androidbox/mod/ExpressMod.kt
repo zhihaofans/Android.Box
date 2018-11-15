@@ -3,7 +3,7 @@ package com.zhihaofans.androidbox.mod
 import android.content.Context
 import com.google.gson.Gson
 import com.zhihaofans.androidbox.data.*
-import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.HttpUtil
 import dev.utils.common.encrypt.MD5Utils
 
 
@@ -38,7 +38,7 @@ class ExpressMod {
         val params = hashMapOf<String, String>("param" to param, "sign" to sign, "customer" to customer)
         val apiUrl = "https://poll.kuaidi100.com/poll/query.do"
         val expressResult = ExpressResult(false, "", null)
-        val serverResult = SystemUtil.httpPost4String(apiUrl, params)
+        val serverResult = HttpUtil.httpPost4String(apiUrl, params)
         return if (serverResult.isNullOrEmpty()) {
             expressResult
         } else {

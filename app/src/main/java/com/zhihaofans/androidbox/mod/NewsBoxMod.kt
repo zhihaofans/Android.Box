@@ -3,10 +3,6 @@ package com.zhihaofans.androidbox.mod
 import android.content.Context
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import okhttp3.CacheControl
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.IOException
 
 
 /**
@@ -25,32 +21,7 @@ class NewsBoxMod {
             val name: String
     )
 
-    class newsBoxCommon {
-        fun httpGet4String(url: String, headers: MutableMap<String, String>? = null): String {
-            val client = OkHttpClient()
-            val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(url)
-            if (headers != null) {
-                headers.map {
-                    requestBuilder.addHeader(it.key, it.value)
-                }
-            }
-            val request = requestBuilder.build()
-            val call = client.newCall(request)
-            return try {
-                val response = call.execute()
-                if (response.body() == null) {
-                    ""
-                } else {
-                    response.body()!!.string()
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                ""
-            }
 
-        }
-
-    }
 
     class sites(_context: Context) {
         private val context = _context
@@ -128,6 +99,7 @@ class NewsBoxMod {
             }
         }
     }
+
 
     fun setContext(context: Context) {
         nowContext = context

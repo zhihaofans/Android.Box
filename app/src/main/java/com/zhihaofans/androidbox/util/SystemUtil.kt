@@ -29,9 +29,6 @@ import com.zhihaofans.androidbox.view.WebActivity
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.common.FileUtils
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import java.io.File
@@ -334,42 +331,6 @@ class SystemUtil {
                 }
             }
             return data
-        }
-
-        fun httpPost4String(url: String, body: MutableMap<String, String> = mutableMapOf(), headers: MutableMap<String, String>? = null): String? {
-            Logger.d("httpPost4String\nurl:$url\nbody:$body\nheader:$headers")
-            val requestBody = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-            body.map {
-                requestBody.addFormDataPart(it.key, it.value)
-            }
-            val client = OkHttpClient.Builder().retryOnConnectionFailure(true).build()
-
-            val requestBuilder = Request.Builder().url(url).post(requestBody.build())
-            headers?.map {
-                requestBuilder.addHeader(it.key, it.value)
-            }
-            val call = client.newCall(requestBuilder.build())
-            Logger.d("httpPost4String")
-            return try {
-                val response = call.execute()
-                val responseBody = response.body()
-                Logger.d("response.code():${response.code()}")
-                Logger.d("httpPost4String")
-                if (responseBody == null) {
-                    Logger.e("response.body() = null")
-                    null
-                } else {
-                    val str = responseBody.string()
-                    response.close()
-                    Logger.d(str)
-                    str
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-
         }
 
     }

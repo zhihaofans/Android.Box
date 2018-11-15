@@ -61,6 +61,7 @@ class ServerChanActivity : AppCompatActivity() {
                             appSettingMod.serverChanKey = inputKey
                             if (appSettingMod.serverChanKey == inputKey) {
                                 toast("保存成功")
+                                init()
                             } else {
                                 toast("保存失败")
                                 finish()
@@ -72,7 +73,7 @@ class ServerChanActivity : AppCompatActivity() {
                     }
                     negativeButton("打开官网") {
                         browse("https://sc.ftqq.com/")
-                        updateKey(oldKey)
+                        finish()
                     }
                 }
             }

@@ -34,7 +34,7 @@ class QrcodeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_qrcode)
         qrcode.setActivity(this@QrcodeActivity, true)
         clipboardUtil = ClipboardUtil(this)
         fab_qrcode.setOnClickListener { qrcodeMenu() }

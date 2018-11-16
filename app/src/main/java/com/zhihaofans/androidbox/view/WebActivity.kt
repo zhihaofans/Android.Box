@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
+import com.zhihaofans.androidbox.mod.X5WebMod
 import kotlinx.android.synthetic.main.activity_web.*
 import kotlinx.android.synthetic.main.content_web.*
 import org.jetbrains.anko.selector
@@ -15,12 +16,13 @@ import org.jetbrains.anko.toast
 class WebActivity : AppCompatActivity() {
     private var webUrl: String? = null
     private var webTitle: String? = null
+    private val x5Web = X5WebMod(webView)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_web)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        fab.setOnClickListener { view ->
+        fab_web.setOnClickListener {
             val menuList = listOf<String>(
                     getString(R.string.text_refresh),
                     getString(R.string.text_share)
@@ -52,6 +54,7 @@ class WebActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        x5Web.init()
         try {
             if (intent.extras !== null) {
                 webUrl = intent.extras!!.getString("url", null)
@@ -60,7 +63,7 @@ class WebActivity : AppCompatActivity() {
                     toast("url is null or empty")
                     finish()
                 } else {
-                    initWebview(webUrl!!)
+                    x5Web.loadUrl(webUrl!!)
                     if (webTitle.isNotNullAndEmpty()) {
                         this@WebActivity.title = webTitle
                     }
@@ -75,16 +78,5 @@ class WebActivity : AppCompatActivity() {
         }
     }
 
-    private fun initWebview(url: String) {
-        /*
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
-                webView.loadUrl(url)
-                return true
-            }
-        }
-        */
-        webView.loadUrl(url)
-        webView.webChromeClient
-    }
+
 }

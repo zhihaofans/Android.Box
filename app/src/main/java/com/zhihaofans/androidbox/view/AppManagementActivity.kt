@@ -31,11 +31,11 @@ class AppManagementActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_app)
         clipboardUtil = ClipboardUtil(this@AppManagementActivity)
         appListInit()
         this@AppManagementActivity.title = getString(R.string.text_appmanagement)
-        fab.setOnClickListener { view ->
+        fab_app.setOnClickListener { view ->
             //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
         }
     }

@@ -33,9 +33,9 @@ class BilibiliActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bilibili)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_bilibili)
         clipboardUtil = ClipboardUtil(this@BilibiliActivity)
-        fab.setOnClickListener { view ->
+        fab_bilibili.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }

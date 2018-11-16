@@ -32,11 +32,11 @@ class AppDownActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_appdown)
         siteParser.init(this@AppDownActivity)
         clipboardUtil = ClipboardUtil(this@AppDownActivity)
         initList()
-        fab.setOnClickListener { view ->
+        fab_appdown.setOnClickListener { view ->
             val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
             selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                 when (i) {

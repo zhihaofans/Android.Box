@@ -20,9 +20,9 @@ class XXDownActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_xxdown)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_xxdown)
 
-        fab.setOnClickListener { view ->
+        fab_xxdown.setOnClickListener { view ->
             val defaultUrlList = mutableListOf(
                     "http://www.acfun.cn/v/ac4612358",
                     "https://www.bilibili.com/video/av32758674/"

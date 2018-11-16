@@ -41,7 +41,7 @@ class ImageViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_image)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         clipboardUtil = ClipboardUtil(this)
         try {

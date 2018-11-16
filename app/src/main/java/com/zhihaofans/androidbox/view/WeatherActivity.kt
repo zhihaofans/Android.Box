@@ -22,9 +22,9 @@ class WeatherActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_weather)
         loading()
-        fab.setOnClickListener { view ->
+        fab_weather.setOnClickListener { view ->
             //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
             loading()
         }

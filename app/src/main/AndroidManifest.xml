@@ -105,7 +105,9 @@
         <activity
             android:name=".view.ImageViewActivity"
             android:label="@string/title_activity_image_view"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity
             android:name=".view.QrcodeActivity"
             android:icon="@drawable/ic_camera"

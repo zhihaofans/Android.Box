@@ -34,7 +34,7 @@ class FeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_feed)
         clipboardUtil = ClipboardUtil(this)
         notificationUtil.init(this)
         init()

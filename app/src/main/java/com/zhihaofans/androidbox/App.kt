@@ -45,6 +45,7 @@ class App : Application() {
 
             override fun onCoreInitFinished() {}
         }
+        QbSdk.setDownloadWithoutWifi(true)
         //x5内核初始化接口
         QbSdk.initX5Environment(applicationContext, cb)
     }

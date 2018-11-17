@@ -105,9 +105,7 @@
         <activity
             android:name=".view.ImageViewActivity"
             android:label="@string/title_activity_image_view"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".view.QrcodeActivity"
             android:icon="@drawable/ic_camera"
@@ -149,6 +147,10 @@
         <activity
             android:name=".view.WebActivity"
             android:label="@string/title_activity_web"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.ImageWebActivity"
+            android:label="@string/title_activity_image_web"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

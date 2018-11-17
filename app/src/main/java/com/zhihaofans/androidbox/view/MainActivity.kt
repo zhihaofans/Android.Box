@@ -102,7 +102,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.title_activity_app_down),
                 getString(R.string.text_feed),
                 getString(R.string.title_activity_xxdown),
-                "测试通知"
+                "测试通知",
+                "Waterfall test"
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.setOnItemClickListener { _, _, index, _ ->
@@ -173,6 +174,7 @@ class MainActivity : AppCompatActivity() {
                         coordinatorLayout_main.snackbar("失败")
                     }
                 }
+                10 -> startActivity<ImageWebActivity>()
             }
         }
         checkPermissions()

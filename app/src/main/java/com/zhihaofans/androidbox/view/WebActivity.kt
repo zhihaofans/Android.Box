@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.view
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.content_web.*
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.toast
+
 
 class WebActivity : AppCompatActivity() {
     private var webUrl: String? = null
@@ -38,6 +40,20 @@ class WebActivity : AppCompatActivity() {
             }
         }
         init()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //全屏播放退出全屏
+            if (x5Web.canGoBack()) {
+                x5Web.goBack()
+                return true
+            } else {
+                x5Web.loadUrl("about:blank")
+                finish()
+            }
+        }
+        return false
     }
 
     override fun onDestroy() {

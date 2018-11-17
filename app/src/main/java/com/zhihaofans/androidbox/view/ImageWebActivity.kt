@@ -21,10 +21,12 @@ class ImageWebActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
-        val adapter = RecyclerViewAdapter(this, createData())
-        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
-        recyclerView.adapter = adapter
+        init()
+    }
 
+    private fun init() {
+        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView.adapter = RecyclerViewAdapter(this, createData())
     }
 
     private fun createData(): List<Int> {

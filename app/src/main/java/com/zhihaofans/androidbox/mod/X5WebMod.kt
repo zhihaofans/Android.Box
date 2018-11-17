@@ -19,7 +19,6 @@ class X5WebMod(x5Web: WebView) {
         x5WebView.apply {
             // WebViewClient
             webViewClient = object : WebViewClient() {
-
                 override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
                     webView.loadUrl(url)
                     return true
@@ -30,8 +29,6 @@ class X5WebMod(x5Web: WebView) {
                     p1.proceed()
                 }
             }
-            // Download listener
-
             // Setting
             val webSetting = settings
             webSetting.allowFileAccess = true
@@ -41,4 +38,5 @@ class X5WebMod(x5Web: WebView) {
 
     fun loadUrl(url: String) = x5WebView.loadUrl(url)
     fun getWebView() = x5WebView
+    fun getNowUrl(): String = x5WebView.url
 }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.mod.X5WebMod
+import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_web.*
 import kotlinx.android.synthetic.main.content_web.*
 import org.jetbrains.anko.selector
@@ -25,12 +26,14 @@ class WebActivity : AppCompatActivity() {
         fab_web.setOnClickListener {
             val menuList = listOf<String>(
                     getString(R.string.text_refresh),
-                    getString(R.string.text_share)
+                    getString(R.string.text_share),
+                    getString(R.string.text_open_in_other_browser)
             )
             selector("Menu", menuList) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> webView.reload()
                     1 -> share(webView.url)
+                    2 -> SystemUtil.chromeCustomTabs(this, x5Web.getNowUrl())
                 }
             }
         }
@@ -69,6 +72,7 @@ class WebActivity : AppCompatActivity() {
                     }
                 }
             } else {
+                toast("intent.extras == null")
                 finish()
             }
         } catch (e: Exception) {

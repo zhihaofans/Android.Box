@@ -15,14 +15,14 @@ import com.zhihaofans.androidbox.util.HttpUtil
 
 @Throws(JsonSyntaxException::class)
 fun <T> Gson.fromWebGetJson(url: String, classOfT: Class<T>): T? {
-    val json = HttpUtil.httpGet4String(url)
+    val json = HttpUtil.httpGetString(url)
     if (json.isNullOrEmpty()) return null
     return this.fromJson(json, classOfT)
 }
 
 @Throws(JsonSyntaxException::class)
 fun <T> Gson.fromWebPostJson(url: String, body: MutableMap<String, String>? = null, classOfT: Class<T>): T? {
-    val json = HttpUtil.httpPost4String(url, body ?: mutableMapOf())
+    val json = HttpUtil.httpPostString(url, body ?: mutableMapOf())
     if (json.isNullOrEmpty()) return null
     return this.fromJson(json, classOfT)
 }

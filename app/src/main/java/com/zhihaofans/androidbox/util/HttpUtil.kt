@@ -5,6 +5,8 @@ import okhttp3.CacheControl
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.IOException
 
 /**
@@ -17,7 +19,7 @@ import java.io.IOException
  */
 class HttpUtil {
     companion object {
-        fun httpGet4String(url: String, headers: MutableMap<String, String>? = null): String? {
+        fun httpGetString(url: String, headers: MutableMap<String, String>? = null): String? {
             val client = OkHttpClient()
             val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(url)
             headers?.map {
@@ -39,8 +41,8 @@ class HttpUtil {
 
         }
 
-        fun httpPost4String(url: String, body: MutableMap<String, String> = mutableMapOf(), headers: MutableMap<String, String>? = null): String? {
-            Logger.d("httpPost4String\nurl:$url\nbody:$body\nheader:$headers")
+        fun httpPostString(url: String, body: MutableMap<String, String> = mutableMapOf(), headers: MutableMap<String, String>? = null): String? {
+            Logger.d("httpPostString\nurl:$url\nbody:$body\nheader:$headers")
             val requestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
             body.map {
@@ -53,12 +55,12 @@ class HttpUtil {
                 requestBuilder.addHeader(it.key, it.value)
             }
             val call = client.newCall(requestBuilder.build())
-            Logger.d("httpPost4String")
+            Logger.d("httpPostString")
             return try {
                 val response = call.execute()
                 val responseBody = response.body()
                 Logger.d("response.code():${response.code()}")
-                Logger.d("httpPost4String")
+                Logger.d("httpPostString")
                 if (responseBody == null) {
                     Logger.e("response.body() = null")
                     null
@@ -73,6 +75,14 @@ class HttpUtil {
                 null
             }
 
+        }
+
+        fun httpGetJsoup(url: String, headers: MutableMap<String, String>? = null, timeout: Int = 10000): Document {
+            Logger.d("httpGetJsoup:$url,$headers,$timeout")
+            return Jsoup.connect(url)
+                    .headers(headers)
+                    .timeout(timeout)
+                    .get()
         }
     }
 }

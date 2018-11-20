@@ -38,7 +38,7 @@ class ExpressMod {
         val params = hashMapOf<String, String>("param" to param, "sign" to sign, "customer" to customer)
         val apiUrl = "https://poll.kuaidi100.com/poll/query.do"
         val expressResult = ExpressResult(false, "", null)
-        val serverResult = HttpUtil.httpPost4String(apiUrl, params)
+        val serverResult = HttpUtil.httpPostString(apiUrl, params)
         return if (serverResult.isNullOrEmpty()) {
             expressResult
         } else {

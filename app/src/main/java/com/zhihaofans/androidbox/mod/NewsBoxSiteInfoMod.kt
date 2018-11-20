@@ -58,7 +58,7 @@ class siteInfo_gankio(_context: Context) {
                 "user-agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
         )
         try {
-            newsListJson = HttpUtil.httpGet4String(thisUrl, headers) ?: return null
+            newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
             Logger.d("newsListJson:$newsListJson")
             val newsIndex = g.fromJson(newsListJson, GankIoAllGson::class.java)
             val newsListIndex = newsIndex.results
@@ -112,7 +112,7 @@ class siteInfo_dgtle(_context: Context) {
                 "user-agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
         )
         try {
-            val newsListJson = HttpUtil.httpGet4String(thisUrl, headers)
+            val newsListJson = HttpUtil.httpGetString(thisUrl, headers)
             Logger.d("newsListJson:$newsListJson")
             val newsIndex = g.fromJson(newsListJson, DgtleIndexGson::class.java)
             val newsListIndex = newsIndex.list
@@ -166,7 +166,7 @@ class siteInfo_sspai(_context: Context) {
                         Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                 )
                 try {
-                    val newsListJson = HttpUtil.httpGet4String(thisUrl, headers)
+                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers)
                     //Logger.d("newsListJson:$newsListJson")
                     val newsIndex = g.fromJson(newsListJson, SspaiArticleGson::class.java)
                     val newsListIndex = newsIndex.list
@@ -246,7 +246,7 @@ class siteInfo_rsshub(_context: Context) {
         }
         if (thisUrl.isEmpty()) return null
         try {
-            newsListJson = HttpUtil.httpGet4String(thisUrl, headers) ?: return null
+            newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
             //Logger.d("newsListJson:$newsListJson")
             val newsListData = g.fromJson(newsListJson, RsshubGson::class.java)
             val newsListItemData = newsListData.items
@@ -295,7 +295,7 @@ class siteInfo_wanandroid(_context: Context) {
                 )
                 Logger.d(thisUrl)
                 try {
-                    val newsListJson = HttpUtil.httpGet4String(thisUrl, headers) ?: return null
+                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
                     Logger.d("newsListJson:$newsListJson")
                     if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
                         val newsIndex = g.fromJson(newsListJson, WanandroidGson::class.java)
@@ -355,7 +355,7 @@ class siteInfo_diycode(_context: Context) {
                 )
                 Logger.d(thisUrl)
                 try {
-                    val newsListJson = HttpUtil.httpGet4String(thisUrl, headers) ?: return null
+                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
                     if (newsListJson.isEmpty()) return null
                     if (newsListJson.startsWith("{") && newsListJson.startsWith("}")) {
                         val error = g.fromJson(newsListJson, DiycodeNewErrorGson::class.java)
@@ -405,7 +405,7 @@ class siteInfoZhihuDaily(_context: Context) {
                 )
                 Logger.d(thisUrl)
                 try {
-                    val newsListJson = HttpUtil.httpGet4String(thisUrl, headers) ?: return null
+                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
                     Logger.d("newsListJson:$newsListJson")
                     if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
                         val newsIndex = g.fromJson(newsListJson, ZhihuDailyGson::class.java)

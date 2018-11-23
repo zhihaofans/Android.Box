@@ -18,11 +18,12 @@ import com.tencent.smtt.sdk.WebViewClient
  * @date: 2018-11-16 15:44
 
  */
-class X5WebMod(x5Web: WebView) {
-    private val x5WebView = x5Web
+class X5WebMod {
+    private var x5WebView: WebView? = null
     @SuppressLint("SetJavaScriptEnabled")
-    fun init() {
-        x5WebView.apply {
+    fun init(x5Web: WebView) {
+        x5WebView = x5Web
+        x5WebView?.apply {
             // WebViewClient
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
@@ -57,9 +58,9 @@ class X5WebMod(x5Web: WebView) {
         }
     }
 
-    fun loadUrl(url: String) = x5WebView.loadUrl(url)
+    fun loadUrl(url: String) = x5WebView?.loadUrl(url)
     fun getWebView() = x5WebView
-    fun getNowUrl(): String = x5WebView.url
-    fun canGoBack() = x5WebView.canGoBack()
-    fun goBack() = x5WebView.goBack()
+    fun getNowUrl() = x5WebView?.url
+    fun canGoBack() = x5WebView?.canGoBack()
+    fun goBack() = x5WebView?.goBack()
 }

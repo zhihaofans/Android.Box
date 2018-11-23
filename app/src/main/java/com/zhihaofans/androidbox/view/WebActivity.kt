@@ -6,6 +6,7 @@ import android.view.KeyEvent
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.isFalseOrNull
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.mod.X5WebMod
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -19,7 +20,7 @@ import org.jetbrains.anko.toast
 class WebActivity : AppCompatActivity() {
     private var webUrl: String? = null
     private var webTitle: String? = null
-    private val x5Web = X5WebMod(webView)
+    private val x5Web = X5WebMod()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web)
@@ -35,7 +36,15 @@ class WebActivity : AppCompatActivity() {
                 when (i) {
                     0 -> webView.reload()
                     1 -> share(webView.url)
-                    2 -> SystemUtil.chromeCustomTabs(this, x5Web.getNowUrl())
+                    2 -> {
+                        val nowUrl = x5Web.getNowUrl()
+                        if (nowUrl.isNullOrEmpty()) {
+                            toast("发生错误：nowUrl.isNullOrEmpty")
+                            finish()
+                        } else {
+                            SystemUtil.chromeCustomTabs(this, nowUrl)
+                        }
+                    }
                 }
             }
         }
@@ -45,12 +54,12 @@ class WebActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             //全屏播放退出全屏
-            if (x5Web.canGoBack()) {
-                x5Web.goBack()
-                return true
-            } else {
+            if (x5Web.canGoBack().isFalseOrNull()) {
                 x5Web.loadUrl("about:blank")
                 finish()
+            } else {
+                x5Web.goBack()
+                return true
             }
         }
         return false
@@ -73,7 +82,7 @@ class WebActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        x5Web.init()
+        x5Web.init(webView)
         try {
             if (intent.extras !== null) {
                 webUrl = intent.extras!!.getString("url", null)

@@ -19,15 +19,15 @@ class siteInfo_gankio(_context: Context) {
     fun getchannelList(): MutableList<MutableMap<String, String>> {
         return mutableListOf(
                 mutableMapOf(
-                        "channelId" to "gank_io_all",
+                        "channelId" to ItemNameMod.FEED_GANK_IO_ALL,
                         "channelName" to context.getString(R.string.text_site_gank_io) + "-" + context.getString(R.string.text_all)
                 ),
                 mutableMapOf(
-                        "channelId" to "gank_io_android",
+                        "channelId" to ItemNameMod.FEED_GANK_IO_ANDROID,
                         "channelName" to context.getString(R.string.text_site_gank_io) + "-" + context.getString(R.string.text_android)
                 ),
                 mutableMapOf(
-                        "channelId" to "gank_io_girl",
+                        "channelId" to ItemNameMod.FEED_GANK_IO_GIRL,
                         "channelName" to context.getString(R.string.text_site_gank_io) + "-" + context.getString(R.string.text_gankio_girl)
                 )
         )
@@ -197,31 +197,31 @@ class siteInfo_rsshub(_context: Context) {
     fun getchannelList(): MutableList<MutableMap<String, String>> {
         return mutableListOf(
                 mutableMapOf(
-                        "channelId" to "rsshub_v2ex_topics",
+                        "channelId" to UrlMod.RSSHUB_V2EX,
                         "channelName" to context.getString(R.string.text_site_rsshub_v2ex_topics)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_douban_movie_playing",
+                        "channelId" to UrlMod.RSSHUB_DOUBANMOVIEPLAYING,
                         "channelName" to context.getString(R.string.text_site_rsshub_douban_movie_playing)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_jike_editor_choice",
+                        "channelId" to UrlMod.RSSHUB_JIKE,
                         "channelName" to context.getString(R.string.text_site_rsshub_jike_editors_choice)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_juejin_trending_android",
+                        "channelId" to UrlMod.RSSHUB_JUEJINTRENDINGANDROID,
                         "channelName" to context.getString(R.string.text_site_rsshub_juejin_trending_android)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_bangumi_calendar_today",
+                        "channelId" to UrlMod.RSSHUB_BANGUMITODAY,
                         "channelName" to context.getString(R.string.text_site_rsshub_bangumi_calendar_today)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_new_rss",
+                        "channelId" to UrlMod.RSSHUB_NEW_RSS,
                         "channelName" to context.getString(R.string.text_site_rsshub_new_rss)
                 ),
                 mutableMapOf(
-                        "channelId" to "rsshub_guokr_scientific",
+                        "channelId" to UrlMod.RSSHUB_GUOKR_SCIENTIFIC,
                         "channelName" to context.getString(R.string.text_site_rsshub_guokr_scientific)
                 )
         )
@@ -235,13 +235,13 @@ class siteInfo_rsshub(_context: Context) {
         val newsListJson: String
         val newsList = mutableListOf<MutableMap<String, String>>()
         val thisUrl = when (channelId) {
-            "rsshub_v2ex_topics" -> "https://rsshub.app/v2ex/topics/latest.json"
-            "rsshub_douban_movie_playing" -> "https://rsshub.app/douban/movie/playing.json"
-            "rsshub_jike_editor_choice" -> "https://rsshub.app/jike/topic/54dffb40e4b0f57466e675f0.json"
-            "rsshub_juejin_trending_android" -> "https://rsshub.app/juejin/trending/android/monthly.json"
-            "rsshub_bangumi_calendar_today" -> "https://rsshub.app/bangumi/calendar/today.json"
-            "rsshub_new_rss" -> "https://rsshub.app/rsshub/rss.json"
-            "rsshub_guokr_scientific" -> "https://rsshub.app/guokr/scientific.json"
+            ItemNameMod.FEED_RSSHUB_V2EX_TOPICS -> UrlMod.RSSHUB_V2EX
+            ItemNameMod.FEED_RSSHUB_DOUBAN_MOVIE_PLAYING -> UrlMod.RSSHUB_DOUBANMOVIEPLAYING
+            ItemNameMod.FEED_RSSHUB_JIKE_EDITOR_CHOICE -> UrlMod.RSSHUB_JIKE
+            ItemNameMod.FEED_RSSHUB_JUEJIN_TRENDING_ANDROID -> UrlMod.RSSHUB_JUEJINTRENDINGANDROID
+            ItemNameMod.FEED_RSSHUB_BANGUMI_CALENDAR_TODAY -> UrlMod.RSSHUB_BANGUMITODAY
+            ItemNameMod.FEED_RSSHUB_NEW_RSS -> UrlMod.RSSHUB_NEW_RSS
+            ItemNameMod.FEED_RSSHUB_GUOKR_SCIENTIFIC -> UrlMod.RSSHUB_GUOKR_SCIENTIFIC
             else -> return null
         }
         if (thisUrl.isEmpty()) return null
@@ -274,7 +274,7 @@ class siteInfo_wanandroid(_context: Context) {
     fun getchannelList(): MutableList<MutableMap<String, String>> {
         return mutableListOf(
                 mutableMapOf(
-                        "channelId" to "wanandroid_index",
+                        "channelId" to ItemNameMod.FEED_WANANDROID_INDEX,
                         "channelName" to context.getString(R.string.text_site_wanandroid)
                 )
         )
@@ -333,8 +333,8 @@ class siteInfo_diycode(_context: Context) {
     fun getchannelList(): MutableList<MutableMap<String, String>> {
         return mutableListOf(
                 mutableMapOf(
-                        "channelId" to "diycode_news",
-                        "channelName" to "diycode news"
+                        "channelId" to ItemNameMod.FEED_DIYCODE_NEWS,
+                        "channelName" to ItemNameMod.FEED_DIYCODE_NEWS
                 )
         )
     }

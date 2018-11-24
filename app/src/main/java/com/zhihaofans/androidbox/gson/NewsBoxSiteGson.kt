@@ -50,14 +50,14 @@ data class SspaiArticleListGson(
 )
 
 // RSSHub
-data class RsshubGson(
-        val items: MutableList<RsshubItemGson>
+data class Rss2jsonGson(
+        val status: String,
+        val items: List<Rss2jsonItemGson>?
 )
 
-data class RsshubItemGson(
-        val url: String,
-        val title: String,
-        val summary: String
+data class Rss2jsonItemGson(
+        val link: String,
+        val title: String
 )
 
 // WanAndroid

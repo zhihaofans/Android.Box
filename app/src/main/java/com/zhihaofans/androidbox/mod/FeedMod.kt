@@ -37,7 +37,7 @@ class FeedMod {
         fun init(context: Context) {
             mContext = context
             sites = NewsBoxMod.sites(mContext!!)
-            siteList = sites!!.getSiteList().map {
+            siteList = sites!!.getOldVerSiteList().map {
                 SiteInfo(it["id"]!!, it["name"]!!)
             }.toMutableList()
             siteList.map { site ->
@@ -56,7 +56,7 @@ class FeedMod {
 
         fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<NewsInfo>? {
             Logger.d("getNewsList:$siteId/$channelId/$page")
-            val newsL = sites!!.getNewsList(siteId, channelId, page)
+            val newsL = sites!!.getOldVerNewsList(siteId, channelId, page)
             return newsL?.map { NewsInfo(it["title"]!!, it["web_url"]!!) }?.toMutableList()
 
         }
@@ -86,7 +86,7 @@ class FeedMod {
                 } else {
                     var siteName = ""
                     var channelName = ""
-                    sites!!.getSiteList().map {
+                    sites!!.getOldVerSiteList().map {
                         if (it["id"] == siteId) {
                             siteName = it["id"]!!
                         }

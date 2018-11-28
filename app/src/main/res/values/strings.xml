@@ -94,4 +94,5 @@
     <string name="text_buildin_web_browser">Build-in web browser</string>
     <string name="title_activity_image_web">Image site</string>
     <string name="text_open_in_other_browser">Open in other browser</string>
+    <string name="title_activity_tools">Tools</string>
 </resources>

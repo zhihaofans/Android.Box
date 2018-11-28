@@ -3,6 +3,7 @@ package com.zhihaofans.androidbox.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
+import android.app.WallpaperManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
@@ -19,6 +20,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
@@ -321,7 +323,7 @@ class SystemUtil {
                     val cursor: Cursor? = context.contentResolver.query(uri, arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null, null)
                     if (null != cursor) {
                         if (cursor.moveToFirst()) {
-                            val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                            val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
                             if (index > -1) {
                                 data = cursor.getString(index)
                             }
@@ -331,6 +333,10 @@ class SystemUtil {
                 }
             }
             return data
+        }
+
+        fun getWallpeper(context: Context): Bitmap {
+            return WallpaperManager.getInstance(context).drawable.toBitmap()
         }
 
     }

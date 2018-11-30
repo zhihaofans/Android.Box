@@ -116,9 +116,12 @@ class FeedActivity : AppCompatActivity() {
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
         val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-        loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
+        loadingProgressBar.setOnCancelListener {
+            toast(R.string.text_canceled_by_user)
+            finish()
+        }
         listView_feed.removeAllItems()
         when (index) {
             0 -> {
@@ -134,17 +137,17 @@ class FeedActivity : AppCompatActivity() {
                     doAsync {
                         Logger.d("newsInit")
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
-                        uiThread { _ ->
+                        uiThread {
                             if (cache == null) {
                                 loadingProgressBar.dismiss()
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
-                                initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { i->i.title }, cache!!.newsList.map { i -> i.url }))
                             }
                         }
                     }
                 } else {
-                    initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                    initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                 }
             }
             1 -> {

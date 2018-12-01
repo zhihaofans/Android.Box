@@ -335,7 +335,7 @@ class SystemUtil {
             return data
         }
 
-        fun getWallpeper(context: Context): Bitmap {
+        fun getWallpaper(context: Context): Bitmap {
             return WallpaperManager.getInstance(context).drawable.toBitmap()
         }
 

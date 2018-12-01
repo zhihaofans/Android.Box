@@ -181,7 +181,6 @@ class FeedMod {
         private var mContext: Context? = null
         private var siteParser: AppDownMod.SiteParser? = null
         private val dataBase = AppDownMod.DataBase()
-        private val savePath = SystemUtil.getDownloadPathString() + "Android.Box/"
         private var appFeeds = mutableListOf<AppDownFeed>()
         fun init(context: Context) {
             mContext = context
@@ -221,7 +220,7 @@ class FeedMod {
             }.toMutableList()
         }
 
-        fun getSavePath(): String = savePath
+        fun getSavePath(): String = UrlMod.APP_DOWNLOAD_PATH
 
 
         fun importDB(dataBaseStr: String): Boolean {

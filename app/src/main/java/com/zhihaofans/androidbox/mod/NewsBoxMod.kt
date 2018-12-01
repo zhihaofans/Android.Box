@@ -35,7 +35,6 @@ class NewsBoxMod {
                 ItemNameMod.FEED_GANK_IO -> siteInfo_gankio(context).getNewsList(channelId, page)
                 ItemNameMod.FEED_RSSHUB -> siteInfo_rsshub(context).getNewsList(channelId)
                 ItemNameMod.FEED_WANANDROID -> siteInfo_wanandroid(context).getNewsList(channelId, page)
-                ItemNameMod.FEED_DIYCODE -> siteInfo_diycode(context).getNewsList(channelId, page)
                 ItemNameMod.FEED_ZHIHU_DAILY -> siteInfoZhihuDaily(context).getNewsList(channelId, page)
                 else -> null
             }
@@ -90,11 +89,6 @@ class NewsBoxMod {
                             listOf(ChannelInfo(ItemNameMod.FEED_WANANDROID_INDEX, context.getString(R.string.text_site_wanandroid)))
                     ),
                     SiteInfo(
-                            ItemNameMod.FEED_DIYCODE,
-                            ItemNameMod.FEED_DIYCODE,
-                            listOf(ChannelInfo(ItemNameMod.FEED_DIYCODE_NEWS, ItemNameMod.FEED_DIYCODE_NEWS))
-                    ),
-                    SiteInfo(
                             ItemNameMod.FEED_ZHIHU_DAILY,
                             context.getString(R.string.text_site_zhihu_daily),
                             listOf(ChannelInfo(ItemNameMod.FEED_ZHIHU_DAILY, context.getString(R.string.text_site_zhihu_daily)))
@@ -120,7 +114,6 @@ class NewsBoxMod {
                 ItemNameMod.FEED_GANK_IO -> siteInfo_gankio(context).getchannelList()
                 ItemNameMod.FEED_RSSHUB -> siteInfo_rsshub(context).getchannelList()
                 ItemNameMod.FEED_WANANDROID -> siteInfo_wanandroid(context).getchannelList()
-                ItemNameMod.FEED_DIYCODE -> siteInfo_diycode(context).getchannelList()
                 ItemNameMod.FEED_ZHIHU_DAILY -> siteInfoZhihuDaily(context).getchannelList()
                 else -> null
             }*/

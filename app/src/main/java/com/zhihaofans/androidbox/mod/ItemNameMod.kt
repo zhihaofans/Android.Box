@@ -25,8 +25,6 @@ class ItemNameMod {
         const val FEED_RSSHUB_GUOKR_SCIENTIFIC = "rsshub_guokr_scientific"
         const val FEED_WANANDROID = "wanandroid"
         const val FEED_WANANDROID_INDEX = "wanandroid_index"
-        const val FEED_DIYCODE = "diycode"
-        const val FEED_DIYCODE_NEWS = "diycode_news"
         const val FEED_ZHIHU_DAILY = "zhihu_daily"
     }
 }

@@ -103,7 +103,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_feed),
                 getString(R.string.title_activity_xxdown),
                 "测试通知",
-                "Waterfall test"
+                "Waterfall test",
+                "更多工具"
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.setOnItemClickListener { _, _, index, _ ->
@@ -175,6 +176,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 10 -> startActivity<ImageWebActivity>()
+                11 -> startActivity<ToolsActivity>()
             }
         }
         checkPermissions()

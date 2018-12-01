@@ -108,30 +108,6 @@ data class WanandroidDataItemTagGson(
         val url: String
 )
 
-// diycode
-data class DiycodeNewErrorGson(
-        val error: String?
-)
-
-data class DiycodeNewItemGson(
-        val id: Int,
-        val title: String,
-        val created_at: String,
-        val updated_at: String,
-        val user: DiycodeNewItemUserGson,
-        val node_name: String,
-        val node_id: Int,
-        val address: String,
-        val replies_count: Int
-)
-
-data class DiycodeNewItemUserGson(
-        val id: Int,
-        val login: String,
-        val name: String,
-        val avatar_url: String
-)
-
 // zhihu daily
 data class ZhihuDailyGson(
         val date: String,

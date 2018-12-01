@@ -225,52 +225,6 @@ class siteInfo_wanandroid(_context: Context) {
     }
 }
 
-
-class siteInfo_diycode(_context: Context) {
-    private val g = Gson()
-    private val context = _context
-
-    fun getNewsList(channelId: String, page: Int): MutableList<News>? {
-        val jsonParser = JsonParser()
-        var _page = page
-        val newsList = mutableListOf<News>()
-        if (page < 1) {
-            _page = 1
-        }
-        when (channelId) {
-            ItemNameMod.FEED_DIYCODE_NEWS -> {
-                val thisUrl = UrlMod.DIYCODE_NEWS + "${20 * (_page - 1)}"
-                val headers = mutableMapOf(
-                        Pair("content-type", "application/json;charset=UTF-8"),
-                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-                )
-                Logger.d(thisUrl)
-                try {
-                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
-                    if (newsListJson.isEmpty()) return null
-                    if (newsListJson.startsWith("{") && newsListJson.startsWith("}")) {
-                        val error = g.fromJson(newsListJson, DiycodeNewErrorGson::class.java)
-                        if (error.error != null) return null
-                    }
-                    val jsonAarray = jsonParser.parse(newsListJson).asJsonArray
-                    if (jsonAarray.size() == 0) return null
-                    jsonAarray.map {
-                        g.fromJson(it, DiycodeNewItemGson::class.java).apply {
-                            newsList.add(News(title, address))
-                        }
-                    }
-
-                    return newsList
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    return null
-                }
-            }
-            else -> return null
-        }
-    }
-}
-
 class siteInfoZhihuDaily(_context: Context) {
     private val g = Gson()
     private val context = _context

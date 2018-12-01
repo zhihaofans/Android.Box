@@ -23,6 +23,7 @@ import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
+import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -177,7 +178,7 @@ class ImageViewActivity : AppCompatActivity() {
 
     private fun download(fileName: String, engine: Int) {
         notificationUtil.init(this@ImageViewActivity)
-        val downloadPath: String = SystemUtil.getPicturePathString() + "/Android.Box/$fileName"
+        val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
         Logger.d("downloadPath:$downloadPath")
         val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
         loadingProgressBarDownload.setCancelable(false)

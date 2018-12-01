@@ -1,5 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
+import com.zhihaofans.androidbox.util.SystemUtil
+
 /**
  * Created by zhihaofans on 2018/11/23.
  */
@@ -24,8 +26,11 @@ class UrlMod {
         const val RSSHUB_NEW_RSS = RSSHUB + "RSSHUB/rss"
         const val RSSHUB_GUOKR_SCIENTIFIC = RSSHUB + "guokr/scientific"
         const val WANANDROID_INDEX = "http://www.wanandroid.com/article/list/"
-        const val DIYCODE_NEWS = "https://diycode.cc/api/v3/news?node_id=1&limit=20&offset="
         const val ZHIHU_DAILY = "https://news-at.zhihu.com/api/4/news/latest"
         const val ZHIHU_DAILY_WEB = "https://daily.zhihu.com/story/"
+
+        // Local
+        val APP_DOWNLOAD_PATH = SystemUtil.getDownloadPathString() + "Android.Box/"
+        val APP_PICTURE_DOWNLOAD_PATH = SystemUtil.getPicturePathString() + "Android.Box/"
     }
 }

@@ -34,8 +34,9 @@ class ToolsActivity : AppCompatActivity() {
                 0 -> {
                     val wallpaper = SystemUtil.getWallpaper(this)
                     val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH
+                    val time=SystemUtil.unixTimeStampMill()
                     coordinatorLayout_tools.snackbar(
-                            "保存" + wallpaper.saveFile(saveTo, Bitmap.CompressFormat.PNG).string(
+                            "保存" + wallpaper.saveFile(saveTo+"Wallpaper-$time.png", Bitmap.CompressFormat.PNG).string(
                                     "成功", "失败"
                             )
                     )

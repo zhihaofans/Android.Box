@@ -14,10 +14,14 @@ class FavoritesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_favorites)
         setSupportActionBar(toolbar_favorites)
 
+        init()
+    }
+
+    private fun init() {
+
         fab_favorites.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
     }
-
 }

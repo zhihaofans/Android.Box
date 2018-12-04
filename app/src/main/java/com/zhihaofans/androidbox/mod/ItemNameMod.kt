@@ -26,5 +26,10 @@ class ItemNameMod {
         const val FEED_WANANDROID = "wanandroid"
         const val FEED_WANANDROID_INDEX = "wanandroid_index"
         const val FEED_ZHIHU_DAILY = "zhihu_daily"
+        // DateBase
+        const val DATEBASE_KEY_FAVORITES_LIST = "datebase_key_favorites_list"
+        // Favorites
+        const val FAVORITES_TYPE_URL = "favorites_type_url"
+        const val FAVORITES_TYPE_TEXT = "favorites_type_text"
     }
 }

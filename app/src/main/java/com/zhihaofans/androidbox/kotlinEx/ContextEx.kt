@@ -1,5 +1,8 @@
 package com.zhihaofans.androidbox.kotlinEx
 
+import android.content.ClipData
+import android.content.ClipDescription
+import android.content.ClipboardManager
 import android.content.Context
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
@@ -14,6 +17,18 @@ import com.zhihaofans.androidbox.R
  */
 fun Context.appName(): String = this.getString(R.string.app_name)
 
-fun Context.logd(message: Any) = Logger.d(message)
-fun Context.loge(message: String) = Logger.e(message)
-fun Context.logi(message: String) = Logger.i(message)
+fun Context.copy(text: String) {
+    (this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip = ClipData.newPlainText(this.packageName + ".text", text)
+}
+
+fun Context.paste(): String? {
+    val clipManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    if (clipManager.hasPrimaryClip() || clipManager.primaryClipDescription != null || clipManager.primaryClipDescription!!.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) return null
+    val pasteData = clipManager.primaryClip!!.getItemAt(0).text
+    if (pasteData.isNullOrEmpty()) return null
+    return pasteData.toString()
+}
+
+fun Context.logD(message: Any) = Logger.d(message)
+fun Context.logE(message: String) = Logger.e(message)
+fun Context.logI(message: String) = Logger.i(message)

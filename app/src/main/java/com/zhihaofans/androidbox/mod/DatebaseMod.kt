@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.mod
 
+import io.paperdb.Book
 import io.paperdb.Paper
 
 /**
@@ -12,9 +13,10 @@ import io.paperdb.Paper
  */
 class DatebaseMod(dbName: String) {
     private val mDbName = dbName
-    fun readString(key: String): MutableList<String> = Paper.book(mDbName).read(key)
+    fun readString(key: String): MutableList<String>? = Paper.book(mDbName).read(key, null)
 
-    fun readInt(key: String): MutableList<Int> = Paper.book(mDbName).read(key)
-    fun read(key: String): MutableList<Any> = Paper.book(mDbName).read(key)
-    fun write(key: String, data: List<Any>) = Paper.book(mDbName).write(key, data)
+    fun readInt(key: String): MutableList<Int>? = Paper.book(mDbName).read(key, null)
+    fun read(key: String): MutableList<Any>? = Paper.book(mDbName).read(key, null)
+    fun write(key: String, data: List<Any>): Book = Paper.book(mDbName).write(key, data)
+
 }

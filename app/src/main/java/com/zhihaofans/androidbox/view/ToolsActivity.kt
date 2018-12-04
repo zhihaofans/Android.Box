@@ -17,6 +17,7 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_tools.*
 import kotlinx.android.synthetic.main.content_tools.*
+import org.jetbrains.anko.startActivity
 
 class ToolsActivity : AppCompatActivity() {
 
@@ -30,7 +31,8 @@ class ToolsActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         val tools = listOf(
-                "获取当前壁纸"
+                "获取当前壁纸",
+                "收藏夹"
         )
         listView_tools.init(this, tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
@@ -56,6 +58,7 @@ class ToolsActivity : AppCompatActivity() {
                             })
 
                 }
+                1 -> startActivity<FavoritesActivity>()
             }
         }
     }

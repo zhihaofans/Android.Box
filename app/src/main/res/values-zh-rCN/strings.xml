@@ -95,4 +95,5 @@
     <string name="text_open_in_other_browser">在其他浏览器打开</string>
     <string name="title_activity_tools">工具</string>
     <string name="title_activity_favorites">收藏夹</string>
+    <string name="text_add">添加</string>
 </resources>

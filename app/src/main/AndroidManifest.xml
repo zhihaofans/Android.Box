@@ -155,6 +155,10 @@
         <activity
             android:name=".view.ToolsActivity"
             android:label="@string/title_activity_tools"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.FavoritesActivity"
+            android:label="@string/title_activity_favorites"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

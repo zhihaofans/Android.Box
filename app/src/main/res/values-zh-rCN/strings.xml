@@ -93,4 +93,6 @@
     <string name="text_buildin_web_browser">内置网页浏览器</string>
     <string name="title_activity_image_web">图站</string>
     <string name="text_open_in_other_browser">在其他浏览器打开</string>
+    <string name="title_activity_tools">工具</string>
+    <string name="title_activity_favorites">收藏夹</string>
 </resources>

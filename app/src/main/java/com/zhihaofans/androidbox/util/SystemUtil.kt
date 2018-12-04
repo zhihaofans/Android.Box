@@ -12,6 +12,7 @@ import android.content.pm.ApplicationInfo
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -34,6 +35,7 @@ import dev.utils.common.FileUtils
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -335,8 +337,22 @@ class SystemUtil {
             return data
         }
 
-        fun getWallpaper(context: Context): Bitmap {
-            return WallpaperManager.getInstance(context).drawable.toBitmap()
+        fun saveWallpaper(context: Context, filePath: String): Boolean {
+            val wmInstance = WallpaperManager.getInstance(context)
+            return if (wmInstance.isWallpaperSupported) {
+                wmInstance
+                        .drawable
+                        .toBitmap()
+                        .compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(filePath))
+            } else {
+                false
+            }
+
+        }
+
+        fun getWallpaper(context: Context): Drawable {
+            val wmInstance = WallpaperManager.getInstance(context)
+            return wmInstance.drawable
         }
 
     }

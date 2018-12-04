@@ -3,7 +3,11 @@ package com.zhihaofans.androidbox.view
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.esotericsoftware.kryo.util.Util.string
 import com.google.android.material.snackbar.Snackbar
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.saveFile
@@ -32,14 +36,25 @@ class ToolsActivity : AppCompatActivity() {
         listView_tools.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
-                    val wallpaper = SystemUtil.getWallpaper(this)
-                    val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH
-                    val time = SystemUtil.unixTimeStampMill()
-                    coordinatorLayout_tools.snackbar(
-                            "保存" + wallpaper.saveFile(saveTo + "Wallpaper-$time.png", Bitmap.CompressFormat.PNG).string(
-                                    "成功", "失败"
-                            )
-                    )
+                    XXPermissions.with(this)
+                            .permission(Permission.Group.STORAGE)
+                            .request(object : OnPermission {
+                                override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                    if (isAll) {
+                                        val time = SystemUtil.unixTimeStampMill()
+                                        val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "Wallpaper-$time.png"
+                                        val wallpaper = SystemUtil.saveWallpaper(this@ToolsActivity, saveTo)
+                                        coordinatorLayout_tools.snackbar("保存" + wallpaper.string("成功($saveTo)", "失败"))
+                                    } else {
+                                        coordinatorLayout_tools.snackbar("未授权储存权限，无法保存")
+                                    }
+                                }
+
+                                override fun noPermission(denied: List<String>, quick: Boolean) {
+                                    coordinatorLayout_tools.snackbar("未授权储存权限，无法保存")
+                                }
+                            })
+
                 }
             }
         }

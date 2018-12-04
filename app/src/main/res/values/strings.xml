@@ -95,4 +95,5 @@
     <string name="title_activity_image_web">Image site</string>
     <string name="text_open_in_other_browser">Open in other browser</string>
     <string name="title_activity_tools">Tools</string>
+    <string name="title_activity_favorites">Favorites</string>
 </resources>

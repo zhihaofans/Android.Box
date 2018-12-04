@@ -13,6 +13,7 @@ import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.saveFile
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
+import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_tools.*
@@ -32,7 +33,8 @@ class ToolsActivity : AppCompatActivity() {
         }
         val tools = listOf(
                 "获取当前壁纸",
-                "收藏夹"
+                "收藏夹",
+                "修复收藏夹"
         )
         listView_tools.init(this, tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
@@ -59,6 +61,21 @@ class ToolsActivity : AppCompatActivity() {
 
                 }
                 1 -> startActivity<FavoritesActivity>()
+                2 -> {
+                    try {
+
+                        val favoritesMod = FavoritesMod()
+                        if (favoritesMod.deleteDataBase()) {
+                            coordinatorLayout_tools.snackbar(R.string.text_yes)
+                        } else {
+                            coordinatorLayout_tools.snackbar(R.string.text_no)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        coordinatorLayout_tools.snackbar("Exception")
+
+                    }
+                }
             }
         }
     }

@@ -3,11 +3,9 @@ package com.zhihaofans.androidbox.view
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.copy
-import com.zhihaofans.androidbox.kotlinEx.init
-import com.zhihaofans.androidbox.kotlinEx.snackbar
-import com.zhihaofans.androidbox.kotlinEx.string
+import com.zhihaofans.androidbox.kotlinEx.*
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemNameMod
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -70,6 +68,7 @@ class FavoritesActivity : AppCompatActivity() {
                                                                     "Exception"
                                                                 })
 
+                                                initFavorites()
                                             }
                                         }
                                         ItemNameMod.FAVORITES_TYPE_TEXT -> {
@@ -83,6 +82,7 @@ class FavoritesActivity : AppCompatActivity() {
                                                         "Exception"
                                                     })
 
+                                            initFavorites()
 
                                         }
                                         else -> {
@@ -106,9 +106,11 @@ class FavoritesActivity : AppCompatActivity() {
         val listViewData = favoritesList.map {
             it.title
         }.toList()
+        listView_favorites.removeAllItems()
         listView_favorites.init(this, listViewData)
         listView_favorites.setOnItemClickListener { parent, view, position, id ->
             val chooseFavorites = favoritesList[position]
+            Logger.d("chooseFavorites:$chooseFavorites")
             when (chooseFavorites.type) {
                 ItemNameMod.FAVORITES_TYPE_TEXT -> {
                     alert {
@@ -123,12 +125,32 @@ class FavoritesActivity : AppCompatActivity() {
                         onCancelled {
                             coordinatorLayout_favorites.snackbar(R.string.text_canceled_by_user)
                         }
-                        positiveButton(R.string.text_share) {
-                            share(chooseFavorites.content)
+                        negativeButton(R.string.text_delete) {
+                            alert {
+                                message = getString(R.string.text_delete) + " ?"
+                                onCancelled {
+                                    coordinatorLayout_favorites.snackbar(R.string.text_canceled_by_user)
+                                }
+                                yesButton {
+                                    coordinatorLayout_favorites.snackbar(
+                                            getString(R.string.text_delete) + ":" +
+                                                    favoritesMod.delete(position).string(getString(R.string.text_yes), getString(R.string.text_no))
+                                    )
+                                    initFavorites()
+                                }
+                                cancelButton { coordinatorLayout_favorites.snackbar(R.string.text_canceled_by_user) }
+                            }.show()
                         }
-                        negativeButton(R.string.text_copy) {
-                            copy(chooseFavorites.content)
-                            coordinatorLayout_favorites.snackbar("复制完毕")
+                        positiveButton(getString(R.string.text_copy) + "/" + getString(R.string.text_share)) {
+                            selector("", listOf(getString(R.string.text_copy), getString(R.string.text_share))) { _: DialogInterface, i: Int ->
+                                when (i) {
+                                    0 -> {
+                                        copy(chooseFavorites.content)
+                                        coordinatorLayout_favorites.snackbar("复制完毕")
+                                    }
+                                    1 -> share(chooseFavorites.content)
+                                }
+                            }
                         }
                     }.show()
                 }
@@ -153,9 +175,11 @@ class FavoritesActivity : AppCompatActivity() {
                                             getString(R.string.text_delete) + ":" +
                                                     favoritesMod.delete(position).string(getString(R.string.text_yes), getString(R.string.text_no))
                                     )
+                                    initFavorites()
+
                                 }
                                 cancelButton { coordinatorLayout_favorites.snackbar(R.string.text_canceled_by_user) }
-                            }
+                            }.show()
                         }
                     }.show()
                 }

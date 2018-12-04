@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Context
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.gson.FavoritesGson
 import com.zhihaofans.androidbox.gson.FavoritesItemGson
 import dev.utils.common.FileUtils
@@ -27,7 +28,7 @@ class FavoritesMod {
     fun add(id: String, title: String, type: String, context: String): Boolean {
         val favoritesGson = this.load()
         val favoritesList = favoritesGson.items
-        favoritesList.add(FavoritesItemGson(id, title, type, context))
+        favoritesList.add(FavoritesItemGson(id, title, context, type))
         return this.write(FavoritesGson(favoritesList))
     }
 
@@ -38,7 +39,7 @@ class FavoritesMod {
         return this.write(FavoritesGson(favoritesList))
     }
 
-    fun deleteAll(context: Context): Boolean {
+    fun deleteAll(): Boolean {
         Paper.book(dbName).delete(favoritesListKey)
         return Paper.book(dbName).read(favoritesListKey, mutableListOf<FavoritesItemGson>()).size == 0
     }
@@ -73,7 +74,8 @@ class FavoritesMod {
 
     private fun write(favoritesList: FavoritesGson): Boolean {
         val json = g.toJson(favoritesList, FavoritesGson::class.java)
-        return Paper.book(dbName).write(favoritesListKey, json).read(favoritesListKey, null) == json
+        Logger.d("write:\n$json")
+        return Paper.book(dbName).write(favoritesListKey, json).read(favoritesListKey, "") == json
     }
 
 }

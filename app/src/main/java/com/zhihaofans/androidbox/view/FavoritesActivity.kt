@@ -82,7 +82,7 @@ class FavoritesActivity : AppCompatActivity() {
                             }
                         }
                     }
-                }
+                }.show()
             }
         }
         initFavorites()

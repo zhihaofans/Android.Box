@@ -20,7 +20,10 @@ class FavoritesMod {
     private val dbName = "com.zhihaofans.androidbox.favorites"
     private val favoritesListKey = ItemNameMod.DATEBASE_KEY_FAVORITES_LIST
     private val dbPath = Paper.book(dbName).getPath(favoritesListKey)
-    fun load(): FavoritesGson = Paper.book(dbName).read(favoritesListKey, FavoritesGson(mutableListOf()))
+    fun load(): FavoritesGson {
+        val json = Paper.book(dbName).read(favoritesListKey, g.toJson(FavoritesGson(mutableListOf()), FavoritesGson::class.java))
+        return g.fromJson(json, FavoritesGson::class.java)
+    }
     fun add(id: String, title: String, type: String, context: String): Boolean {
         val favoritesGson = this.load()
         val favoritesList = favoritesGson.items

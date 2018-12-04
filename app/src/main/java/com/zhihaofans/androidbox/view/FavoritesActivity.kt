@@ -61,20 +61,33 @@ class FavoritesActivity : AppCompatActivity() {
                                             } else {
                                                 coordinatorLayout_favorites.snackbar(
                                                         getString(R.string.text_add) + ":" +
-                                                                favoritesMod.add(time, inputTitle.string(), inputContent.string(), chooseType)
-                                                                        .string(getString(R.string.text_yes), getString(R.string.text_no))
-                                                )
+                                                                try {
+                                                                    favoritesMod.add(time, inputTitle.string(), inputContent.string(), chooseType)
+                                                                            .string(getString(R.string.text_yes), getString(R.string.text_no))
+
+                                                                } catch (e: Exception) {
+                                                                    e.printStackTrace()
+                                                                    "Exception"
+                                                                })
+
                                             }
                                         }
                                         ItemNameMod.FAVORITES_TYPE_TEXT -> {
                                             coordinatorLayout_favorites.snackbar(
-                                                    getString(R.string.text_add) + ":" +
-                                                            favoritesMod.add(time, inputTitle.string(), inputContent.string(), chooseType)
-                                                                    .string(getString(R.string.text_yes), getString(R.string.text_no))
-                                            )
+                                                    getString(R.string.text_add) + ":" + try {
+                                                        favoritesMod.add(time, inputTitle.string(), inputContent.string(), chooseType)
+                                                                .string(getString(R.string.text_yes), getString(R.string.text_no))
+
+                                                    } catch (e: Exception) {
+                                                        e.printStackTrace()
+                                                        "Exception"
+                                                    })
+
 
                                         }
-                                        else -> coordinatorLayout_favorites.snackbar("错误：未知类型")
+                                        else -> {
+                                            coordinatorLayout_favorites.snackbar("错误：未知类型")
+                                        }
                                     }
 
                                 }
@@ -89,7 +102,7 @@ class FavoritesActivity : AppCompatActivity() {
     }
 
     private fun initFavorites() {
-        val favoritesList = favoritesMod.load()
+        val favoritesList = favoritesMod.load().items
         val listViewData = favoritesList.map {
             it.title
         }.toList()

@@ -1,7 +1,8 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import com.jyuesong.android.kotlin.extract.removeIt
+import com.google.gson.Gson
+import com.zhihaofans.androidbox.gson.FavoritesGson
 import com.zhihaofans.androidbox.gson.FavoritesItemGson
 import dev.utils.common.FileUtils
 import io.paperdb.Paper
@@ -15,24 +16,27 @@ import io.paperdb.Paper
 
  */
 class FavoritesMod {
+    private val g = Gson()
     private val dbName = "com.zhihaofans.androidbox.favorites"
     private val favoritesListKey = ItemNameMod.DATEBASE_KEY_FAVORITES_LIST
     private val dbPath = Paper.book(dbName).getPath(favoritesListKey)
-    fun load(): MutableList<FavoritesItemGson> = Paper.book(dbName).read(favoritesListKey, mutableListOf())
+    fun load(): FavoritesGson = Paper.book(dbName).read(favoritesListKey, FavoritesGson(mutableListOf()))
     fun add(id: String, title: String, type: String, context: String): Boolean {
-        val favoritesList = this.load()
+        val favoritesGson = this.load()
+        val favoritesList = favoritesGson.items
         favoritesList.add(FavoritesItemGson(id, title, type, context))
-        return this.write(favoritesList)
+        return this.write(FavoritesGson(favoritesList))
     }
 
     fun delete(index: Int): Boolean {
-        val favoritesList = this.load()
+        val favoritesGson = this.load()
+        val favoritesList = favoritesGson.items
         favoritesList.removeAt(index)
-        return this.write(favoritesList)
+        return this.write(FavoritesGson(favoritesList))
     }
 
     fun deleteAll(context: Context): Boolean {
-        Paper.book(dbName).removeIt(context, favoritesListKey)
+        Paper.book(dbName).delete(favoritesListKey)
         return Paper.book(dbName).read(favoritesListKey, mutableListOf<FavoritesItemGson>()).size == 0
     }
 
@@ -64,9 +68,9 @@ class FavoritesMod {
         }
     }
 
-    private fun write(favoritesList: MutableList<FavoritesItemGson>): Boolean {
-        val book = Paper.book(dbName).write(favoritesListKey, favoritesList)
-        return book.read(favoritesListKey, null) == favoritesList
+    private fun write(favoritesList: FavoritesGson): Boolean {
+        val json = g.toJson(favoritesList, FavoritesGson::class.java)
+        return Paper.book(dbName).write(favoritesListKey, json).read(favoritesListKey, null) == json
     }
 
 }

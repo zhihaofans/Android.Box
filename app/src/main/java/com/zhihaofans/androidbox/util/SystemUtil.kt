@@ -338,6 +338,9 @@ class SystemUtil {
         }
 
         fun saveWallpaper(context: Context, filePath: String): Boolean {
+            File(filePath).apply {
+                if (!FileUtils.createOrExistsDir(this.parent)) return false
+            }
             val wmInstance = WallpaperManager.getInstance(context)
             return if (wmInstance.isWallpaperSupported) {
                 wmInstance

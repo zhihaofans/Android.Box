@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private val appSettingMod = AppSettingMod()
     private var clipboardUtil: ClipboardUtil? = null
     private val updateWebUrl = "https://fir.im/fkw1"
-    private val notificationUtil = NotificationUtil()
     private val zhihaofansMod = ZhihaofansMod()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,89 +93,21 @@ class MainActivity : AppCompatActivity() {
         }
         val listData = listOf(
                 getString(R.string.text_qrcode),
-                getString(R.string.text_androidsdk),
                 getString(R.string.text_appmanagement),
-                getString(R.string.text_weather),
-                getString(R.string.text_bilibili),
                 getString(R.string.text_serverchan),
                 getString(R.string.title_activity_app_down),
                 getString(R.string.text_feed),
-                getString(R.string.title_activity_xxdown),
-                "测试通知",
-                "Waterfall test",
                 "更多工具"
         )
         listView_main.adapter = ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, listData)
         listView_main.setOnItemClickListener { _, _, index, _ ->
             when (index) {
                 0 -> startActivity<QrcodeActivity>()
-                1 -> {
-                    val sdks = listOf(
-                            "Android 1.0 (API 1)",
-                            "Android 1.1 (API 2, Petit Four 花式小蛋糕)",
-                            "Android 1.5 (API 3, Cupcake 纸杯蛋糕)",
-                            "Android 1.6 (API 4, Donut 甜甜圈)",
-                            "Android 2.0 (API 5, Eclair 松饼)",
-                            "Android 2.0.1 (API 6, Eclair 松饼)",
-                            "Android 2.1 (API 7, Eclair 松饼)",
-                            "Android 2.2.x (API 8, Froyo 冻酸奶)",
-                            "Android 2.3-2.3.2 (API 9, Gingerbread 姜饼)",
-                            "Android 2.3.3-2.3.7 (API 10, Gingerbread 姜饼)",
-                            "Android 3.0 (API 11, Honeycomb 蜂巢)",
-                            "Android 3.1 (API 12, Honeycomb 蜂巢)",
-                            "Android 3.2.x (API 13, Honeycomb 蜂巢)",
-                            "Android 4.0-4.0.2 (API 14, Ice Cream Sandwich 冰激凌三明治)",
-                            "Android 4.0.3-4.0.4 (API 15, Ice Cream Sandwich 冰激凌三明治)",
-                            "Android 4.1.x (API 16, Jelly Bean  果冻豆)",
-                            "Android 4.2.x (API 17, Jelly Bean  果冻豆)",
-                            "Android 4.3.x (API 18, Jelly Bean  果冻豆)",
-                            "Android 4.4.x (API 19, KitKat 奇巧巧克力棒)",
-                            "Android 4.4w.x (API 20, KitKat 奇巧巧克力棒)",
-                            "Android 5.0.x (API 21, Lollipop 棒棒糖)",
-                            "Android 5.1.x (API 22, Lollipop 棒棒糖)",
-                            "Android 6.0.x (API 23, Marshmallow 棉花糖)",
-                            "Android 7.0 (API 24, Nougat 牛轧糖)",
-                            "Android 7.1.x (API 25, Nougat 牛轧糖)",
-                            "Android 8.0 (API 26, Oreo 奥利奥)",
-                            "Android 8.1 (API 27, Oreo 奥利奥)",
-                            "Android 9.0（API 28, Pie 派)"
-                    )
-                    val nowSdk = Build.VERSION.SDK_INT
-                    selector("你是" + if (nowSdk <= sdks.size) sdks[nowSdk - 1] else "UNKNOWN", sdks) { _, i ->
-                        val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
-                        selector(sdks[i], acts) { _, ii ->
-                            when (ii) {
-                                0 -> {
-                                    clipboardUtil?.copy(sdks[i])
-                                    Snackbar.make(coordinatorLayout_main, R.string.text_finish, Snackbar.LENGTH_SHORT).show()
-                                }
-                                1 -> share(sdks[i])
-                            }
-                        }
-                    }
-                }
-                2 -> startActivity<AppManagementActivity>()
-                3 -> startActivity<WeatherActivity>()
-                4 -> startActivity<BilibiliActivity>()
-                5 -> startActivity<ServerChanActivity>()
-                6 -> startActivity<AppDownActivity>()
-                7 -> startActivity<FeedActivity>()
-                8 -> startActivity<XXDownActivity>()
-                9 -> {
-                    try {
-                        val noId = notificationUtil.create("test", "测试", true)
-                        if (noId == null) {
-                            coordinatorLayout_main.snackbar("失败!")
-                        } else {
-                            coordinatorLayout_main.snackbar("成功")
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        coordinatorLayout_main.snackbar("失败")
-                    }
-                }
-                10 -> startActivity<ImageWebActivity>()
-                11 -> startActivity<ToolsActivity>()
+                1 -> startActivity<AppManagementActivity>()
+                2 -> startActivity<ServerChanActivity>()
+                3 -> startActivity<AppDownActivity>()
+                4 -> startActivity<FeedActivity>()
+                5 -> startActivity<ToolsActivity>()
             }
         }
         checkPermissions()
@@ -230,7 +161,6 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
-        notificationUtil.init(this)
         zhihaofansMod.init(this)
         //checkUpdate()
     }

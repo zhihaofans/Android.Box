@@ -68,7 +68,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.BilibiliActivity"
-            android:icon="@drawable/ic_bilibili"
             android:label="@string/text_bilibili"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -160,7 +159,7 @@
         <activity
             android:name=".view.FavoritesActivity"
             android:label="@string/title_activity_favorites"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

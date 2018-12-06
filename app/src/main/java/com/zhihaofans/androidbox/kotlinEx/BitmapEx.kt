@@ -1,15 +1,13 @@
 package com.zhihaofans.androidbox.kotlinEx
 
 import android.graphics.Bitmap
-import com.orhanobut.logger.Logger
 import dev.utils.common.FileUtils
 import java.io.File
 import java.io.FileOutputStream
 
 /**
- * 在此写用途
 
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-26 00:52
 

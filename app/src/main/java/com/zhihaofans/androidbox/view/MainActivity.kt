@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.widget.ArrayAdapter
@@ -17,11 +16,11 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
+import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.ZhihaofansMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -197,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                             val updateSiteList = mutableListOf<String>()
                             val webUrlList = mutableListOf<String>()
                             updateData.web_url.map { url ->
-                                val u = SystemUtil.checkUrl(url)
+                                val u = url.toUrl()
                                 if (u != null) {
                                     updateSiteList.add(u.host)
                                     webUrlList.add(url)

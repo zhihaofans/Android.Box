@@ -11,9 +11,7 @@ import com.tencent.smtt.sdk.WebViewClient
 
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-16 15:44
 

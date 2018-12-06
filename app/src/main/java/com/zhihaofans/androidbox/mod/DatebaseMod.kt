@@ -6,7 +6,7 @@ import io.paperdb.Paper
 /**
  * 数据库快捷调用mod
 
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-12-03 00:52
 

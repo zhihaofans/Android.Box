@@ -3,9 +3,7 @@ package com.zhihaofans.androidbox.data
 import androidx.core.app.NotificationCompat
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-06 19:03
 

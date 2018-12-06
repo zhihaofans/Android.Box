@@ -96,4 +96,6 @@
     <string name="title_activity_tools">工具</string>
     <string name="title_activity_favorites">收藏夹</string>
     <string name="text_add">添加</string>
+    <string name="text_title">标题</string>
+    <string name="text_content">内容</string>
 </resources>

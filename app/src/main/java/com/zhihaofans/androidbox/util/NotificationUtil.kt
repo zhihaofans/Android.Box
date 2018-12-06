@@ -13,9 +13,7 @@ import com.zhihaofans.androidbox.data.NotificationProgressData
 import com.zhihaofans.androidbox.kotlinEx.appName
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-06 15:40
 

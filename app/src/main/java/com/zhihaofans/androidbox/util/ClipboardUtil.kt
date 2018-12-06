@@ -8,9 +8,7 @@ import android.content.Context.CLIPBOARD_SERVICE
 
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-06 13:49
 

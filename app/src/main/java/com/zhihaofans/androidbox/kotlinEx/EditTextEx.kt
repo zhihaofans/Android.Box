@@ -3,9 +3,7 @@ package com.zhihaofans.androidbox.kotlinEx
 import android.widget.EditText
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-12-05 04:25
 

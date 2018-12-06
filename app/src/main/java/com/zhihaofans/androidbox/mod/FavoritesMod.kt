@@ -1,17 +1,13 @@
 package com.zhihaofans.androidbox.mod
 
-import android.content.Context
 import com.google.gson.Gson
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.gson.FavoritesGson
 import com.zhihaofans.androidbox.gson.FavoritesItemGson
 import dev.utils.common.FileUtils
 import io.paperdb.Paper
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-12-05 02:42
 
@@ -25,6 +21,7 @@ class FavoritesMod {
         val json = Paper.book(dbName).read(favoritesListKey, g.toJson(FavoritesGson(mutableListOf()), FavoritesGson::class.java))
         return g.fromJson(json, FavoritesGson::class.java)
     }
+
     fun add(id: String, title: String, type: String, context: String): Boolean {
         val favoritesGson = this.load()
         val favoritesList = favoritesGson.items
@@ -74,7 +71,6 @@ class FavoritesMod {
 
     private fun write(favoritesList: FavoritesGson): Boolean {
         val json = g.toJson(favoritesList, FavoritesGson::class.java)
-        Logger.d("write:\n$json")
         return Paper.book(dbName).write(favoritesListKey, json).read(favoritesListKey, "") == json
     }
 

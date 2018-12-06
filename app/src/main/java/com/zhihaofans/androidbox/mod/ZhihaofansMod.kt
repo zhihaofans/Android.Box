@@ -10,9 +10,7 @@ import dev.utils.common.FileUtils
 import org.jetbrains.anko.browse
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-12 19:42
 

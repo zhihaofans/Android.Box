@@ -1,20 +1,28 @@
 package com.zhihaofans.androidbox.view
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.*
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemNameMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_favorites.*
 import kotlinx.android.synthetic.main.content_favorites.*
 import org.jetbrains.anko.*
 
 class FavoritesActivity : AppCompatActivity() {
     private val favoritesMod = FavoritesMod()
+    private val menu = listOf(
+            "网址",
+            "文本"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favorites)
@@ -28,74 +36,13 @@ class FavoritesActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        initShare()
         fab_favorites.setOnClickListener {
-            val menu = listOf(
-                    "网址",
-                    "文本"
-            )
             val typeList = listOf(
                     ItemNameMod.FAVORITES_TYPE_URL, ItemNameMod.FAVORITES_TYPE_TEXT
             )
-            val time = SystemUtil.unixTimeStampMill().toString()
             selector("收藏类型", menu) { _: DialogInterface, i: Int ->
-                alert {
-                    customView {
-                        verticalLayout {
-                            textView("标题")
-                            val inputTitle = editText(menu[i] + time).apply {
-                                singleLine = true
-                            }
-                            textView(menu[i])
-                            val inputContent = editText(menu[i] + time)
-                            positiveButton(R.string.text_add) {
-                                if (inputContent.string().isEmpty() || inputTitle.string().isEmpty()) {
-                                    coordinatorLayout_favorites.snackbar("标题与${menu[i]}都需要输入内容")
-                                } else {
-                                    val chooseType = typeList[i]
-                                    when (chooseType) {
-                                        ItemNameMod.FAVORITES_TYPE_URL -> {
-                                            if (SystemUtil.checkUrl(inputContent.string()) == null) {
-                                                coordinatorLayout_favorites.snackbar("${menu[i]}格式错误")
-                                            } else {
-                                                coordinatorLayout_favorites.snackbar(
-                                                        getString(R.string.text_add) + ":" +
-                                                                try {
-                                                                    favoritesMod.add(time, inputTitle.string(), inputContent.string(), chooseType)
-                                                                            .string(getString(R.string.text_yes), getString(R.string.text_no))
-
-                                                                } catch (e: Exception) {
-                                                                    e.printStackTrace()
-                                                                    "Exception"
-                                                                })
-
-                                                initFavorites()
-                                            }
-                                        }
-                                        ItemNameMod.FAVORITES_TYPE_TEXT -> {
-                                            coordinatorLayout_favorites.snackbar(
-                                                    getString(R.string.text_add) + ":" + try {
-                                                        favoritesMod.add(time, inputTitle.string(), inputContent.string(), chooseType)
-                                                                .string(getString(R.string.text_yes), getString(R.string.text_no))
-
-                                                    } catch (e: Exception) {
-                                                        e.printStackTrace()
-                                                        "Exception"
-                                                    })
-
-                                            initFavorites()
-
-                                        }
-                                        else -> {
-                                            coordinatorLayout_favorites.snackbar("错误：未知类型")
-                                        }
-                                    }
-
-                                }
-
-                            }
-                        }
-                    }
-                }.show()
+                askToAdd(typeList[i], menu[i], menu[i])
             }
         }
         initFavorites()
@@ -187,5 +134,95 @@ class FavoritesActivity : AppCompatActivity() {
             }
         }
         coordinatorLayout_favorites.snackbar("加载完毕")
+    }
+
+    private fun initShare() {
+        val mIntent = intent
+        var appName = AppUtils.getAppName(mIntent.`package`)
+        if (appName.isNullOrEmpty()) appName = "其他应用"
+        var defaultTitle = "来自$appName"
+        if ((mIntent.action == Intent.ACTION_SEND) && mIntent.type != null && mIntent.type == "text/plain") {
+            val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
+            if (st != null) {
+                if (st.isUrl()) {
+                    defaultTitle += "的分享"
+                    askToAdd(ItemNameMod.FAVORITES_TYPE_URL, defaultTitle, st)
+                }
+            }
+        } else if (mIntent.action == Intent.ACTION_VIEW) {
+            val uri = mIntent.data
+            if (uri !== null) {
+                defaultTitle += "的网址"
+                askToAdd(ItemNameMod.FAVORITES_TYPE_URL, defaultTitle, uri.toString())
+            }
+        }
+    }
+
+    private fun askToAdd(favoritesType: String, mTitle: String, text: String) {
+        alert {
+            customView {
+                title = getString(R.string.title_activity_favorites)
+                verticalLayout {
+                    textView(R.string.text_title)
+                    val inputTitle = editText(mTitle).apply {
+                        singleLine = true
+                    }
+                    textView(R.string.text_content)
+                    val inputContent = editText(text)
+                    positiveButton(R.string.text_add) {
+                        if (inputContent.string().isEmpty() || inputTitle.string().isEmpty()) {
+                            coordinatorLayout_favorites.snackbar("标题与内容都需要输入内容")
+                        } else {
+                            addFavorites(favoritesType, mTitle, text)
+                        }
+                    }
+                }
+            }
+        }.show()
+    }
+
+    private fun addFavorites(favoritesType: String, title: String, text: String) {
+        val time = SystemUtil.unixTimeStampMill().toString()
+        when (favoritesType) {
+            ItemNameMod.FAVORITES_TYPE_URL -> {
+                if (text.isUrl()) {
+                    coordinatorLayout_favorites.snackbar(
+                            getString(R.string.text_add) + ":" +
+                                    try {
+                                        favoritesMod.add(time, title, text, favoritesType)
+                                                .string(getString(R.string.text_yes), getString(R.string.text_no))
+
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        "Exception"
+                                    })
+                    initFavorites()
+                } else {
+                    coordinatorLayout_favorites.snackbar("错误：网址格式错误")
+                    Snackbar.make(coordinatorLayout_favorites, "错误：网址格式错误,是否保存为文本？", Snackbar.LENGTH_LONG).setAction(R.string.text_save) {
+                        askToAdd(ItemNameMod.FAVORITES_TYPE_TEXT, title, text)
+                    }.show()
+
+                }
+            }
+            ItemNameMod.FAVORITES_TYPE_TEXT -> {
+                coordinatorLayout_favorites.snackbar(
+                        getString(R.string.text_add) + ":" +
+                                try {
+                                    favoritesMod.add(time, title, text, favoritesType)
+                                            .string(getString(R.string.text_yes), getString(R.string.text_no))
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    "Exception"
+                                })
+                initFavorites()
+            }
+            else -> {
+                coordinatorLayout_favorites.snackbar("错误：未知类型")
+                askToAdd(favoritesType, title, text)
+            }
+
+        }
+
     }
 }

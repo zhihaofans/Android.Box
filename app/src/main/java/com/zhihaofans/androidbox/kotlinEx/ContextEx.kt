@@ -8,9 +8,7 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-06 15:55
 

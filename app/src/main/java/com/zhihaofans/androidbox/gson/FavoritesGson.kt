@@ -1,9 +1,7 @@
 package com.zhihaofans.androidbox.gson
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-12-05 02:50
 
@@ -11,6 +9,7 @@ package com.zhihaofans.androidbox.gson
 data class FavoritesGson(
         val items: MutableList<FavoritesItemGson>
 )
+
 data class FavoritesItemGson(
         val id: String,
         val title: String,

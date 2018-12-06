@@ -26,6 +26,8 @@ import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.isUrl
+import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import com.zhihaofans.androidbox.view.WebActivity
@@ -81,7 +83,7 @@ class SystemUtil {
         fun browse(context: Context, url: String, title: String = url) {
             val appSettingMod = AppSettingMod()
             appSettingMod.init(context)
-            if (this.checkUrl(url) == null) {
+            if (!url.isUrl()) {
                 throw Exception("Need Url.")
             }
             if (appSettingMod.imageUrlOpenWithBuiltinViewer && this.checkIfImageUrl(url)) {
@@ -122,19 +124,19 @@ class SystemUtil {
             return false
         }
 
-        fun checkUrl(url: String?): URI? {
-            if (url.isNullOrEmpty()) return null
+        fun checkUri(uri: String?): URI? {
+            if (uri.isNullOrEmpty()) return null
             return try {
-                URI(url)
+                URI(uri)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
             }
         }
 
-        fun getUrlFromBiliShare(shareString: String): URI? {
+        fun getUrlFromBiliShare(shareString: String): URL? {
             val biliScheme = listOf("http", "https", "bilibili")
-            var checked = this.checkUrl(shareString)
+            var checked = shareString.toUrl()
             var result: String? = null
             Logger.d("getUrlFromBiliShare:1")
             if (checked !== null) {
@@ -153,7 +155,7 @@ class SystemUtil {
                             result = shareString.substring(_a, shareString.length - 1)
                         }
                         Logger.d("result:$result")
-                        checked = this.checkUrl(result)
+                        checked = result.toUrl()
                         Logger.d("getUrlFromBiliShare:3")
                         return if (checked !== null) {
                             checked
@@ -166,7 +168,7 @@ class SystemUtil {
                 return if (result.isNullOrEmpty()) {
                     null
                 } else {
-                    this.checkUrl(result)
+                    result.toUrl()
                 }
             }
         }

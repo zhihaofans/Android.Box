@@ -1,9 +1,7 @@
 package com.zhihaofans.androidbox.data
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-12 19:47
 

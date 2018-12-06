@@ -97,4 +97,6 @@
     <string name="title_activity_tools">Tools</string>
     <string name="title_activity_favorites">Favorites</string>
     <string name="text_add">Add</string>
+    <string name="text_title">Title</string>
+    <string name="text_content">Content</string>
 </resources>

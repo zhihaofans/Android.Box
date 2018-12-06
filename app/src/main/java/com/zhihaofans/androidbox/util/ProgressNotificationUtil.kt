@@ -3,9 +3,7 @@ package com.zhihaofans.androidbox.util
 import android.content.Context
 
 /**
- * 在此写用途
-
- * @author: zhiuhaofans
+ * @author: zhihaofans
 
  * @date: 2018-11-06 20:38
 

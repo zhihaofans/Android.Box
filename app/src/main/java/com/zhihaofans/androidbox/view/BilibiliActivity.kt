@@ -70,7 +70,7 @@ class BilibiliActivity : AppCompatActivity() {
                 } else {
                     var urlPath = urlCheck.path
                     val urlQuery = urlCheck.query
-                    when (urlCheck.scheme.toLowerCase()) {
+                    when (urlCheck.protocol.toLowerCase()) {
                         "http", "https" -> {
                             when (urlCheck.host) {
                                 "www.bilibili.com", "m.bilibili.com", "bilibili.com" -> {

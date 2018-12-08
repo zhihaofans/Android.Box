@@ -31,7 +31,7 @@ class XXDownActivity : AppCompatActivity() {
             selector("", menuList) { _: DialogInterface, menuI: Int ->
                 when (menuI) {
                     0 -> {
-
+                        //TODO:自动识别
                     }
                     1 -> {
                         val defaultUrlList = listOf(

@@ -31,5 +31,10 @@ class ItemNameMod {
         // Favorites
         const val FAVORITES_TYPE_URL = "favorites_type_url"
         const val FAVORITES_TYPE_TEXT = "favorites_type_text"
+
+
+        // XXDown
+        const val XXDOWN_SITE_ACFUN_VIDEO = "xxdown_site_acfun_video"
+        const val XXDOWN_SITE_BILIBILI_VIDEO = "xxdown_site_bilibili_video"
     }
 }

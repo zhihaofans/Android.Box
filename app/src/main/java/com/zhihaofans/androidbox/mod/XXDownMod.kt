@@ -3,8 +3,6 @@ package com.zhihaofans.androidbox.mod
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
-import com.zhihaofans.androidbox.data.XXDownSiteList
-import com.zhihaofans.androidbox.data.XXDownUrlType
 import com.zhihaofans.androidbox.util.HttpUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import okhttp3.CacheControl
@@ -18,10 +16,10 @@ import org.jsoup.Jsoup
  */
 class XXDownMod {
     companion object {
-        fun get(site: Int, url: String): XXDownResultData? {
+        fun get(site: String, url: String): XXDownResultData? {
             return when (site) {
-                XXDownSiteList.acfun -> XXDownSite.acfun(url)
-                XXDownSiteList.bilibili -> XXDownSite.bilibili(url)
+                ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO -> XXDownSite.acfun(url)
+                ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO -> XXDownSite.bilibili(url)
                 else -> null
             }
 

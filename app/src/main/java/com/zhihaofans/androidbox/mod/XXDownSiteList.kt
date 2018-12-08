@@ -1,4 +1,4 @@
-package com.zhihaofans.androidbox.data
+package com.zhihaofans.androidbox.mod
 
 
 /**
@@ -7,10 +7,8 @@ package com.zhihaofans.androidbox.data
 
 class XXDownSiteList {
     companion object {
-        const val acfun = 0
-        const val bilibili = 1
 
-        private val nameList = listOf("Acfun", "Bilibili")
+        private val nameList = listOf(ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO, ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO)
         fun getName(index: Int): String {
             return nameList[index]
         }

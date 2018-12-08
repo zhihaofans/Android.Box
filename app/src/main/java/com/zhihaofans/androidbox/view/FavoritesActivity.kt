@@ -138,7 +138,7 @@ class FavoritesActivity : AppCompatActivity() {
 
     private fun initShare() {
         val mIntent = intent
-        var appName = AppUtils.getAppName(mIntent.`package`)
+        var appName: String? = AppUtils.getAppName(mIntent.getPackageName(this))
         if (appName.isNullOrEmpty()) appName = "其他应用"
         var defaultTitle = "来自$appName"
         if ((mIntent.action == Intent.ACTION_SEND) && mIntent.type != null && mIntent.type == "text/plain") {
@@ -170,10 +170,10 @@ class FavoritesActivity : AppCompatActivity() {
                     textView(R.string.text_content)
                     val inputContent = editText(text)
                     positiveButton(R.string.text_add) {
-                        if (inputContent.string().isEmpty() || inputTitle.string().isEmpty()) {
+                        if (inputTitle.string().isEmpty() || inputContent.string().isEmpty()) {
                             coordinatorLayout_favorites.snackbar("标题与内容都需要输入内容")
                         } else {
-                            addFavorites(favoritesType, mTitle, text)
+                            addFavorites(favoritesType, inputTitle.string(), inputContent.string())
                         }
                     }
                 }
@@ -191,7 +191,6 @@ class FavoritesActivity : AppCompatActivity() {
                                     try {
                                         favoritesMod.add(time, title, text, favoritesType)
                                                 .string(getString(R.string.text_yes), getString(R.string.text_no))
-
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                         "Exception"

@@ -7,12 +7,10 @@ package com.zhihaofans.androidbox.mod
 
 class XXDownSiteList {
     companion object {
-
-        private val nameList = listOf(ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO, ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO)
+        private val nameList = listOf(ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO_NAME, ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO_NAME)
         fun getName(index: Int): String {
             return nameList[index]
         }
-
         fun getNameList(): List<String> {
             return nameList
         }

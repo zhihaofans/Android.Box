@@ -34,7 +34,7 @@ class UrlMod {
         val APP_PICTURE_DOWNLOAD_PATH = SystemUtil.getPicturePathString() + "Android.Box/"
 
         // XXDown
-        const val XXDOWN_SITE_ACFUN_VIDEO = "http://www.acfun.cn/v/"
-        const val XXDOWN_SITE_BILIBILI_VIDEO = "https://www.bilibili.com/video/"
+        const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "http://www.acfun.cn/v/"
+        const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "https://www.bilibili.com/video/"
     }
 }

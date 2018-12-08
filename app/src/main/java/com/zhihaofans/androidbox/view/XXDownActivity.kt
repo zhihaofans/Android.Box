@@ -30,11 +30,13 @@ class XXDownActivity : AppCompatActivity() {
             )
             selector("", menuList) { _: DialogInterface, menuI: Int ->
                 when (menuI) {
-                    0 -> coordinatorLayout_xxdown.snackbar("开发中...")
+                    0 -> {
+
+                    }
                     1 -> {
                         val defaultUrlList = listOf(
-                                UrlMod.XXDOWN_SITE_ACFUN_VIDEO + "ac4612358",
-                                UrlMod.XXDOWN_SITE_BILIBILI_VIDEO + "av32758674"
+                                UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL + "ac4612358",
+                                UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL + "av32758674"
                         )
                         selector("Site", XXDownSiteList.getNameList()) { _: DialogInterface, siteI: Int ->
                             alert {
@@ -92,11 +94,11 @@ class XXDownActivity : AppCompatActivity() {
 
     private fun auto(url: String): XXDownResultData? {
         return when {
-            url.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO) -> {
-                XXDownMod.get(ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO, url)
+            url.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> {
+                XXDownMod.get(ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url)
             }
-            url.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO) -> {
-                XXDownMod.get(ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO, url)
+            url.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> {
+                XXDownMod.get(ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url)
             }
             else -> null
         }

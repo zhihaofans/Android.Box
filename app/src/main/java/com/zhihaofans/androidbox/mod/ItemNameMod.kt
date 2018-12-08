@@ -34,7 +34,9 @@ class ItemNameMod {
 
 
         // XXDown
-        const val XXDOWN_SITE_ACFUN_VIDEO = "xxdown_site_acfun_video"
-        const val XXDOWN_SITE_BILIBILI_VIDEO = "xxdown_site_bilibili_video"
+        const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "xxdown_site_acfun_video_thumbnail"
+        const val XXDOWN_SITE_ACFUN_VIDEO_NAME = "ACfun Video"
+        const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "xxdown_site_bilibili_video_thumbnail"
+        const val XXDOWN_SITE_BILIBILI_VIDEO_NAME = "Bilibili Video"
     }
 }

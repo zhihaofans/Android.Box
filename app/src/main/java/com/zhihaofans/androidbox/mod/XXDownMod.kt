@@ -18,8 +18,8 @@ class XXDownMod {
     companion object {
         fun get(site: String, url: String): XXDownResultData? {
             return when (site) {
-                ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO -> XXDownSite.acfun(url)
-                ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO -> XXDownSite.bilibili(url)
+                ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL -> XXDownSite.acfun(url)
+                ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL -> XXDownSite.bilibili(url)
                 else -> null
             }
 

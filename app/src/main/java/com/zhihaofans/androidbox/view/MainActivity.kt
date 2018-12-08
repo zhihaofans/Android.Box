@@ -16,16 +16,16 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
-import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
-import com.zhihaofans.androidbox.mod.ZhihaofansMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
     private val appSettingMod = AppSettingMod()
     private var clipboardUtil: ClipboardUtil? = null
     private val updateWebUrl = "https://fir.im/fkw1"
-    private val zhihaofansMod = ZhihaofansMod()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,8 +159,6 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
-        zhihaofansMod.init(this)
-        //checkUpdate()
     }
 
     private fun initPermissions() {
@@ -182,39 +179,4 @@ class MainActivity : AppCompatActivity() {
                 })
     }
 
-    private fun checkUpdate() {
-        doAsync {
-            val update = zhihaofansMod.Update()
-            uiThread {
-                when (update.checkUpdate()) {
-                    true -> {
-                        val updateData = update.getUpdateData()
-                        if (updateData == null) {
-                            coordinatorLayout_main.snackbar("检测更新失败")
-                        } else {
-                            coordinatorLayout_main.snackbar("发现更新")
-                            val updateSiteList = mutableListOf<String>()
-                            val webUrlList = mutableListOf<String>()
-                            updateData.web_url.map { url ->
-                                val u = url.toUrl()
-                                if (u != null) {
-                                    updateSiteList.add(u.host)
-                                    webUrlList.add(url)
-                                }
-                            }
-                            if (webUrlList.size == 0) {
-                                coordinatorLayout_main.snackbar("错误：有0个有效更新站点")
-                            } else {
-                                selector("选择更新站点", updateSiteList) { _, i ->
-                                    browse(webUrlList[i])
-                                }
-                            }
-                        }
-                    }
-                    false -> coordinatorLayout_main.snackbar("没有更新")
-                    else -> coordinatorLayout_main.snackbar("检测更新失败")
-                }
-            }
-        }
-    }
 }

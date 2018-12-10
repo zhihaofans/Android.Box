@@ -415,8 +415,12 @@ class XXDownSitesMod {
 
         fun GithubReleaseXX(url: String, allowPre: Boolean = false): XXDownResultData? {
             if (url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)) {
-                val author = ""
-                val project = ""
+                var mUrl = url.remove(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)
+                if (mUrl.endsWith("/")) mUrl = mUrl.substring(0, mUrl.length - 2)
+                val mList = mUrl.split("/")
+                if (mList.size != 2) return null
+                val author = mList[0]
+                val project = mList[1]
                 val githubReleaseMod = NewsSitesMod.GithubReleaseMod(author, project)
                 try {
                     if (!githubReleaseMod.success) return XXDownResultData(false, "Get error(${githubReleaseMod.message})", listOf())

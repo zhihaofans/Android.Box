@@ -1,9 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
 import com.zhihaofans.androidbox.data.XXDownResultData
-import okhttp3.CacheControl
 import okhttp3.Headers
-import okhttp3.Request
 
 /**
  * Created by zhihaofans on 2018/10/2.
@@ -27,8 +25,7 @@ class XXDownSite {
         private val headers_map = mutableMapOf(
                 "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
         )
-        var headerbuild = Headers.of(headers_map)
-        private val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
+        var headerbuild = Headers.of(headers_map)!!
 
     }
 }

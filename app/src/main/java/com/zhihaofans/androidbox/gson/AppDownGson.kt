@@ -17,7 +17,8 @@ data class GithubReleaseItem(
         val name: String?,
         val published_at: String,
         val assets: MutableList<GithubReleaseItemAsset>,
-        val body: String?
+        val body: String?,
+        val prerelease: Boolean
 )
 
 data class GithubReleaseItemAsset(

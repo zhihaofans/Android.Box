@@ -14,6 +14,7 @@ import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ConvertUtil
+import com.zhihaofans.androidbox.util.DatetimeUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.image.ImageUtils
@@ -26,7 +27,6 @@ import java.util.*
 
 class AppManagementActivity : AppCompatActivity() {
     private var appList = ArrayList<Map<String, Any>>()
-    private val convertUtil = ConvertUtil()
     private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,8 +86,8 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppPackageName: String = thisAppInfo.packageName
                     val thisAppVersionName: String = thisPackageInfo.versionName
                     val thisAppVersionCode: Int = thisPackageInfo.versionCode
-                    val thisAppFirstInstallTime: String = convertUtil.unixTime2date(thisPackageInfo.firstInstallTime)
-                    val thisAppLastUpdateTime: String = convertUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
+                    val thisAppFirstInstallTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.firstInstallTime)
+                    val thisAppLastUpdateTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
                     val thisApkSize: Int = SystemUtil.getFileSize(thisApkPath).toInt()
                     val actApp = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk), getString(R.string.text_icon))
@@ -100,7 +100,7 @@ class AppManagementActivity : AppCompatActivity() {
                                         thisAppPackageName,
                                         "$thisAppVersionName ($thisAppVersionCode)",
                                         thisApkPath,
-                                        convertUtil.fileSizeInt2string(thisApkSize),
+                                        ConvertUtil.fileSizeInt2string(thisApkSize),
                                         thisAppFirstInstallTime,
                                         thisAppLastUpdateTime
                                 )
@@ -113,14 +113,14 @@ class AppManagementActivity : AppCompatActivity() {
                                         getString(R.string.text_app_firstinstalltime),
                                         getString(R.string.text_app_lastupdatetime)
                                 )
-                                val act_appInfo = mutableListOf<String>()
+                                val actAppInfo = mutableListOf<String>()
                                 var _a = 0
                                 list_b.map {
-                                    act_appInfo.add(it + ":" + list_a[_a])
+                                    actAppInfo.add(it + ":" + list_a[_a])
                                     _a++
                                 }
-                                Logger.d(act_appInfo)
-                                selector(getString(R.string.text_app_info), act_appInfo) { _, ii ->
+                                Logger.d(actAppInfo)
+                                selector(getString(R.string.text_app_info), actAppInfo) { _, ii ->
                                     alert {
                                         customView {
                                             verticalLayout {
@@ -147,7 +147,7 @@ class AppManagementActivity : AppCompatActivity() {
 
                             1 -> {
                                 val apkPath = AppUtils.getAppPath(thisAppPackageName)
-                                val apkLength = ConvertUtil().fileSizeInt2string(SystemUtil.getFileSize(apkPath))
+                                val apkLength = ConvertUtil.fileSizeInt2string(SystemUtil.getFileSize(apkPath))
                                 val saveTo = SystemUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-$thisAppVersionName.apk"
                                 alert {

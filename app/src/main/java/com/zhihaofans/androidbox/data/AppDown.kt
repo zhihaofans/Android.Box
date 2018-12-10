@@ -13,7 +13,7 @@ data class AppDownFeed(//数据库表
         val updateTime: String,
         val packageName: String?,
         val webUrl: String,
-        val fileList: MutableList<FileList>
+        val fileList: List<FileList>
 )
 
 data class AppInfoResult(
@@ -33,7 +33,7 @@ data class AppInfo(
         val updateTime: String,
         val packageName: String?,
         val webUrl: String,
-        val fileList: MutableList<FileList>
+        val fileList: List<FileList>
 )
 
 

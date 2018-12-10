@@ -10,6 +10,8 @@ class UrlMod {
         const val RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url="
         const val FEED2JSON = "https://feed2json.org/convert?url="
         // News
+        //  App
+        const val APP_GITHUB_RELEASE = "https://api.github.com/repos/@author@/@project@/releases"
         //  Feed
         const val GANK_IO = "https://gank.io/api/data/"
         const val GANK_IO_ALL = GANK_IO + "all/20/"
@@ -36,5 +38,6 @@ class UrlMod {
         // XXDown
         const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "http://www.acfun.cn/v/"
         const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "https://www.bilibili.com/video/"
+        const val XXDOWN_SITE_GITHUB_RELEASE = "https://github.com/"
     }
 }

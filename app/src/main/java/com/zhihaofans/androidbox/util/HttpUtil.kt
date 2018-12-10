@@ -1,10 +1,7 @@
 package com.zhihaofans.androidbox.util
 
 import com.orhanobut.logger.Logger
-import okhttp3.CacheControl
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.IOException
@@ -81,6 +78,12 @@ class HttpUtil {
                     .headers(headers)
                     .timeout(timeout)
                     .get()
+        }
+
+        fun httpClientGetCall(url: String, headers: Headers): Call {
+            val client = OkHttpClient()
+            val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
+            return client.newCall(request.url(url).headers(headers).build())
         }
     }
 }

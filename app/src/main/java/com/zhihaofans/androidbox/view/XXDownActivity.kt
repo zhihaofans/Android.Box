@@ -21,7 +21,7 @@ class XXDownActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_xxdown)
         setSupportActionBar(toolbar_xxdown)
-        fab_xxdown.setOnClickListener { view ->
+        fab_xxdown.setOnClickListener {
             alert {
                 customView {
                     val inputUrl = editText()

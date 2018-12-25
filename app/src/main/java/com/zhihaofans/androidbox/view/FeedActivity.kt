@@ -1,16 +1,13 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.PendingIntent
-import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
-import com.hjq.permissions.OnPermission
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
+import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
@@ -115,13 +112,7 @@ class FeedActivity : AppCompatActivity() {
     }
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-        loadingProgressBar.setCanceledOnTouchOutside(false)
-        loadingProgressBar.show()
-        loadingProgressBar.setOnCancelListener {
-            toast(R.string.text_canceled_by_user)
-            finish()
-        }
+        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
         listView_feed.removeAllItems()
         when (index) {
             0 -> {
@@ -139,15 +130,15 @@ class FeedActivity : AppCompatActivity() {
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread {
                             if (cache == null) {
-                                loadingProgressBar.dismiss()
+                                XPopup.get(this@FeedActivity).dismiss()
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
-                                initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { i->i.title }, cache!!.newsList.map { i -> i.url }))
+                                initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                             }
                         }
                     }
                 } else {
-                    initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
+                    initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                 }
             }
             1 -> {
@@ -155,30 +146,27 @@ class FeedActivity : AppCompatActivity() {
                 try {
                     if (appFeeds.size == 0) {
                         Logger.d("appFeeds.size=0")
-                        loadingProgressBar.dismiss()
+                        XPopup.get(this).dismiss()
                         snackbar("列表空白")
                     } else {
-                        initListView(loadingProgressBar, FeedMod.App.AppList(appFeeds))
+                        initListView(FeedMod.App.AppList(appFeeds))
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    loadingProgressBar.dismiss()
+                    XPopup.get(this).dismiss()
                     snackbar("应用下载初始化失败，请尝试清空应用数据")
                 }
             }
             else -> {
                 listView_feed.removeAllItems()
-                loadingProgressBar.dismiss()
+                XPopup.get(this).dismiss()
                 snackbar(coordinatorLayout_feed, "不支持")
             }
         }
     }
 
     private fun updateFeed(index: Int, data: Any) {
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-        loadingProgressBar.setCancelable(false)
-        loadingProgressBar.setCanceledOnTouchOutside(false)
-        loadingProgressBar.show()
+        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
         when (index) {
             0 -> {
                 val update = data as FeedMod.News.Update
@@ -192,10 +180,10 @@ class FeedActivity : AppCompatActivity() {
                                 cache = newsBox.refreshCache()
                                 uiThread { _ ->
                                     if (cache == null) {
-                                        loadingProgressBar.dismiss()
+                                        XPopup.get(this@FeedActivity).dismiss()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
-                                        initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                        initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
@@ -207,17 +195,17 @@ class FeedActivity : AppCompatActivity() {
                                 cache = newsBox.changePage(page)
                                 uiThread { _ ->
                                     if (cache == null) {
-                                        loadingProgressBar.dismiss()
+                                        XPopup.get(this@FeedActivity).dismiss()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
                                         listView_feed.removeAllItems()
-                                        initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                        initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
                         }
                         2 -> {
-                            loadingProgressBar.dismiss()
+                            XPopup.get(this@FeedActivity).dismiss()
                             val siteList = newsBox.getSiteList()
                             selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
                                 val siteId = siteList[i].id
@@ -235,22 +223,21 @@ class FeedActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        else -> loadingProgressBar.dismiss()
+                        else -> XPopup.get(this@FeedActivity).dismiss()
                     }
                 }
             }
             1 -> {
                 // TODO:App updateFeed
-                loadingProgressBar.dismiss()
-
+                XPopup.get(this@FeedActivity).dismiss()
             }
             else -> {
-                loadingProgressBar.dismiss()
+                XPopup.get(this@FeedActivity).dismiss()
             }
         }
     }
 
-    private fun initListView(progressDialog: ProgressDialog, data: Any) {
+    private fun initListView(data: Any) {
         listView_feed.removeAllItems()
         when (tabLayout.selectedTabPosition) {
             0 -> {
@@ -261,6 +248,7 @@ class FeedActivity : AppCompatActivity() {
                 }
             }
             1 -> {
+                /*
                 doAsync { }
                 val appFeeds = (data as FeedMod.App.AppList).data
                 listView_feed.init(this@FeedActivity, appFeeds.map { it.name })
@@ -269,7 +257,7 @@ class FeedActivity : AppCompatActivity() {
                     alert {
                         title = clickedApp.name
                         message = getString(R.string.text_app_version) + ": ${clickedApp.version}\n" + getString(R.string.text_app_lastupdatetime) + ": ${clickedApp.updateTime}"
-                        negativeButton(R.string.text_download) { _ ->
+                        negativeButton(R.string.text_download) {
                             val acts = mutableListOf("浏览器打开", "下载")
                             if (clickedApp.fileList.isEmpty()) acts.removeAt(1)
                             selector("", acts) { _, act: Int ->
@@ -343,9 +331,10 @@ class FeedActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
+                */
             }
         }
-        progressDialog.dismiss()
+        XPopup.get(this).dismiss()
         snackbar(coordinatorLayout_feed, "加载完毕")
     }
 

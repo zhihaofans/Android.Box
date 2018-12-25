@@ -20,6 +20,7 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
+import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
@@ -83,10 +84,7 @@ class ImageViewActivity : AppCompatActivity() {
             toast("Empty image")
             finish()
         } else {
-            val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-            loadingProgressBar.setCancelable(false)
-            loadingProgressBar.setCanceledOnTouchOutside(false)
-            loadingProgressBar.show()
+            XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
             val uri = Uri.parse(imageUri)
             val builder = GenericDraweeHierarchyBuilder(resources)
             val hierarchy = builder
@@ -103,7 +101,7 @@ class ImageViewActivity : AppCompatActivity() {
                 override fun onFailure(id: String, throwable: Throwable) {
                     throwable.printStackTrace()
                     toast("Error:" + throwable.message.toString())
-                    loadingProgressBar.dismiss()
+                    XPopup.get(this@ImageViewActivity).dismiss()
                 }
 
                 override fun onFinalImageSet(id: String, imageInfo: ImageInfo?, anim: Animatable?) {
@@ -120,7 +118,7 @@ class ImageViewActivity : AppCompatActivity() {
                     layoutParams.width = linearLayout_imageview.width
                     layoutParams.height = (linearLayout_imageview.width.toFloat() / (imageInfo.width.toFloat() / imageInfo.height.toFloat())).toInt()
                     imageView.layoutParams = layoutParams
-                    loadingProgressBar.dismiss()
+                    XPopup.get(this@ImageViewActivity).dismiss()
                     imageView.setOnClickListener {
                         if (!imageUrl.isNullOrEmpty()) {
                             val selectorItemList = mutableListOf(

@@ -1,9 +1,9 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.lxj.xpopup.XPopup
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
@@ -48,18 +48,14 @@ class XXDownActivity : AppCompatActivity() {
     }
 
     private fun start(url: String) {
-
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-        loadingProgressBar.setCancelable(false)
-        loadingProgressBar.setCanceledOnTouchOutside(false)
-        loadingProgressBar.show()
+        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
         doAsync {
             val result = auto(url)
             uiThread {
                 if (result == null) {
                     coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
                 } else {
-                    initListView(result, loadingProgressBar)
+                    initListView(result)
                 }
             }
         }
@@ -74,9 +70,9 @@ class XXDownActivity : AppCompatActivity() {
         }
     }
 
-    private fun initListView(data: XXDownResultData?, loadingProgressDialog: ProgressDialog) {
+    private fun initListView(data: XXDownResultData?) {
         if (data == null) {
-            loadingProgressDialog.dismiss()
+            XPopup.get(this).dismiss()
             snackbar(coordinatorLayout_xxdown, "错误：返回结果为NULL")
         } else {
             if (data.success) {
@@ -87,10 +83,10 @@ class XXDownActivity : AppCompatActivity() {
                 listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
                     SystemUtil.browse(this@XXDownActivity, resultList[pos].url)
                 }
-                loadingProgressDialog.dismiss()
+                XPopup.get(this).dismiss()
                 snackbar(coordinatorLayout_xxdown, "加载完毕，共${resultList.size}个结果")
             } else {
-                loadingProgressDialog.dismiss()
+                XPopup.get(this).dismiss()
                 snackbar(coordinatorLayout_xxdown, "错误：${data.message}")
             }
         }

@@ -143,7 +143,21 @@
         <activity
             android:name=".view.XXDownActivity"
             android:label="@string/title_activity_xxdown"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="*"
+                    android:scheme="http" />
+                <data
+                    android:host="*"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.WebActivity"
             android:label="@string/title_activity_web"

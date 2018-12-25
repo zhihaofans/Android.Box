@@ -427,7 +427,7 @@ class XXDownSitesMod {
                     if (githubReleaseMod.result == null) return XXDownResultData(false, "Result is null", listOf())
                     val fileList = githubReleaseMod.result!!.fileList
                     return when {
-                        fileList.isNullOrEmpty() -> XXDownResultData(false, "image is null or empty", listOf())
+                        fileList.isNullOrEmpty() -> XXDownResultData(false, "fileList is null or empty", listOf())
                         else -> XXDownResultData(true, "OK", fileList.map {
                             XXDownResultUrlData(it.url, XXDownUrlType.other)
                         }.toList())

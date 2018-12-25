@@ -21,7 +21,6 @@ import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
-import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.toast
 import java.util.*
@@ -37,14 +36,12 @@ class QrcodeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_qrcode)
         qrcode.setActivity(this@QrcodeActivity, true)
         clipboardUtil = ClipboardUtil(this)
-        fab_qrcode.setOnClickListener { qrcodeMenu() }
+        fab_qrcode.setOnClickListener {
+            openFile()
+        }
         checkMethod()
         imageView_qrcode.setOnClickListener {
-            if (editText_qrcode_content.text.isEmpty()) {
-                getCameraPermission()
-            } else {
-                qrcodeMenu()
-            }
+            getCameraPermission()
         }
         button_open.setOnClickListener {
             if (editText_qrcode_content.text.isNotEmpty()) {
@@ -136,18 +133,6 @@ class QrcodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun qrcodeMenu() = selector(getString(R.string.text_qrcode), mutableListOf(
-            getString(R.string.text_qrcode_scan),
-            getString(R.string.text_qrcode_generate),
-            "Open image file"
-    )) { _, i ->
-        when (i) {
-            0 -> getCameraPermission()
-            1 -> generateQR()
-            2 -> openFile()
-        }
-    }
-
 
     private fun checkMethod() {
         if (Objects.equals(Intent.ACTION_SEND, intent.action) && intent.type != null && Objects.equals("text/plain", intent.type)) {
@@ -209,8 +194,7 @@ class QrcodeActivity : AppCompatActivity() {
     }
 
     private fun openFile() {
-        val photoPickerIntent = Intent(Intent.ACTION_PICK)
-        photoPickerIntent.type = "image/*"
+        val photoPickerIntent = Intent(Intent.ACTION_PICK).apply { type = "image/*" }
         startActivityForResult(photoPickerIntent, 666)
 
         //val intent = Intent(Intent.ACTION_GET_CONTENT)

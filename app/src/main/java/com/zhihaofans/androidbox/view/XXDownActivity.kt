@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
@@ -31,20 +32,7 @@ class XXDownActivity : AppCompatActivity() {
                                 coordinatorLayout_xxdown.snackbar("请输入内容")
                             }
                             inputUrl.string().isUrl() -> {
-                                val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
-                                loadingProgressBar.setCancelable(false)
-                                loadingProgressBar.setCanceledOnTouchOutside(false)
-                                loadingProgressBar.show()
-                                doAsync {
-                                    val result = auto(inputUrl.string())
-                                    uiThread {
-                                        if (result == null) {
-                                            coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
-                                        } else {
-                                            initListView(result, loadingProgressBar)
-                                        }
-                                    }
-                                }
+                                start(inputUrl.string())
                             }
                             else -> {
                                 coordinatorLayout_xxdown.snackbar("请输入正确的网址")
@@ -55,6 +43,25 @@ class XXDownActivity : AppCompatActivity() {
             }.show()
 
 
+        }
+        initShare()
+    }
+
+    private fun start(url: String) {
+
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
+        doAsync {
+            val result = auto(url)
+            uiThread {
+                if (result == null) {
+                    coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
+                } else {
+                    initListView(result, loadingProgressBar)
+                }
+            }
         }
     }
 
@@ -85,6 +92,16 @@ class XXDownActivity : AppCompatActivity() {
             } else {
                 loadingProgressDialog.dismiss()
                 snackbar(coordinatorLayout_xxdown, "错误：${data.message}")
+            }
+        }
+    }
+
+    private fun initShare() {
+        val mIntent = intent
+        if (mIntent.action == Intent.ACTION_VIEW) {
+            val uri = mIntent.data
+            if (uri !== null) {
+                start(uri.toString())
             }
         }
     }

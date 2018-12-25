@@ -31,6 +31,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_more" />
+        app:srcCompat="@drawable/ic_open" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

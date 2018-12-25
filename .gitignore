@@ -67,5 +67,9 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
-
 misc.xml
+
+.DS_Store
+app/release/
+.project
+.classpath

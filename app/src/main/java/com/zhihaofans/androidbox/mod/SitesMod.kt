@@ -27,8 +27,8 @@ class NewsSitesMod {
     companion object {
         private val g = Gson()
         private val defaultAppResult = AppInfoResult(false, "", -1, null)
-        fun GithubReleaseMod(author: String, project: String): AppInfoResult {
-            val result = defaultAppResult
+        fun githubReleaseMod(author: String, project: String): AppInfoResult {
+            var result = defaultAppResult
             if (author.isEmpty() && project.isEmpty()) {
                 result.message = "错误，author或project为空"
             } else {
@@ -43,34 +43,40 @@ class NewsSitesMod {
                         result.message = ""
                     } else {
                         val jsonData = response.body()!!.string()
-                        val type = object : TypeToken<List<GithubReleaseItem>>() {}.type
-                        val github: List<GithubReleaseItem> = g.fromJson(jsonData, type)
-                        if (github.isEmpty()) {
-                            result.message = "错误：github.isEmpty"
-                        } else {
-                            val lastRelease = github[0]
-                            Logger.d(lastRelease)
-                            result.result = AppInfo(author, project, project, "GITHUB_RELEASES", author,
-                                    if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else lastRelease.name,
-                                    DatetimeUtil.githubUtc2Local(lastRelease.published_at), null,
-                                    lastRelease.html_url, lastRelease.assets.map {
-                                FileList(
-                                        it.name,
-                                        it.browser_download_url,
-                                        it.download_count.toString(),
-                                        it.updated_at,
-                                        ConvertUtil.fileSizeInt2string(it.size)
-                                )
-                            }.toMutableList()
-                            )
-                            result.success = true
-                            result.code = 0
-                        }
+                        result = githubApiReleaseJson2Class(author, project, jsonData)
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
 
                 }
+            }
+            return result
+        }
+
+        fun githubApiReleaseJson2Class(author: String, project: String, jsonData: String): AppInfoResult {
+            val result = defaultAppResult
+            val type = object : TypeToken<List<GithubReleaseItem>>() {}.type
+            val github: List<GithubReleaseItem> = g.fromJson(jsonData, type)
+            if (github.isEmpty()) {
+                result.message = "错误：github.isEmpty"
+            } else {
+                val lastRelease = github[0]
+                Logger.d(lastRelease)
+                result.result = AppInfo(author, project, project, "GITHUB_RELEASES", author,
+                        if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else lastRelease.name,
+                        DatetimeUtil.githubUtc2Local(lastRelease.published_at), null,
+                        lastRelease.html_url, lastRelease.assets.map {
+                    FileList(
+                            it.name,
+                            it.browser_download_url,
+                            it.download_count.toString(),
+                            it.updated_at,
+                            ConvertUtil.fileSizeInt2string(it.size)
+                    )
+                }.toMutableList()
+                )
+                result.success = true
+                result.code = 0
             }
             return result
         }
@@ -413,7 +419,7 @@ class XXDownSitesMod {
             }
         }
 
-        fun GithubReleaseXX(url: String, allowPre: Boolean = false): XXDownResultData? {
+        fun githubReleaseXX(url: String, allowPre: Boolean = false): XXDownResultData? {
             if (url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)) {
                 var mUrl = url.remove(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)
                 if (mUrl.endsWith("/")) mUrl = mUrl.substring(0, mUrl.length - 2)
@@ -421,7 +427,7 @@ class XXDownSitesMod {
                 if (mList.size != 2) return null
                 val author = mList[0]
                 val project = mList[1]
-                val githubReleaseMod = NewsSitesMod.GithubReleaseMod(author, project)
+                val githubReleaseMod = NewsSitesMod.githubReleaseMod(author, project)
                 try {
                     if (!githubReleaseMod.success) return XXDownResultData(false, "Get error(${githubReleaseMod.message})", listOf())
                     if (githubReleaseMod.result == null) return XXDownResultData(false, "Result is null", listOf())

@@ -23,6 +23,7 @@ import com.liulishuo.filedownloader.FileDownloadListener
 import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.logD
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
@@ -178,10 +179,7 @@ class ImageViewActivity : AppCompatActivity() {
         notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
         Logger.d("downloadPath:$downloadPath")
-        val loadingProgressBarDownload = progressDialog(message = fileName, title = "Downloading...")
-        loadingProgressBarDownload.setCancelable(false)
-        loadingProgressBarDownload.setCanceledOnTouchOutside(false)
-        loadingProgressBarDownload.show()
+        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
         when (engine) {
             0 -> {
                 val notification = notificationUtil.createProgress("正在下载", fileName)
@@ -190,36 +188,32 @@ class ImageViewActivity : AppCompatActivity() {
                 }
                 SystemUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Pending...")
+                        logD("Pending...")
                     }
 
                     override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Connected")
+                        logD("Connected")
 
                     }
 
                     override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         if (totalBytes > 0) {
-                            loadingProgressBarDownload.max = totalBytes
-                            loadingProgressBarDownload.progress = soFarBytes
+                            logD("progress:$soFarBytes/$totalBytes")
                             if (notification !== null) {
                                 notificationUtil.setProgressNotificationLength(notification, soFarBytes, totalBytes)
                             }
                         } else {
-                            loadingProgressBarDownload.max = 0
-                            loadingProgressBarDownload.progress = 1
                         }
                     }
 
                     override fun blockComplete(task: BaseDownloadTask?) {}
 
                     override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Retry")
-                        loadingProgressBarDownload.setMessage("Times: $retryingTimes")
+                        logD("Retry,Times: $retryingTimes")
                     }
 
                     override fun completed(task: BaseDownloadTask) {
-                        loadingProgressBarDownload.dismiss()
+                        XPopup.get(this@ImageViewActivity).dismiss()
                         if (notification !== null) notificationUtil.delete(notification.notificationId)
                         val stackBuilder = TaskStackBuilder.create(this@ImageViewActivity)
                         val resultPendingIntent = stackBuilder.apply {
@@ -255,7 +249,7 @@ class ImageViewActivity : AppCompatActivity() {
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.dismiss()
+                        XPopup.get(this@ImageViewActivity).dismiss()
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {

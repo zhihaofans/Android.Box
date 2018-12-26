@@ -7,10 +7,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.github.javiersantos.appupdater.AppUpdaterUtils
+import com.github.javiersantos.appupdater.enums.AppUpdaterError
+import com.github.javiersantos.appupdater.enums.UpdateFrom
+import com.github.javiersantos.appupdater.objects.Update
 import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.lxj.xpopup.XPopup
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
@@ -23,6 +28,7 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.jetbrains.anko.browse
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
@@ -81,7 +87,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.menu_manual_update -> {
-                    SystemUtil.browse(this@MainActivity, updateWebUrl)
+                    //SystemUtil.browse(this@MainActivity, updateWebUrl)
+                    checkUpdate()
                 }
                 R.id.menu_checkPermission -> {
                     checkPermissions(true)
@@ -159,6 +166,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
+        checkUpdate()
     }
 
     private fun initPermissions() {
@@ -177,6 +185,79 @@ class MainActivity : AppCompatActivity() {
                         Snackbar.make(coordinatorLayout_main, "${denied.size}个权限未授权，可能影响正常使用", Snackbar.LENGTH_SHORT).setAction("授权") { initPermissions() }.show()
                     }
                 })
+    }
+
+
+    private fun checkUpdate(manual: Boolean = false) {
+        //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
+        val appUpdaterUtils = AppUpdaterUtils(this)
+                .setUpdateFrom(UpdateFrom.GITHUB)
+                .setGitHubUserAndRepo("zhihaofans", "android.box")
+                .withListener(object : AppUpdaterUtils.UpdateListener {
+                    override fun onFailed(error: AppUpdaterError) {
+
+                    }
+
+                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
+                        if (isUpdateAvailable) {
+                            XPopup.get(this@MainActivity).asConfirm("检测更新", "发现更新，是否调用打开下载地址？") {
+                                browse(update.urlToDownload.toString())
+                            }.show()
+
+                        } else {
+                            if (manual) {
+                                XPopup.get(this@MainActivity).asConfirm("检测更新", "已经是最新版本") {}.show()
+                            }
+                        }
+                    }
+
+                })
+        appUpdaterUtils.start()
+        /*
+        AllenVersionChecker
+                .getInstance()
+                .requestVersion()
+                .setRequestUrl(url).request(object : RequestVersionListener {
+                    override fun onRequestVersionSuccess(result: String?): UIData? {
+                        if (result.isNullOrEmpty()) {
+                            coordinatorLayout_main.snackbar("检测更新失败,返回空白结果")
+                            return null
+                        } else {
+                            val githubRelease = NewsSitesMod.githubApiReleaseJson2Class("zhihaofans", "android.box", result)
+                            return if (githubRelease.success) {
+                                val githubReleaseResult = githubRelease.result
+                                if (githubReleaseResult == null) {
+                                    coordinatorLayout_main.snackbar("检测更新失败")
+                                    null
+                                } else {
+                                    if (githubReleaseResult.version != AppUtils.getAppVersionName()) {
+                                        val fileList = githubReleaseResult.fileList
+                                        if (fileList.isEmpty()) {
+                                            coordinatorLayout_main.snackbar("检测更新失败,返回空白文件列表")
+                                            null
+                                        } else {
+                                            XPopup.get(this@MainActivity).asConfirm("发现更新", "版本：" + githubReleaseResult.version) {
+
+                                            }.show()
+                                            UIData.create().setDownloadUrl(fileList[0].url)
+                                        }
+                                    } else {
+                                        coordinatorLayout_main.snackbar("已经是最新版")
+                                        null
+                                    }
+                                }
+                            } else {
+                                coordinatorLayout_main.snackbar("检测更新失败")
+                                null
+                            }
+                        }
+                    }
+
+                    override fun onRequestVersionFailure(message: String?) {
+                        coordinatorLayout_main.snackbar("检测更新失败：$message")
+                    }
+                })
+                .executeMission(this)*/
     }
 
 }

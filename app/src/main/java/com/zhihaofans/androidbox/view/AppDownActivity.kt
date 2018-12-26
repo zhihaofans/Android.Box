@@ -10,9 +10,11 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
+import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.AppDownFeed
+import com.zhihaofans.androidbox.kotlinEx.logD
 import com.zhihaofans.androidbox.kotlinEx.longSnackbar
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppDownMod
@@ -453,7 +455,11 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun snackbar(text: Int, longTime: Boolean = false) {
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+        if (longTime) {
+            coordinatorLayout_appdown.longSnackbar(text)
+        } else {
+            coordinatorLayout_appdown.snackbar(text)
+        }
     }
 
     private fun snackbar(text: String, longTime: Boolean = false) {
@@ -466,7 +472,7 @@ class AppDownActivity : AppCompatActivity() {
 
     private fun snackbarE(text: String, longTime: Boolean = false) {
         Logger.e(text)
-        Snackbar.make(coordinatorLayout_appdown, text, if (longTime) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT).show()
+        snackbar(text, longTime)
     }
 
     private fun snackbar(text: String, longTime: Boolean = false, button: String = "Button", listener: View.OnClickListener) {
@@ -480,39 +486,28 @@ class AppDownActivity : AppCompatActivity() {
             fileName.isEmpty() -> snackbar("下载失败：文件名空白")
             else -> {
                 val filePath = savePath + fileName
-                val loadingProgressBarDownload = progressDialog(message = filePath, title = "Downloading...")
-                loadingProgressBarDownload.setCancelable(false)
-                loadingProgressBarDownload.setCanceledOnTouchOutside(false)
-                loadingProgressBarDownload.show()
+                XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
                 SystemUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Pending...")
+                        logD("Pending...")
                     }
 
                     override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Connected")
+                        logD("Connected")
 
                     }
 
-                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        if (totalBytes > 0) {
-                            loadingProgressBarDownload.max = totalBytes
-                            loadingProgressBarDownload.progress = soFarBytes
-                        } else {
-                            loadingProgressBarDownload.max = 0
-                            loadingProgressBarDownload.progress = 1
-                        }
-                    }
+                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {}
 
                     override fun blockComplete(task: BaseDownloadTask?) {}
 
                     override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                        loadingProgressBarDownload.setTitle("Retry")
-                        loadingProgressBarDownload.setMessage("Times: $retryingTimes")
+                        logD("Retry,Times: $retryingTimes")
                     }
 
+
                     override fun completed(task: BaseDownloadTask) {
-                        loadingProgressBarDownload.dismiss()
+                        XPopup.get(this@AppDownActivity).dismiss()
                         alert {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
@@ -531,14 +526,14 @@ class AppDownActivity : AppCompatActivity() {
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadingProgressBarDownload.dismiss()
+                        XPopup.get(this@AppDownActivity).dismiss()
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
-                        loadingProgressBarDownload.dismiss()
-                        Snackbar.make(coordinatorLayout_appdown, "下载失败", Snackbar.LENGTH_SHORT).show()
+                        XPopup.get(this@AppDownActivity).dismiss()
+                        coordinatorLayout_appdown.snackbar("下载失败")
                     }
 
                     override fun warn(task: BaseDownloadTask) {}

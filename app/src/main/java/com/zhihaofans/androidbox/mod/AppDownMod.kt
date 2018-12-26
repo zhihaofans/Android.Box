@@ -53,7 +53,7 @@ class AppDownMod {
                         idOne.isEmpty() -> throw Exception("Author cannot empty")
                         idTwo.isNullOrEmpty() -> throw Exception("project cannot empty or null")
                         else -> {
-                            return NewsSitesMod.GithubReleaseMod(idOne, idTwo)
+                            return NewsSitesMod.githubReleaseMod(idOne, idTwo)
                         }
                     }
                 }
@@ -172,7 +172,8 @@ class AppDownMod {
 
     class Other {
         fun appInfo2AppFeed(name: String, appInfo: AppInfo): AppDownFeed {
-            return AppDownFeed(name, appInfo.id_one, appInfo.id_two, appInfo.site, "", appInfo.version, appInfo.updateTime, appInfo.packageName, appInfo.webUrl, appInfo.fileList)
+            return AppDownFeed(name, appInfo.id_one, appInfo.id_two, appInfo.site, "",
+                    appInfo.version, appInfo.updateTime, appInfo.packageName, appInfo.webUrl, appInfo.fileList)
         }
     }
 }

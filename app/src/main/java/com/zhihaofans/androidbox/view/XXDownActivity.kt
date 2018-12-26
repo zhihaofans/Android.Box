@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.interfaces.XPopupCallback
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
@@ -48,12 +50,23 @@ class XXDownActivity : AppCompatActivity() {
     }
 
     private fun start(url: String) {
-        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+        val xPopup = XPopup.get(this@XXDownActivity).asLoading().setPopupCallback(object : XPopupCallback {
+            override fun onDismiss() {
+                Logger.d("xPopup:onDismiss()")
+            }
+
+            override fun onShow() {
+                Logger.d("xPopup:onShow()")
+            }
+        })
+        xPopup.dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
         doAsync {
             val result = auto(url)
             uiThread {
                 if (result == null) {
+                    xPopup.dismissOnBackPressed(true).dismissOnTouchOutside(true).dismiss()
                     coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
+                    Logger.d("解析失败，不支持该网址")
                 } else {
                     initListView(result)
                 }

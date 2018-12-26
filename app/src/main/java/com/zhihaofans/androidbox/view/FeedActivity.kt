@@ -248,6 +248,7 @@ class FeedActivity : AppCompatActivity() {
                 }
             }
             1 -> {
+                //TODO:Feed -> App
                 /*
                 doAsync { }
                 val appFeeds = (data as FeedMod.App.AppList).data

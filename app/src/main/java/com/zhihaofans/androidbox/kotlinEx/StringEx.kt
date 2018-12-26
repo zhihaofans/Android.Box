@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.kotlinEx
 
 import android.webkit.URLUtil
+import com.orhanobut.logger.Logger
 import java.net.URI
 import java.net.URL
 
@@ -30,3 +31,14 @@ fun String?.isUrl(): Boolean {
 
 fun String?.toUrl(): URL? = URL(this)
 fun String?.toURI(): URI? = URI(this)
+fun String.replaces(list: Map<String, String>, ignoreCase: Boolean = false): String {
+    var mStr = this
+    list.map {
+        mStr = mStr.replace(it.key, it.value, ignoreCase)
+        mStr.logd()
+    }
+    mStr.logd()
+    return mStr
+}
+
+fun String.logd() = Logger.d(this)

@@ -11,8 +11,8 @@ android {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 25
         targetSdkVersion 28
-        versionCode 98
-        versionName "0.0.81"
+        versionCode 99
+        versionName "0.0.81.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -77,7 +77,7 @@ dependencies {
     implementation 'com.github.afkT:DevUtils:1.2.1@aar'
     implementation 'io.paperdb:paperdb:2.6'
     implementation 'com.github.Victory-Over:SuperWeb:v1.0.2'
-    implementation 'com.lxj:xpopup:0.0.12'
+    implementation 'com.lxj:xpopup:1.0.4'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
 }
 kotlin {

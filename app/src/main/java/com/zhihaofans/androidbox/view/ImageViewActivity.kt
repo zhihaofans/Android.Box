@@ -23,7 +23,6 @@ import com.liulishuo.filedownloader.FileDownloadListener
 import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.logD
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
@@ -188,28 +187,46 @@ class ImageViewActivity : AppCompatActivity() {
                 }
                 SystemUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        logD("Pending...")
+                        XPopup.get(this@ImageViewActivity)
+                                .asLoading("Pending...")
+                                .dismissOnBackPressed(false)
+                                .dismissOnTouchOutside(false)
+                                .show()
                     }
 
                     override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                        logD("Connected")
+                        XPopup.get(this@ImageViewActivity)
+                                .asLoading("Connected")
+                                .dismissOnBackPressed(false)
+                                .dismissOnTouchOutside(false)
+                                .show()
 
                     }
 
                     override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        if (totalBytes > 0) {
-                            logD("progress:$soFarBytes/$totalBytes")
+                        val progressStr = if (totalBytes > 0) {
                             if (notification !== null) {
                                 notificationUtil.setProgressNotificationLength(notification, soFarBytes, totalBytes)
                             }
+                            "Downloading:$soFarBytes/$totalBytes"
                         } else {
+                            "Downloading"
                         }
+                        XPopup.get(this@ImageViewActivity)
+                                .asLoading(progressStr)
+                                .dismissOnBackPressed(false)
+                                .dismissOnTouchOutside(false)
+                                .show()
                     }
 
                     override fun blockComplete(task: BaseDownloadTask?) {}
 
                     override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                        logD("Retry,Times: $retryingTimes")
+                        XPopup.get(this@ImageViewActivity)
+                                .asLoading("Retry,Times: $retryingTimes")
+                                .dismissOnBackPressed(false)
+                                .dismissOnTouchOutside(false)
+                                .show()
                     }
 
                     override fun completed(task: BaseDownloadTask) {

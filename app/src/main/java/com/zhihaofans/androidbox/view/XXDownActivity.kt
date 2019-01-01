@@ -3,8 +3,6 @@ package com.zhihaofans.androidbox.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.interfaces.XPopupCallback
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
@@ -16,6 +14,7 @@ import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
+import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.*
 
 class XXDownActivity : AppCompatActivity() {
@@ -43,32 +42,28 @@ class XXDownActivity : AppCompatActivity() {
                     }
                 }
             }.show()
-
-
         }
         initShare()
     }
 
-    private fun start(url: String) {
-        val xPopup = XPopup.get(this@XXDownActivity).asLoading().setPopupCallback(object : XPopupCallback {
-            override fun onDismiss() {
-                Logger.d("xPopup:onDismiss()")
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        Logger.d("onDestroy")
+        finish()
+        Logger.d("finish")
+    }
 
-            override fun onShow() {
-                Logger.d("xPopup:onShow()")
-            }
-        })
-        xPopup.dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+    private fun start(url: String) {
+        val loadToast = LoadToast(this).setText("解析中").show()
         doAsync {
             val result = auto(url)
             uiThread {
                 if (result == null) {
-                    xPopup.dismissOnBackPressed(true).dismissOnTouchOutside(true).dismiss()
+                    loadToast.error()
                     coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
                     Logger.d("解析失败，不支持该网址")
                 } else {
-                    initListView(result)
+                    initListView(loadToast, result)
                 }
             }
         }
@@ -83,12 +78,14 @@ class XXDownActivity : AppCompatActivity() {
         }
     }
 
-    private fun initListView(data: XXDownResultData?) {
-        if (data == null) {
-            XPopup.get(this).dismiss()
-            snackbar(coordinatorLayout_xxdown, "错误：返回结果为NULL")
-        } else {
-            if (data.success) {
+    private fun initListView(loadToast: LoadToast, data: XXDownResultData?) {
+        when {
+            data == null -> {
+                loadToast.error()
+                snackbar(coordinatorLayout_xxdown, "错误：返回结果为NULL")
+            }
+
+            data.success -> {
                 resultList.clear()
                 listView_xxdown.removeAllItems()
                 resultList = data.url.toMutableList()
@@ -96,21 +93,39 @@ class XXDownActivity : AppCompatActivity() {
                 listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
                     SystemUtil.browse(this@XXDownActivity, resultList[pos].url)
                 }
-                XPopup.get(this).dismiss()
+                loadToast.success()
                 snackbar(coordinatorLayout_xxdown, "加载完毕，共${resultList.size}个结果")
-            } else {
-                XPopup.get(this).dismiss()
+            }
+            else -> {
+                loadToast.error()
                 snackbar(coordinatorLayout_xxdown, "错误：${data.message}")
             }
         }
+
     }
 
     private fun initShare() {
         val mIntent = intent
-        if (mIntent.action == Intent.ACTION_VIEW) {
-            val uri = mIntent.data
-            if (uri !== null) {
-                start(uri.toString())
+        when {
+            mIntent.action == Intent.ACTION_SEND && mIntent.type == "text/plain" -> {
+                val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
+                if (st != null) {
+                    if (st.isUrl()) {
+                        start(st)
+                    } else {
+                        finish()
+                    }
+                } else {
+                    finish()
+                }
+            }
+            mIntent.action == Intent.ACTION_VIEW -> {
+                val uri = mIntent.data
+                if (uri !== null) {
+                    start(uri.toString())
+                } else {
+                    finish()
+                }
             }
         }
     }

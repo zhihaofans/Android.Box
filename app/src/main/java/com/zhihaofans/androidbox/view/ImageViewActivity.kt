@@ -20,7 +20,6 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
-import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
@@ -32,6 +31,7 @@ import dev.utils.app.ContentResolverUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
+import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.*
 import java.io.File
 
@@ -84,7 +84,7 @@ class ImageViewActivity : AppCompatActivity() {
             toast("Empty image")
             finish()
         } else {
-            XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+            val loadToast = LoadToast(this).show()
             val uri = Uri.parse(imageUri)
             val builder = GenericDraweeHierarchyBuilder(resources)
             val hierarchy = builder
@@ -101,11 +101,12 @@ class ImageViewActivity : AppCompatActivity() {
                 override fun onFailure(id: String, throwable: Throwable) {
                     throwable.printStackTrace()
                     toast("Error:" + throwable.message.toString())
-                    XPopup.get(this@ImageViewActivity).dismiss()
+                    loadToast.error()
                 }
 
                 override fun onFinalImageSet(id: String, imageInfo: ImageInfo?, anim: Animatable?) {
                     if (imageInfo == null) {
+                        loadToast.error()
                         return
                     }
                     val qualityInfo = imageInfo.qualityInfo
@@ -118,7 +119,6 @@ class ImageViewActivity : AppCompatActivity() {
                     layoutParams.width = linearLayout_imageview.width
                     layoutParams.height = (linearLayout_imageview.width.toFloat() / (imageInfo.width.toFloat() / imageInfo.height.toFloat())).toInt()
                     imageView.layoutParams = layoutParams
-                    XPopup.get(this@ImageViewActivity).dismiss()
                     imageView.setOnClickListener {
                         if (!imageUrl.isNullOrEmpty()) {
                             val selectorItemList = mutableListOf(
@@ -161,6 +161,7 @@ class ImageViewActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    loadToast.success()
                 }
             }
             val controller = Fresco.newDraweeControllerBuilder()
@@ -178,7 +179,7 @@ class ImageViewActivity : AppCompatActivity() {
         notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
         Logger.d("downloadPath:$downloadPath")
-        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+        val loadToast = LoadToast(this).setText("正在下载").show()
         when (engine) {
             0 -> {
                 val notification = notificationUtil.createProgress("正在下载", fileName)
@@ -187,19 +188,9 @@ class ImageViewActivity : AppCompatActivity() {
                 }
                 SystemUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        XPopup.get(this@ImageViewActivity)
-                                .asLoading("Pending...")
-                                .dismissOnBackPressed(false)
-                                .dismissOnTouchOutside(false)
-                                .show()
                     }
 
                     override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-                        XPopup.get(this@ImageViewActivity)
-                                .asLoading("Connected")
-                                .dismissOnBackPressed(false)
-                                .dismissOnTouchOutside(false)
-                                .show()
 
                     }
 
@@ -212,25 +203,14 @@ class ImageViewActivity : AppCompatActivity() {
                         } else {
                             "Downloading"
                         }
-                        XPopup.get(this@ImageViewActivity)
-                                .asLoading(progressStr)
-                                .dismissOnBackPressed(false)
-                                .dismissOnTouchOutside(false)
-                                .show()
                     }
 
                     override fun blockComplete(task: BaseDownloadTask?) {}
 
                     override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                        XPopup.get(this@ImageViewActivity)
-                                .asLoading("Retry,Times: $retryingTimes")
-                                .dismissOnBackPressed(false)
-                                .dismissOnTouchOutside(false)
-                                .show()
                     }
 
                     override fun completed(task: BaseDownloadTask) {
-                        XPopup.get(this@ImageViewActivity).dismiss()
                         if (notification !== null) notificationUtil.delete(notification.notificationId)
                         val stackBuilder = TaskStackBuilder.create(this@ImageViewActivity)
                         val resultPendingIntent = stackBuilder.apply {
@@ -246,6 +226,7 @@ class ImageViewActivity : AppCompatActivity() {
                         } else {
                             snackbar(coordinatorLayout_imageView, "已通知系统相册刷新缓存，但系统返回刷新失败，请手动刷新")
                         }
+                        loadToast.success()
                         alert {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
@@ -266,12 +247,13 @@ class ImageViewActivity : AppCompatActivity() {
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        XPopup.get(this@ImageViewActivity).dismiss()
+                        loadToast.error()
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
+                        loadToast.error()
                         Snackbar.make(coordinatorLayout_imageView, "下载失败", Snackbar.LENGTH_SHORT).show()
                     }
 

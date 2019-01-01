@@ -10,7 +10,6 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
-import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.AppDownFeed
@@ -22,6 +21,7 @@ import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
+import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.*
 
 class AppDownActivity : AppCompatActivity() {
@@ -486,14 +486,16 @@ class AppDownActivity : AppCompatActivity() {
             fileName.isEmpty() -> snackbar("下载失败：文件名空白")
             else -> {
                 val filePath = savePath + fileName
-                XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+                val loadToast = LoadToast(this).setText("下载中").show()
                 SystemUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         logD("Pending...")
+                        loadToast.setText("Pending...").show()
                     }
 
                     override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
                         logD("Connected")
+                        loadToast.setText("Pending...").show()
 
                     }
 
@@ -503,11 +505,12 @@ class AppDownActivity : AppCompatActivity() {
 
                     override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
                         logD("Retry,Times: $retryingTimes")
+                        loadToast.setText("Retry,Times: $retryingTimes").show()
                     }
 
 
                     override fun completed(task: BaseDownloadTask) {
-                        XPopup.get(this@AppDownActivity).dismiss()
+                        loadToast.success()
                         alert {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
@@ -526,13 +529,13 @@ class AppDownActivity : AppCompatActivity() {
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        XPopup.get(this@AppDownActivity).dismiss()
+                        loadToast.error()
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
-                        XPopup.get(this@AppDownActivity).dismiss()
+                        loadToast.error()
                         coordinatorLayout_appdown.snackbar("下载失败")
                     }
 

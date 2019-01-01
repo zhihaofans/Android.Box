@@ -5,9 +5,11 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
+import com.hjq.permissions.OnPermission
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
-import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
@@ -19,6 +21,7 @@ import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
+import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.*
 
 
@@ -74,8 +77,8 @@ class FeedActivity : AppCompatActivity() {
                     val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
                     selector(getString(R.string.title_activity_app_down), fabAction) { _: DialogInterface, i: Int ->
                         when (i) {
-                            0 -> updateFeed(1, FeedMod.App.Update(1)) // TODO:Add
-                            1 -> updateFeed(1, FeedMod.App.Update(2)) // TODO:Delete
+                            0 -> updateFeed(1, FeedMod.App.Update(1))
+                            1 -> updateFeed(1, FeedMod.App.Update(2))
                             2 -> {
                                 selector("数据库", listOf(getString(R.string.text_import), getString(R.string.text_export))) { _: DialogInterface, ii: Int ->
                                     when (ii) {
@@ -94,7 +97,8 @@ class FeedActivity : AppCompatActivity() {
                 title = tab.text ?: getString(R.string.text_feed)
                 if (nowTabPosition != tab.position) {
                     nowTabPosition = tab.position
-                    initFeed(nowTabPosition)
+                    if (nowTabPosition == 0) initFeed(nowTabPosition)
+
                 }
             }
 
@@ -112,7 +116,7 @@ class FeedActivity : AppCompatActivity() {
     }
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
-        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+        val loadToast = LoadToast(this).show()
         listView_feed.removeAllItems()
         when (index) {
             0 -> {
@@ -130,43 +134,45 @@ class FeedActivity : AppCompatActivity() {
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread {
                             if (cache == null) {
-                                XPopup.get(this@FeedActivity).dismiss()
+                                loadToast.error()
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
-                                initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
+                                initListView(loadToast, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                             }
                         }
                     }
                 } else {
-                    initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
+                    initListView(loadToast, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                 }
             }
-            1 -> {
-                val appFeeds = appBox.initAppList()
-                try {
-                    if (appFeeds.size == 0) {
-                        Logger.d("appFeeds.size=0")
-                        XPopup.get(this).dismiss()
-                        snackbar("列表空白")
-                    } else {
-                        initListView(FeedMod.App.AppList(appFeeds))
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            /*
+        1 -> {
+            val appFeeds = appBox.initAppList()
+            try {
+                if (appFeeds.size == 0) {
+                    Logger.d("appFeeds.size=0")
                     XPopup.get(this).dismiss()
-                    snackbar("应用下载初始化失败，请尝试清空应用数据")
+                    snackbar("列表空白")
+                } else {
+                    initListView(FeedMod.App.AppList(appFeeds))
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                XPopup.get(this).dismiss()
+                snackbar("应用下载初始化失败，请尝试清空应用数据")
             }
+            }
+            */
             else -> {
                 listView_feed.removeAllItems()
-                XPopup.get(this).dismiss()
+                loadToast.error()
                 snackbar(coordinatorLayout_feed, "不支持")
             }
         }
     }
 
     private fun updateFeed(index: Int, data: Any) {
-        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+        val loadToast = LoadToast(this).show()
         when (index) {
             0 -> {
                 val update = data as FeedMod.News.Update
@@ -178,12 +184,12 @@ class FeedActivity : AppCompatActivity() {
                         0 -> {
                             doAsync {
                                 cache = newsBox.refreshCache()
-                                uiThread { _ ->
+                                uiThread {
                                     if (cache == null) {
-                                        XPopup.get(this@FeedActivity).dismiss()
+                                        loadToast.error()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
-                                        initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                        initListView(loadToast, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
@@ -193,19 +199,19 @@ class FeedActivity : AppCompatActivity() {
                             Logger.d("updateFeed->page:$page")
                             doAsync {
                                 cache = newsBox.changePage(page)
-                                uiThread { _ ->
+                                uiThread {
                                     if (cache == null) {
-                                        XPopup.get(this@FeedActivity).dismiss()
+                                        loadToast.error()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
                                         listView_feed.removeAllItems()
-                                        initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                        initListView(loadToast, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
                         }
                         2 -> {
-                            XPopup.get(this@FeedActivity).dismiss()
+                            loadToast.hide()
                             val siteList = newsBox.getSiteList()
                             selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
                                 val siteId = siteList[i].id
@@ -223,21 +229,23 @@ class FeedActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        else -> XPopup.get(this@FeedActivity).dismiss()
+                        else -> {
+                            loadToast.error()
+                        }
                     }
                 }
             }
             1 -> {
+                loadToast.error()
                 // TODO:App updateFeed
-                XPopup.get(this@FeedActivity).dismiss()
             }
             else -> {
-                XPopup.get(this@FeedActivity).dismiss()
+                loadToast.error()
             }
         }
     }
 
-    private fun initListView(data: Any) {
+    private fun initListView(loadToast: LoadToast, data: Any) {
         listView_feed.removeAllItems()
         when (tabLayout.selectedTabPosition) {
             0 -> {
@@ -246,10 +254,11 @@ class FeedActivity : AppCompatActivity() {
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
                     SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
                 }
+                loadToast.success()
             }
             1 -> {
+                loadToast.error()
                 //TODO:Feed -> App
-                /*
                 doAsync { }
                 val appFeeds = (data as FeedMod.App.AppList).data
                 listView_feed.init(this@FeedActivity, appFeeds.map { it.name })
@@ -332,10 +341,9 @@ class FeedActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
-                */
+                loadToast.success()
             }
         }
-        XPopup.get(this).dismiss()
         snackbar(coordinatorLayout_feed, "加载完毕")
     }
 

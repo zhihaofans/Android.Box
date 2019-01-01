@@ -9,6 +9,7 @@ import com.orhanobut.logger.Logger
 import com.tencent.smtt.sdk.QbSdk
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.DevUtils
+import dev.utils.app.AppUtils
 import io.paperdb.Paper
 
 
@@ -45,7 +46,8 @@ class App : Application() {
 
             override fun onCoreInitFinished() {}
         }
-        QbSdk.setDownloadWithoutWifi(true)
+        QbSdk.setDownloadWithoutWifi(!AppUtils.isAppDebug())
+
         //x5内核初始化接口
         QbSdk.initX5Environment(applicationContext, cb)
     }

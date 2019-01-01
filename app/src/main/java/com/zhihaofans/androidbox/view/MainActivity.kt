@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.afollestad.materialdialogs.MaterialDialog
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.enums.AppUpdaterError
 import com.github.javiersantos.appupdater.enums.UpdateFrom
@@ -15,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.lxj.xpopup.XPopup
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
@@ -28,6 +28,7 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.share
@@ -190,23 +191,42 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate(manual: Boolean = false) {
         //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
+        val loadToast = LoadToast(this).setText("检测更新").show()
         val appUpdaterUtils = AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("zhihaofans", "android.box")
                 .withListener(object : AppUpdaterUtils.UpdateListener {
                     override fun onFailed(error: AppUpdaterError) {
-
+                        loadToast.error()
                     }
 
                     override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
                         if (isUpdateAvailable) {
-                            XPopup.get(this@MainActivity).asConfirm("检测更新", "发现更新，是否调用打开下载地址？") {
-                                browse(update.urlToDownload.toString())
-                            }.show()
+                            loadToast.hide()
+                            MaterialDialog(this@MainActivity).show {
+                                title(text = "检测更新")
+                                message(text = "发现更新，是否调用打开下载地址？")
+                                positiveButton(R.string.text_yes) {
+                                    this.dismiss()
+                                    browse(update.urlToDownload.toString())
+                                }
+                                negativeButton(R.string.text_no) {
+
+                                }
+                            }
 
                         } else {
                             if (manual) {
-                                XPopup.get(this@MainActivity).asConfirm("检测更新", "已经是最新版本") {}.show()
+                                loadToast.hide()
+                                MaterialDialog(this@MainActivity).show {
+                                    title(text = "检测更新")
+                                    message(text = "已经是最新版本")
+                                    positiveButton(text = "OK") {
+                                        this.dismiss()
+                                    }
+                                }
+                            } else {
+                                loadToast.success()
                             }
                         }
                     }

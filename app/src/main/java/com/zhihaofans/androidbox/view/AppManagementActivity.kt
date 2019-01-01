@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
-import com.lxj.xpopup.XPopup
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
@@ -22,6 +21,7 @@ import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
+import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.*
 import java.util.*
 
@@ -44,12 +44,10 @@ class AppManagementActivity : AppCompatActivity() {
 
     private fun appListInit(onlyUserApp: Boolean = false) {
         listView_app.visibility = ListView.INVISIBLE
-        XPopup.get(this).asLoading().dismissOnBackPressed(false).dismissOnTouchOutside(false).show()
+        val loadToast = LoadToast(this).setText("Loading...").show()
         val pm = packageManager
         appList = ArrayList()
-        XPopup.get(this).dismiss()
-        //loading.setCancelable(false)
-        val backG = doAsync {
+        doAsync {
             //得到PackageManager对象
             val packs = pm.getInstalledPackages(0)
             //得到系统 安装的所有程序包的PackageInfo对象
@@ -76,7 +74,7 @@ class AppManagementActivity : AppCompatActivity() {
             //参数:Context,ArrayList(item的集合),item的layout,包含ArrayList中Hashmap的key的数组,key所对应的值相对应的控件id
             uiThread { it ->
                 listView_app.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
-                XPopup.get(this@AppManagementActivity).dismiss()
+                loadToast.success()
                 listView_app.visibility = ListView.VISIBLE
                 listView_app.setOnItemClickListener { _, _, index, _ ->
                     val childItem = appList[index]

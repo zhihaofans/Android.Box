@@ -31,7 +31,7 @@ import dev.utils.app.ContentResolverUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
-import net.steamcrafted.loadtoast.LoadToast
+
 import org.jetbrains.anko.*
 import java.io.File
 
@@ -84,7 +84,10 @@ class ImageViewActivity : AppCompatActivity() {
             toast("Empty image")
             finish()
         } else {
-            val loadToast = LoadToast(this).show()
+            val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+            loadingProgressBar.setCancelable(false)
+            loadingProgressBar.setCanceledOnTouchOutside(false)
+            loadingProgressBar.show()
             val uri = Uri.parse(imageUri)
             val builder = GenericDraweeHierarchyBuilder(resources)
             val hierarchy = builder
@@ -101,12 +104,12 @@ class ImageViewActivity : AppCompatActivity() {
                 override fun onFailure(id: String, throwable: Throwable) {
                     throwable.printStackTrace()
                     toast("Error:" + throwable.message.toString())
-                    loadToast.error()
+                    loadingProgressBar.dismiss()
                 }
 
                 override fun onFinalImageSet(id: String, imageInfo: ImageInfo?, anim: Animatable?) {
                     if (imageInfo == null) {
-                        loadToast.error()
+                        loadingProgressBar.dismiss()
                         return
                     }
                     val qualityInfo = imageInfo.qualityInfo
@@ -161,7 +164,7 @@ class ImageViewActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    loadToast.success()
+                    loadingProgressBar.dismiss()
                 }
             }
             val controller = Fresco.newDraweeControllerBuilder()
@@ -179,7 +182,10 @@ class ImageViewActivity : AppCompatActivity() {
         notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
         Logger.d("downloadPath:$downloadPath")
-        val loadToast = LoadToast(this).setText("正在下载").show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
         when (engine) {
             0 -> {
                 val notification = notificationUtil.createProgress("正在下载", fileName)
@@ -226,7 +232,7 @@ class ImageViewActivity : AppCompatActivity() {
                         } else {
                             snackbar(coordinatorLayout_imageView, "已通知系统相册刷新缓存，但系统返回刷新失败，请手动刷新")
                         }
-                        loadToast.success()
+                        loadingProgressBar.dismiss()
                         alert {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
@@ -247,13 +253,13 @@ class ImageViewActivity : AppCompatActivity() {
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        loadToast.error()
+                        loadingProgressBar.dismiss()
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
-                        loadToast.error()
+                        loadingProgressBar.dismiss()
                         Snackbar.make(coordinatorLayout_imageView, "下载失败", Snackbar.LENGTH_SHORT).show()
                     }
 

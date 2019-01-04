@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,7 @@ import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
-import net.steamcrafted.loadtoast.LoadToast
+
 import org.jetbrains.anko.*
 
 class XXDownActivity : AppCompatActivity() {
@@ -54,16 +55,19 @@ class XXDownActivity : AppCompatActivity() {
     }
 
     private fun start(url: String) {
-        val loadToast = LoadToast(this).setText("解析中").show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
         doAsync {
             val result = auto(url)
             uiThread {
                 if (result == null) {
-                    loadToast.error()
+                    loadingProgressBar.dismiss()
                     coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
                     Logger.d("解析失败，不支持该网址")
                 } else {
-                    initListView(loadToast, result)
+                    initListView(loadingProgressBar, result)
                 }
             }
         }
@@ -78,10 +82,10 @@ class XXDownActivity : AppCompatActivity() {
         }
     }
 
-    private fun initListView(loadToast: LoadToast, data: XXDownResultData?) {
+    private fun initListView(loadingProgressBar: ProgressDialog, data: XXDownResultData?) {
         when {
             data == null -> {
-                loadToast.error()
+                loadingProgressBar.dismiss()
                 snackbar(coordinatorLayout_xxdown, "错误：返回结果为NULL")
             }
 
@@ -93,11 +97,11 @@ class XXDownActivity : AppCompatActivity() {
                 listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
                     SystemUtil.browse(this@XXDownActivity, resultList[pos].url)
                 }
-                loadToast.success()
+                loadingProgressBar.dismiss()
                 snackbar(coordinatorLayout_xxdown, "加载完毕，共${resultList.size}个结果")
             }
             else -> {
-                loadToast.error()
+                loadingProgressBar.dismiss()
                 snackbar(coordinatorLayout_xxdown, "错误：${data.message}")
             }
         }

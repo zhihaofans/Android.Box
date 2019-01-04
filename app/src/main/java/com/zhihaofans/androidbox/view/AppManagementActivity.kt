@@ -21,7 +21,7 @@ import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
-import net.steamcrafted.loadtoast.LoadToast
+
 import org.jetbrains.anko.*
 import java.util.*
 
@@ -44,7 +44,10 @@ class AppManagementActivity : AppCompatActivity() {
 
     private fun appListInit(onlyUserApp: Boolean = false) {
         listView_app.visibility = ListView.INVISIBLE
-        val loadToast = LoadToast(this).setText("Loading...").show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
         val pm = packageManager
         appList = ArrayList()
         doAsync {
@@ -74,7 +77,7 @@ class AppManagementActivity : AppCompatActivity() {
             //参数:Context,ArrayList(item的集合),item的layout,包含ArrayList中Hashmap的key的数组,key所对应的值相对应的控件id
             uiThread { it ->
                 listView_app.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
-                loadToast.success()
+                loadingProgressBar.dismiss()
                 listView_app.visibility = ListView.VISIBLE
                 listView_app.setOnItemClickListener { _, _, index, _ ->
                     val childItem = appList[index]

@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
+import com.afollestad.materialdialogs.MaterialDialog
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -32,3 +33,4 @@ fun Context.logD(message: Any) = Logger.d(message)
 fun Context.logE(message: String) = Logger.e(message)
 fun Context.logI(message: String) = Logger.i(message)
 fun Context.browser(url: String, title: String = url) = SystemUtil.browse(this, url, title)
+fun Context.materialDialog(cancelOnTouchOutside: Boolean = true) = MaterialDialog(this).cancelOnTouchOutside(cancelOnTouchOutside)

@@ -28,11 +28,7 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import net.steamcrafted.loadtoast.LoadToast
-import org.jetbrains.anko.browse
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.share
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -191,18 +187,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate(manual: Boolean = false) {
         //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
-        val loadToast = LoadToast(this).setText("检测更新").show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
         val appUpdaterUtils = AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("zhihaofans", "android.box")
                 .withListener(object : AppUpdaterUtils.UpdateListener {
                     override fun onFailed(error: AppUpdaterError) {
-                        loadToast.error()
+                        loadingProgressBar.dismiss()
                     }
 
                     override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
                         if (isUpdateAvailable) {
-                            loadToast.hide()
+                            loadingProgressBar.dismiss()
                             MaterialDialog(this@MainActivity).show {
                                 title(text = "检测更新")
                                 message(text = "发现更新，是否调用打开下载地址？")
@@ -217,7 +216,7 @@ class MainActivity : AppCompatActivity() {
 
                         } else {
                             if (manual) {
-                                loadToast.hide()
+                                loadingProgressBar.dismiss()
                                 MaterialDialog(this@MainActivity).show {
                                     title(text = "检测更新")
                                     message(text = "已经是最新版本")
@@ -226,7 +225,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
                             } else {
-                                loadToast.success()
+                                loadingProgressBar.dismiss()
                             }
                         }
                     }

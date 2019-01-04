@@ -79,7 +79,6 @@ dependencies {
     implementation 'com.github.Victory-Over:SuperWeb:v1.0.2'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.afollestad.material-dialogs:core:2.0.0-rc5'
-    implementation 'net.steamcrafted:load-toast:1.0.12'
 }
 kotlin {
     experimental {

@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.PendingIntent
+import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,6 @@ import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
-import net.steamcrafted.loadtoast.LoadToast
 import org.jetbrains.anko.*
 
 
@@ -116,7 +116,10 @@ class FeedActivity : AppCompatActivity() {
     }
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
-        val loadToast = LoadToast(this).show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
         listView_feed.removeAllItems()
         when (index) {
             0 -> {
@@ -134,15 +137,15 @@ class FeedActivity : AppCompatActivity() {
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread {
                             if (cache == null) {
-                                loadToast.error()
+                                loadingProgressBar.dismiss()
                                 snackbar(coordinatorLayout_feed, "空白数据")
                             } else {
-                                initListView(loadToast, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
+                                initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                             }
                         }
                     }
                 } else {
-                    initListView(loadToast, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
+                    initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                 }
             }
             /*
@@ -165,14 +168,17 @@ class FeedActivity : AppCompatActivity() {
             */
             else -> {
                 listView_feed.removeAllItems()
-                loadToast.error()
+                loadingProgressBar.dismiss()
                 snackbar(coordinatorLayout_feed, "不支持")
             }
         }
     }
 
     private fun updateFeed(index: Int, data: Any) {
-        val loadToast = LoadToast(this).show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        loadingProgressBar.setCancelable(false)
+        loadingProgressBar.setCanceledOnTouchOutside(false)
+        loadingProgressBar.show()
         when (index) {
             0 -> {
                 val update = data as FeedMod.News.Update
@@ -186,10 +192,10 @@ class FeedActivity : AppCompatActivity() {
                                 cache = newsBox.refreshCache()
                                 uiThread {
                                     if (cache == null) {
-                                        loadToast.error()
+                                        loadingProgressBar.dismiss()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
-                                        initListView(loadToast, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                        initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
@@ -201,17 +207,17 @@ class FeedActivity : AppCompatActivity() {
                                 cache = newsBox.changePage(page)
                                 uiThread {
                                     if (cache == null) {
-                                        loadToast.error()
+                                        loadingProgressBar.dismiss()
                                         snackbar(coordinatorLayout_feed, "空白数据")
                                     } else {
                                         listView_feed.removeAllItems()
-                                        initListView(loadToast, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
+                                        initListView(loadingProgressBar, newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                     }
                                 }
                             }
                         }
                         2 -> {
-                            loadToast.hide()
+                            loadingProgressBar.dismiss()
                             val siteList = newsBox.getSiteList()
                             selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
                                 val siteId = siteList[i].id
@@ -230,22 +236,22 @@ class FeedActivity : AppCompatActivity() {
                             }
                         }
                         else -> {
-                            loadToast.error()
+                            loadingProgressBar.dismiss()
                         }
                     }
                 }
             }
             1 -> {
-                loadToast.error()
+                loadingProgressBar.dismiss()
                 // TODO:App updateFeed
             }
             else -> {
-                loadToast.error()
+                loadingProgressBar.dismiss()
             }
         }
     }
 
-    private fun initListView(loadToast: LoadToast, data: Any) {
+    private fun initListView(loadingProgressBar: ProgressDialog, data: Any) {
         listView_feed.removeAllItems()
         when (tabLayout.selectedTabPosition) {
             0 -> {
@@ -254,10 +260,10 @@ class FeedActivity : AppCompatActivity() {
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
                     SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
                 }
-                loadToast.success()
+                loadingProgressBar.dismiss()
             }
             1 -> {
-                loadToast.error()
+                loadingProgressBar.dismiss()
                 //TODO:Feed -> App
                 doAsync { }
                 val appFeeds = (data as FeedMod.App.AppList).data
@@ -341,7 +347,7 @@ class FeedActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
-                loadToast.success()
+                loadingProgressBar.dismiss()
             }
         }
         snackbar(coordinatorLayout_feed, "加载完毕")

@@ -19,6 +19,7 @@ import com.hjq.permissions.XXPermissions
 import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.materialDialog
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.AppSettingMod
@@ -97,7 +98,6 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.text_qrcode),
                 getString(R.string.text_appmanagement),
                 getString(R.string.text_serverchan),
-                getString(R.string.title_activity_app_down),
                 getString(R.string.text_feed),
                 "更多工具"
         )
@@ -107,9 +107,8 @@ class MainActivity : AppCompatActivity() {
                 0 -> startActivity<QrcodeActivity>()
                 1 -> startActivity<AppManagementActivity>()
                 2 -> startActivity<ServerChanActivity>()
-                3 -> startActivity<AppDownActivity>()
-                4 -> startActivity<FeedActivity>()
-                5 -> startActivity<ToolsActivity>()
+                3 -> startActivity<FeedActivity>()
+                4 -> startActivity<ToolsActivity>()
             }
         }
         checkPermissions()
@@ -191,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
-        val appUpdaterUtils = AppUpdaterUtils(this)
+        AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("zhihaofans", "android.box")
                 .withListener(object : AppUpdaterUtils.UpdateListener {
@@ -202,7 +201,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
                         if (isUpdateAvailable) {
                             loadingProgressBar.dismiss()
-                            MaterialDialog(this@MainActivity).show {
+                            materialDialog().show {
                                 title(text = "检测更新")
                                 message(text = "发现更新，是否调用打开下载地址？")
                                 positiveButton(R.string.text_yes) {
@@ -230,8 +229,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                })
-        appUpdaterUtils.start()
+                }).start()
         /*
         AllenVersionChecker
                 .getInstance()

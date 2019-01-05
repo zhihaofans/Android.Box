@@ -11,6 +11,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
+import com.zhihaofans.androidbox.kotlinEx.getAppName
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ConvertUtil
@@ -21,13 +22,11 @@ import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
-
 import org.jetbrains.anko.*
-import java.util.*
 
 
 class AppManagementActivity : AppCompatActivity() {
-    private var appList = ArrayList<Map<String, Any>>()
+    private var appList = mutableListOf<Map<String, Any>>()
     private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +35,6 @@ class AppManagementActivity : AppCompatActivity() {
         clipboardUtil = ClipboardUtil(this@AppManagementActivity)
         appListInit()
         this@AppManagementActivity.title = getString(R.string.text_appmanagement)
-        fab_app.setOnClickListener { view ->
-            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
-        }
     }
 
 
@@ -49,14 +45,15 @@ class AppManagementActivity : AppCompatActivity() {
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
         val pm = packageManager
-        appList = ArrayList()
+        appList = mutableListOf()
         doAsync {
             //得到PackageManager对象
-            val packs = pm.getInstalledPackages(0)
+            val packs = pm.getInstalledPackages(0).sortedBy {
+                it.getAppName(pm)
+            }
             //得到系统 安装的所有程序包的PackageInfo对象
-            val appCount = packs.size
-            Logger.d("appList\nlist------>$appCount")
-            for (pi in packs) {
+            Logger.d("appList\nlist------>${packs.size}")
+            packs.map { pi ->
                 val map = hashMapOf<String, Any>()
                 map["icon"] = pi.applicationInfo.loadIcon(pm)
                 //图标
@@ -64,7 +61,6 @@ class AppManagementActivity : AppCompatActivity() {
                 //应用名
                 map["packageName"] = pi.packageName
                 map["packageInfo"] = pi
-
                 //包名
                 if (pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
                     appList.add(map)//如果非系统应用，则添加至appList
@@ -72,10 +68,11 @@ class AppManagementActivity : AppCompatActivity() {
                     appList.add(map)//如果系统应用，当 onlyUserApp==false 时添加至appList
 
                 }
+                pi
                 //循环读取存到HashMap,再增加到ArrayList.一个HashMap就是一项
             }
             //参数:Context,ArrayList(item的集合),item的layout,包含ArrayList中Hashmap的key的数组,key所对应的值相对应的控件id
-            uiThread { it ->
+            uiThread {
                 listView_app.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
                 loadingProgressBar.dismiss()
                 listView_app.visibility = ListView.VISIBLE

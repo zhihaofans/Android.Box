@@ -8,6 +8,7 @@ import android.view.Menu
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItems
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.enums.AppUpdaterError
 import com.github.javiersantos.appupdater.enums.UpdateFrom
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private val appSettingMod = AppSettingMod()
     private var clipboardUtil: ClipboardUtil? = null
     private val updateWebUrl = "https://fir.im/fkw1"
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,7 +191,7 @@ class MainActivity : AppCompatActivity() {
         val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
-        loadingProgressBar.show()
+        if (manual) loadingProgressBar.show()
         AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("zhihaofans", "android.box")
@@ -206,13 +208,18 @@ class MainActivity : AppCompatActivity() {
                                 message(text = "发现更新，是否调用打开下载地址？")
                                 positiveButton(R.string.text_yes) {
                                     this.dismiss()
-                                    browse(update.urlToDownload.toString())
+                                    MaterialDialog(this@MainActivity).show {
+                                        val myItems = listOf("直接下载更新", "打开更新网页")
+                                        listItems(items = myItems) { _, index, _ ->
+                                            when (index) {
+                                                0 -> browse(update.urlToDownload.toString(), true)
+                                                1 -> browse(updateWebUrl, true)
+                                            }
+                                        }
+                                    }
                                 }
-                                negativeButton(R.string.text_no) {
-
-                                }
+                                negativeButton(R.string.text_no) {}
                             }
-
                         } else {
                             if (manual) {
                                 loadingProgressBar.dismiss()
@@ -223,12 +230,9 @@ class MainActivity : AppCompatActivity() {
                                         this.dismiss()
                                     }
                                 }
-                            } else {
-                                loadingProgressBar.dismiss()
                             }
                         }
                     }
-
                 }).start()
         /*
         AllenVersionChecker

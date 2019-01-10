@@ -45,9 +45,10 @@ class AppManagementActivity : AppCompatActivity() {
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
         val pm = packageManager
+        //得到PackageManager对象
         appList = mutableListOf()
         doAsync {
-            //得到PackageManager对象
+            // 排序
             val packs = pm.getInstalledPackages(0).sortedBy {
                 it.getAppName(pm)
             }
@@ -84,7 +85,7 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppIcon: Drawable = thisAppInfo.loadIcon(pm)
                     val thisAppPackageName: String = thisAppInfo.packageName
                     val thisAppVersionName: String = thisPackageInfo.versionName
-                    val thisAppVersionCode: Int = thisPackageInfo.versionCode
+                    val thisAppVersionCode: Int = AppUtils.getAppVersionCode(thisAppInfo.packageName)
                     val thisAppFirstInstallTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.firstInstallTime)
                     val thisAppLastUpdateTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
@@ -94,7 +95,7 @@ class AppManagementActivity : AppCompatActivity() {
                         when (i) {
                             0 -> {
                                 //app info
-                                val list_a = listOf(
+                                val listA = listOf(
                                         thisAppName,
                                         thisAppPackageName,
                                         "$thisAppVersionName ($thisAppVersionCode)",
@@ -103,7 +104,7 @@ class AppManagementActivity : AppCompatActivity() {
                                         thisAppFirstInstallTime,
                                         thisAppLastUpdateTime
                                 )
-                                val list_b = mutableListOf(
+                                val listB = mutableListOf(
                                         getString(R.string.text_app_name),
                                         getString(R.string.text_app_packagename),
                                         getString(R.string.text_app_version),
@@ -113,17 +114,17 @@ class AppManagementActivity : AppCompatActivity() {
                                         getString(R.string.text_app_lastupdatetime)
                                 )
                                 val actAppInfo = mutableListOf<String>()
-                                var _a = 0
-                                list_b.map {
-                                    actAppInfo.add(it + ":" + list_a[_a])
-                                    _a++
+                                var indexA = 0
+                                listB.map { item ->
+                                    actAppInfo.add("$item:" + listA[indexA])
+                                    indexA++
                                 }
                                 Logger.d(actAppInfo)
                                 selector(getString(R.string.text_app_info), actAppInfo) { _, ii ->
                                     alert {
                                         customView {
                                             verticalLayout {
-                                                val input: String = editText(list_a[ii]).text.toString()
+                                                val input: String = editText(listA[ii]).text.toString()
                                                 neutralPressed(R.string.text_share) {
                                                     share(input)
                                                 }

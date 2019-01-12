@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_manual_update -> {
                     //SystemUtil.browse(this@MainActivity, updateWebUrl)
-                    checkUpdate()
+                    checkUpdate(true)
                 }
                 R.id.menu_checkPermission -> {
                     checkPermissions(true)
@@ -188,21 +188,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate(manual: Boolean = false) {
         //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
-        loadingProgressBar.setCancelable(false)
-        loadingProgressBar.setCanceledOnTouchOutside(false)
-        if (manual) loadingProgressBar.show()
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "正在检测更新...").apply {
+            setCancelable(false)
+            setCanceledOnTouchOutside(false)
+            if (manual) show() else dismiss()
+        }
         AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.GITHUB)
                 .setGitHubUserAndRepo("zhihaofans", "android.box")
                 .withListener(object : AppUpdaterUtils.UpdateListener {
                     override fun onFailed(error: AppUpdaterError) {
-                        loadingProgressBar.dismiss()
+                        if (manual) loadingProgressBar.dismiss()
                     }
 
                     override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
                         if (isUpdateAvailable) {
-                            loadingProgressBar.dismiss()
+                            if (manual) loadingProgressBar.dismiss()
                             materialDialog().show {
                                 title(text = "检测更新")
                                 message(text = "发现更新，是否调用打开下载地址？")
@@ -222,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         } else {
                             if (manual) {
-                                loadingProgressBar.dismiss()
+                                if (manual) loadingProgressBar.dismiss()
                                 MaterialDialog(this@MainActivity).show {
                                     title(text = "检测更新")
                                     message(text = "已经是最新版本")

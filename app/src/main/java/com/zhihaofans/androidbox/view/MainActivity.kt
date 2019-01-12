@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate(manual: Boolean = false) {
         //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "正在检测更新...").apply {
+        val loadingProgressBar = indeterminateProgressDialog("Please wait a bit…", "正在从Github检测更新...").apply {
             setCancelable(false)
             setCanceledOnTouchOutside(false)
             if (manual) show() else dismiss()
@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                                 positiveButton(R.string.text_yes) {
                                     this.dismiss()
                                     MaterialDialog(this@MainActivity).show {
-                                        val myItems = listOf("直接下载更新", "打开更新网页")
+                                        val myItems = listOf("打开Github下载页面", "打开国内下载页面")
                                         listItems(items = myItems) { _, index, _ ->
                                             when (index) {
                                                 0 -> browse(update.urlToDownload.toString(), true)

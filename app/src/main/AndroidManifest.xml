@@ -202,7 +202,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

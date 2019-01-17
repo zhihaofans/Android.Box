@@ -99,4 +99,6 @@
     <string name="text_add">Add</string>
     <string name="text_title">Title</string>
     <string name="text_content">Content</string>
+    <string name="text_weixin_jingxuan">WeChat featured articles</string>
+    <string name="text_toutiao_news">Toutiao News</string>
 </resources>

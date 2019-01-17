@@ -10,9 +10,9 @@ class XXDownMod {
     companion object {
         fun get(site: String, url: String): XXDownResultData? {
             return when (site) {
-                ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL -> XXDownSitesMod.AcfunVideoThumbnail(url)
-                ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL -> XXDownSitesMod.BilibiliVideoThumbnail(url)
-                ItemNameMod.XXDOWN_SITE_GITHUB_RELEASE -> XXDownSitesMod.githubReleaseXX(url)
+                ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL -> XXDownSitesMod.AcfunVideoThumbnail(url)
+                ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL -> XXDownSitesMod.BilibiliVideoThumbnail(url)
+                ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE -> XXDownSitesMod.githubReleaseXX(url)
                 else -> null
             }
 

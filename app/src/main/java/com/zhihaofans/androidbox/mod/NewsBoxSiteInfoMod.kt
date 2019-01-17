@@ -1,12 +1,10 @@
 package com.zhihaofans.androidbox.mod
 
-import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.orhanobut.logger.Logger
-import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.News
 import com.zhihaofans.androidbox.gson.*
+import com.zhihaofans.androidbox.kotlinEx.hasNotChild
 import com.zhihaofans.androidbox.util.HttpUtil
 
 
@@ -14,25 +12,23 @@ import com.zhihaofans.androidbox.util.HttpUtil
  * Created by zhihaofans on 2018/6/3.
  */
 
-class siteInfo_gankio(_context: Context) {
-    private val g = Gson()
-    private val context = _context
-
+class SiteInfoGankio {
     fun getNewsList(channelId: String, page: Int): MutableList<News>? {
-        var _page = page
+        val g = Gson()
+        var mPage = page
         val newsList = mutableListOf<News>()
         if (page < 1) {
-            _page = 1
+            mPage = 1
         }
         val thisUrl: String = when (channelId) {
-            ItemNameMod.FEED_GANK_IO_ALL -> {
-                UrlMod.GANK_IO_ALL + _page
+            ItemIdMod.FEED_GANK_IO_ALL -> {
+                UrlMod.GANK_IO_ALL + mPage
             }
-            ItemNameMod.FEED_GANK_IO_ANDROID -> {
-                UrlMod.GANK_IO_ANDROID + _page
+            ItemIdMod.FEED_GANK_IO_ANDROID -> {
+                UrlMod.GANK_IO_ANDROID + mPage
             }
-            ItemNameMod.FEED_GANK_IO_GIRL -> {
-                UrlMod.GANK_IO_GIRL + _page
+            ItemIdMod.FEED_GANK_IO_GIRL -> {
+                UrlMod.GANK_IO_GIRL + mPage
             }
             else -> null
         } ?: return null
@@ -61,17 +57,16 @@ class siteInfo_gankio(_context: Context) {
     }
 }
 
-class siteInfo_dgtle(_context: Context) {
-    private val g = Gson()
-    private val context = _context
+class SiteInfoDgtle {
     fun getNewsList(channelId: String, page: Int): MutableList<News>? {
-        var _page = page
+        val g = Gson()
+        var mPage = page
         val newsList = mutableListOf<News>()
         if (page < 1) {
-            _page = 1
+            mPage = 1
         }
         val thisUrl: String = when (channelId) {
-            "dgtle_news" -> UrlMod.DGTLE_NEWS + _page
+            "dgtle_news" -> UrlMod.DGTLE_NEWS + mPage
             else -> null
         } ?: return null
 
@@ -102,19 +97,17 @@ class siteInfo_dgtle(_context: Context) {
     }
 }
 
-class siteInfo_sspai(_context: Context) {
-    private val g = Gson()
-    private val context = _context
-
+class SiteInfoSspai {
     fun getNewsList(channelId: String, page: Int): MutableList<News>? {
-        var _page = page
+        val g = Gson()
+        var mPage = page
         val newsList = mutableListOf<News>()
         if (page < 1) {
-            _page = 1
+            mPage = 1
         }
         when (channelId) {
             "sspai_article" -> {
-                val thisUrl = UrlMod.SSPAI_ARTICLE + (_page - 1) * 20
+                val thisUrl = UrlMod.SSPAI_ARTICLE + (mPage - 1) * 20
                 val headers = mutableMapOf(
                         Pair("content-type", "application/json, text/javascript, */*; q=0.01"),
                         Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
@@ -140,24 +133,22 @@ class siteInfo_sspai(_context: Context) {
     }
 }
 
-class siteInfo_rsshub(_context: Context) {
-
-    private val g = Gson()
-
+class SiteInfoRsshub {
     fun getNewsList(channelId: String): MutableList<News>? {
+        val g = Gson()
         val headers = mutableMapOf(
                 Pair("content-type", "application/json, text/javascript, */*; q=0.01"),
                 Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         )
         val newsList = mutableListOf<News>()
         val thisUrl = when (channelId) {
-            ItemNameMod.FEED_RSSHUB_V2EX_TOPICS -> UrlMod.RSSHUB_V2EX
-            ItemNameMod.FEED_RSSHUB_DOUBAN_MOVIE_PLAYING -> UrlMod.RSSHUB_DOUBANMOVIEPLAYING
-            ItemNameMod.FEED_RSSHUB_JIKE_EDITOR_CHOICE -> UrlMod.RSSHUB_JIKE
-            ItemNameMod.FEED_RSSHUB_JUEJIN_TRENDING_ANDROID -> UrlMod.RSSHUB_JUEJINTRENDINGANDROID
-            ItemNameMod.FEED_RSSHUB_BANGUMI_CALENDAR_TODAY -> UrlMod.RSSHUB_BANGUMITODAY
-            ItemNameMod.FEED_RSSHUB_NEW_RSS -> UrlMod.RSSHUB_NEW_RSS
-            ItemNameMod.FEED_RSSHUB_GUOKR_SCIENTIFIC -> UrlMod.RSSHUB_GUOKR_SCIENTIFIC
+            ItemIdMod.FEED_RSSHUB_V2EX_TOPICS -> UrlMod.RSSHUB_V2EX
+            ItemIdMod.FEED_RSSHUB_DOUBAN_MOVIE_PLAYING -> UrlMod.RSSHUB_DOUBANMOVIEPLAYING
+            ItemIdMod.FEED_RSSHUB_JIKE_EDITOR_CHOICE -> UrlMod.RSSHUB_JIKE
+            ItemIdMod.FEED_RSSHUB_JUEJIN_TRENDING_ANDROID -> UrlMod.RSSHUB_JUEJINTRENDINGANDROID
+            ItemIdMod.FEED_RSSHUB_BANGUMI_CALENDAR_TODAY -> UrlMod.RSSHUB_BANGUMITODAY
+            ItemIdMod.FEED_RSSHUB_NEW_RSS -> UrlMod.RSSHUB_NEW_RSS
+            ItemIdMod.FEED_RSSHUB_GUOKR_SCIENTIFIC -> UrlMod.RSSHUB_GUOKR_SCIENTIFIC
             else -> return null
         }
         if (thisUrl.isEmpty()) return null
@@ -178,19 +169,17 @@ class siteInfo_rsshub(_context: Context) {
     }
 }
 
-class siteInfo_wanandroid(_context: Context) {
-    private val g = Gson()
-    private val context = _context
-
+class SiteInfoWanandroid {
     fun getNewsList(channelId: String, page: Int): MutableList<News>? {
-        var _page = page
+        val g = Gson()
+        var mPage = page
         val newsList = mutableListOf<News>()
         if (page < 1) {
-            _page = 1
+            mPage = 1
         }
         when (channelId) {
-            ItemNameMod.FEED_WANANDROID_INDEX -> {
-                val thisUrl = UrlMod.WANANDROID_INDEX + "${_page - 1}/json"
+            ItemIdMod.FEED_WANANDROID_INDEX -> {
+                val thisUrl = UrlMod.WANANDROID_INDEX + "${mPage - 1}/json"
                 val headers = mutableMapOf(
                         Pair("content-type", "application/json;charset=UTF-8"),
                         Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
@@ -225,22 +214,12 @@ class siteInfo_wanandroid(_context: Context) {
     }
 }
 
-class siteInfoZhihuDaily(_context: Context) {
-    private val g = Gson()
-    private val context = _context
-    fun getchannelList(): MutableList<MutableMap<String, String>> {
-        return mutableListOf(
-                mutableMapOf(
-                        "channelId" to ItemNameMod.FEED_ZHIHU_DAILY,
-                        "channelName" to context.getString(R.string.text_site_zhihu_daily)
-                )
-        )
-    }
-
-    fun getNewsList(channelId: String, page: Int): MutableList<News>? {
+class SiteInfoZhihudaily {
+    fun getNewsList(channelId: String): MutableList<News>? {
+        val g = Gson()
         val newsList = mutableListOf<News>()
         when (channelId) {
-            ItemNameMod.FEED_ZHIHU_DAILY -> {
+            ItemIdMod.FEED_ZHIHU_DAILY -> {
                 val thisUrl = UrlMod.ZHIHU_DAILY
                 val headers = mutableMapOf(
                         Pair("content-type", "application/json;charset=UTF-8"),
@@ -251,12 +230,97 @@ class siteInfoZhihuDaily(_context: Context) {
                     val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
                     if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
                         val newsIndex = g.fromJson(newsListJson, ZhihuDailyGson::class.java)
-                        Logger.d("siteInfoZhihuDaily.getNewsList.date:" + newsIndex.date)
+                        Logger.d("SiteInfoZhihudaily.getNewsList.date:" + newsIndex.date)
+                        val urlList = mutableListOf<String>()
                         newsIndex.top_stories.map {
-                            newsList.add(News(it.title, UrlMod.ZHIHU_DAILY_WEB + it.id))
+                            val mUrl = UrlMod.ZHIHU_DAILY_WEB + it.id
+                            if (urlList.hasNotChild(mUrl)) {
+                                newsList.add(News(it.title, UrlMod.ZHIHU_DAILY_WEB + it.id))
+                                urlList.add(mUrl)
+                            }
                         }
                         newsIndex.stories.map {
-                            newsList.add(News(it.title, UrlMod.ZHIHU_DAILY_WEB + it.id))
+                            val mUrl = UrlMod.ZHIHU_DAILY_WEB + it.id
+                            if (urlList.hasNotChild(mUrl)) {
+                                newsList.add(News(it.title, UrlMod.ZHIHU_DAILY_WEB + it.id))
+                                urlList.add(mUrl)
+                            }
+                        }
+                        if (newsList.size == 0) {
+                            return null
+                        }
+                    } else {
+                        return null
+                    }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}
+
+class SiteInfoWeixinjingxuan {
+    fun getNewsList(channelId: String, page: Int): MutableList<News>? {
+        val g = Gson()
+        val newsList = mutableListOf<News>()
+        when (channelId) {
+            ItemIdMod.FEED_JUHE_WEIXIN_JINGXUAN -> {
+                val thisUrl = UrlMod.WEIXIN_JINGXUAN + page.toString()
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json;charset=UTF-8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                Logger.d(thisUrl)
+                try {
+                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers)
+                            ?: return null
+                    if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
+                        val juheWeixin = g.fromJson(newsListJson, JuheWeixinGson::class.java)
+                        if (juheWeixin.error_code != 0 || juheWeixin.result == null) return null
+                        juheWeixin.result.list.map { item ->
+                            newsList.add(News(item.title, item.url))
+                        }
+                        if (newsList.size == 0) {
+                            return null
+                        }
+                    } else {
+                        return null
+                    }
+                    return newsList
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return null
+                }
+            }
+            else -> return null
+        }
+    }
+}
+
+class SiteInfoToutiaoxinwen {
+    fun getNewsList(channelId: String): MutableList<News>? {
+        val g = Gson()
+        val newsList = mutableListOf<News>()
+        when (channelId) {
+            ItemIdMod.FEED_JUHE_TOUTIAO_NEWS -> {
+                val thisUrl = UrlMod.NEWS_TOUTIAO
+                val headers = mutableMapOf(
+                        Pair("content-type", "application/json;charset=UTF-8"),
+                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                )
+                Logger.d(thisUrl)
+                try {
+                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers)
+                            ?: return null
+                    if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
+                        val juheToutiao = g.fromJson(newsListJson, JuheToutiaoGson::class.java)
+                        if (juheToutiao.error_code != 0 || juheToutiao.result == null) return null
+                        juheToutiao.result.data.map { item ->
+                            newsList.add(News(item.title, item.url))
                         }
                         if (newsList.size == 0) {
                             return null

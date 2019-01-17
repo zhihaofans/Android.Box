@@ -98,4 +98,6 @@
     <string name="text_add">添加</string>
     <string name="text_title">标题</string>
     <string name="text_content">内容</string>
+    <string name="text_weixin_jingxuan">微信精选文章</string>
+    <string name="text_toutiao_news">头条新闻</string>
 </resources>

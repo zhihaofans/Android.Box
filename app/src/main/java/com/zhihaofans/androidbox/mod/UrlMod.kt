@@ -30,7 +30,8 @@ class UrlMod {
         const val WANANDROID_INDEX = "http://www.wanandroid.com/article/list/"
         const val ZHIHU_DAILY = "https://news-at.zhihu.com/api/4/news/latest"
         const val ZHIHU_DAILY_WEB = "https://daily.zhihu.com/story/"
-
+        const val WEIXIN_JINGXUAN = "http://v.juhe.cn/weixin/query?dtype=json&ps=20&key=" + ApiKeyMod.APIKEY_JUHE_WEIXIN + "&pno="
+        const val NEWS_TOUTIAO = "http://v.juhe.cn/toutiao/index?key=" + ApiKeyMod.APIKEY_NEWS_TOUTIAO + "&type="
         // Local
         val APP_DOWNLOAD_PATH = SystemUtil.getDownloadPathString() + "Android.Box/"
         val APP_PICTURE_DOWNLOAD_PATH = SystemUtil.getPicturePathString() + "Android.Box/"

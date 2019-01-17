@@ -122,3 +122,50 @@ data class ZhihuDailyStoriesGson(
         val ga_prefix: String,
         val title: String
 )
+// Juhe Weixin
+
+data class JuheWeixinGson(
+        val reason: String,
+        val result: JuheWeixinResultGson?,
+        val error_code: Int
+)
+
+data class JuheWeixinResultGson(
+        val list: List<JuheWeixinResultListGson>,
+        val totalPage: Int,
+        val ps: Int,
+        val pno: Int
+)
+
+data class JuheWeixinResultListGson(
+        val id: String,
+        val title: String,
+        val source: String,
+        val firstImg: String,
+        val mark: String,
+        val url: String
+)
+// Juhe Toutiao
+
+data class JuheToutiaoGson(
+        val reason: String,
+        val result: JuheToutiaoResultGson?,
+        val error_code: Int
+)
+
+data class JuheToutiaoResultGson(
+        val stat: String,
+        val data: List<JuheToutiaoResultListGson>
+)
+
+data class JuheToutiaoResultListGson(
+        val uniquekey: String,
+        val title: String,
+        val date: String,
+        val category: String,
+        val author_name: String,
+        val url: String,
+        val thumbnail_pic_s: String,
+        val thumbnail_pic_s02: String,
+        val thumbnail_pic_s03: String
+)

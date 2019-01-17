@@ -9,7 +9,7 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.*
 import com.zhihaofans.androidbox.mod.FavoritesMod
-import com.zhihaofans.androidbox.mod.ItemNameMod
+import com.zhihaofans.androidbox.mod.ItemIdMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_favorites.*
@@ -39,7 +39,7 @@ class FavoritesActivity : AppCompatActivity() {
         initShare()
         fab_favorites.setOnClickListener {
             val typeList = listOf(
-                    ItemNameMod.FAVORITES_TYPE_URL, ItemNameMod.FAVORITES_TYPE_TEXT
+                    ItemIdMod.FAVORITES_TYPE_URL, ItemIdMod.FAVORITES_TYPE_TEXT
             )
             selector("收藏类型", menu) { _: DialogInterface, i: Int ->
                 askToAdd(typeList[i], menu[i], menu[i])
@@ -59,7 +59,7 @@ class FavoritesActivity : AppCompatActivity() {
             val chooseFavorites = favoritesList[position]
             Logger.d("chooseFavorites:$chooseFavorites")
             when (chooseFavorites.type) {
-                ItemNameMod.FAVORITES_TYPE_TEXT -> {
+                ItemIdMod.FAVORITES_TYPE_TEXT -> {
                     alert {
                         title = "这是个文本"
                         customView {
@@ -101,7 +101,7 @@ class FavoritesActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
-                ItemNameMod.FAVORITES_TYPE_URL -> {
+                ItemIdMod.FAVORITES_TYPE_URL -> {
                     alert {
                         title = "这是个链接"
                         message = "是否打开？"
@@ -146,14 +146,14 @@ class FavoritesActivity : AppCompatActivity() {
             if (st != null) {
                 if (st.isUrl()) {
                     defaultTitle += "的分享"
-                    askToAdd(ItemNameMod.FAVORITES_TYPE_URL, defaultTitle, st)
+                    askToAdd(ItemIdMod.FAVORITES_TYPE_URL, defaultTitle, st)
                 }
             }
         } else if (mIntent.action == Intent.ACTION_VIEW) {
             val uri = mIntent.data
             if (uri !== null) {
                 defaultTitle += "的网址"
-                askToAdd(ItemNameMod.FAVORITES_TYPE_URL, defaultTitle, uri.toString())
+                askToAdd(ItemIdMod.FAVORITES_TYPE_URL, defaultTitle, uri.toString())
             }
         }
     }
@@ -184,7 +184,7 @@ class FavoritesActivity : AppCompatActivity() {
     private fun addFavorites(favoritesType: String, title: String, text: String) {
         val time = SystemUtil.unixTimeStampMill().toString()
         when (favoritesType) {
-            ItemNameMod.FAVORITES_TYPE_URL -> {
+            ItemIdMod.FAVORITES_TYPE_URL -> {
                 if (text.isUrl()) {
                     coordinatorLayout_favorites.snackbar(
                             getString(R.string.text_add) + ":" +
@@ -199,12 +199,12 @@ class FavoritesActivity : AppCompatActivity() {
                 } else {
                     coordinatorLayout_favorites.snackbar("错误：网址格式错误")
                     Snackbar.make(coordinatorLayout_favorites, "错误：网址格式错误,是否保存为文本？", Snackbar.LENGTH_LONG).setAction(R.string.text_save) {
-                        askToAdd(ItemNameMod.FAVORITES_TYPE_TEXT, title, text)
+                        askToAdd(ItemIdMod.FAVORITES_TYPE_TEXT, title, text)
                     }.show()
 
                 }
             }
-            ItemNameMod.FAVORITES_TYPE_TEXT -> {
+            ItemIdMod.FAVORITES_TYPE_TEXT -> {
                 coordinatorLayout_favorites.snackbar(
                         getString(R.string.text_add) + ":" +
                                 try {

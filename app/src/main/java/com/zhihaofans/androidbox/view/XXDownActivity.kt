@@ -9,7 +9,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
 import com.zhihaofans.androidbox.kotlinEx.*
-import com.zhihaofans.androidbox.mod.ItemNameMod
+import com.zhihaofans.androidbox.mod.ItemIdMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -75,9 +75,9 @@ class XXDownActivity : AppCompatActivity() {
 
     private fun auto(url: String): XXDownResultData? {
         return when {
-            url.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemNameMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
-            url.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemNameMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
-            url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemNameMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
+            url.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
+            url.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
+            url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
             else -> null
         }
     }

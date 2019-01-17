@@ -10,3 +10,6 @@ fun MutableMap<String, String>.get(key: String, defaultValve: String): String {
 fun MutableList<*>?.isNullorEmpty(): Boolean {
     return this?.isEmpty() ?: true
 }
+
+fun List<*>.hasChild(childItem: Any) = this.indexOf(childItem) >= 0
+fun List<*>.hasNotChild(childItem: Any) = !this.hasChild(childItem)

@@ -15,7 +15,7 @@ import io.paperdb.Paper
 class FavoritesMod {
     private val g = Gson()
     private val dbName = "com.zhihaofans.androidbox.favorites"
-    private val favoritesListKey = ItemNameMod.DATEBASE_KEY_FAVORITES_LIST
+    private val favoritesListKey = ItemIdMod.DATEBASE_KEY_FAVORITES_LIST
     private val dbPath = Paper.book(dbName).getPath(favoritesListKey)
     fun load(): FavoritesGson {
         val json = Paper.book(dbName).read(favoritesListKey, g.toJson(FavoritesGson(mutableListOf()), FavoritesGson::class.java))

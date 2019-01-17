@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
+import com.google.android.material.tabs.TabLayout
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -35,15 +36,12 @@ class FeedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
         setSupportActionBar(toolbar_feed)
-        clipboardUtil = ClipboardUtil(this)
-        notificationUtil.init(this)
         init()
         fab_feed.setOnClickListener {
             when (nowTabPosition) {
                 0 -> {
                     val newsCache = newsBox.getCache()
                     if (newsCache == null) {
-                        snackbar(coordinatorLayout_feed, "空白订阅数据")
                         selector("", mutableListOf(getString(R.string.text_select_site), getString(R.string.text_refresh))) { _, pos ->
                             when (pos) {
                                 0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(2))
@@ -92,7 +90,7 @@ class FeedActivity : AppCompatActivity() {
                 }
             }
         }
-        tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab) {
                 title = tab.text ?: getString(R.string.text_feed)
                 if (nowTabPosition != tab.position) {
@@ -109,6 +107,8 @@ class FeedActivity : AppCompatActivity() {
 
 
     private fun init() {
+        clipboardUtil = ClipboardUtil(this)
+        notificationUtil.init(this)
         newsBox.init(this@FeedActivity)
         appBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
@@ -183,12 +183,13 @@ class FeedActivity : AppCompatActivity() {
             0 -> {
                 val update = data as FeedMod.News.Update
                 var cache = newsBox.getCache()
-                if (cache == null) {
-                    snackbar(coordinatorLayout_feed, "空白订阅数据")
-                } else {
-                    when (update.type) {
-                        0 -> {
-                            doAsync {
+                when (update.type) {
+                    0 -> {
+                        doAsync {
+                            if (cache == null) {
+                                snackbar(coordinatorLayout_feed, "空白订阅数据")
+                            } else {
+
                                 cache = newsBox.refreshCache()
                                 uiThread {
                                     if (cache == null) {
@@ -200,10 +201,14 @@ class FeedActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        1 -> {
-                            val page = update.data as Int
-                            Logger.d("updateFeed->page:$page")
-                            doAsync {
+                    }
+                    1 -> {
+                        val page = update.data as Int
+                        Logger.d("updateFeed->page:$page")
+                        doAsync {
+                            if (cache == null) {
+                                snackbar(coordinatorLayout_feed, "空白订阅数据")
+                            } else {
                                 cache = newsBox.changePage(page)
                                 uiThread {
                                     if (cache == null) {
@@ -216,28 +221,28 @@ class FeedActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        2 -> {
-                            loadingProgressBar.dismiss()
-                            val siteList = newsBox.getSiteList()
-                            selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
-                                val siteId = siteList[i].id
-                                val channelList = newsBox.getChannel(siteId)
-                                var channelId = channelList[0].id
-                                if (channelList.size > 1) {
-                                    selector(getString(R.string.text_channel), channelList.map { it.name }) { _, channelIndex ->
-                                        channelId = channelList[channelIndex].id
-                                        Logger.d("ChangeSite:$siteId/$channelId")
-                                        initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
-                                    }
-                                } else {
+                    }
+                    2 -> {
+                        loadingProgressBar.dismiss()
+                        val siteList = newsBox.getSiteList()
+                        selector(getString(R.string.text_select_site), siteList.map { it.name }) { _, i ->
+                            val siteId = siteList[i].id
+                            val channelList = newsBox.getChannel(siteId)
+                            var channelId = channelList[0].id
+                            if (channelList.size > 1) {
+                                selector(getString(R.string.text_channel), channelList.map { it.name }) { _, channelIndex ->
+                                    channelId = channelList[channelIndex].id
                                     Logger.d("ChangeSite:$siteId/$channelId")
                                     initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                 }
+                            } else {
+                                Logger.d("ChangeSite:$siteId/$channelId")
+                                initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                             }
                         }
-                        else -> {
-                            loadingProgressBar.dismiss()
-                        }
+                    }
+                    else -> {
+                        loadingProgressBar.dismiss()
                     }
                 }
             }
@@ -245,9 +250,8 @@ class FeedActivity : AppCompatActivity() {
                 loadingProgressBar.dismiss()
                 // TODO:App updateFeed
             }
-            else -> {
-                loadingProgressBar.dismiss()
-            }
+            else -> loadingProgressBar.dismiss()
+
         }
     }
 

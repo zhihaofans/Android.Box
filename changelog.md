@@ -1,5 +1,7 @@
 # 更新记录
 
+## 更新记录以[Release 列表](https://github.com/zhihaofans/Android.Box/releases)为准
+
 ### 0.0.36 (Build 36) - 2018-07-12 13:08:22  7.47 MB
 
 1.哔哩哔哩新增视频封面下载功能

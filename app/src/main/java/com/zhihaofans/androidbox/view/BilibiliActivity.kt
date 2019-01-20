@@ -9,6 +9,8 @@ import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
+import com.zhihaofans.androidbox.kotlinEx.string
+import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
@@ -40,7 +42,7 @@ class BilibiliActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         val listData = mutableListOf(
-                "视频弹幕查用户uid"
+                "视频弹幕查用户uid", "小黑屋"
         )
         listView_bilibili.adapter = SystemUtil.listViewAdapter(this, listData)
         listView_bilibili.setOnItemClickListener { _, _, index, _ ->
@@ -49,6 +51,8 @@ class BilibiliActivity : AppCompatActivity() {
             }
             when (index) {
                 0 -> bilibiliCommentHash2uid()
+                1 -> bilibiliBlackroom()
+                else -> toast("未知错误")
             }
         }
         checkShare()
@@ -143,9 +147,8 @@ class BilibiliActivity : AppCompatActivity() {
                     }
                 }
             }
-        } else {
-            Logger.i("分享失败")
         }
+
     }
 
     private fun bilibiliCommentHash2uid() {
@@ -476,6 +479,10 @@ class BilibiliActivity : AppCompatActivity() {
         }
     }
 
+    private fun bilibiliBlackroom() {
+        val result = OtherAppMod.bilibiliBlackroom(this)
+        toast("启动" + result.string("成功", "失败"))
+    }
 
     private fun copy(string: String) {//复制到剪切板
         clipboardUtil?.copy(string)

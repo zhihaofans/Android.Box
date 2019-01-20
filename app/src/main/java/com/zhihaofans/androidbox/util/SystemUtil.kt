@@ -360,5 +360,10 @@ class SystemUtil {
             return wmInstance.drawable
         }
 
+        fun collapseNotificationBar(mContext: Context) {
+            //折叠通知栏
+            //感谢：https://stackoverflow.com/questions/15568754
+            mContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        }
     }
 }

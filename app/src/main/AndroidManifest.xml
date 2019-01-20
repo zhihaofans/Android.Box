@@ -37,9 +37,27 @@
         </provider>
 
         <service
-            android:name=".service.QrcodeQstService"
+            android:name=".service.QrcodeScanQstService"
             android:icon="@drawable/ic_camera"
             android:label="@string/text_qrcode_scan"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.WechatScanQstService"
+            android:icon="@drawable/ic_camera"
+            android:label="@string/text_qrcode_scan_wechat"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.AlipayQrcodeScanQstService"
+            android:icon="@drawable/ic_camera"
+            android:label="@string/text_qrcode_scan_alipay"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

@@ -100,4 +100,6 @@
     <string name="text_content">内容</string>
     <string name="text_weixin_jingxuan">微信精选文章</string>
     <string name="text_toutiao_news">头条新闻</string>
+    <string name="text_qrcode_scan_wechat">微信扫一扫</string>
+    <string name="text_qrcode_scan_alipay">支付宝扫一扫</string>
 </resources>

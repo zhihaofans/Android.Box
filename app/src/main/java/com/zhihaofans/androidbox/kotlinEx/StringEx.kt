@@ -4,6 +4,7 @@ import android.webkit.URLUtil
 import com.orhanobut.logger.Logger
 import java.net.URI
 import java.net.URL
+import java.net.URLEncoder
 
 /**
  * Created by zhihaofans on 2018/9/15.
@@ -42,3 +43,4 @@ fun String.replaces(list: Map<String, String>, ignoreCase: Boolean = false): Str
 }
 
 fun String.logd() = Logger.d(this)
+fun String.toURLEncode() = URLEncoder.encode(this, "UTF-8")

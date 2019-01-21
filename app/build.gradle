@@ -80,6 +80,10 @@ dependencies {
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'com.afollestad.material-dialogs:core:2.0.0-rc5'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
+    implementation "com.github.vondear.RxTool:RxKit:v2.2.7"
+    implementation "com.github.vondear.RxTool:RxUI:v2.2.7"
+    implementation 'com.github.vondear.RxTool:RxCamera:v2.2.7'
+    implementation "com.github.vondear.RxTool:RxFeature:v2.2.7"
 }
 kotlin {
     experimental {

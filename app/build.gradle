@@ -83,7 +83,6 @@ dependencies {
     implementation "com.github.vondear.RxTool:RxKit:v2.2.7"
     implementation "com.github.vondear.RxTool:RxUI:v2.2.7"
     implementation 'com.github.vondear.RxTool:RxCamera:v2.2.7'
-    implementation "com.github.vondear.RxTool:RxFeature:v2.2.7"
 }
 kotlin {
     experimental {

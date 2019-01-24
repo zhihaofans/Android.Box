@@ -27,9 +27,13 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
+            android:name=".view.RandomActivity"
+            android:label="@string/title_activity_random"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
+        <activity
             android:name=".view.ShortcutsActivity"
             android:label="@string/title_shortcuts"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

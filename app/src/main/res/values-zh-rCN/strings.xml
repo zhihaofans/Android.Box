@@ -103,4 +103,5 @@
     <string name="text_qrcode_scan_wechat">微信扫一扫</string>
     <string name="text_qrcode_scan_alipay">支付宝扫一扫</string>
     <string name="title_shortcuts">快捷方式</string>
+    <string name="text_random">随机</string>
 </resources>

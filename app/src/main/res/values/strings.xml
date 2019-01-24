@@ -104,4 +104,5 @@
     <string name="text_qrcode_scan_wechat">WeChat Scan</string>
     <string name="text_qrcode_scan_alipay">Alipay Scan</string>
     <string name="title_shortcuts">Shortcuts</string>
+    <string name="text_random">Random</string>
 </resources>

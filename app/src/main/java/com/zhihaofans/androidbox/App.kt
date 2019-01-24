@@ -7,6 +7,7 @@ import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.tencent.smtt.sdk.QbSdk
+import com.vondear.rxtool.RxTool
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.DevUtils
 import dev.utils.app.AppUtils
@@ -32,7 +33,8 @@ class App : Application() {
         Paper.init(this)
         Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)
-        DevUtils.init(applicationContext)
+        DevUtils.init(this)
+        RxTool.init(this)
         initX5WebView()
     }
 

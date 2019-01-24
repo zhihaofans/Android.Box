@@ -1,19 +1,21 @@
 package com.zhihaofans.androidbox.view
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutManagerCompat
 import com.google.android.material.snackbar.Snackbar
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.init
-import dev.utils.app.ShortCutUtils
+import com.zhihaofans.androidbox.mod.FeedShortcuts
+import com.zhihaofans.androidbox.mod.QrcodeScanShortcuts
+import com.zhihaofans.androidbox.util.ShortcutsUtil
 import kotlinx.android.synthetic.main.activity_shortcuts.*
 import kotlinx.android.synthetic.main.content_shortcuts.*
 import org.jetbrains.anko.toast
 
 class ShortcutsActivity : AppCompatActivity() {
-
+    private val shortcutsUtil = ShortcutsUtil(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shortcuts)
@@ -30,20 +32,26 @@ class ShortcutsActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val sm = getSystemService(Context.SHORTCUT_SERVICE)
         val shortcutList = listOf(
-                "订阅"
+                getString(R.string.text_feed),
+                getString(R.string.text_qrcode_scan)
         )
         listViewShortcuts.init(this, shortcutList)
         listViewShortcuts.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
-                    val feedClassName = "$packageName.FeedActivity"
-                    try {
-                        ShortCutUtils.addShortcut(this, feedClassName, feedClassName, R.mipmap.ic_launcher)
+                    val launchIntent = Intent(this, FeedShortcuts::class.java)
+                    if (shortcutsUtil.addPinShortcut("$packageName.FeedActivity", launchIntent, shortcutList[position])) {
                         toast("创建快捷方式成功")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } else {
+                        toast("创建快捷方式失败")
+                    }
+                }
+                1 -> {
+                    val launchIntent = Intent(this, QrcodeScanShortcuts::class.java)
+                    if (shortcutsUtil.addPinShortcut("$packageName.QrcodeScan", launchIntent, shortcutList[position])) {
+                        toast("创建快捷方式成功")
+                    } else {
                         toast("创建快捷方式失败")
                     }
                 }

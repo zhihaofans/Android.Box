@@ -42,7 +42,8 @@ class ToolsActivity : AppCompatActivity() {
                 getString(R.string.text_weather),
                 getString(R.string.title_activity_xxdown),
                 "Waterfall test",
-                getString(R.string.text_bilibili)
+                getString(R.string.text_bilibili),
+                "快捷方式"
         )
         listView_tools.init(this, tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
@@ -167,6 +168,7 @@ class ToolsActivity : AppCompatActivity() {
                 6 -> startActivity<XXDownActivity>()
                 7 -> startActivity<ImageWebActivity>()
                 8 -> startActivity<BilibiliActivity>()
+                9 -> startActivity<ShortcutsActivity>()
             }
         }
     }

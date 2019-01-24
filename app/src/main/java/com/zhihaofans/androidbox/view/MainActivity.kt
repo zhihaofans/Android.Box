@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.maning.librarycrashmonitor.MCrashMonitor
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.materialDialog
@@ -53,8 +52,7 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.text_buildin_web_browser) + ":" +
                                     appSettingMod.buildinX5Browser.string(getString(R.string.text_yes), getString(R.string.text_no)),
                             getString(R.string.text_setting_open_image_url_with_buildin_viewer) + ":" +
-                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no)),
-                            "Crash page"
+                                    appSettingMod.imageUrlOpenWithBuiltinViewer.string(getString(R.string.text_yes), getString(R.string.text_no))
                     )
                     selector(getString(R.string.text_setting), settings) { _, i ->
                         when (i) {
@@ -82,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                                                         getString(R.string.text_no))
                                 )
                             }
-                            2 -> MCrashMonitor.startCrashListPage(this)
                         }
                     }
                 }

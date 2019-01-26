@@ -83,6 +83,9 @@ dependencies {
     implementation "com.github.vondear.RxTool:RxUI:v2.2.7"
     implementation 'com.github.vondear.RxTool:RxCamera:v2.2.7'
     implementation 'com.simple:spiderman:1.0.8'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.xuexiangjys:XUI:1.0.1'
+
 }
 kotlin {
     experimental {

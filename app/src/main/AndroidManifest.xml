@@ -28,8 +28,8 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".view.RandomActivity"
-            android:label="@string/title_activity_random"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
+            android:label="@string/text_random"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
         <activity
             android:name=".view.ShortcutsActivity"
             android:label="@string/title_shortcuts"

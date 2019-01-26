@@ -8,6 +8,7 @@ import com.orhanobut.logger.Logger
 import com.simple.spiderman.SpiderMan
 import com.tencent.smtt.sdk.QbSdk
 import com.vondear.rxtool.RxTool
+import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.DevUtils
 import dev.utils.app.AppUtils
@@ -27,13 +28,14 @@ class App : Application() {
         Logger.addLogAdapter(AndroidLogAdapter())
         isDebug = SystemUtil.isApkDebugable(this)
         Logger.d("Debug:$isDebug")
-
         Paper.init(this)
         Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)
         DevUtils.init(this)
         RxTool.init(this)
         initX5WebView()
+        XUI.init(this)
+        XUI.debug(true)
     }
 
     private fun initX5WebView() {

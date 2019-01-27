@@ -34,8 +34,8 @@ class RandomActivity : AppCompatActivity() {
         listViewRandom.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
-                    xuiUtil.materialDialogInput4Int("请输入最小数", "", "", "", "OK",
-                            "NO").apply {
+                    xuiUtil.materialDialogInput4Int("请输入最小数", "", "", "", getString(R.string.text_yes),
+                            getString(R.string.text_cancel)).apply {
                         inputRange(1, -1)
                         onPositive { dialogMin, _ ->
                             val inputTextMin = dialogMin.inputEditText!!.string.toIntOrNull()
@@ -69,8 +69,14 @@ class RandomActivity : AppCompatActivity() {
                     }.show()
 
                 }
+                1 -> {
+
+                }
             }
         }
     }
 
+    private fun randomChoose() {
+
+    }
 }

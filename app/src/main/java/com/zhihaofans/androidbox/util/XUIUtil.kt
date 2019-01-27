@@ -2,6 +2,8 @@ package com.zhihaofans.androidbox.util
 
 import android.content.Context
 import android.text.InputType
+import android.view.View
+import com.xuexiang.xui.utils.SnackbarUtils
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 
@@ -39,6 +41,7 @@ class XUIUtil(context: Context) {
                 .cancelable(cancelable)
     }
 /*
+DEMO
     fun materialDialogInput() {
         MaterialDialog.Builder(getContext())
                 .iconRes(R.drawable.icon_warning)
@@ -61,4 +64,20 @@ class XUIUtil(context: Context) {
                 .show()
     }
     */
+
+    fun snackbar(view: View, message: String): SnackbarUtils {
+        return SnackbarUtils.Short(view, message)
+    }
+
+    fun snackbarDanger(view: View, message: String): SnackbarUtils {
+        return snackbar(view, message).danger()
+    }
+
+    fun snackbarLong(view: View, message: String): SnackbarUtils {
+        return SnackbarUtils.Short(view, message)
+    }
+
+    fun snackbarLongDanger(view: View, message: String): SnackbarUtils {
+        return snackbar(view, message).danger()
+    }
 }

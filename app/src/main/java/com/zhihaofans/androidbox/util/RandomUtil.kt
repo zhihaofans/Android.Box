@@ -9,15 +9,15 @@ import kotlin.random.Random
  */
 class RandomUtil {
     companion object {
-        fun number(min: Int, max: Int): Int {
+        fun getNumber(min: Int, max: Int): Int {
             return Random.nextInt(min, max)
         }
 
-        fun number2(min: Int, max: Int): Int {
+        fun getNumber2(min: Int, max: Int): Int {
             return ThreadLocalRandom.current().nextInt(min, max)
         }
 
-        fun number3(min: Int, max: Int): Int {
+        fun getNumber3(min: Int, max: Int): Int {
             return SplittableRandom().nextInt(min, max)
         }
     }

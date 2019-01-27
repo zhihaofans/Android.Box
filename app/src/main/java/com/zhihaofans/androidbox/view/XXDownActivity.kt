@@ -30,11 +30,11 @@ class XXDownActivity : AppCompatActivity() {
                     val inputUrl = editText()
                     okButton {
                         when {
-                            inputUrl.string().isEmpty() -> {
+                            inputUrl.string.isEmpty() -> {
                                 coordinatorLayout_xxdown.snackbar("请输入内容")
                             }
-                            inputUrl.string().isUrl() -> {
-                                start(inputUrl.string())
+                            inputUrl.string.isUrl() -> {
+                                start(inputUrl.string)
                             }
                             else -> {
                                 coordinatorLayout_xxdown.snackbar("请输入正确的网址")

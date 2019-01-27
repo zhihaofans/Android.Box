@@ -8,4 +8,6 @@ import android.widget.EditText
  * @date: 2018-12-05 04:25
 
  */
-fun EditText.string() = this.text.toString()
+
+val EditText.string
+    get() = this.text.toString()

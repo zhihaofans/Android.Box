@@ -162,6 +162,11 @@ class MainActivity : AppCompatActivity() {
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
         checkUpdate()
+        if (SystemUtil.isApkDebugable(this)) debug()
+    }
+
+    private fun debug() {
+        startActivity<RandomActivity>()
     }
 
     private fun initPermissions() {

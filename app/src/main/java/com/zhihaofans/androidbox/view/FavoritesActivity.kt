@@ -170,10 +170,10 @@ class FavoritesActivity : AppCompatActivity() {
                     textView(R.string.text_content)
                     val inputContent = editText(text)
                     positiveButton(R.string.text_add) {
-                        if (inputTitle.string().isEmpty() || inputContent.string().isEmpty()) {
+                        if (inputTitle.string.isEmpty() || inputContent.string.isEmpty()) {
                             coordinatorLayout_favorites.snackbar("标题与内容都需要输入内容")
                         } else {
-                            addFavorites(favoritesType, inputTitle.string(), inputContent.string())
+                            addFavorites(favoritesType, inputTitle.string, inputContent.string)
                         }
                     }
                 }

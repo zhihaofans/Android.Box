@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun debug() {
-        startActivity<RandomActivity>()
+
     }
 
     private fun initPermissions() {

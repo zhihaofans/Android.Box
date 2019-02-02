@@ -13,13 +13,36 @@ import com.zhihaofans.androidbox.R
  */
 class XUIUtil(context: Context) {
     private val mContext = context
+    //文本
+    fun materialDialogInput4String(title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
+                                   neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
+        return materialDialogInput(null, title, content, InputType.TYPE_CLASS_TEXT, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
+    }
+
+    fun materialDialogInput4String(icon: Int, title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
+                                   neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
+        return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_TEXT, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
+    }
+
+    //非符号整数
     fun materialDialogInput4Int(title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
                                 neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
-        return materialDialogInput(null, title, content, InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
+        return materialDialogInput(null, title, content, InputType.TYPE_CLASS_NUMBER, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
     }
 
     fun materialDialogInput4Int(icon: Int, title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
                                 neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
+        return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_NUMBER, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
+    }
+
+    //符号整数
+    fun materialDialogInput4IntSigned(title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
+                                      neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
+        return materialDialogInput(null, title, content, InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
+    }
+
+    fun materialDialogInput4IntSigned(icon: Int, title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
+                                      neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
         return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
     }
 

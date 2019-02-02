@@ -34,12 +34,12 @@ class RandomActivity : AppCompatActivity() {
         listViewRandom.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
-                    xuiUtil.materialDialogInput4Int("请输入最小数", "", "", "", getString(R.string.text_yes),
+                    xuiUtil.materialDialogInput4IntSigned("请输入最小数", "", "", "", getString(R.string.text_yes),
                             getString(R.string.text_cancel)).apply {
                         inputRange(1, -1)
                         onPositive { dialogMin, _ ->
                             val inputTextMin = dialogMin.inputEditText!!.string.toIntOrNull()
-                            xuiUtil.materialDialogInput4Int("请输入最大数", "必须大于$inputTextMin", "", "", getString(R.string.text_yes),
+                            xuiUtil.materialDialogInput4IntSigned("请输入最大数", "必须大于$inputTextMin", "", "", getString(R.string.text_yes),
                                     getString(R.string.text_cancel)).apply {
                                 inputRange(1, -1)
                                 onPositive { dialogMax, _ ->
@@ -52,7 +52,7 @@ class RandomActivity : AppCompatActivity() {
                                     } else {
                                         if (inputTextMax > inputTextMin) {
                                             val randomResult = RandomUtil.getInt(inputTextMin, inputTextMax)
-                                            xuiUtil.materialDialogInput4Int("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
+                                            xuiUtil.materialDialogInput4IntSigned("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
                                                     getString(R.string.text_cancel)).apply {
                                                 inputRange(1, -1)
                                                 onPositive { dialogR, whichR ->
@@ -68,6 +68,42 @@ class RandomActivity : AppCompatActivity() {
                         }
                     }.show()
 
+                }
+                1 -> {
+                    //TODO
+                    xuiUtil.materialDialogInput4String("请输入想要随机的文本列表", "用逗号分割", "", "", getString(R.string.text_yes),
+                            getString(R.string.text_cancel)).apply {
+                        inputRange(1, -1)
+                        onPositive { dialogMin, _ ->
+                            val inputTextList = dialogMin.inputEditText!!.string.toIntOrNull()
+                            xuiUtil.materialDialogInput4Int("请输入最大数", "必须大于$inputTextList", "", "", getString(R.string.text_yes),
+                                    getString(R.string.text_cancel)).apply {
+                                inputRange(1, -1)
+                                onPositive { dialogMax, _ ->
+                                    val inputTextLength = dialogMax.inputEditText!!.string.toIntOrNull()
+                                    Logger.d("inputTextMin:$inputTextList\ninputTextMax:$inputTextLength")
+                                    if (inputTextList == null) {
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数为null").show()
+                                    } else if (inputTextLength == null) {
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "最大数为null").show()
+                                    } else {
+                                        if (inputTextLength > inputTextList) {
+                                            val randomResult = RandomUtil.getInt(inputTextList, inputTextLength)
+                                            xuiUtil.materialDialogInput4String("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
+                                                    getString(R.string.text_cancel)).apply {
+                                                inputRange(1, -1)
+                                                onPositive { dialogR, whichR ->
+                                                    copy(dialogR.inputEditText!!.string)
+                                                }
+                                            }.show()
+                                        } else {
+                                            xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数不能大于最大数").show()
+                                        }
+                                    }
+                                }
+                            }.show()
+                        }
+                    }.show()
                 }
                 else -> xuiUtil.snackbarDanger(coordinatorLayout_random, "未知错误").show()
             }

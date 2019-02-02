@@ -23,6 +23,7 @@ class QrcodeMod {
         this@QrcodeMod.activity = activity
         XQRCode.debug(debug)
     }
+
     fun file() {
     }
 

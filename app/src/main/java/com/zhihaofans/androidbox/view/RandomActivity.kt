@@ -51,7 +51,7 @@ class RandomActivity : AppCompatActivity() {
                                         xuiUtil.snackbarDanger(coordinatorLayout_random, "最大数为null").show()
                                     } else {
                                         if (inputTextMax > inputTextMin) {
-                                            val randomResult = RandomUtil.getNumber(inputTextMin, inputTextMax)
+                                            val randomResult = RandomUtil.getInt(inputTextMin, inputTextMax)
                                             xuiUtil.materialDialogInput4Int("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
                                                     getString(R.string.text_cancel)).apply {
                                                 inputRange(1, -1)
@@ -69,14 +69,9 @@ class RandomActivity : AppCompatActivity() {
                     }.show()
 
                 }
-                1 -> {
-
-                }
+                else -> xuiUtil.snackbarDanger(coordinatorLayout_random, "未知错误").show()
             }
         }
     }
 
-    private fun randomChoose() {
-
-    }
 }

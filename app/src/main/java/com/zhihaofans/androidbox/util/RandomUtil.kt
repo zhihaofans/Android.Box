@@ -9,16 +9,41 @@ import kotlin.random.Random
  */
 class RandomUtil {
     companion object {
-        fun getNumber(min: Int, max: Int): Int {
-            return Random.nextInt(min, max)
+        fun getInt(min: Int, max: Int): Int? {
+            return try {
+                Random.nextInt(min, max)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         }
 
-        fun getNumber2(min: Int, max: Int): Int {
-            return ThreadLocalRandom.current().nextInt(min, max)
+        fun getInt2(min: Int, max: Int): Int? {
+            return try {
+                ThreadLocalRandom.current().nextInt(min, max)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         }
 
-        fun getNumber3(min: Int, max: Int): Int {
-            return SplittableRandom().nextInt(min, max)
+        fun getInt3(min: Int, max: Int): Int? {
+            return try {
+                SplittableRandom().nextInt(min, max)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+
+        }
+
+        fun getStringItems(itemList: List<String>, length: Int): List<String>? {
+            return if (length > itemList.size) {
+                null
+            } else {
+                //TODO:getStringItems()
+                null
+            }
         }
     }
 }

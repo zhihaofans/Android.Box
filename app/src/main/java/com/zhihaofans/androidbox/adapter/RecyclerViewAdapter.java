@@ -1,14 +1,17 @@
 package com.zhihaofans.androidbox.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import java.util.List;
+
 import com.zhihaofans.androidbox.R;
+
+import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * RecyclerViewAdapter
@@ -56,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.imageView = (ImageView) itemView.findViewById(R.id.imageView1);
+            this.imageView = itemView.findViewById(R.id.imageView1);
         }
     }
 

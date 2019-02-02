@@ -4,7 +4,6 @@ import android.content.Context
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.kotlinEx.isNullorEmpty
-import com.zhihaofans.androidbox.util.SystemUtil
 
 /**
  * Created by zhihaofans on 2018/8/26.

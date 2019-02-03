@@ -9,5 +9,9 @@ import android.widget.EditText
 
  */
 
-val EditText.string
+val EditText.string: String
     get() = this.text.toString()
+val EditText.int: Int
+    get() = this.text.toString().toInt()
+val EditText.intOrNull: Int?
+    get() = this.text.toString().toIntOrNull()

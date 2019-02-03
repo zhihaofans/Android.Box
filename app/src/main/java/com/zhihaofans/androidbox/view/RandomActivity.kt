@@ -8,6 +8,7 @@ import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.copy
 import com.zhihaofans.androidbox.kotlinEx.init
+import com.zhihaofans.androidbox.kotlinEx.intOrNull
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.util.RandomUtil
 import com.zhihaofans.androidbox.util.XUIUtil
@@ -83,7 +84,8 @@ class RandomActivity : AppCompatActivity() {
                                 if (randomResult == null) {
                                     xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null").show()
                                 } else {
-                                    xuiUtil.materialDialogInput4String("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
+                                    val resultStr = randomResult.string(",")
+                                    xuiUtil.materialDialogInput4String("结果", "", resultStr, resultStr, getString(R.string.text_copy),
                                             getString(R.string.text_cancel)).apply {
                                         inputRange(1, -1)
                                         onPositive { dialogR, _ ->
@@ -93,6 +95,44 @@ class RandomActivity : AppCompatActivity() {
                                 }
 
                             }
+                        }
+                    }.show()
+                }
+                2 -> {
+                    xuiUtil.materialDialogInput4String("请输入想要随机的文本列表", "用英文逗号分割", "", "", getString(R.string.text_yes),
+                            getString(R.string.text_cancel)).apply {
+                        inputRange(1, -1)
+                        onPositive { dialogMin, _ ->
+                            val inputTextList = dialogMin.inputEditText!!.string
+                            xuiUtil.materialDialogInput4Int("请输入想要随机的文本列表", "用英文逗号分割", "", "1", getString(R.string.text_yes),
+                                    getString(R.string.text_cancel)).apply {
+                                inputRange(1, -1)
+                                onPositive { dialogMin, _ ->
+                                    val inputTextLength = dialogMin.inputEditText!!.intOrNull
+                                    Logger.d("inputTextList:$inputTextList")
+                                    if (inputTextList.isEmpty()) {
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空").show()
+                                    } else if (inputTextLength == null) {
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "随机次数为null").show()
+                                    } else {
+                                        val randomResult = RandomUtil.getStringItems(inputTextList.split(","), inputTextLength)
+                                        if (randomResult == null) {
+                                            xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null").show()
+                                        } else {
+                                            val resultStr = randomResult.string(",")
+                                            xuiUtil.materialDialogInput4String("结果", "", resultStr, resultStr, getString(R.string.text_copy),
+                                                    getString(R.string.text_cancel)).apply {
+                                                inputRange(1, -1)
+                                                onPositive { dialogR, _ ->
+                                                    copy(dialogR.inputEditText!!.string)
+                                                }
+                                            }.show()
+                                        }
+
+                                    }
+                                }
+                            }.show()
+
                         }
                     }.show()
                 }

@@ -13,3 +13,11 @@ fun MutableList<*>?.isNullorEmpty(): Boolean {
 
 fun List<*>.hasChild(childItem: Any) = this.indexOf(childItem) >= 0
 fun List<*>.hasNotChild(childItem: Any) = !this.hasChild(childItem)
+fun List<String>.string(splitWord: String = ","): String {
+    var resultStr = ""
+    this.map {
+        if (resultStr.isNotEmpty()) resultStr += splitWord
+        resultStr += it
+    }
+    return resultStr
+}

@@ -8,6 +8,8 @@ import com.zhihaofans.androidbox.util.SystemUtil
  */
 class UrlMod {
     companion object {
+        // Update
+        const val UPDATE_FIR_IM = "https://fir.im/fkw1"
         const val RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url="
         const val FEED2JSON = "https://feed2json.org/convert?url="
         // News

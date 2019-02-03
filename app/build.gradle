@@ -77,7 +77,6 @@ dependencies {
     implementation 'io.paperdb:paperdb:2.6'
     implementation 'com.github.Victory-Over:SuperWeb:v1.0.2'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
-    implementation 'com.afollestad.material-dialogs:core:2.0.0-rc10'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
     implementation "com.github.vondear.RxTool:RxKit:v2.2.7"
     implementation "com.github.vondear.RxTool:RxUI:v2.2.7"

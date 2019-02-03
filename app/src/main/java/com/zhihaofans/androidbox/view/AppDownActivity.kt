@@ -15,12 +15,11 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.kotlinEx.logD
 import com.zhihaofans.androidbox.kotlinEx.longSnackbar
-import com.zhihaofans.androidbox.kotlinEx.materialDialog
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.MDAlertUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.SystemUtil.Companion.download
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
 import org.jetbrains.anko.*
@@ -491,7 +490,7 @@ class AppDownActivity : AppCompatActivity() {
                 loadingProgressBar.setCancelable(false)
                 loadingProgressBar.setCanceledOnTouchOutside(false)
                 loadingProgressBar.show()
-                SystemUtil.download(url, filePath, object : FileDownloadListener() {
+                download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         logD("Pending...")
                         loadingProgressBar.setMessage("Pending...")
@@ -517,10 +516,10 @@ class AppDownActivity : AppCompatActivity() {
 
                     override fun completed(task: BaseDownloadTask) {
                         loadingProgressBar.dismiss()
-                        materialDialog().show {
-                            title(text = "下载完成")
-                            message(text = "文件路径:" + task.targetFilePath)
-                            positiveButton(R.string.text_copy) { dialog ->
+                        alert {
+                            title = "下载完成"
+                            message = "文件路径:" + task.targetFilePath
+                            positiveButton(R.string.text_copy) {
                                 if (clipboardUtil == null) {
                                     snackbar("加载剪切板失败")
                                 } else {
@@ -528,10 +527,17 @@ class AppDownActivity : AppCompatActivity() {
                                     snackbar("复制成功")
                                 }
                             }
-                            negativeButton(R.string.text_open) { dialog ->
-                                // Do something
+                            negativeButton(R.string.text_open) {
+                                //TODO: Do something
+                                try {
+                                    browse(task.targetFilePath)
+                                    coordinatorLayout_appdown.snackbar("打开成功")
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    coordinatorLayout_appdown.snackbar("打开失败")
+                                }
                             }
-                        }
+                        }.show()
                     }
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
@@ -543,7 +549,7 @@ class AppDownActivity : AppCompatActivity() {
                         e.printStackTrace()
                         Logger.d("Download error\nfileName:" + task.filename)
                         loadingProgressBar.dismiss()
-                        MDAlertUtil.basic(this@AppDownActivity, "错误", "下载失败")
+                        coordinatorLayout_appdown.snackbar("下载失败")
                     }
 
                     override fun warn(task: BaseDownloadTask) {}

@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.list.listItems
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.enums.AppUpdaterError
 import com.github.javiersantos.appupdater.enums.UpdateFrom
@@ -19,11 +17,11 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.materialDialog
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
+import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
@@ -36,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private val appSettingMod = AppSettingMod()
     private var clipboardUtil: ClipboardUtil? = null
-    private val updateWebUrl = "https://fir.im/fkw1"
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,8 +82,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_manual_update -> {
                     //SystemUtil.browse(this@MainActivity, updateWebUrl)
-                    //checkUpdate(true)
-                    coordinatorLayout_main.snackbar("检测更新功能有BUG，暂停使用")
+                    checkUpdate(true)
                 }
                 R.id.menu_checkPermission -> {
                     checkPermissions(true)
@@ -162,7 +158,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
-        //checkUpdate()
+        checkUpdate()
         if (SystemUtil.isApkDebugable(this)) debug()
     }
 
@@ -207,34 +203,27 @@ class MainActivity : AppCompatActivity() {
                     override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
                         if (isUpdateAvailable) {
                             if (manual) loadingProgressBar.dismiss()
-                            materialDialog().show {
-                                title(text = "检测更新")
-                                message(text = "发现更新，是否调用打开下载地址？")
-                                positiveButton(R.string.text_yes) {
-                                    this.dismiss()
-                                    MaterialDialog(this@MainActivity).show {
-                                        val myItems = listOf("打开Github下载页面", "打开国内下载页面")
-                                        listItems(items = myItems) { _, index, _ ->
-                                            when (index) {
-                                                0 -> browse(update.urlToDownload.toString(), true)
-                                                1 -> browse(updateWebUrl, true)
-                                            }
+                            alert {
+                                title = "检测更新"
+                                message = "发现更新，是否调用打开下载地址？"
+                                yesButton {
+                                    val myItems = listOf("打开Github下载页面", "打开国内下载页面")
+                                    selector("选择更新站点", myItems) { _, index ->
+                                        when (index) {
+                                            0 -> browse(update.urlToDownload.toString(), true)
+                                            1 -> browse(UrlMod.UPDATE_FIR_IM, true)
                                         }
                                     }
                                 }
-                                negativeButton(R.string.text_no) {}
-                            }
-                        } else {
-                            if (manual) {
-                                if (manual) loadingProgressBar.dismiss()
-                                materialDialog().show {
-                                    title(text = "检测更新")
-                                    message(text = "已经是最新版本")
-                                    positiveButton(text = "OK") {
-                                        this.dismiss()
-                                    }
-                                }
-                            }
+                                noButton { }
+                            }.show()
+                        } else if (manual) {
+                            loadingProgressBar.dismiss()
+                            alert {
+                                title = "检测更新"
+                                message = "已经是最新版本"
+                                okButton { }
+                            }.show()
                         }
                     }
                 }).start()

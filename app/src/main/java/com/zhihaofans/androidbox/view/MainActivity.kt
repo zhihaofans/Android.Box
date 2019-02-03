@@ -85,7 +85,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_manual_update -> {
                     //SystemUtil.browse(this@MainActivity, updateWebUrl)
-                    checkUpdate(true)
+                    //checkUpdate(true)
+                    coordinatorLayout_main.snackbar("检测更新功能有BUG，暂停使用")
                 }
                 R.id.menu_checkPermission -> {
                     checkPermissions(true)
@@ -161,7 +162,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         clipboardUtil = ClipboardUtil(this)
         appSettingMod.init(this)
-        checkUpdate()
+        //checkUpdate()
         if (SystemUtil.isApkDebugable(this)) debug()
     }
 
@@ -226,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             if (manual) {
                                 if (manual) loadingProgressBar.dismiss()
-                                MaterialDialog(this@MainActivity).show {
+                                materialDialog().show {
                                     title(text = "检测更新")
                                     message(text = "已经是最新版本")
                                     positiveButton(text = "OK") {

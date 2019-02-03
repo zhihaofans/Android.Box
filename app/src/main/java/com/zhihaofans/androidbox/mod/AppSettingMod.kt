@@ -50,6 +50,14 @@ class AppSettingMod {
         }
     }
 
+    // Browser2Browser
+
+    var browser2BrowserDefault: String?
+        get() = sharedPreferencesUtil.getString("BROWSER_TO_BROWSER_DEFAULT")
+        set(key) {
+            if (!key.isNullOrEmpty()) sharedPreferencesUtil.putString("BROWSER_TO_BROWSER_DEFAULT", key)
+        }
+
     // Function
     fun init(context: Context): Boolean {
         mContext = context

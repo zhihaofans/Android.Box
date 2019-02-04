@@ -37,7 +37,12 @@ class QrcodeActivity : AppCompatActivity() {
         qrcode.setActivity(this@QrcodeActivity, true)
         clipboardUtil = ClipboardUtil(this)
         fab_qrcode.setOnClickListener {
-            openFile()
+            try {
+                openFile()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                coordinatorLayout_qrcode.snackbar("打开文件失败")
+            }
         }
         checkMethod()
         imageView_qrcode.setOnClickListener {
@@ -181,7 +186,12 @@ class QrcodeActivity : AppCompatActivity() {
                 .request(object : OnPermission {
                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                         if (isAll) {
-                            qrcode.scan(0)
+                            try {
+                                qrcode.scan(0)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                coordinatorLayout_qrcode.snackbar("启动失败")
+                            }
                         } else {
                             Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
                         }

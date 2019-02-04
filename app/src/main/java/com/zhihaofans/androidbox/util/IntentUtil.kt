@@ -17,8 +17,17 @@ class IntentUtil {
             return mIntent.resolveActivity(AppUtils.getPackageManager()) != null
         }
 
-        fun getLaucherListOfIntent(mIntent: Intent): List<AppIntentGson> {
-
+        fun getLaucherListOfIntent(mIntent: Intent): List<AppIntentGson>? {
+            val pm = AppUtils.getPackageManager()
+            val activityList = pm.queryIntentActivities(mIntent, 0)
+            return try {
+                activityList.map {
+                    AppIntentGson(it.activityInfo.packageName, it.activityInfo.name)
+                }.toList()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         }
     }
 }

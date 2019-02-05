@@ -1,17 +1,19 @@
 package com.zhihaofans.androidbox.view
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.google.gson.Gson
+import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.AppIntentGson
 import com.zhihaofans.androidbox.mod.AppSettingMod
+import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.IntentUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
-import org.jetbrains.anko.newTask
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 
 
 class Browser2BrowserActivity : AppCompatActivity() {
@@ -52,19 +54,30 @@ class Browser2BrowserActivity : AppCompatActivity() {
         //TODO:Browser2BrowserActivity()
         val defaultBrowser = appSettingMod.browser2BrowserDefault
         if (defaultBrowser.isNullOrEmpty()) {
+            // 未设置默认浏览器
             val mIntent = Intent(Intent.ACTION_VIEW).apply {
                 data = uri.toUri()
                 newTask()
             }
-            val pm = AppUtils.getPackageManager()
             try {
-                val appList = pm.queryIntentActivities(mIntent, 0)
+                val appList = Browser2BrowserMod.getLauncherListWithBlackList(uri)
                 if (appList.isNullOrEmpty()) {
                     toast("启动失败,未安装可启动的应用")
                     finish()
                 } else {
-                    startActivity(mIntent)
-                    toast("已经尝试启动应用")
+                    val appNameList = appList.map { AppUtils.getAppName(it.packageName) }.toList()
+                    selector("选择浏览器", appNameList) { _: DialogInterface, i: Int ->
+                        val mBrowser = appList[i]
+                        val browserIntent = IntentUtil.getLaunchAppIntentWithClassName(mBrowser.packageName, mBrowser.className)
+                        alert {
+                            title = "确定使用${appNameList[i]}打开网页吗?"
+                            yesButton {
+                                startActivity(browserIntent)
+                                toast("已经尝试启动应用(${appNameList[i]})")
+                            }
+                            noButton { toast(R.string.text_canceled_by_user) }
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -72,6 +85,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 finish()
             }
         } else {
+            // 已设置默认浏览器
             try {
                 val appIntentGson = g.fromJson(defaultBrowser, AppIntentGson::class.java)
                 val packageName = appIntentGson.packageName

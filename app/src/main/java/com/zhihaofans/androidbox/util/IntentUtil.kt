@@ -17,7 +17,7 @@ class IntentUtil {
             return mIntent.resolveActivity(AppUtils.getPackageManager()) != null
         }
 
-        fun getLaucherListOfIntent(mIntent: Intent): List<AppIntentGson>? {
+        fun getLauncherListOfIntent(mIntent: Intent): List<AppIntentGson>? {
             val pm = AppUtils.getPackageManager()
             val activityList = pm.queryIntentActivities(mIntent, 0)
             return try {

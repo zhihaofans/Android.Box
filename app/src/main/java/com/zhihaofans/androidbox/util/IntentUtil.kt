@@ -22,7 +22,7 @@ class IntentUtil {
             val activityList = pm.queryIntentActivities(mIntent, 0)
             return try {
                 activityList.map {
-                    AppIntentGson(it.activityInfo.packageName, it.activityInfo.name)
+                    AppIntentGson(it.activityInfo.packageName, it.activityInfo.name, it)
                 }.toList()
             } catch (e: Exception) {
                 e.printStackTrace()

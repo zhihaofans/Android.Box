@@ -11,8 +11,8 @@ android {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 110
-        versionName "0.0.87"
+        versionCode 111
+        versionName "0.0.87.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

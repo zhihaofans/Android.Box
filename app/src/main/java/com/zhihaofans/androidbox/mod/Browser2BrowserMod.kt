@@ -3,6 +3,7 @@ package com.zhihaofans.androidbox.mod
 import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.Browser2BrowserBlockData
 import com.zhihaofans.androidbox.gson.AppIntentGson
 import com.zhihaofans.androidbox.kotlinEx.hasNotChild
@@ -13,6 +14,11 @@ class Browser2BrowserMod {
 
     companion object {
         private val blackList = mutableMapOf(
+                "com.zhihaofans.androidbox" to Browser2BrowserBlockData(
+                        listOf(
+                                "com.zhihaofans.androidbox.view.Browser2BrowserActivity"
+                        ),
+                        null),
                 "com.sina.weibo" to Browser2BrowserBlockData(
                         listOf(
                                 "com.sina.weibo.browser.WeiboBrowser"
@@ -33,14 +39,13 @@ class Browser2BrowserMod {
             }
             val newList = mutableListOf<AppIntentGson>()
             val launcherList = IntentUtil.getLauncherListOfIntent(mIntent) ?: return listOf()
+            Logger.d("launcherList:$launcherList")
             launcherList.map {
                 val browser2BrowserBlockData: Browser2BrowserBlockData? = blackList[it.packageName]
                 when {
                     browser2BrowserBlockData == null -> newList.add(it)
-                    browser2BrowserBlockData.className.hasNotChild(it) -> newList.add(it)
+                    browser2BrowserBlockData.className.hasNotChild(it.className) -> newList.add(it)
                     browser2BrowserBlockData.whiteListDomain !== null -> if (browser2BrowserBlockData.whiteListDomain.indexOf(uri.host!!) < 0) newList.add(it)
-
-
                 }
                 it
             }

@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.AppIntentGson
+import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.IntentUtil
@@ -65,18 +66,30 @@ class Browser2BrowserActivity : AppCompatActivity() {
                     toast("启动失败,未安装可启动的应用")
                     finish()
                 } else {
-                    val appNameList = appList.map { AppUtils.getAppName(it.packageName) }.toList()
+                    val appNameList = appList.map {
+                        val activityName = it.resolveInfo.activityInfo.label
+                        if (activityName.isNullOrEmpty()) AppUtils.getAppName(it.packageName) else activityName
+                    }.toList()
                     selector("选择浏览器", appNameList) { _: DialogInterface, i: Int ->
                         val mBrowser = appList[i]
                         val browserIntent = IntentUtil.getLaunchAppIntentWithClassName(mBrowser.packageName, mBrowser.className)
                         alert {
                             title = "确定使用${appNameList[i]}打开网页吗?"
                             yesButton {
+                                browserIntent.data = uri.toUri()
                                 startActivity(browserIntent)
                                 toast("已经尝试启动应用(${appNameList[i]})")
+                                finish()
                             }
-                            noButton { toast(R.string.text_canceled_by_user) }
-                        }
+                            noButton {
+                                toast(R.string.text_canceled_by_user)
+                                finish()
+                            }
+                            onCancelled {
+                                toast(R.string.text_canceled_by_user)
+                                finish()
+                            }
+                        }.show()
                     }
                 }
             } catch (e: Exception) {

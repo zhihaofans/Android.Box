@@ -17,8 +17,10 @@ import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
+import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.share
@@ -45,6 +47,7 @@ class QrcodeActivity : AppCompatActivity() {
             }
         }
         checkMethod()
+        if (AppUtils.isAppDebug()) editText_qrcode_content.setText(UrlMod.UPDATE_FIR_IM)
         imageView_qrcode.setOnClickListener {
             getCameraPermission()
         }

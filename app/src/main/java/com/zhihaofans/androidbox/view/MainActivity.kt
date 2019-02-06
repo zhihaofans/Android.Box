@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun debug() {
-
+        startActivity<QrcodeActivity>()
     }
 
     private fun initPermissions() {

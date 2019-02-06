@@ -56,7 +56,7 @@
         </service>
         <service
             android:name=".service.WechatScanQstService"
-            android:icon="@drawable/ic_camera"
+            android:icon="@drawable/ic_wechat_black"
             android:label="@string/text_qrcode_scan_wechat"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -65,7 +65,7 @@
         </service>
         <service
             android:name=".service.AlipayQrcodeScanQstService"
-            android:icon="@drawable/ic_camera"
+            android:icon="@drawable/ic_alipay_black"
             android:label="@string/text_qrcode_scan_alipay"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

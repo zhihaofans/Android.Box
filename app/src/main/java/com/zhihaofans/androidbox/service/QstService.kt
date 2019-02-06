@@ -17,6 +17,7 @@ class QrcodeScanQstService : TileService() {
 
     override fun onClick() {
         super.onClick()
+        SystemUtil.collapseNotificationBar(this)
         startActivity<QrcodeActivity>("method" to "QRCODE_SCAN")
     }
 }

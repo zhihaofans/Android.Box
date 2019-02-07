@@ -163,13 +163,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun debug() {
-        startActivity<QrcodeActivity>()
+        if (AppUtils.getAppVersionCode() == 111) startActivity<QrcodeActivity>()
     }
 
     private fun initPermissions() {
         XXPermissions.with(this)
-                //.constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
-                //.permission(Permission.REQUEST_INSTALL_PACKAGES, Permission.SYSTEM_ALERT_WINDOW) //支持请求安装权限和悬浮窗权限
                 .permission(Permission.Group.STORAGE, Permission.Group.CAMERA) //支持多个权限组进行请求，不指定则默以清单文件中的危险权限进行请求
                 .request(object : OnPermission {
                     override fun hasPermission(granted: List<String>, isAll: Boolean) {

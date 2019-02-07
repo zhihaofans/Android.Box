@@ -1,11 +1,12 @@
 package com.zhihaofans.androidbox.view
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.google.gson.Gson
+import com.xuexiang.xui.XUI
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.AppIntentGson
 import com.zhihaofans.androidbox.kotlinEx.label
@@ -21,6 +22,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
     private val g = Gson()
     private val appSettingMod = AppSettingMod()
     override fun onCreate(savedInstanceState: Bundle?) {
+        XUI.initTheme(this)
         super.onCreate(savedInstanceState)
         try {
             init()
@@ -68,29 +70,38 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 } else {
                     val appNameList = appList.map {
                         val activityName = it.resolveInfo.activityInfo.label
-                        if (activityName.isNullOrEmpty()) AppUtils.getAppName(it.packageName) else activityName
+                        val appName = AppUtils.getAppName(it.packageName)
+                        "${if (activityName.isNullOrEmpty()) appName else activityName} ($appName)"
                     }.toList()
-                    selector("选择浏览器", appNameList) { _: DialogInterface, i: Int ->
-                        val mBrowser = appList[i]
-                        val browserIntent = IntentUtil.getLaunchAppIntentWithClassName(mBrowser.packageName, mBrowser.className)
-                        alert {
-                            title = "确定使用${appNameList[i]}打开网页吗?"
-                            yesButton {
-                                browserIntent.data = uri.toUri()
-                                startActivity(browserIntent)
-                                toast("已经尝试启动应用(${appNameList[i]})")
-                                finish()
-                            }
-                            noButton {
+                    MaterialDialog.Builder(this)
+                            .title("选择浏览器")
+                            .items(appNameList)
+                            .cancelListener {
                                 toast(R.string.text_canceled_by_user)
                                 finish()
                             }
-                            onCancelled {
-                                toast(R.string.text_canceled_by_user)
-                                finish()
+                            .itemsCallback { _, _, i, text ->
+                                val mBrowser = appList[i]
+                                val browserIntent = IntentUtil.getLaunchAppIntentWithClassName(mBrowser.packageName, mBrowser.className)
+                                alert {
+                                    title = "确定使用${appNameList[i]}打开网页吗?"
+                                    yesButton {
+                                        browserIntent.data = uri.toUri()
+                                        startActivity(browserIntent)
+                                        toast("已经尝试启动应用(${appNameList[i]})")
+                                        finish()
+                                    }
+                                    noButton {
+                                        toast(R.string.text_canceled_by_user)
+                                        finish()
+                                    }
+                                    onCancelled {
+                                        toast(R.string.text_canceled_by_user)
+                                        finish()
+                                    }
+                                }.show()
                             }
-                        }.show()
-                    }
+                            .show()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

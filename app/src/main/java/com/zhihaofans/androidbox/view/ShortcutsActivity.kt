@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.view
 
 import android.content.Intent
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -49,7 +50,8 @@ class ShortcutsActivity : AppCompatActivity() {
                 }
                 1 -> {
                     val launchIntent = Intent(this, QrcodeScanShortcuts::class.java)
-                    if (shortcutsUtil.addPinShortcut("$packageName.QrcodeScan", launchIntent, shortcutList[position])) {
+                    if (shortcutsUtil.addPinShortcut("$packageName.QrcodeScan", launchIntent, shortcutList[position],
+                                    Icon.createWithResource(this, R.drawable.ic_camera))) {
                         toast("创建快捷方式成功")
                     } else {
                         toast("创建快捷方式失败")

@@ -23,6 +23,7 @@ import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
+import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
@@ -133,26 +134,42 @@ class ImageViewActivity : AppCompatActivity() {
                             selector("", selectorItemList) { _, i ->
                                 when (i) {
                                     0 -> {
-                                        XXPermissions.with(this@ImageViewActivity)
-                                                .permission(Permission.Group.STORAGE)
-                                                .request(object : OnPermission {
-                                                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
-                                                        if (isAll) {
-                                                            val fileName = FileUtils.getFileName(imageUrl)
-                                                            download(fileName, 0)
-                                                        } else {
-                                                            Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
-                                                                XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
-                                                            }.show()
-                                                        }
+                                        val downloadMenu = listOf(
+                                                "调用adm pro来下载", "使用自带下载"
+                                        )
+                                        selector("选择下载引擎", downloadMenu) { _, ii ->
+                                            when (ii) {
+                                                0 -> {
+                                                    when {
+                                                        OtherAppMod.admProDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用adm成功")
+                                                        OtherAppMod.admProDownload1(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用adm成功")
+                                                        else -> coordinatorLayout_imageView.snackbar("调用adm失败")
                                                     }
+                                                }
+                                                1 -> {
+                                                    XXPermissions.with(this@ImageViewActivity)
+                                                            .permission(Permission.Group.STORAGE)
+                                                            .request(object : OnPermission {
+                                                                override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                                                    if (isAll) {
+                                                                        val fileName = FileUtils.getFileName(imageUrl)
+                                                                        download(fileName, 0)
+                                                                    } else {
+                                                                        Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                                            XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
+                                                                        }.show()
+                                                                    }
+                                                                }
 
-                                                    override fun noPermission(denied: MutableList<String>?, quick: Boolean) {
-                                                        Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
-                                                            XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
-                                                        }.show()
-                                                    }
-                                                })
+                                                                override fun noPermission(denied: MutableList<String>?, quick: Boolean) {
+                                                                    Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                                        XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
+                                                                    }.show()
+                                                                }
+                                                            })
+                                                }
+                                            }
+                                        }
                                     }
                                     1 -> browse(imageUrl.toString())
                                     2 -> {
@@ -266,8 +283,9 @@ class ImageViewActivity : AppCompatActivity() {
                     override fun warn(task: BaseDownloadTask) {}
                 })
             }
-            1 -> {
-                //val downloadId = SystemUtil.downloadAndroid(this@ImageViewActivity, imageUrl!!, downloadPath, fileName)
+            else -> {
+                loadingProgressBar.dismiss()
+                coordinatorLayout_imageView.snackbar("未知下载引擎")
             }
         }
     }

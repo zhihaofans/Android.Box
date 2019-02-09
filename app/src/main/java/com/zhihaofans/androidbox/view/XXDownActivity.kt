@@ -10,9 +10,11 @@ import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
 import com.zhihaofans.androidbox.kotlinEx.*
 import com.zhihaofans.androidbox.mod.ItemIdMod
+import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
 
@@ -95,7 +97,21 @@ class XXDownActivity : AppCompatActivity() {
                 resultList = data.url.toMutableList()
                 listView_xxdown.init(this@XXDownActivity, resultList.map { i -> i.url })
                 listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
-                    SystemUtil.browse(this@XXDownActivity, resultList[pos].url)
+                    val itemUrl = resultList[pos].url
+                    val menus = listOf(
+                            "浏览", "下载"
+                    )
+                    selector("", menus) { _, ii ->
+                        when (ii) {
+                            0 -> SystemUtil.browse(this@XXDownActivity, itemUrl)
+                            1 -> when {
+                                OtherAppMod.admProDownload(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
+                                OtherAppMod.admProDownload1(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
+                                else -> coordinatorLayout_imageView.snackbar("调用adm下载失败")
+                            }
+                        }
+                    }
+
                 }
                 loadingProgressBar.dismiss()
                 snackbar(coordinatorLayout_xxdown, "加载完毕，共${resultList.size}个结果")

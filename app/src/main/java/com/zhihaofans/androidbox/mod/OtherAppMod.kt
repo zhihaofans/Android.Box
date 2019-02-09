@@ -77,5 +77,49 @@ class OtherAppMod {
                 false
             }
         }
+
+        fun admProDownload(mContext: Context, url: String?): Boolean {
+            if (url.isNullOrEmpty()) return false
+            val packageName = "com.dv.adm.pay"
+            if (!AppUtils.isInstalledApp(mContext, packageName)) {
+                Logger.d("未安装 $packageName")
+                return false
+            }
+            return try {
+                val mIntent = IntentUtils.getLaunchAppIntent(packageName).apply {
+                    data = url.toUri()
+                    setClassName(packageName, "com.dv.adm.pay.AEditor")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+                if (!IntentUtils.isIntentAvailable(mIntent)) return false
+                mContext.startActivity(mIntent)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+        fun admProDownload1(mContext: Context, url: String?): Boolean {
+            if (url.isNullOrEmpty()) return false
+            val packageName = "com.dv.adm.pay"
+            if (!AppUtils.isInstalledApp(mContext, packageName)) {
+                Logger.d("未安装 $packageName")
+                return false
+            }
+            return try {
+                val mIntent = IntentUtils.getLaunchAppIntent(packageName).apply {
+                    data = url.toUri()
+                    setClassName(packageName, "com.dv.get.AEditor")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+                if (!IntentUtils.isIntentAvailable(mIntent)) return false
+                mContext.startActivity(mIntent)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
     }
 }

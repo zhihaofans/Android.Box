@@ -15,17 +15,23 @@ import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.saveFile
 import com.zhihaofans.androidbox.kotlinEx.snackbar
+import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
+import com.zhihaofans.androidbox.util.IntentUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
+import dev.utils.app.ContentResolverUtils
+import dev.utils.app.DialogUtils
+import dev.utils.app.image.BitmapUtils
+import dev.utils.common.DateUtils
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
-import org.jetbrains.anko.share
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
+import java.io.File
 import java.util.*
 
 
@@ -41,12 +47,42 @@ class QrcodeActivity : AppCompatActivity() {
         qrcode.setActivity(this@QrcodeActivity, true)
         clipboardUtil = ClipboardUtil(this)
         fab_qrcode.setOnClickListener {
-            try {
-                openFile()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                coordinatorLayout_qrcode.snackbar("打开文件失败")
+            val fabMenu = mutableListOf("打开二维码图片文件")
+            if (hasQrcode) fabMenu.add("保存二维码图片")
+            selector("", fabMenu) { _, i ->
+                when (i) {
+                    0 -> try {
+                        openFile()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        coordinatorLayout_qrcode.snackbar("打开文件失败")
+                    }
+                    1 -> {
+                        try {
+                            val qrcodeImage = BitmapUtils.drawable2Bitmap(imageView_qrcode.image)
+                            if (qrcodeImage == null) {
+                                coordinatorLayout_qrcode.snackbar("空白二维码，保存失败")
+                            } else {
+                                val progressDialog = DialogUtils.createProgressDialog(this, "Saving...", "Please wait a bit…")
+                                progressDialog.show()
+                                doAsync {
+                                    val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" + DateUtils.getDateNow().split(" ", "-") + ".png"
+                                    val saveSu = qrcodeImage.saveFile(fileName)
+                                    uiThread {
+                                        DialogUtils.closeDialog(progressDialog)
+                                        toast("保存" + saveSu.string("至$fileName", "失败"))
+                                        ContentResolverUtils.notifyMediaStore(File(fileName))
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            coordinatorLayout_qrcode.snackbar("保存失败，发生未知错误")
+                        }
+                    }
+                }
             }
+
         }
         checkMethod()
         if (AppUtils.isAppDebug()) {
@@ -213,7 +249,7 @@ class QrcodeActivity : AppCompatActivity() {
     }
 
     private fun openFile() {
-        val photoPickerIntent = Intent(Intent.ACTION_PICK).apply { type = "image/*" }
+        val photoPickerIntent = IntentUtil.getChooseImageFileIntent()
         startActivityForResult(photoPickerIntent, 666)
 
         //val intent = Intent(Intent.ACTION_GET_CONTENT)

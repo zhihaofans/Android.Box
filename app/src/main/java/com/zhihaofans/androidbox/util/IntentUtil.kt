@@ -29,5 +29,9 @@ class IntentUtil {
                 null
             }
         }
+
+        fun getChooseDirIntent(): Intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        fun getChooseFileIntent(fileType: String = "*/*"): Intent = Intent(Intent.ACTION_PICK).apply { type = fileType }
+        fun getChooseImageFileIntent(): Intent = getChooseFileIntent("image/*")
     }
 }

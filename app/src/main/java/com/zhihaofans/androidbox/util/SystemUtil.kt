@@ -31,6 +31,7 @@ import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import com.zhihaofans.androidbox.view.WebActivity
+import dev.utils.app.ADBUtils
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.common.FileUtils
@@ -364,6 +365,10 @@ class SystemUtil {
             //折叠通知栏
             //感谢：https://stackoverflow.com/questions/15568754
             mContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        }
+
+        fun isSamsungDevice(): Boolean {
+            return ADBUtils.getBrand().toLowerCase() == "samsung"
         }
     }
 }

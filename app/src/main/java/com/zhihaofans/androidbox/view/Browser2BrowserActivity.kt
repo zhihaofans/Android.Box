@@ -50,11 +50,22 @@ class Browser2BrowserActivity : AppCompatActivity() {
                     open(mUri)
                 }
             }
+        } else if (intent.extras !== null) {
+            val uri = intent.extras!!.getString("uri", null)
+            if (uri.isNullOrEmpty()) {
+                toast("uri = null")
+                finish()
+            } else {
+                open(uri)
+            }
+
+        } else {
+            toast("intent = null")
+            finish()
         }
     }
 
     private fun open(uri: String) {
-        //TODO:Browser2BrowserActivity()
         val defaultBrowser = appSettingMod.browser2BrowserDefault
         if (defaultBrowser.isNullOrEmpty()) {
             // 未设置默认浏览器
@@ -109,7 +120,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-            // 已设置默认浏览器
+            //TODO:已设置默认浏览器
             try {
                 val appIntentGson = g.fromJson(defaultBrowser, AppIntentGson::class.java)
                 val packageName = appIntentGson.packageName

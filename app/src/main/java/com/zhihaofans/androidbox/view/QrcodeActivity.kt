@@ -24,6 +24,7 @@ import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.*
 
@@ -32,6 +33,7 @@ class QrcodeActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private var methodId: String? = null
     private var clipboardUtil: ClipboardUtil? = null
+    private var hasQrcode = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
@@ -47,14 +49,18 @@ class QrcodeActivity : AppCompatActivity() {
             }
         }
         checkMethod()
-        if (AppUtils.isAppDebug()) editText_qrcode_content.setText(UrlMod.UPDATE_FIR_IM)
+        if (AppUtils.isAppDebug()) {
+            editText_qrcode_content.setText(UrlMod.UPDATE_FIR_IM)
+            generateQR()
+        }
         imageView_qrcode.setOnClickListener {
             getCameraPermission()
         }
         button_open.setOnClickListener {
             if (editText_qrcode_content.text.isNotEmpty()) {
                 try {
-                    SystemUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
+                    //SystemUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
+                    startActivity<Browser2BrowserActivity>("uri" to editText_qrcode_content.text.toString())
                 } catch (e: Exception) {
                     toast("打开失败，错误的地址")
                     //throw RuntimeException("No a correct url.", e)
@@ -167,17 +173,17 @@ class QrcodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateQR() {
+    private fun generateQR(firstRun: Boolean = false) {
         val qrcodeContentInput = editText_qrcode_content.text.toString()
         if (qrcodeContentInput.isNotEmpty()) {
             val qrcodeData = XQRCode.createQRCodeWithLogo(qrcodeContentInput, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
             if (qrcodeData !== null) {
                 imageView_qrcode.setImageDrawable(BitmapDrawable(resources, qrcodeData))
             } else {
-                Snackbar.make(coordinatorLayout_qrcode, "生成二维码失败，返回null数据", Snackbar.LENGTH_SHORT).show()
+                coordinatorLayout_qrcode.snackbar("生成二维码失败，返回null数据")
             }
         } else {
-            Snackbar.make(coordinatorLayout_qrcode, "请输入内容", Snackbar.LENGTH_SHORT).show()
+            if (!firstRun) coordinatorLayout_qrcode.snackbar("请输入内容")
         }
     }
 

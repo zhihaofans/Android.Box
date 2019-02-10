@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true"
+        android:appCategory="productivity"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".view.RandomActivity"

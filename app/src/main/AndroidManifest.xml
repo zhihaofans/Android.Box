@@ -133,7 +133,13 @@
         <activity
             android:name=".view.ImageViewActivity"
             android:label="@string/title_activity_image_view"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.QrcodeActivity"
             android:icon="@drawable/ic_camera"

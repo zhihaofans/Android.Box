@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.view
 
 import android.app.PendingIntent
+import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
@@ -32,7 +34,6 @@ import dev.utils.app.ContentResolverUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
-
 import org.jetbrains.anko.*
 import java.io.File
 
@@ -48,9 +49,10 @@ class ImageViewActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         clipboardUtil = ClipboardUtil(this)
         try {
-            if (intent.extras !== null) {
-                imageUrl = intent.extras!!.getString("image", null)
-                val imageTitle = intent.extras!!.getString("title", null)
+            val mIntent = intent
+            if (mIntent.extras !== null) {
+                imageUrl = mIntent.extras!!.getString("image", null)
+                val imageTitle = mIntent.extras!!.getString("title", null)
                 if (imageUrl == null) {
                     toast("null image")
                     finish()
@@ -60,12 +62,35 @@ class ImageViewActivity : AppCompatActivity() {
                     }
                     initImage(imageUrl)
                 }
+            } else if (mIntent.data !== null) {
+
+                imageUrl = mIntent.data!!.toString()
+                val imageTitle = FileUtils.getFileName(imageUrl)
+                if (imageUrl == null) {
+                    toast("null image")
+                    finish()
+                } else {
+                    if (!(imageTitle.isNullOrEmpty())) {
+                        this@ImageViewActivity.title = imageTitle
+                    }
+                    initImage(imageUrl)
+                }
+            } else if (mIntent.action == Intent.ACTION_SEND && mIntent.type.isNotNullAndEmpty()) {
+                if (mIntent.type!!.startsWith("image/")) {
+                    val imageUri = intent.extras!!.get(Intent.EXTRA_STREAM) as String?
+                    if (imageUri.isNullOrEmpty()) {
+                        toast("null image")
+                        finish()
+                    } else {
+                        initImage(imageUrl)
+                    }
+                }
             } else {
                 finish()
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            toast("Try to get image uri fail.")
+            toast("Try to get image fail.")
             finish()
         }
     }

@@ -62,9 +62,13 @@ class QrcodeActivity : AppCompatActivity() {
                                     val progressDialog = DialogUtils.createProgressDialog(this, "Saving...", "Please wait a bit…")
                                     progressDialog.show()
                                     doAsync {
-                                        val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" + DateUtils.getDateNow().split(" ", "-") + ".png"
+                                        val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" + DateUtils.getDateNow("yyyy_MM_dd_HH_mm_ss").split(" ", "-") + ".png"
                                         var saveSu = qrcodeImage.saveFile(fileName)
-                                        if (!saveSu) saveSu = qrcodeImage.saveFile1(fileName)
+                                        if (!saveSu) {
+                                            Logger.e("qrcodeImage.saveFile(fileName) = false")
+                                            saveSu = qrcodeImage.saveFile1(fileName)
+                                            Logger.d("qrcodeImage.saveFile1(fileName) = $saveSu")
+                                        }
                                         uiThread {
                                             DialogUtils.closeDialog(progressDialog)
                                             toast("保存" + saveSu.string("至$fileName", "失败"))

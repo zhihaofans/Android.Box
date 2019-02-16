@@ -14,6 +14,9 @@ import java.util.*
  */
 class DatetimeUtil {
     companion object {
+        fun getNowTime() {
+
+        }
 
         @SuppressLint("SimpleDateFormat")
         fun githubUtc2Local(utcTime: String): String {

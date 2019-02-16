@@ -62,7 +62,9 @@ class QrcodeActivity : AppCompatActivity() {
                                     val progressDialog = DialogUtils.createProgressDialog(this, "Saving...", "Please wait a bit…")
                                     progressDialog.show()
                                     doAsync {
-                                        val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" + DateUtils.getDateNow("yyyy_MM_dd_HH_mm_ss").split(" ", "-") + ".png"
+                                        val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" +
+                                                DateUtils.getDateNow("yyyy_MM_dd_HH_mm_ss").replace(" ", "_").replace("-", "_") +
+                                                ".png"
                                         var saveSu = qrcodeImage.saveFile(fileName)
                                         if (!saveSu) {
                                             Logger.e("qrcodeImage.saveFile(fileName) = false")

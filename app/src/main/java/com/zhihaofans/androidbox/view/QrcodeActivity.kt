@@ -16,6 +16,7 @@ import com.orhanobut.logger.Logger
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.saveFile
+import com.zhihaofans.androidbox.kotlinEx.saveFile1
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.QrcodeMod
@@ -62,7 +63,8 @@ class QrcodeActivity : AppCompatActivity() {
                                     progressDialog.show()
                                     doAsync {
                                         val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" + DateUtils.getDateNow().split(" ", "-") + ".png"
-                                        val saveSu = qrcodeImage.saveFile(fileName)
+                                        var saveSu = qrcodeImage.saveFile(fileName)
+                                        if (!saveSu) saveSu = qrcodeImage.saveFile1(fileName)
                                         uiThread {
                                             DialogUtils.closeDialog(progressDialog)
                                             toast("保存" + saveSu.string("至$fileName", "失败"))

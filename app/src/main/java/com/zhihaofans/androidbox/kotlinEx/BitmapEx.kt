@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.kotlinEx
 
 import android.graphics.Bitmap
+import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import java.io.File
 import java.io.FileOutputStream
@@ -25,4 +26,8 @@ fun Bitmap.saveFile(savePath: String, format: Bitmap.CompressFormat = Bitmap.Com
     } else {
         false
     }
+}
+
+fun Bitmap.saveFile1(savePath: String, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): Boolean {
+    return ImageUtils.save(this, savePath, format)
 }

@@ -107,7 +107,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.Share2clipboardActivity"
+            android:name=".view.Share2ClipboardActivity"
             android:label="@string/text_copy">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

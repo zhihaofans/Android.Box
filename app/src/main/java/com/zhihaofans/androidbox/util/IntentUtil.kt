@@ -5,6 +5,7 @@ import com.zhihaofans.androidbox.gson.AppIntentGson
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 
+
 class IntentUtil {
     companion object {
         fun getLaunchAppIntentWithClassName(packageName: String, className: String): Intent {
@@ -33,5 +34,12 @@ class IntentUtil {
         fun getChooseDirIntent(): Intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         fun getChooseFileIntent(fileType: String = "*/*"): Intent = Intent(Intent.ACTION_PICK).apply { type = fileType }
         fun getChooseImageFileIntent(): Intent = getChooseFileIntent("image/*")
+
+        fun getSaveFileByDocumentIntent(fileName: String, mimeType: String): Intent {
+            return Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).apply {
+                type = mimeType
+                putExtra(Intent.EXTRA_TITLE, fileName)
+            }
+        }
     }
 }

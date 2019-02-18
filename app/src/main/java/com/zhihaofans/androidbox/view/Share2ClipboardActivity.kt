@@ -12,7 +12,7 @@ import java.util.*
  * Created by zhihaofans on 2018/5/12.
  */
 
-class Share2clipboardActivity : Activity() {
+class Share2ClipboardActivity : Activity() {
     private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class Share2clipboardActivity : Activity() {
         if (Objects.equals(Intent.ACTION_SEND, intent.action) && intent.type != null && Objects.equals("text/plain", intent.type)) {
             val st = intent.getStringExtra(Intent.EXTRA_TEXT)
             if (st != null) {
-                clipboardUtil = ClipboardUtil(this@Share2clipboardActivity)
+                clipboardUtil = ClipboardUtil(this@Share2ClipboardActivity)
                 clipboardUtil?.copy(st)
                 toast("已复制")
             } else {

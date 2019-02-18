@@ -21,12 +21,11 @@ import io.paperdb.Paper
  * @date 2018/1/9
  */
 class App : Application() {
-    private var isDebug = false
     override fun onCreate() {
         super.onCreate()
         SpiderMan.init(this)
         Logger.addLogAdapter(AndroidLogAdapter())
-        isDebug = SystemUtil.isApkDebugable(this)
+        val isDebug = SystemUtil.isApkDebugable(this)
         Logger.d("Debug:$isDebug")
         Paper.init(this)
         Fresco.initialize(this)
@@ -50,7 +49,7 @@ class App : Application() {
         }
         QbSdk.setDownloadWithoutWifi(!AppUtils.isAppDebug())
         //x5内核初始化接口
-        QbSdk.initX5Environment(applicationContext, cb)
+        QbSdk.initX5Environment(this, cb)
     }
 
 }

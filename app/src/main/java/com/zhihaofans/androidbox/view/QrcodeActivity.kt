@@ -66,8 +66,8 @@ class QrcodeActivity : AppCompatActivity() {
                                                 DateUtils.getDateNow("yyyy_MM_dd_HH_mm_ss").replace(" ", "_").replace("-", "_") +
                                                 ".png"
                                         var saveSu = qrcodeImage.saveFile(fileName)
+                                        Logger.e("qrcodeImage.saveFile(fileName) = $saveSu")
                                         if (!saveSu) {
-                                            Logger.e("qrcodeImage.saveFile(fileName) = false")
                                             saveSu = qrcodeImage.saveFile1(fileName)
                                             Logger.d("qrcodeImage.saveFile1(fileName) = $saveSu")
                                         }

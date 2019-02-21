@@ -254,6 +254,17 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.Share2SaveActivity"
+            android:icon="@drawable/ic_save"
+            android:label="@string/text_save"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

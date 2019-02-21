@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.IntentUtil
-import dev.utils.common.FileUtils
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 
@@ -20,6 +22,7 @@ import java.util.*
  */
 
 class Share2SaveActivity : Activity() {
+    private var saveText: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mIntent = intent
@@ -29,8 +32,8 @@ class Share2SaveActivity : Activity() {
                 }
                 "text/plain" -> {
                     //FileUtils.saveFile()
-                    val st: String? = mIntent.getStringExtra(Intent.EXTRA_TEXT)
-                    if (st.isNullOrEmpty()) {
+                    saveText = mIntent.getStringExtra(Intent.EXTRA_TEXT)
+                    if (saveText.isNullOrEmpty()) {
                         toast("空白文本，保存失败")
                         finish()
                     } else {
@@ -57,14 +60,27 @@ class Share2SaveActivity : Activity() {
                         // Save file
                         if (resultData != null) {
                             val uri = resultData.data
-                            if (uri == null) {
-                                toast("未知错误，即将退出")
-                                finish()
-                            } else {
-                                Logger.i("Uri: $uri")
-                                val saveTo = uri
-                                FileUtils.getfile
-                                FileUtils.saveFile()
+                            when {
+                                uri == null -> {
+                                    toast("获取保存路径失败，即将退出")
+                                    finish()
+                                }
+                                saveText.isNullOrEmpty() -> {
+                                    toast("空白文本，不保存，即将退出")
+                                    finish()
+                                }
+                                else -> {
+                                    Logger.i("Uri: $uri")
+                                    doAsync {
+                                        val saveSu = FileUtil.saveFile(uri.toString(), saveText!!)
+                                        uiThread {
+                                            if (saveSu) {
+
+                                            }
+                                        }
+                                    }
+
+                                }
                             }
                         } else {
                             toast("未知代码，即将退出")

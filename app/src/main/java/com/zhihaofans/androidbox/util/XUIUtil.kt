@@ -4,15 +4,21 @@ import android.content.Context
 import android.text.InputType
 import android.view.View
 import com.xuexiang.xui.utils.SnackbarUtils
+import com.xuexiang.xui.utils.WidgetUtils
+import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 
 
 /**
  * Created by zhihaofans on 2019/1/25.
  */
 class XUIUtil(context: Context) {
+    // Wiki: https://github.com/xuexiangjys/XUI/wiki/
     private val mContext = context
+
+    private fun materialDialogBuilder() = MaterialDialog.Builder(mContext)
     //文本
     fun materialDialogInput4String(title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
                                    neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
@@ -46,22 +52,40 @@ class XUIUtil(context: Context) {
         return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
     }
 
-    fun materialDialogInput(icon: Int?, title: String, content: String, inputType: Int, inputHint: String, inputPreFill: String, positiveButton: String,
-                            neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
-        return MaterialDialog.Builder(mContext)
+    fun materialDialogInput(icon: Int?, title: String, content: String, inputType: Int, inputHint: String, inputPreFill: String, positiveText: String,
+                            negativeText: String, cancelable: Boolean = false): MaterialDialog.Builder {
+        return materialDialogBuilder()
                 .iconRes(icon ?: R.mipmap.ic_launcher)
                 .title(title)
                 .content(content)
                 .inputType(inputType)
-                .input(
-                        inputHint,
-                        inputPreFill,
-                        false,
-                        ({ dialog, input -> })
-                )
-                .positiveText(positiveButton)
-                .negativeText(neativeButton)
+                .input(inputHint, inputPreFill, false, ({ _, _ -> }))
+                .positiveText(positiveText)
+                .negativeText(negativeText)
                 .cancelable(cancelable)
+    }
+
+
+    fun materialDialogLoadingDialog(title: String? = null, icon: Int? = null): LoadingDialog {
+        return WidgetUtils.getLoadingDialog(mContext).apply {
+            if (title.isNotNullAndEmpty()) setTitle(title)
+            if (icon !== null) {
+                setLoadingIcon(icon)
+                setIconScale(0.4F)
+            }
+            setLoadingSpeed(8)
+        }
+    }
+
+    fun materialDialog(title: String? = null, content: String? = null, positiveText: String = "OK",
+                       negativeText: String? = null, icon: Int? = null): MaterialDialog.Builder {
+        return materialDialogBuilder().apply {
+            if (icon !== null) iconRes(icon)
+            if (title.isNotNullAndEmpty()) title(title!!)
+            if (icon !== null) content(content!!)
+            positiveText(positiveText)
+            if (title.isNotNullAndEmpty()) negativeText(negativeText!!)
+        }
     }
 /*
 DEMO
@@ -103,4 +127,5 @@ DEMO
     fun snackbarLongDanger(view: View, message: String): SnackbarUtils {
         return snackbar(view, message).danger()
     }
+
 }

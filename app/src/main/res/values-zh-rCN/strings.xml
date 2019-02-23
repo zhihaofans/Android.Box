@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="text_copy">复制</string>
     <string name="text_finish">完成</string>
     <string name="text_canceled_by_user">用户取消。</string>
@@ -68,7 +68,7 @@
     <string name="title_activity_app_down">应用下载</string>
     <string name="text_delete">删除</string>
     <string name="text_check_update">检查更新</string>
-    <string name="app_name">安卓盒子</string>
+    <string name="app_name" tools:ignore="PrivateResource">安卓盒子</string>
     <string name="text_open_web">打开网页</string>
     <string name="text_paste">粘贴</string>
     <string name="text_import">导入</string>

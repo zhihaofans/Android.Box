@@ -22,6 +22,7 @@ import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
+import com.xuexiang.xui.widget.imageview.preview.PreviewBuilder
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.kotlinEx.snackbar
@@ -30,6 +31,7 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.xui.ImageViewInfo
 import dev.utils.app.ContentResolverUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
@@ -60,7 +62,11 @@ class ImageViewActivity : AppCompatActivity() {
                     if (!(imageTitle.isNullOrEmpty())) {
                         this@ImageViewActivity.title = imageTitle
                     }
-                    initImage(imageUrl)
+                    if (imageUrl.isNullOrEmpty()) {
+                        toast("Empty image")
+                        finish()
+                    }
+                    initImage1(imageUrl!!)
                 }
             } else if (mIntent.data !== null) {
 
@@ -73,7 +79,11 @@ class ImageViewActivity : AppCompatActivity() {
                     if (!(imageTitle.isNullOrEmpty())) {
                         this@ImageViewActivity.title = imageTitle
                     }
-                    initImage(imageUrl)
+                    if (imageUrl.isNullOrEmpty()) {
+                        toast("Empty image")
+                        finish()
+                    }
+                    initImage1(imageUrl!!)
                 }
             } else if (mIntent.action == Intent.ACTION_SEND && mIntent.type.isNotNullAndEmpty()) {
                 if (mIntent.type!!.startsWith("image/")) {
@@ -82,7 +92,11 @@ class ImageViewActivity : AppCompatActivity() {
                         toast("null image")
                         finish()
                     } else {
-                        initImage(imageUrl)
+                        if (imageUrl.isNullOrEmpty()) {
+                            toast("Empty image")
+                            finish()
+                        }
+                        initImage1(imageUrl!!)
                     }
                 }
             } else {
@@ -105,8 +119,8 @@ class ImageViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun initImage(imageUri: String?) {
-        if (imageUri.isNullOrEmpty()) {
+    private fun initImage(imageUri: String) {
+        if (imageUri.isEmpty()) {
             toast("Empty image")
             finish()
         } else {
@@ -220,6 +234,16 @@ class ImageViewActivity : AppCompatActivity() {
         }
     }
 
+    private fun initImage1(imageUri: String) {
+        PreviewBuilder.from(this)
+                .setImg(ImageViewInfo(imageUri))
+                .setCurrentIndex(0)
+                .setSingleFling(true)
+                .setType(PreviewBuilder.IndicatorType.Number)
+                .setOnVideoPlayerListener { }
+                .start()
+    }
+
     private fun download(fileName: String, engine: Int) {
         notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
@@ -242,16 +266,7 @@ class ImageViewActivity : AppCompatActivity() {
 
                     }
 
-                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        val progressStr = if (totalBytes > 0) {
-                            if (notification !== null) {
-                                notificationUtil.setProgressNotificationLength(notification, soFarBytes, totalBytes)
-                            }
-                            "Downloading:$soFarBytes/$totalBytes"
-                        } else {
-                            "Downloading"
-                        }
-                    }
+                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {}
 
                     override fun blockComplete(task: BaseDownloadTask?) {}
 

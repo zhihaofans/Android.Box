@@ -57,9 +57,7 @@ class ImageViewActivity : AppCompatActivity() {
                     toast("null image")
                     finish()
                 } else {
-                    if (!(imageTitle.isNullOrEmpty())) {
-                        this@ImageViewActivity.title = imageTitle
-                    }
+                    if (imageTitle.isNotNullAndEmpty()) this@ImageViewActivity.title = imageTitle
                     if (imageUrl.isNullOrEmpty()) {
                         toast("Empty image")
                         finish()
@@ -67,7 +65,6 @@ class ImageViewActivity : AppCompatActivity() {
                     initImage(imageUrl!!)
                 }
             } else if (mIntent.data !== null) {
-
                 imageUrl = mIntent.data!!.toString()
                 val imageTitle = FileUtils.getFileName(imageUrl)
                 if (imageUrl == null) {
@@ -98,6 +95,7 @@ class ImageViewActivity : AppCompatActivity() {
                     }
                 }
             } else {
+                toast("Empty image")
                 finish()
             }
         } catch (e: Exception) {
@@ -109,7 +107,7 @@ class ImageViewActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            android.R.id.home -> {
+            R.id.home -> {
                 finish()
                 true
             }

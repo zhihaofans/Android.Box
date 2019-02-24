@@ -38,7 +38,6 @@ class Share2SaveActivity : Activity() {
                     xuiUtil
                 }
                 "text/plain" -> {
-                    //FileUtils.saveFile()
                     saveText = mIntent.getStringExtra(Intent.EXTRA_TEXT)
                     if (saveText.isNullOrEmpty()) {
                         toast("空白文本，保存失败")

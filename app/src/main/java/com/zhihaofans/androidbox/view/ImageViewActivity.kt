@@ -22,7 +22,6 @@ import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
-import com.xuexiang.xui.widget.imageview.preview.PreviewBuilder
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.kotlinEx.snackbar
@@ -31,7 +30,6 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.xui.ImageViewInfo
 import dev.utils.app.ContentResolverUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
@@ -66,7 +64,7 @@ class ImageViewActivity : AppCompatActivity() {
                         toast("Empty image")
                         finish()
                     }
-                    initImage1(imageUrl!!)
+                    initImage(imageUrl!!)
                 }
             } else if (mIntent.data !== null) {
 
@@ -83,7 +81,7 @@ class ImageViewActivity : AppCompatActivity() {
                         toast("Empty image")
                         finish()
                     }
-                    initImage1(imageUrl!!)
+                    initImage(imageUrl!!)
                 }
             } else if (mIntent.action == Intent.ACTION_SEND && mIntent.type.isNotNullAndEmpty()) {
                 if (mIntent.type!!.startsWith("image/")) {
@@ -96,7 +94,7 @@ class ImageViewActivity : AppCompatActivity() {
                             toast("Empty image")
                             finish()
                         }
-                        initImage1(imageUrl!!)
+                        initImage(imageUrl!!)
                     }
                 }
             } else {
@@ -232,16 +230,6 @@ class ImageViewActivity : AppCompatActivity() {
             imageView.hierarchy = hierarchy
             imageView.controller = controller
         }
-    }
-
-    private fun initImage1(imageUri: String) {
-        PreviewBuilder.from(this)
-                .setImg(ImageViewInfo(imageUri))
-                .setCurrentIndex(0)
-                .setSingleFling(true)
-                .setType(PreviewBuilder.IndicatorType.Number)
-                .setOnVideoPlayerListener { }
-                .start()
     }
 
     private fun download(fileName: String, engine: Int) {

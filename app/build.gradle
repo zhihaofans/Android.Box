@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.github.xuexiangjys:XQRCode:1.0.0'
     implementation 'com.liulishuo.filedownloader:library:1.7.4'
     implementation 'com.hjq:xxpermissions:3.6'
-    implementation 'com.github.afkT:DevUtils:1.2.2@aar'
+    implementation 'com.github.afkT:DevUtils:1.4.5@aar'
     implementation 'io.paperdb:paperdb:2.6'
     implementation 'com.github.Victory-Over:SuperWeb:v1.0.2'
     implementation 'com.github.javiersantos:AppUpdater:2.7'

@@ -8,10 +8,12 @@ import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isActionSend
+import com.zhihaofans.androidbox.kotlinEx.startsWithList
 import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.IntentUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import dev.utils.app.UriUtils
+import dev.utils.app.toast.ToastTintUtils
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
@@ -70,54 +72,59 @@ class Share2SaveActivity : Activity() {
                             val uri = resultData.data
                             when {
                                 uri == null -> {
-                                    toast("获取保存路径失败，即将退出")
+                                    ToastTintUtils.error("获取保存路径失败，即将退出")
                                     finish()
                                 }
                                 saveText.isNullOrEmpty() -> {
-                                    toast("空白文本，不保存，即将退出")
+                                    ToastTintUtils.error("空白文本，不保存，即将退出")
                                     finish()
                                 }
                                 else -> {
                                     Logger.i("Uri: $uri")
-                                    var realUri: String? = null
-                                    try {
-                                        realUri = UriUtils.getFilePathByUri(this, uri)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                        Logger.i("realUri: (Exception)")
-                                        toast("获取真实保存路径失败，即将退出")
-                                        finish()
-                                    }
-                                    if (realUri.isNullOrEmpty()) {
-                                        toast("获取真实保存路径失败，即将退出")
+                                    val downloadPathList = listOf("content://com.android.providers.downloads.documents/", "content://downloads/")
+                                    if (uri.toString().startsWithList(downloadPathList)) {
+                                        ToastTintUtils.error("保存失败，不支持保存到'下载内容'里，请选择具体目录，即将退出")
                                         finish()
                                     } else {
-
-                                        Logger.i("realUri: $realUri")
-                                        doAsync {
-                                            val saveSu = FileUtil.saveFile(realUri, saveText!!)
-                                            uiThread {
-                                                loadingDialog?.recycle()
-                                                if (saveSu) {
-                                                    xuiUtil.materialDialog("Successfully saved").apply {
-                                                        cancelListener {
-                                                            finish()
+                                        var realUri: String? = null
+                                        try {
+                                            realUri = UriUtils.getFilePathByUri(this, uri)
+                                            if (realUri.isNullOrEmpty()) {
+                                                ToastTintUtils.error("真实保存路径空白，即将退出")
+                                                finish()
+                                            } else {
+                                                Logger.i("realUri: $realUri")
+                                                doAsync {
+                                                    val saveSu = FileUtil.saveFile(realUri, saveText!!)
+                                                    uiThread {
+                                                        loadingDialog?.recycle()
+                                                        if (saveSu) {
+                                                            xuiUtil.materialDialog("保存成功").apply {
+                                                                cancelListener {
+                                                                    finish()
+                                                                }
+                                                                onPositive { _, _ ->
+                                                                    finish()
+                                                                }
+                                                            }.show()
+                                                        } else {
+                                                            xuiUtil.materialDialog("保存失败").apply {
+                                                                cancelListener {
+                                                                    finish()
+                                                                }
+                                                                onPositive { _, _ ->
+                                                                    finish()
+                                                                }
+                                                            }.show()
                                                         }
-                                                        onPositive { _, _ ->
-                                                            finish()
-                                                        }
-                                                    }.show()
-                                                } else {
-                                                    xuiUtil.materialDialog("Save failed").apply {
-                                                        cancelListener {
-                                                            finish()
-                                                        }
-                                                        onPositive { _, _ ->
-                                                            finish()
-                                                        }
-                                                    }.show()
+                                                    }
                                                 }
                                             }
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            Logger.i("realUri: (Exception)")
+                                            ToastTintUtils.error("获取真实保存路径失败，即将退出")
+                                            finish()
                                         }
                                     }
                                 }

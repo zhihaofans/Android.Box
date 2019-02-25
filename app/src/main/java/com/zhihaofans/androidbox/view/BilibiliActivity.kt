@@ -13,6 +13,7 @@ import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.DialogUtils
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
 import okhttp3.*
@@ -173,7 +174,7 @@ class BilibiliActivity : AppCompatActivity() {
                             defaultPart = input1.text.toString().toIntOrNull() ?: 1
                             val videoPartCidUrl = "https://biliquery.typcn.com/api/cid/$defaultVid/$defaultPart"
                             val client = OkHttpClient()
-                            val loadingProgressBar_cid = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+                            val loadingProgressBar_cid = DialogUtils.createProgressDialog(this@BilibiliActivity, "下载中...", "Please wait a bit…")
                             loadingProgressBar_cid.setCancelable(false)
                             loadingProgressBar_cid.setCanceledOnTouchOutside(false)
                             loadingProgressBar_cid.show()
@@ -298,7 +299,7 @@ class BilibiliActivity : AppCompatActivity() {
 
     private fun uHash2uid(userHash: String, client: OkHttpClient) {
         //用户hash转换成用户Id
-        val loadingProgressBar_hash = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        val loadingProgressBar_hash = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
         loadingProgressBar_hash.setCancelable(false)
         loadingProgressBar_hash.setCanceledOnTouchOutside(false)
         loadingProgressBar_hash.show()

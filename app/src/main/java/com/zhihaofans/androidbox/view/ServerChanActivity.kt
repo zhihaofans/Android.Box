@@ -11,6 +11,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.ServerChanGson
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.DialogUtils
 import okhttp3.*
 import org.jetbrains.anko.*
 import java.io.IOException
@@ -140,7 +141,7 @@ class ServerChanActivity : AppCompatActivity() {
         val request: Request = Request.Builder().url(pushUrl).post(body).build()
         val client = OkHttpClient()
         val call_cid = client.newCall(request)
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
+        val loadingProgressBar = DialogUtils.createProgressDialog(this, "Loading...", "Please wait a bit…")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()

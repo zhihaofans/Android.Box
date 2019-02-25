@@ -25,6 +25,7 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
+import dev.utils.app.DialogUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.jetbrains.anko.*
@@ -186,7 +187,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate(manual: Boolean = false) {
         //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
-        val loadingProgressBar = indeterminateProgressDialog("Please wait a bit…", "正在从Github检测更新...").apply {
+        val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…").apply {
             setCancelable(false)
             setCanceledOnTouchOutside(false)
             if (manual) show() else dismiss()

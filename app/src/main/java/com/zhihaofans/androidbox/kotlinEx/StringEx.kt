@@ -44,3 +44,20 @@ fun String.replaces(list: Map<String, String>, ignoreCase: Boolean = false): Str
 
 fun String.logd() = Logger.d(this)
 fun String.toURLEncode() = URLEncoder.encode(this, "UTF-8")
+fun String.startsWithList(list: List<String>): Boolean {
+    if (list.isNullOrEmpty()) return false
+    list.map {
+        if (it.isEmpty()) return false
+        if (this.startsWith(it)) return true
+    }
+    return false
+}
+
+fun String.endsWithList(list: List<String>): Boolean {
+    if (list.isNullOrEmpty()) return false
+    list.map {
+        if (it.isEmpty()) return false
+        if (this.endsWith(it)) return true
+    }
+    return false
+}

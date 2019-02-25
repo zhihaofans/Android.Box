@@ -19,6 +19,7 @@ import com.zhihaofans.androidbox.kotlinEx.removeAllItems
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FeedMod
 import com.zhihaofans.androidbox.util.*
+import dev.utils.app.DialogUtils
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
 import org.jetbrains.anko.*
@@ -114,7 +115,7 @@ class FeedActivity : AppCompatActivity() {
     }
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()

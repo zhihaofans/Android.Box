@@ -20,6 +20,7 @@ import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import dev.utils.app.DialogUtils
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
 import org.jetbrains.anko.*
@@ -304,8 +305,8 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun addFeed(site: String, idOne: String, idTwo: String? = null) {
-        val loadingProgressBarAddFeed = indeterminateProgressDialog(message = "$site : " +
-                if (idTwo.isNullOrEmpty()) idOne else idTwo, title = "Loading...")
+        val loadingProgressBarAddFeed = DialogUtils.createProgressDialog(this, "Loading...", "$site : " +
+                if (idTwo.isNullOrEmpty()) idOne else idTwo)
         loadingProgressBarAddFeed.setCancelable(false)
         loadingProgressBarAddFeed.setCanceledOnTouchOutside(false)
         loadingProgressBarAddFeed.show()
@@ -486,7 +487,7 @@ class AppDownActivity : AppCompatActivity() {
             fileName.isEmpty() -> snackbar("下载失败：文件名空白")
             else -> {
                 val filePath = savePath + fileName
-                val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+                val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
                 loadingProgressBar.setCancelable(false)
                 loadingProgressBar.setCanceledOnTouchOutside(false)
                 loadingProgressBar.show()

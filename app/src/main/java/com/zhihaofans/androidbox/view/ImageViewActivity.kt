@@ -32,6 +32,7 @@ import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import dev.utils.app.ContentResolverUtils
+import dev.utils.app.DialogUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
@@ -121,7 +122,8 @@ class ImageViewActivity : AppCompatActivity() {
             toast("Empty image")
             finish()
         } else {
-            val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+
+            val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
             loadingProgressBar.setCancelable(false)
             loadingProgressBar.setCanceledOnTouchOutside(false)
             loadingProgressBar.show()
@@ -235,7 +237,7 @@ class ImageViewActivity : AppCompatActivity() {
         notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
         Logger.d("downloadPath:$downloadPath")
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()

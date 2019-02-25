@@ -41,6 +41,7 @@ class FileUtil {
             }
         }
 
+
         fun getWallpaper(context: Context): Bitmap? {
             val wmInstance = WallpaperManager.getInstance(context)
             return if (wmInstance.isWallpaperSupported) wmInstance.drawable.toBitmap() else null

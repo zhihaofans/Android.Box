@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.view
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -15,8 +16,6 @@ import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.saveFile
-import com.zhihaofans.androidbox.kotlinEx.saveFile1
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.QrcodeMod
@@ -28,6 +27,7 @@ import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
 import dev.utils.app.UriUtils
 import dev.utils.app.image.BitmapUtils
+import dev.utils.app.image.ImageUtils
 import dev.utils.common.DateUtils
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
@@ -65,11 +65,12 @@ class QrcodeActivity : AppCompatActivity() {
                                         val fileName = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "qrcode_" +
                                                 DateUtils.getDateNow("yyyy_MM_dd_HH_mm_ss").replace(" ", "_").replace("-", "_") +
                                                 ".png"
-                                        var saveSu = qrcodeImage.saveFile(fileName)
-                                        Logger.e("qrcodeImage.saveFile(fileName) = $saveSu")
+
+                                        var saveSu = BitmapUtils.saveBitmapToSDCardPNG(qrcodeImage, fileName)
+                                        Logger.e("BitmapUtils.saveBitmapToSDCardPNG = $saveSu")
                                         if (!saveSu) {
-                                            saveSu = qrcodeImage.saveFile1(fileName)
-                                            Logger.d("qrcodeImage.saveFile1(fileName) = $saveSu")
+                                            saveSu = ImageUtils.save(qrcodeImage, fileName, Bitmap.CompressFormat.PNG)
+                                            Logger.d("ImageUtils.save = $saveSu")
                                         }
                                         uiThread {
                                             DialogUtils.closeDialog(progressDialog)

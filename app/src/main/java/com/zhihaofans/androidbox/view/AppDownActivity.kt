@@ -18,14 +18,14 @@ import com.zhihaofans.androidbox.kotlinEx.longSnackbar
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
+import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.SystemUtil.Companion.download
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
 import org.jetbrains.anko.*
 
 class AppDownActivity : AppCompatActivity() {
-    private val savePath: String = SystemUtil.getDownloadPathString() + "Android.Box/"
+    private val savePath: String = FileUtil.getDownloadPathString() + "Android.Box/"
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()
@@ -490,7 +490,7 @@ class AppDownActivity : AppCompatActivity() {
                 loadingProgressBar.setCancelable(false)
                 loadingProgressBar.setCanceledOnTouchOutside(false)
                 loadingProgressBar.show()
-                download(url, filePath, object : FileDownloadListener() {
+                FileUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         logD("Pending...")
                         loadingProgressBar.setMessage("Pending...")

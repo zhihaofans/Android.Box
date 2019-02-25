@@ -10,6 +10,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.*
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemIdMod
+import com.zhihaofans.androidbox.util.DatetimeUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import kotlinx.android.synthetic.main.activity_favorites.*
@@ -141,7 +142,7 @@ class FavoritesActivity : AppCompatActivity() {
         var appName: String? = AppUtils.getAppName(mIntent.getPackageName(this))
         if (appName.isNullOrEmpty()) appName = "其他应用"
         var defaultTitle = "来自$appName"
-        if ((mIntent.action == Intent.ACTION_SEND) && mIntent.type != null && mIntent.type == "text/plain") {
+        if ((mIntent.isActionSend) && mIntent.type != null && mIntent.type == "text/plain") {
             val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
             if (st != null) {
                 if (st.isUrl()) {
@@ -149,7 +150,7 @@ class FavoritesActivity : AppCompatActivity() {
                     askToAdd(ItemIdMod.FAVORITES_TYPE_URL, defaultTitle, st)
                 }
             }
-        } else if (mIntent.action == Intent.ACTION_VIEW) {
+        } else if (mIntent.isActionView) {
             val uri = mIntent.data
             if (uri !== null) {
                 defaultTitle += "的网址"
@@ -182,7 +183,7 @@ class FavoritesActivity : AppCompatActivity() {
     }
 
     private fun addFavorites(favoritesType: String, title: String, text: String) {
-        val time = SystemUtil.unixTimeStampMill().toString()
+        val time = DatetimeUtil.unixTimeStampMill().toString()
         when (favoritesType) {
             ItemIdMod.FAVORITES_TYPE_URL -> {
                 if (text.isUrl()) {

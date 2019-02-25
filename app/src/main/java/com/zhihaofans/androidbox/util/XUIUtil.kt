@@ -82,9 +82,9 @@ class XUIUtil(context: Context) {
         return materialDialogBuilder().apply {
             if (icon !== null) iconRes(icon)
             if (title.isNotNullAndEmpty()) title(title!!)
-            if (icon !== null) content(content!!)
+            if (content.isNotNullAndEmpty()) content(content!!)
             positiveText(positiveText)
-            if (title.isNotNullAndEmpty()) negativeText(negativeText!!)
+            if (negativeText.isNotNullAndEmpty()) negativeText(negativeText!!)
         }
     }
 /*

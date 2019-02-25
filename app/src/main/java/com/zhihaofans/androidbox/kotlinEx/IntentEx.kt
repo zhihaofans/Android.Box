@@ -15,3 +15,8 @@ fun Intent.getPackageName(context: Context): String? {
     }
     return null
 }
+
+val Intent.isActionSend: Boolean
+    get() = this.action == Intent.ACTION_SEND
+val Intent.isActionView: Boolean
+    get() = this.action == Intent.ACTION_VIEW

@@ -75,7 +75,7 @@ class NotificationUtil {
     }
 
     private fun getNotificationId(): Int {
-        return SystemUtil.unixTimeStampMill().toInt()
+        return DatetimeUtil.unixTimeStampMill().toInt()
     }
 
     private fun getNotification(icon: Int, title: String, msg: String): Notification {

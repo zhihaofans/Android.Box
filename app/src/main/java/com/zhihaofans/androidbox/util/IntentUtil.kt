@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.util
 
+import android.content.Context
 import android.content.Intent
 import com.zhihaofans.androidbox.gson.AppIntentGson
 import dev.utils.app.AppUtils
@@ -41,5 +42,9 @@ class IntentUtil {
                 putExtra(Intent.EXTRA_TITLE, fileName)
             }
         }
+
+        fun getInstallIntent(context: Context, filePath: String): Intent = IntentUtils.getInstallAppIntent(filePath, context.packageName + ".fileprovider")
+
+
     }
 }

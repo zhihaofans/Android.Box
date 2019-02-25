@@ -18,9 +18,7 @@ import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.kotlinEx.removeAllItems
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FeedMod
-import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.NotificationUtil
-import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.*
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
 import org.jetbrains.anko.*
@@ -364,7 +362,7 @@ class FeedActivity : AppCompatActivity() {
             else -> {
                 val filePath = appBox.getSavePath() + fileName
                 val notification = notificationUtil.createProgress("正在下载", fileName)
-                SystemUtil.download(url, filePath, object : FileDownloadListener() {
+                FileUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                     }
 
@@ -391,7 +389,7 @@ class FeedActivity : AppCompatActivity() {
                         if (notification !== null) notificationUtil.delete(notification.notificationId)
                         val stackBuilder = TaskStackBuilder.create(this@FeedActivity)
                         val resultPendingIntent = stackBuilder.apply {
-                            addNextIntent(SystemUtil.getInstallIntent(this@FeedActivity, task.targetFilePath))
+                            addNextIntent(IntentUtil.getInstallIntent(this@FeedActivity, task.targetFilePath))
                         }.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
                         if (resultPendingIntent == null) {
                             notificationUtil.create("错误！", "创建安装通知失败")
@@ -407,7 +405,7 @@ class FeedActivity : AppCompatActivity() {
                             }
                             negativeButton(R.string.text_open) {
                                 try {
-                                    SystemUtil.installApk1(this@FeedActivity, task.targetFilePath)
+                                    FileUtil.installApk1(this@FeedActivity, task.targetFilePath)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                     snackbar("安装失败")

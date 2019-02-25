@@ -9,6 +9,7 @@ import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.AppIntentGson
+import com.zhihaofans.androidbox.kotlinEx.isActionView
 import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
@@ -36,7 +37,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
     private fun init() {
         appSettingMod.init(this)
         val mIntent = intent
-        if (mIntent.action == Intent.ACTION_VIEW) {
+        if (mIntent.isActionView) {
             val uri = mIntent.data
             if (uri == null) {
                 toast("uri = null")

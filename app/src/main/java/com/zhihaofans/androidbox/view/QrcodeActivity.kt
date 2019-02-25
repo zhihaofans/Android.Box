@@ -23,10 +23,10 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.IntentUtil
-import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
+import dev.utils.app.UriUtils
 import dev.utils.app.image.BitmapUtils
 import dev.utils.common.DateUtils
 import kotlinx.android.synthetic.main.activity_qrcode.*
@@ -158,7 +158,7 @@ class QrcodeActivity : AppCompatActivity() {
                             if (uri == null) {
                                 coordinatorLayout_qrcode.snackbar("解析失败(uri=null)")
                             } else {
-                                val realUri = SystemUtil.getRealFilePath(this@QrcodeActivity, uri)
+                                val realUri = UriUtils.getFilePathByUri(this, uri)
                                 Logger.d("uri:${uri.path}")
                                 Logger.d("realUri:$realUri")
                                 val qrcodeResult = XQRCode.getAnalyzeQRCodeResult(realUri)

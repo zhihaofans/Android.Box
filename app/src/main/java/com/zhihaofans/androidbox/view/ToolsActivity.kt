@@ -14,8 +14,9 @@ import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
+import com.zhihaofans.androidbox.util.DatetimeUtil
+import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
-import com.zhihaofans.androidbox.util.SystemUtil
 import kotlinx.android.synthetic.main.activity_tools.*
 import kotlinx.android.synthetic.main.content_tools.*
 import org.jetbrains.anko.*
@@ -103,11 +104,11 @@ class ToolsActivity : AppCompatActivity() {
                                 .request(object : OnPermission {
                                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                                         if (isAll) {
-                                            val time = SystemUtil.unixTimeStampMill()
+                                            val time = DatetimeUtil.unixTimeStampMill()
                                             val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "Wallpaper-$time.png"
                                             doAsync {
                                                 try {
-                                                    val wallpaper = SystemUtil.saveWallpaper(this@ToolsActivity, saveTo)
+                                                    val wallpaper = FileUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
                                                     uiThread {
                                                         coordinatorLayout_tools.snackbar("保存" + wallpaper.string("成功($saveTo)", "失败"))
                                                         saveWallpaperStatus = true

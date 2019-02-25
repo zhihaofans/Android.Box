@@ -1,6 +1,7 @@
 package com.zhihaofans.androidbox.util
 
 import android.annotation.SuppressLint
+import com.orhanobut.logger.Logger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,6 +13,7 @@ import java.util.*
  * @date: 2018-12-10 19:12
 
  */
+@SuppressLint("SimpleDateFormat")
 class DatetimeUtil {
     companion object {
 
@@ -41,5 +43,28 @@ class DatetimeUtil {
             return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
         }
 
+        fun nowDate(full: Boolean = false): String {
+            val formatter = SimpleDateFormat(if (full) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd")
+            val curDate = Date()
+            return formatter.format(curDate)
+        }
+
+        fun datePlus(day: String, Num: Int): String {
+            Logger.d(day)
+            val df = SimpleDateFormat(if (day.indexOf(":") >= 0) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd")
+            var nowDate: Date? = null
+            try {
+                nowDate = df.parse(day)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            val newDate2 = Date(nowDate!!.time + Num.toLong() * 24 * 60 * 60 * 1000)
+            return df.format(newDate2)
+        }
+
+        fun unixTimeStamp(): Long = System.currentTimeMillis() / 1000L
+
+
+        fun unixTimeStampMill(): Long = System.currentTimeMillis()
     }
 }

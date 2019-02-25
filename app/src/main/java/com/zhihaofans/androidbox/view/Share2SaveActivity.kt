@@ -7,13 +7,14 @@ import com.orhanobut.logger.Logger
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.isActionSend
 import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.IntentUtil
 import com.zhihaofans.androidbox.util.XUIUtil
+import dev.utils.app.UriUtils
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
-import java.util.*
 
 
 /**
@@ -32,7 +33,7 @@ class Share2SaveActivity : Activity() {
         XUI.initTheme(this)
         super.onCreate(savedInstanceState)
         val mIntent = intent
-        if (Objects.equals(Intent.ACTION_SEND, mIntent.action)) {
+        if (mIntent.isActionSend) {
             when (mIntent.type) {
                 null -> {
                     xuiUtil
@@ -78,32 +79,47 @@ class Share2SaveActivity : Activity() {
                                 }
                                 else -> {
                                     Logger.i("Uri: $uri")
-                                    doAsync {
-                                        val saveSu = FileUtil.saveFile(uri.toString(), saveText!!)
-                                        uiThread {
-                                            loadingDialog?.recycle()
-                                            if (saveSu) {
-                                                xuiUtil.materialDialog("Successfully saved").apply {
-                                                    cancelListener {
-                                                        finish()
-                                                    }
-                                                    onPositive { _, _ ->
-                                                        finish()
-                                                    }
-                                                }.show()
-                                            } else {
-                                                xuiUtil.materialDialog("Save failed").apply {
-                                                    cancelListener {
-                                                        finish()
-                                                    }
-                                                    onPositive { _, _ ->
-                                                        finish()
-                                                    }
-                                                }.show()
+                                    var realUri: String? = null
+                                    try {
+                                        realUri = UriUtils.getFilePathByUri(this, uri)
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        Logger.i("realUri: (Exception)")
+                                        toast("获取真实保存路径失败，即将退出")
+                                        finish()
+                                    }
+                                    if (realUri.isNullOrEmpty()) {
+                                        toast("获取真实保存路径失败，即将退出")
+                                        finish()
+                                    } else {
+
+                                        Logger.i("realUri: $realUri")
+                                        doAsync {
+                                            val saveSu = FileUtil.saveFile(realUri, saveText!!)
+                                            uiThread {
+                                                loadingDialog?.recycle()
+                                                if (saveSu) {
+                                                    xuiUtil.materialDialog("Successfully saved").apply {
+                                                        cancelListener {
+                                                            finish()
+                                                        }
+                                                        onPositive { _, _ ->
+                                                            finish()
+                                                        }
+                                                    }.show()
+                                                } else {
+                                                    xuiUtil.materialDialog("Save failed").apply {
+                                                        cancelListener {
+                                                            finish()
+                                                        }
+                                                        onPositive { _, _ ->
+                                                            finish()
+                                                        }
+                                                    }.show()
+                                                }
                                             }
                                         }
                                     }
-
                                 }
                             }
                         } else {

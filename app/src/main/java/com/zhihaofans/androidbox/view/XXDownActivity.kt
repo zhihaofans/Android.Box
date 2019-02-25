@@ -127,7 +127,7 @@ class XXDownActivity : AppCompatActivity() {
     private fun initShare() {
         val mIntent = intent
         when {
-            mIntent.action == Intent.ACTION_SEND && mIntent.type == "text/plain" -> {
+            mIntent.isActionView && mIntent.type == "text/plain" -> {
                 val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
                 if (st != null) {
                     if (st.isUrl()) {
@@ -139,7 +139,7 @@ class XXDownActivity : AppCompatActivity() {
                     finish()
                 }
             }
-            mIntent.action == Intent.ACTION_VIEW -> {
+            mIntent.isActionView -> {
                 val uri = mIntent.data
                 if (uri !== null) {
                     start(uri.toString())

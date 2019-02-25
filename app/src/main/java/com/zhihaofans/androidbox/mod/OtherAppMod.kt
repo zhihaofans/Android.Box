@@ -21,7 +21,7 @@ class OtherAppMod {
     companion object {
         fun alipayQRCodeScan(mContext: Context): Boolean {
             //打开支付宝扫一扫
-            if (!AppUtils.isInstalledApp(mContext, "com.eg.android.AlipayGphone")) return false
+            if (!AppUtils.isInstalledApp("com.eg.android.AlipayGphone")) return false
             return try {
                 val uri = Uri.parse("alipayqr://platformapi/startapp?saId=10000007")
                 val intent = Intent(Intent.ACTION_VIEW, uri).apply {
@@ -38,7 +38,7 @@ class OtherAppMod {
         fun wechatQRCodeScan(mContext: Context): Boolean {
             //打开微信扫一扫
             val packageName = "com.tencent.mm"
-            if (!AppUtils.isInstalledApp(mContext, packageName)) return false
+            if (!AppUtils.isInstalledApp(packageName)) return false
             return try {
                 val intent = IntentUtils.getLaunchAppIntent(packageName).apply {
                     putExtra("LauncherUI.From.Scaner.Shortcut", true)
@@ -60,7 +60,7 @@ class OtherAppMod {
         fun bilibiliWebView(mContext: Context, url: String): Boolean {
             //在哔哩哔哩动画客户端打开网页（全屏显示，但无法隐藏系统状态栏）
             val packageName = "tv.danmaku.bili"
-            if (!AppUtils.isInstalledApp(mContext, packageName)) {
+            if (!AppUtils.isInstalledApp(packageName)) {
                 Logger.d("未安装$packageName")
                 return false
             }
@@ -81,7 +81,7 @@ class OtherAppMod {
         fun admProDownload(mContext: Context, url: String?): Boolean {
             if (url.isNullOrEmpty()) return false
             val packageName = "com.dv.adm.pay"
-            if (!AppUtils.isInstalledApp(mContext, packageName)) {
+            if (!AppUtils.isInstalledApp(packageName)) {
                 Logger.d("未安装 $packageName")
                 return false
             }
@@ -103,7 +103,7 @@ class OtherAppMod {
         fun admProDownload1(mContext: Context, url: String?): Boolean {
             if (url.isNullOrEmpty()) return false
             val packageName = "com.dv.adm.pay"
-            if (!AppUtils.isInstalledApp(mContext, packageName)) {
+            if (!AppUtils.isInstalledApp(packageName)) {
                 Logger.d("未安装 $packageName")
                 return false
             }

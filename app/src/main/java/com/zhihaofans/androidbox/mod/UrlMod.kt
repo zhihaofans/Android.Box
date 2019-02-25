@@ -1,7 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
 import com.zhihaofans.androidbox.kotlinEx.toURLEncode
-import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.FileUtil
 
 /**
  * Created by zhihaofans on 2018/11/23.
@@ -36,8 +36,8 @@ class UrlMod {
         const val WEIXIN_JINGXUAN = "http://v.juhe.cn/weixin/query?dtype=json&ps=20&key=" + ApiKeyMod.APIKEY_JUHE_WEIXIN + "&pno="
         const val NEWS_TOUTIAO = "http://v.juhe.cn/toutiao/index?key=" + ApiKeyMod.APIKEY_NEWS_TOUTIAO + "&type="
         // Local
-        val APP_DOWNLOAD_PATH = SystemUtil.getDownloadPathString() + "Android.Box/"
-        val APP_PICTURE_DOWNLOAD_PATH = SystemUtil.getPicturePathString() + "Android.Box/"
+        val APP_DOWNLOAD_PATH = FileUtil.getDownloadPathString() + "Android.Box/"
+        val APP_PICTURE_DOWNLOAD_PATH = FileUtil.getPicturePathString() + "Android.Box/"
         // XXDown
         const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "http://www.acfun.cn/v/"
         const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "https://www.bilibili.com/video/"

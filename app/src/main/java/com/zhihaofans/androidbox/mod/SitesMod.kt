@@ -9,7 +9,10 @@ import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.RsshubFirimGson
 import com.zhihaofans.androidbox.kotlinEx.remove
-import com.zhihaofans.androidbox.util.*
+import com.zhihaofans.androidbox.util.ConvertUtil
+import com.zhihaofans.androidbox.util.DatetimeUtil
+import com.zhihaofans.androidbox.util.HttpUtil
+import com.zhihaofans.androidbox.util.JsoupUtil
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -102,7 +105,7 @@ class NewsSitesMod {
                 //val author = if (appInfos.size != 4) "" else appInfos[3].split("：")[1]
                 val rawTime = if (appInfos.size != 4) "" else appInfos[appInfos.size - 3].split("：")[1]
                 var newTime = if (appInfos.size != 4) "" else rawTime.replace("-", "/")
-                if (newTime.endsWith("天前")) newTime = SystemUtil.datePlus(SystemUtil.nowDate(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
+                if (newTime.endsWith("天前")) newTime = DatetimeUtil.datePlus(DatetimeUtil.nowDate(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
                         ?: 0))
                 Logger.d("rawTime:$rawTime\nnewTime:$newTime")
                 val updateTime = if (newTime.isEmpty()) rawTime else newTime
@@ -419,7 +422,7 @@ class XXDownSitesMod {
             }
         }
 
-        fun githubReleaseXX(url: String, allowPre: Boolean = false): XXDownResultData? {
+        fun githubReleaseXX(url: String): XXDownResultData? {
             if (url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)) {
                 var mUrl = url.remove(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)
                 if (mUrl.endsWith("/")) mUrl = mUrl.substring(0, mUrl.length - 2)

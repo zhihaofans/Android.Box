@@ -16,7 +16,7 @@ import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.DatetimeUtil
-import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.FileUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
@@ -89,7 +89,7 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppFirstInstallTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.firstInstallTime)
                     val thisAppLastUpdateTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
-                    val thisApkSize: Int = SystemUtil.getFileSize(thisApkPath).toInt()
+                    val thisApkSize: Int = FileUtil.getFileSize(thisApkPath).toInt()
                     val actApp = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk), getString(R.string.text_icon))
                     selector(childItem["appName"] as String, actApp) { _, i ->
                         when (i) {
@@ -147,8 +147,8 @@ class AppManagementActivity : AppCompatActivity() {
 
                             1 -> {
                                 val apkPath = AppUtils.getAppPath(thisAppPackageName)
-                                val apkLength = ConvertUtil.fileSizeInt2string(SystemUtil.getFileSize(apkPath))
-                                val saveTo = SystemUtil.getDownloadPathString() + "Android.Box/"
+                                val apkLength = ConvertUtil.fileSizeInt2string(FileUtil.getFileSize(apkPath))
+                                val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-$thisAppVersionName.apk"
                                 alert {
                                     title = "是否导出安装包"
@@ -170,7 +170,7 @@ class AppManagementActivity : AppCompatActivity() {
                             }
 
                             2 -> {
-                                val saveTo = SystemUtil.getDownloadPathString() + "Android.Box/"
+                                val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-icon.png"
                                 alert {
                                     title = "是否导出应用图标"

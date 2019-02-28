@@ -106,8 +106,7 @@ class XXDownActivity : AppCompatActivity() {
                         when (ii) {
                             0 -> SystemUtil.browse(this@XXDownActivity, itemUrl)
                             1 -> when {
-                                OtherAppMod.admProDownload(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
-                                OtherAppMod.admProDownload1(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
+                                OtherAppMod.admDownload(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
                                 else -> coordinatorLayout_imageView.snackbar("调用adm下载失败")
                             }
                         }

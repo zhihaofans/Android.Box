@@ -16,8 +16,6 @@ import com.zhihaofans.androidbox.kotlinEx.isUrl
 import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.ImageViewActivity
-import com.zhihaofans.androidbox.view.WebActivity
-import dev.utils.app.ADBUtils
 import dev.utils.common.FileUtils
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
@@ -57,8 +55,6 @@ class SystemUtil {
             }
             if (appSettingMod.imageUrlOpenWithBuiltinViewer && this.checkIfImageUrl(url)) {
                 context.startActivity<ImageViewActivity>("image" to url, "title" to title)
-            } else if (appSettingMod.buildinX5Browser) {
-                context.startActivity<WebActivity>("url" to url, "title" to title)
             } else {
                 try {
                     this.chromeCustomTabs(context, url)
@@ -143,8 +139,5 @@ class SystemUtil {
             mContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         }
 
-        fun isSamsungDevice(): Boolean {
-            return ADBUtils.getBrand().toLowerCase() == "samsung"
-        }
     }
 }

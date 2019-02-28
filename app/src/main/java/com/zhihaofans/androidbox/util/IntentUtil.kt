@@ -2,7 +2,7 @@ package com.zhihaofans.androidbox.util
 
 import android.content.Context
 import android.content.Intent
-import com.zhihaofans.androidbox.gson.AppIntentGson
+import com.zhihaofans.androidbox.data.AppIntentData
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 
@@ -19,12 +19,12 @@ class IntentUtil {
             return mIntent.resolveActivity(AppUtils.getPackageManager()) != null
         }
 
-        fun getLauncherListOfIntent(mIntent: Intent): List<AppIntentGson>? {
+        fun getLauncherListOfIntent(mIntent: Intent): List<AppIntentData>? {
             val pm = AppUtils.getPackageManager()
             val activityList = pm.queryIntentActivities(mIntent, 0)
             return try {
                 activityList.map {
-                    AppIntentGson(it.activityInfo.packageName, it.activityInfo.name, it)
+                    AppIntentData(it.activityInfo.packageName, it.activityInfo.name, it)
                 }.toList()
             } catch (e: Exception) {
                 e.printStackTrace()

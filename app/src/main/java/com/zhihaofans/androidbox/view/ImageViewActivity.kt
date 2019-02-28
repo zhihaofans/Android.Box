@@ -162,7 +162,7 @@ class ImageViewActivity : AppCompatActivity() {
                     layoutParams.height = (linearLayout_imageview.width.toFloat() / (imageInfo.width.toFloat() / imageInfo.height.toFloat())).toInt()
                     imageView.layoutParams = layoutParams
                     imageView.setOnClickListener {
-                        if (!imageUrl.isNullOrEmpty()) {
+                        if (imageUrl.isNotNullAndEmpty()) {
                             val selectorItemList = mutableListOf(
                                     getString(R.string.text_download),
                                     "浏览器打开",
@@ -179,8 +179,7 @@ class ImageViewActivity : AppCompatActivity() {
                                             when (ii) {
                                                 0 -> {
                                                     when {
-                                                        OtherAppMod.admProDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用adm成功")
-                                                        OtherAppMod.admProDownload1(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用adm成功")
+                                                        OtherAppMod.admDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用adm成功")
                                                         else -> coordinatorLayout_imageView.snackbar("调用adm失败")
                                                     }
                                                 }

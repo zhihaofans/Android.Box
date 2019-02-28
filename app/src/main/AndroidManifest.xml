@@ -200,10 +200,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.WebActivity"
-            android:label="@string/title_activity_web"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".view.ImageWebActivity"
             android:label="@string/title_activity_image_web"
             android:theme="@style/AppTheme.NoActionBar" />

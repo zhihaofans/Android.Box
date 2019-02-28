@@ -11,6 +11,9 @@ fun MutableList<*>?.isNullorEmpty(): Boolean {
     return this?.isEmpty() ?: true
 }
 
+fun List<*>?.isNull() = this == null
+fun List<*>?.isNotNull() = !this.isNull()
+fun List<*>?.isNotNullAndEmpty() = !this.isNullOrEmpty()
 fun List<*>.hasChild(childItem: Any) = this.indexOf(childItem) >= 0
 fun List<*>.hasNotChild(childItem: Any) = !this.hasChild(childItem)
 fun List<String>.string(splitWord: String = ","): String {

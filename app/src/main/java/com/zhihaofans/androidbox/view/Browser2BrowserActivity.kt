@@ -8,14 +8,12 @@ import com.google.gson.Gson
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.gson.AppIntentGson
 import com.zhihaofans.androidbox.kotlinEx.isActionView
 import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.IntentUtil
 import dev.utils.app.AppUtils
-import dev.utils.app.IntentUtils
 import org.jetbrains.anko.*
 
 
@@ -81,7 +79,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                     finish()
                 } else {
                     val appNameList = appList.map {
-                        val activityName = it.resolveInfo.activityInfo.label
+                        val activityName = if (it.resolveInfo == null) "null" else it.resolveInfo.activityInfo.label
                         val appName = AppUtils.getAppName(it.packageName)
                         "${if (activityName.isNullOrEmpty()) appName else activityName} ($appName)"
                     }.toList()
@@ -92,7 +90,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                                 toast(R.string.text_canceled_by_user)
                                 finish()
                             }
-                            .itemsCallback { _, _, i, text ->
+                            .itemsCallback { _, _, i, _ ->
                                 val mBrowser = appList[i]
                                 val browserIntent = IntentUtil.getLaunchAppIntentWithClassName(mBrowser.packageName, mBrowser.className)
                                 alert {
@@ -122,8 +120,9 @@ class Browser2BrowserActivity : AppCompatActivity() {
             }
         } else {
             //TODO:已设置默认浏览器
+            /*
             try {
-                val appIntentGson = g.fromJson(defaultBrowser, AppIntentGson::class.java)
+                val appIntentGson = g.fromJson(defaultBrowser, AppIntentData::class.java)
                 val packageName = appIntentGson.packageName
                 val className = appIntentGson.className
                 val intent = IntentUtil.getLaunchAppIntentWithClassName(packageName, className).apply {
@@ -141,7 +140,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 e.printStackTrace()
                 toast("启动失败,出现Exception")
                 finish()
-            }
+            }*/
         }
     }
 }

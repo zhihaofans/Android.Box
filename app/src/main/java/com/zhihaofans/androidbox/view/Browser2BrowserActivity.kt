@@ -8,13 +8,17 @@ import com.google.gson.Gson
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.kotlinEx.isActionSend
 import com.zhihaofans.androidbox.kotlinEx.isActionView
 import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.IntentUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 
 class Browser2BrowserActivity : AppCompatActivity() {
@@ -27,7 +31,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
             init()
         } catch (e: Exception) {
             e.printStackTrace()
-            toast("初始化失败")
+            ToastUtil.error("初始化失败")
             finish()
         }
     }
@@ -38,12 +42,26 @@ class Browser2BrowserActivity : AppCompatActivity() {
         if (mIntent.isActionView) {
             val uri = mIntent.data
             if (uri == null) {
-                toast("uri = null")
+                ToastUtil.error("uri = null")
                 finish()
             } else {
                 val mUri = uri.toString()
                 if (mUri.isEmpty()) {
-                    toast("uri isEmpty")
+                    ToastUtil.error("uri isEmpty")
+                    finish()
+                } else {
+                    open(mUri)
+                }
+            }
+        } else if (mIntent.isActionSend && mIntent.type == "text/plain") {
+            val uri = mIntent.getStringExtra(Intent.EXTRA_TEXT)
+            if (uri.isNullOrEmpty()) {
+                ToastUtil.error("uri = null")
+                finish()
+            } else {
+                val mUri = uri.toString()
+                if (mUri.isEmpty()) {
+                    ToastUtil.error("uri isEmpty")
                     finish()
                 } else {
                     open(mUri)
@@ -52,14 +70,13 @@ class Browser2BrowserActivity : AppCompatActivity() {
         } else if (intent.extras !== null) {
             val uri = intent.extras!!.getString("uri", null)
             if (uri.isNullOrEmpty()) {
-                toast("uri = null")
+                ToastUtil.error("uri = null")
                 finish()
             } else {
                 open(uri)
             }
-
         } else {
-            toast("intent = null")
+            ToastUtil.error("null")
             finish()
         }
     }
@@ -68,18 +85,14 @@ class Browser2BrowserActivity : AppCompatActivity() {
         val defaultBrowser = appSettingMod.browser2BrowserDefault
         if (defaultBrowser.isNullOrEmpty()) {
             // 未设置默认浏览器
-            val mIntent = Intent(Intent.ACTION_VIEW).apply {
-                data = uri.toUri()
-                newTask()
-            }
             try {
                 val appList = Browser2BrowserMod.getLauncherListWithBlackList(uri)
                 if (appList.isNullOrEmpty()) {
-                    toast("启动失败,未安装可启动的应用")
+                    ToastUtil.error("启动失败,未安装可启动的应用")
                     finish()
                 } else {
                     val appNameList = appList.map {
-                        val activityName = if (it.resolveInfo == null) "null" else it.resolveInfo.activityInfo.label
+                        val activityName = it.resolveInfo.activityInfo.label
                         val appName = AppUtils.getAppName(it.packageName)
                         "${if (activityName.isNullOrEmpty()) appName else activityName} ($appName)"
                     }.toList()
@@ -87,7 +100,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                             .title("选择浏览器")
                             .items(appNameList)
                             .cancelListener {
-                                toast(R.string.text_canceled_by_user)
+                                ToastUtil.warning(R.string.text_canceled_by_user)
                                 finish()
                             }
                             .itemsCallback { _, _, i, _ ->
@@ -98,15 +111,15 @@ class Browser2BrowserActivity : AppCompatActivity() {
                                     yesButton {
                                         browserIntent.data = uri.toUri()
                                         startActivity(browserIntent)
-                                        toast("已经尝试启动应用(${appNameList[i]})")
+                                        ToastUtil.success("已经尝试启动应用(${appNameList[i]})")
                                         finish()
                                     }
                                     noButton {
-                                        toast(R.string.text_canceled_by_user)
+                                        ToastUtil.warning(R.string.text_canceled_by_user)
                                         finish()
                                     }
                                     onCancelled {
-                                        toast(R.string.text_canceled_by_user)
+                                        ToastUtil.warning(R.string.text_canceled_by_user)
                                         finish()
                                     }
                                 }.show()
@@ -115,7 +128,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                toast("启动失败,出现Exception")
+                ToastUtil.error("启动失败,出现Exception")
                 finish()
             }
         } else {

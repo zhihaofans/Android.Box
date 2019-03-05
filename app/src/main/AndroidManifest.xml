@@ -143,7 +143,7 @@
         </activity>
         <activity
             android:name=".view.QrcodeActivity"
-            android:icon="@drawable/ic_camera"
+            android:icon="@drawable/ic_qrcode"
             android:label="@string/text_qrcode_generate"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -156,9 +156,11 @@
         </activity>
         <activity
             android:name=".mod.QrcodeScanShortcuts"
+            android:icon="@drawable/ic_qrcode"
             android:label="@string/text_qrcode_scan" />
         <activity
             android:name=".mod.ServerChanShortcuts"
+            android:icon="@drawable/ic_qrcode"
             android:label="@string/text_serverchan" />
         <activity
             android:name=".mod.FeedShortcuts"
@@ -177,6 +179,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.XXDownActivity"
+            android:icon="@drawable/ic_download"
             android:label="@string/title_activity_xxdown"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -211,6 +214,7 @@
         <activity
             android:name=".view.FavoritesActivity"
             android:label="@string/title_activity_favorites"
+            android:icon="@drawable/ic_star"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

@@ -97,6 +97,7 @@
         <activity
             android:name=".view.BilibiliActivity"
             android:label="@string/text_bilibili"
+            android:icon="@drawable/ic_bilibili"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -235,6 +236,7 @@
         <activity
             android:name=".view.Browser2BrowserActivity"
             android:label="@string/text_open_in_other_browser"
+            android:icon="@drawable/ic_browser"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -249,6 +251,11 @@
                     android:host="*"
                     android:scheme="https" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.Share2SaveActivity"
@@ -258,7 +265,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>

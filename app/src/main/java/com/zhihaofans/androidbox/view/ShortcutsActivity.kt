@@ -11,9 +11,9 @@ import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.mod.FeedShortcuts
 import com.zhihaofans.androidbox.mod.QrcodeScanShortcuts
 import com.zhihaofans.androidbox.util.ShortcutsUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import kotlinx.android.synthetic.main.activity_shortcuts.*
 import kotlinx.android.synthetic.main.content_shortcuts.*
-import org.jetbrains.anko.toast
 
 class ShortcutsActivity : AppCompatActivity() {
     private val shortcutsUtil = ShortcutsUtil(this)
@@ -28,7 +28,7 @@ class ShortcutsActivity : AppCompatActivity() {
         if (ShortcutManagerCompat.isRequestPinShortcutSupported(this)) {
             init()
         } else {
-            toast("你的手机不支持创建快捷方式")
+            ToastUtil.error("你的手机不支持创建快捷方式")
         }
     }
 
@@ -43,21 +43,21 @@ class ShortcutsActivity : AppCompatActivity() {
                 0 -> {
                     val launchIntent = Intent(this, FeedShortcuts::class.java)
                     if (shortcutsUtil.addPinShortcut("$packageName.FeedActivity", launchIntent, shortcutList[position])) {
-                        toast("创建快捷方式成功")
+                        ToastUtil.success("创建快捷方式成功")
                     } else {
-                        toast("创建快捷方式失败")
+                        ToastUtil.error("创建快捷方式失败")
                     }
                 }
                 1 -> {
                     val launchIntent = Intent(this, QrcodeScanShortcuts::class.java)
                     if (shortcutsUtil.addPinShortcut("$packageName.QrcodeScan", launchIntent, shortcutList[position],
                                     Icon.createWithResource(this, R.drawable.ic_camera))) {
-                        toast("创建快捷方式成功")
+                        ToastUtil.success("创建快捷方式成功")
                     } else {
-                        toast("创建快捷方式失败")
+                        ToastUtil.error("创建快捷方式失败")
                     }
                 }
-                else -> toast("未知错误")
+                else -> ToastUtil.error("未知错误")
             }
         }
     }

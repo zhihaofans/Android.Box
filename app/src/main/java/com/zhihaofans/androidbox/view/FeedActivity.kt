@@ -402,7 +402,7 @@ class FeedActivity : AppCompatActivity() {
                             message = "文件路径:" + task.targetFilePath
                             positiveButton(R.string.text_copy) {
                                 clipboardUtil?.copy(task.targetFilePath)
-                                toast("复制成功")
+                                ToastUtil.success("复制成功")
                             }
                             negativeButton(R.string.text_open) {
                                 try {

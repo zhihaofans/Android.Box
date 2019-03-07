@@ -20,6 +20,7 @@ import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
@@ -159,7 +160,7 @@ class AppDownActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            toast("初始化失败，请尝试清空应用数据")
+            ToastUtil.error("初始化失败，请尝试清空应用数据")
             finish()
         }
     }
@@ -185,7 +186,7 @@ class AppDownActivity : AppCompatActivity() {
                                     val idOne = inputOne.text.toString()
                                     val idTwo = inputTwo.text.toString()
                                     if (idOne.isEmpty() || idTwo.isEmpty()) {
-                                        toast("请输入内容")
+                                        ToastUtil.error("请输入内容")
                                     } else {
                                         addFeed(site, idOne, idTwo)
                                     }
@@ -205,7 +206,7 @@ class AppDownActivity : AppCompatActivity() {
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {
-                                        toast("请输入包名")
+                                        ToastUtil.error("请输入包名")
                                     } else {
                                         addFeed(site, idOne)
                                     }
@@ -230,7 +231,7 @@ class AppDownActivity : AppCompatActivity() {
                                     val idOne = inputOne.text.toString()
                                     val idTwo = inputTwo.text.toString()
                                     if (idOne.isEmpty() || idTwo.isEmpty()) {
-                                        toast("请输入内容")
+                                        ToastUtil.error("请输入内容")
                                     } else {
                                         addFeed(site, idOne, idTwo)
                                     }
@@ -250,7 +251,7 @@ class AppDownActivity : AppCompatActivity() {
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {
-                                        toast("请输入内容")
+                                        ToastUtil.error("请输入内容")
                                     } else {
                                         addFeed(site, idOne)
                                     }
@@ -270,7 +271,7 @@ class AppDownActivity : AppCompatActivity() {
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {
-                                        toast("请输入内容")
+                                        ToastUtil.error("请输入内容")
                                     } else {
                                         addFeed(site, idOne)
                                     }
@@ -290,7 +291,7 @@ class AppDownActivity : AppCompatActivity() {
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {
-                                        toast("请输入内容")
+                                        ToastUtil.error("请输入内容")
                                     } else {
                                         addFeed(site, idOne)
                                     }
@@ -348,7 +349,7 @@ class AppDownActivity : AppCompatActivity() {
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        toast("Error")
+                        ToastUtil.error("Error")
                     }
                 }
             }
@@ -529,7 +530,6 @@ class AppDownActivity : AppCompatActivity() {
                                 }
                             }
                             negativeButton(R.string.text_open) {
-                                //TODO: Do something
                                 try {
                                     browse(task.targetFilePath)
                                     coordinatorLayout_appdown.snackbar("打开成功")
@@ -543,7 +543,7 @@ class AppDownActivity : AppCompatActivity() {
 
                     override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                         loadingProgressBar.dismiss()
-                        toast("已暂停")
+                        ToastUtil.warning("已暂停")
                     }
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {

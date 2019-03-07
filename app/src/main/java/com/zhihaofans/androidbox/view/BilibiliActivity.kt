@@ -9,10 +9,10 @@ import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
-import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
@@ -53,7 +53,7 @@ class BilibiliActivity : AppCompatActivity() {
             when (index) {
                 0 -> bilibiliCommentHash2uid()
                 1 -> bilibiliBlackroom()
-                else -> toast("未知错误")
+                else -> ToastUtil.error("未知错误")
             }
         }
         checkShare()
@@ -64,13 +64,13 @@ class BilibiliActivity : AppCompatActivity() {
         if (Objects.equals(Intent.ACTION_SEND, intent.action) && intent.type != null && Objects.equals("text/plain", intent.type)) {
             val st = intent.getStringExtra(Intent.EXTRA_TEXT)
             if (st.isNullOrEmpty()) {
-                toast("你分享了个空白链接")
+                ToastUtil.error("你分享了个空白链接")
             } else {
                 Logger.d("url:$st")
                 val urlCheck = SystemUtil.getUrlFromBiliShare(st)
                 Logger.d("urlCheck:$urlCheck")
                 if (urlCheck == null) {
-                    toast("你分享的不是链接")
+                    ToastUtil.error("你分享的不是链接")
                     finish()
                 } else {
                     var urlPath = urlCheck.path
@@ -85,11 +85,11 @@ class BilibiliActivity : AppCompatActivity() {
                                     }
                                     val _a = urlPath.split("/")
                                     if (_a.size != 3) {
-                                        toast("链接格式错误$urlCheck")
+                                        ToastUtil.error("链接格式错误$urlCheck")
                                         finish()
                                     } else {
                                         if (_a[1] != "video" && _a[2].isNotEmpty()) {
-                                            toast("链接格式错误$urlCheck")
+                                            ToastUtil.error("链接格式错误$urlCheck")
                                             finish()
                                         } else {
                                             defaultVid = _a[2]
@@ -111,7 +111,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                     }
                                                 }
                                             }
-                                            toast("vid:$defaultVid\npart:$defaultPart")
+                                            ToastUtil.info("vid:$defaultVid\npart:$defaultPart")
                                         }
                                     }
                                 }
@@ -131,18 +131,18 @@ class BilibiliActivity : AppCompatActivity() {
                                         if (_b[2].isNotEmpty()) {
                                             defaultVid = _b[2]
                                             defaultPart = 1
-                                            toast("vid:$defaultVid\npart:$defaultPart")
+                                            ToastUtil.info("vid:$defaultVid\npart:$defaultPart")
                                         }
                                         return@map
                                     }
                                 }
                             } else {
-                                toast("链接格式错误$urlCheck")
+                                ToastUtil.error("链接格式错误$urlCheck")
                                 finish()
                             }
                         }
                         else -> {
-                            toast("链接格式错误$urlCheck")
+                            ToastUtil.error("链接格式错误$urlCheck")
                             finish()
                         }
                     }
@@ -481,8 +481,11 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun bilibiliBlackroom() {
-        val result = OtherAppMod.bilibiliBlackroom(this)
-        toast("启动" + result.string("成功", "失败"))
+        if (OtherAppMod.bilibiliBlackroom(this)) {
+            ToastUtil.success("启动成功")
+        } else {
+            ToastUtil.error("启动失败")
+        }
     }
 
     private fun copy(string: String) {//复制到剪切板

@@ -17,11 +17,11 @@ import com.orhanobut.logger.Logger
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
-import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.IntentUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
@@ -74,7 +74,11 @@ class QrcodeActivity : AppCompatActivity() {
                                         }
                                         uiThread {
                                             DialogUtils.closeDialog(progressDialog)
-                                            toast("保存" + saveSu.string("至$fileName", "失败"))
+                                            if (saveSu) {
+                                                ToastUtil.success("保存至$fileName")
+                                            } else {
+                                                ToastUtil.error("保存失败")
+                                            }
                                             ContentResolverUtils.notifyMediaStore(File(fileName))
                                         }
                                     }
@@ -105,7 +109,7 @@ class QrcodeActivity : AppCompatActivity() {
                     //SystemUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
                     startActivity<Browser2BrowserActivity>("uri" to editText_qrcode_content.text.toString())
                 } catch (e: Exception) {
-                    toast("打开失败，错误的地址")
+                    ToastUtil.error("打开失败，错误的地址")
                     //throw RuntimeException("No a correct url.", e)
                     e.printStackTrace()
                 }
@@ -182,7 +186,7 @@ class QrcodeActivity : AppCompatActivity() {
                 when (methodId) {
                     null -> Snackbar.make(coordinatorLayout_qrcode, R.string.text_canceled_by_user, Snackbar.LENGTH_SHORT).show()
                     else -> {
-                        toast(R.string.text_canceled_by_user)
+                        ToastUtil.warning(R.string.text_canceled_by_user)
                         finish()
                     }
                 }

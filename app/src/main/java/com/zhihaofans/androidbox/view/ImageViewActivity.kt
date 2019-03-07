@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
@@ -31,12 +32,16 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.FileUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.browse
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
 import java.io.File
 
 
@@ -56,12 +61,12 @@ class ImageViewActivity : AppCompatActivity() {
                 imageUrl = mIntent.extras!!.getString("image", null)
                 val imageTitle = mIntent.extras!!.getString("title", null)
                 if (imageUrl == null) {
-                    toast("null image")
+                    ToastUtil.error("null image")
                     finish()
                 } else {
                     if (imageTitle.isNotNullAndEmpty()) this@ImageViewActivity.title = imageTitle
                     if (imageUrl.isNullOrEmpty()) {
-                        toast("Empty image")
+                        ToastUtil.error("Empty image")
                         finish()
                     }
                     initImage(imageUrl!!)
@@ -70,39 +75,40 @@ class ImageViewActivity : AppCompatActivity() {
                 imageUrl = mIntent.data!!.toString()
                 val imageTitle = FileUtils.getFileName(imageUrl)
                 if (imageUrl == null) {
-                    toast("null image")
+                    ToastUtil.error("null image")
                     finish()
                 } else {
                     if (!(imageTitle.isNullOrEmpty())) {
                         this@ImageViewActivity.title = imageTitle
                     }
                     if (imageUrl.isNullOrEmpty()) {
-                        toast("Empty image")
+                        ToastUtil.error("Empty image")
                         finish()
                     }
                     initImage(imageUrl!!)
                 }
             } else if (mIntent.isActionSend && mIntent.type.isNotNullAndEmpty()) {
                 if (mIntent.type!!.startsWith("image/")) {
-                    val imageUri = intent.extras!!.get(Intent.EXTRA_STREAM) as String?
-                    if (imageUri.isNullOrEmpty()) {
-                        toast("null image")
+                    val imageUri = mIntent!!.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
+                    if (imageUri == null) {
+                        ToastUtil.error("null image")
                         finish()
                     } else {
+                        imageUrl = imageUri.path
                         if (imageUrl.isNullOrEmpty()) {
-                            toast("Empty image")
+                            ToastUtil.error("Empty image")
                             finish()
                         }
                         initImage(imageUrl!!)
                     }
                 }
             } else {
-                toast("Empty image")
+                ToastUtil.error("Empty image")
                 finish()
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            toast("Try to get image fail.")
+            ToastUtil.error("Try to get image fail.")
             finish()
         }
     }
@@ -119,7 +125,7 @@ class ImageViewActivity : AppCompatActivity() {
 
     private fun initImage(imageUri: String) {
         if (imageUri.isEmpty()) {
-            toast("Empty image")
+            ToastUtil.error("Empty image")
             finish()
         } else {
 
@@ -142,7 +148,7 @@ class ImageViewActivity : AppCompatActivity() {
 
                 override fun onFailure(id: String, throwable: Throwable) {
                     throwable.printStackTrace()
-                    toast("Error:" + throwable.message.toString())
+                    ToastUtil.error("Error:" + throwable.message.toString())
                     loadingProgressBar.dismiss()
                 }
 
@@ -283,7 +289,7 @@ class ImageViewActivity : AppCompatActivity() {
                             message = "文件路径:" + task.targetFilePath
                             negativeButton(R.string.text_copy) {
                                 clipboardUtil?.copy(task.targetFilePath)
-                                toast("复制成功")
+                                ToastUtil.success("复制成功")
                             }
                             positiveButton(R.string.text_open) {
                                 try {

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.zhihaofans.androidbox.util.ClipboardUtil
-import org.jetbrains.anko.toast
+import com.zhihaofans.androidbox.util.ToastUtil
 import java.util.*
 
 
@@ -22,12 +22,12 @@ class Share2ClipboardActivity : Activity() {
             if (st != null) {
                 clipboardUtil = ClipboardUtil(this@Share2ClipboardActivity)
                 clipboardUtil?.copy(st)
-                toast("已复制")
+                ToastUtil.success("已复制")
             } else {
-                toast("复制失败")
+                ToastUtil.error("复制失败")
             }
         } else {
-            toast("复制失败")
+            ToastUtil.error("复制失败")
         }
         finish()
     }

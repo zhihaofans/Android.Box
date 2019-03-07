@@ -11,6 +11,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.ServerChanGson
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
 import okhttp3.*
 import org.jetbrains.anko.*
@@ -61,14 +62,14 @@ class ServerChanActivity : AppCompatActivity() {
                         if (inputKey.isNotEmpty()) {
                             appSettingMod.serverChanKey = inputKey
                             if (appSettingMod.serverChanKey == inputKey) {
-                                toast("保存成功")
+                                ToastUtil.success("保存成功")
                                 init()
                             } else {
-                                toast("保存失败")
+                                ToastUtil.error("保存失败")
                                 finish()
                             }
                         } else {
-                            toast("SCKEY不能为空")
+                            ToastUtil.error("SCKEY不能为空")
                             updateKey(oldKey)
                         }
                     }
@@ -79,7 +80,7 @@ class ServerChanActivity : AppCompatActivity() {
                 }
             }
             onCancelled {
-                toast(R.string.text_cancel)
+                ToastUtil.warning(R.string.text_cancel)
                 finish()
             }
         }.show()
@@ -124,7 +125,7 @@ class ServerChanActivity : AppCompatActivity() {
                     }
                 }
                 onCancelled {
-                    toast(R.string.text_cancel)
+                    ToastUtil.warning(R.string.text_cancel)
                     finish()
                 }
             }.show()
@@ -149,7 +150,7 @@ class ServerChanActivity : AppCompatActivity() {
             override fun onFailure(call: Call?, e: IOException) {
                 runOnUiThread {
                     loadingProgressBar.dismiss()
-                    toast("连接失败")
+                    ToastUtil.error("连接失败")
                     e.printStackTrace()
                     finish()
                 }
@@ -165,31 +166,31 @@ class ServerChanActivity : AppCompatActivity() {
                                 val responseStr = resBody.string()
                                 Logger.d("responseStr:$responseStr")
                                 if (responseStr.isEmpty()) {
-                                    toast("服务器返回空白数据")
+                                    ToastUtil.error("服务器返回空白数据")
 
                                 } else {
                                     if (response.header("content-type") == "text/html;charset=utf-8") {
                                         try {
                                             val scGson = g.fromJson(responseStr, ServerChanGson::class.java)
                                             when (scGson.errno) {
-                                                0 -> toast("OK")
-                                                else -> toast("Error ${scGson.errno}:${scGson.errmsg}")
+                                                0 -> ToastUtil.success("OK")
+                                                else -> ToastUtil.error("Error ${scGson.errno}:${scGson.errmsg}")
                                             }
                                         } catch (e: Exception) {
-                                            toast("解析数据失败")
+                                            ToastUtil.error("解析数据失败")
                                             Logger.e("responseStr:\nresponseStr")
                                             e.printStackTrace()
                                         }
                                     } else {
-                                        toast("Error (content-type)")
+                                        ToastUtil.error("Error (content-type)")
                                     }
                                 }
 
                             } else {
-                                toast("空白结果")
+                                ToastUtil.error("空白结果")
                             }
                         }
-                        else -> toast("错误代码 $webCode")
+                        else -> ToastUtil.error("错误代码 $webCode")
                     }
                     loadingProgressBar.dismiss()
                     finish()

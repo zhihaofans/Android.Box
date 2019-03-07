@@ -3,9 +3,9 @@ package com.zhihaofans.androidbox.service
 import android.service.quicksettings.TileService
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.view.QrcodeActivity
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 
 /**
  * @author: zhihaofans
@@ -27,7 +27,11 @@ class WechatScanQstService : TileService() {
     override fun onClick() {
         super.onClick()
         SystemUtil.collapseNotificationBar(this)
-        toast("启动" + if (OtherAppMod.wechatQRCodeScan(this)) "成功" else "失败")
+        if (OtherAppMod.wechatQRCodeScan(this)) {
+            ToastUtil.success("启动成功")
+        } else {
+            ToastUtil.error("启动失败")
+        }
     }
 }
 
@@ -36,6 +40,10 @@ class AlipayQrcodeScanQstService : TileService() {
     override fun onClick() {
         super.onClick()
         SystemUtil.collapseNotificationBar(this)
-        toast("启动" + if (OtherAppMod.alipayQRCodeScan(this)) "成功" else "失败")
+        if (OtherAppMod.alipayQRCodeScan(this)) {
+            ToastUtil.success("启动成功")
+        } else {
+            ToastUtil.error("启动失败")
+        }
     }
 }

@@ -15,23 +15,6 @@ fun String.find(string: String, startIndex: Int = 0, ignoreCase: Boolean = false
 
 fun String.remove(removeString: String, ignoreCase: Boolean = false) = this.replace(removeString, "", ignoreCase)
 
-
-// String?
-fun String?.isNotNull() = this != null
-
-fun String?.isNotNullAndEmpty() = !this.isNullOrEmpty()
-fun String?.isUrl(): Boolean {
-    if (this.isNullOrEmpty()) return false
-    return try {
-        URLUtil.isValidUrl(this)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        false
-    }
-}
-
-fun String?.toUrl(): URL? = URL(this)
-fun String?.toURI(): URI? = URI(this)
 fun String.replaces(list: Map<String, String>, ignoreCase: Boolean = false): String {
     var mStr = this
     list.map {
@@ -60,4 +43,29 @@ fun String.endsWithList(list: List<String>): Boolean {
         if (this.endsWith(it)) return true
     }
     return false
+}
+
+// String?
+fun String?.isNotNull() = this != null
+
+fun String?.isNotNullAndEmpty() = !this.isNullOrEmpty()
+fun String?.isUrl(): Boolean {
+    if (this.isNullOrEmpty()) return false
+    return try {
+        URLUtil.isValidUrl(this)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
+}
+
+fun String?.toUrl(): URL? = URL(this)
+fun String?.toURI(): URI? = URI(this)
+fun String?.startWith(prefix: String, ignoreCase: Boolean = false): Boolean {
+
+    return this?.startsWith(prefix, ignoreCase) ?: false
+}
+
+fun String?.endWith(prefix: String, ignoreCase: Boolean = false): Boolean {
+    return this?.endsWith(prefix, ignoreCase) ?: false
 }

@@ -27,6 +27,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isActionSend
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.kotlinEx.snackbar
+import com.zhihaofans.androidbox.kotlinEx.startWith
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
@@ -38,10 +39,7 @@ import dev.utils.app.DialogUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.browse
-import org.jetbrains.anko.selector
-import org.jetbrains.anko.share
+import org.jetbrains.anko.*
 import java.io.File
 
 
@@ -57,7 +55,23 @@ class ImageViewActivity : AppCompatActivity() {
         clipboardUtil = ClipboardUtil(this)
         try {
             val mIntent = intent
-            if (mIntent.extras !== null) {
+            if (mIntent.isActionSend && mIntent.type.isNotNullAndEmpty()) {
+                if (mIntent.type!!.startsWith("image/")) {
+                    val imageUri = mIntent!!.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
+                    if (imageUri == null) {
+                        ToastUtil.error("null image")
+                        finish()
+                    } else {
+                        imageUrl = imageUri.toString()
+                        Logger.d(imageUrl.toString())
+                        if (imageUrl.isNullOrEmpty()) {
+                            ToastUtil.error("Empty image")
+                            finish()
+                        }
+                        initImage(imageUrl!!)
+                    }
+                }
+            } else if (mIntent.extras !== null) {
                 imageUrl = mIntent.extras!!.getString("image", null)
                 val imageTitle = mIntent.extras!!.getString("title", null)
                 if (imageUrl == null) {
@@ -86,21 +100,6 @@ class ImageViewActivity : AppCompatActivity() {
                         finish()
                     }
                     initImage(imageUrl!!)
-                }
-            } else if (mIntent.isActionSend && mIntent.type.isNotNullAndEmpty()) {
-                if (mIntent.type!!.startsWith("image/")) {
-                    val imageUri = mIntent!!.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
-                    if (imageUri == null) {
-                        ToastUtil.error("null image")
-                        finish()
-                    } else {
-                        imageUrl = imageUri.path
-                        if (imageUrl.isNullOrEmpty()) {
-                            ToastUtil.error("Empty image")
-                            finish()
-                        }
-                        initImage(imageUrl!!)
-                    }
                 }
             } else {
                 ToastUtil.error("Empty image")
@@ -150,6 +149,7 @@ class ImageViewActivity : AppCompatActivity() {
                     throwable.printStackTrace()
                     ToastUtil.error("Error:" + throwable.message.toString())
                     loadingProgressBar.dismiss()
+                    finish()
                 }
 
                 override fun onFinalImageSet(id: String, imageInfo: ImageInfo?, anim: Animatable?) {
@@ -179,37 +179,46 @@ class ImageViewActivity : AppCompatActivity() {
                                 when (i) {
                                     0 -> {
                                         val downloadMenu = listOf(
-                                                "调用adm pro来下载", "使用自带下载"
+                                                "调用ADM来下载", "使用自带下载"
                                         )
                                         selector("选择下载引擎", downloadMenu) { _, ii ->
                                             when (ii) {
                                                 0 -> {
                                                     when {
-                                                        OtherAppMod.admDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用adm成功")
-                                                        else -> coordinatorLayout_imageView.snackbar("调用adm失败")
+                                                        OtherAppMod.admDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用ADM成功")
+                                                        else -> coordinatorLayout_imageView.snackbar("调用ADM失败")
                                                     }
                                                 }
                                                 1 -> {
-                                                    XXPermissions.with(this@ImageViewActivity)
-                                                            .permission(Permission.Group.STORAGE)
-                                                            .request(object : OnPermission {
-                                                                override fun hasPermission(granted: List<String>, isAll: Boolean) {
-                                                                    if (isAll) {
-                                                                        val fileName = FileUtils.getFileName(imageUrl)
-                                                                        download(fileName, 0)
-                                                                    } else {
+                                                    if (imageUrl.startWith("content://media/external/images/media/")) {
+                                                        try {
+                                                            startActivity<Share2SaveActivity>("type" to "image_link", "image_link" to imageUrl)
+                                                        } catch (e: Exception) {
+                                                            e.printStackTrace()
+                                                            ToastUtil.error("下载失败")
+                                                        }
+                                                    } else {
+                                                        XXPermissions.with(this@ImageViewActivity)
+                                                                .permission(Permission.Group.STORAGE)
+                                                                .request(object : OnPermission {
+                                                                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                                                        if (isAll) {
+                                                                            val fileName = FileUtils.getFileName(imageUrl)
+                                                                            download(fileName, 0)
+                                                                        } else {
+                                                                            Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
+                                                                                XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
+                                                                            }.show()
+                                                                        }
+                                                                    }
+
+                                                                    override fun noPermission(denied: MutableList<String>?, quick: Boolean) {
                                                                         Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
                                                                             XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
                                                                         }.show()
                                                                     }
-                                                                }
-
-                                                                override fun noPermission(denied: MutableList<String>?, quick: Boolean) {
-                                                                    Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
-                                                                        XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)
-                                                                    }.show()
-                                                                }
-                                                            })
+                                                                })
+                                                    }
                                                 }
                                             }
                                         }

@@ -42,7 +42,8 @@ class Share2SaveActivity : Activity() {
         mIntent = intent
         try {
             if (mIntent == null) {
-
+                ToastUtil.error("Intent = null")
+                finish()
             } else if (mIntent!!.isActionSend) {
                 if (mIntent!!.type.isNullOrEmpty()) {
                     ToastUtil.error("不支持分享这个类型的东西")
@@ -84,8 +85,56 @@ class Share2SaveActivity : Activity() {
                         }
                     }
                 }
+            } else if (mIntent!!.extras !== null) {
+                val mType: String? = mIntent!!.extras!!.getString("type", null)
+                when (mType) {
+                    null -> {
+                        ToastUtil.error("null type")
+                        finish()
+                    }
+                    "text" -> {
+                        val saveText: String? = mIntent!!.extras!!.getString("text", null)
+                        if (saveText.isNullOrEmpty()) {
+                            ToastUtil.error("空白文本，保存失败")
+                            finish()
+                        } else {
+                            loadingDialog = xuiUtil.materialDialogLoadingDialog("保存中", R.drawable.ic_save)
+                            val time = DatetimeUtil.unixTimeStampMill().toString()
+                            val saveIntent = IntentUtil.getSaveFileByDocumentIntent("share-$time.txt", "text/plain")
+                            mimeType = "text"
+                            Logger.d(saveIntent)
+                            if (IntentUtil.isIntentHasAppToLaunch(saveIntent)) {
+                                startActivityForResult(saveIntent, 0)
+                            } else {
+                                ToastUtil.error("找不到可以调用的文档")
+                                finish()
+                            }
+                        }
+                    }
+                    "image_link" -> {
+                        val image: String? = mIntent!!.extras!!.getString("image_link", null)
+                        if (image.isNullOrEmpty()) {
+                            ToastUtil.error("空白图片地址，保存失败")
+                            finish()
+                        } else {
+                            loadingDialog = xuiUtil.materialDialogLoadingDialog("保存中", R.drawable.ic_save)
+                            val fileNameExtList = listOf("webp", "png", "jpeg")
+                            var fileNameExt = mimeType.remove("image/")
+                            if (fileNameExtList.hasNotChild(fileNameExt)) fileNameExt = "png"
+                            val time = DatetimeUtil.unixTimeStampMill().toString()
+                            val saveIntent = IntentUtil.getSaveFileByDocumentIntent("share-$time.$fileNameExt", mimeType)
+                            Logger.d(saveIntent)
+                            if (IntentUtil.isIntentHasAppToLaunch(saveIntent)) {
+                                startActivityForResult(saveIntent, 0)
+                            } else {
+                                ToastUtil.error("找不到可以调用的文档")
+                                finish()
+                            }
+                        }
+                    }
+                }
             } else {
-                ToastUtil.error("只能分享内容")
+                ToastUtil.error("发生未知错误")
                 finish()
             }
         } catch (e: Exception) {

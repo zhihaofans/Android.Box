@@ -174,10 +174,6 @@
             android:label="@string/text_feed"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.ExpressActivity"
-            android:label="@string/title_activity_express"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".view.XXDownActivity"
             android:icon="@drawable/ic_download"
             android:label="@string/title_activity_xxdown"

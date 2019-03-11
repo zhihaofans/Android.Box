@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Android.Box</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:ignore="PrivateResource">Android.Box</string>
     <string name="text_copy">Copy</string>
     <string name="text_finish">Finished</string>
     <string name="text_canceled_by_user">Cancel by user.</string>
@@ -86,7 +86,6 @@
     <string name="text_site_rsshub_bangumi_calendar_today">Bangumi calendar today</string>
     <string name="text_site_rsshub_new_rss">New RSS on RSSHub</string>
     <string name="text_site_rsshub_guokr_scientific">Guokr scientific</string>
-    <string name="title_activity_express">Express</string>
     <string name="title_activity_xxdown">XX Down</string>
     <string name="text_site_wanandroid">WanAndroid</string>
     <string name="text_site_zhihu_daily">Zhihu Daily</string>

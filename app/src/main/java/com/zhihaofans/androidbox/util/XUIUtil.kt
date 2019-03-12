@@ -30,7 +30,7 @@ class XUIUtil(context: Context) {
         return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_TEXT, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
     }
 
-    //非符号整数
+    //不带符号整数
     fun materialDialogInput4Int(title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
                                 neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
         return materialDialogInput(null, title, content, InputType.TYPE_CLASS_NUMBER, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
@@ -41,7 +41,7 @@ class XUIUtil(context: Context) {
         return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_NUMBER, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
     }
 
-    //符号整数
+    //带符号整数
     fun materialDialogInput4IntSigned(title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
                                       neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
         return materialDialogInput(null, title, content, InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)

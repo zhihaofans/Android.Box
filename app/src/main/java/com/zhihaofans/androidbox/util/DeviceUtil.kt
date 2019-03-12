@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.util
 
 import dev.utils.app.DeviceUtils
 
+
 /**
 
  * @author: zhihaofans
@@ -11,8 +12,7 @@ import dev.utils.app.DeviceUtils
  */
 class DeviceUtil {
     companion object {
-        fun isXiaomi() = DeviceUtils.getManufacturer().toLowerCase() == "xiaomi"
-        fun isSamsung() = DeviceUtils.getManufacturer().toLowerCase() == "samsung"
-
+        fun isXiaomi(): Boolean = DeviceUtils.getManufacturer().toLowerCase() == "xiaomi"
+        fun isSamsung(): Boolean = DeviceUtils.getManufacturer().toLowerCase() == "samsung"
     }
 }

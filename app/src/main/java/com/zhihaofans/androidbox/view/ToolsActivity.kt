@@ -7,6 +7,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.xuexiang.xui.XUI
+import com.xuexiang.xui.widget.dialog.bottomsheet.BottomSheet
+import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.copy
 import com.zhihaofans.androidbox.kotlinEx.init
@@ -14,38 +18,41 @@ import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
-import com.zhihaofans.androidbox.util.DatetimeUtil
-import com.zhihaofans.androidbox.util.FileUtil
-import com.zhihaofans.androidbox.util.NotificationUtil
+import com.zhihaofans.androidbox.util.*
+import dev.utils.app.PhoneUtils
+import dev.utils.app.ScreenUtils
 import kotlinx.android.synthetic.main.activity_tools.*
 import kotlinx.android.synthetic.main.content_tools.*
 import org.jetbrains.anko.*
 
+
 class ToolsActivity : AppCompatActivity() {
     private var saveWallpaperStatus = true
     private val notificationUtil = NotificationUtil()
+    private val xuiUtil = XUIUtil(this)
     override fun onCreate(savedInstanceState: Bundle?) {
+        XUI.initTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tools)
         setSupportActionBar(toolbar_tools)
-
         notificationUtil.init(this)
         fab_tools.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
         val tools = listOf(
-                getString(R.string.text_androidsdk),
+                getString(com.zhihaofans.androidbox.R.string.text_androidsdk),
                 "获取当前壁纸",
                 "收藏夹",
                 "修复收藏夹",
                 "测试通知",
-                getString(R.string.text_weather),
-                getString(R.string.title_activity_xxdown),
+                getString(com.zhihaofans.androidbox.R.string.text_weather),
+                getString(com.zhihaofans.androidbox.R.string.title_activity_xxdown),
                 "Waterfall test",
-                getString(R.string.text_bilibili),
+                getString(com.zhihaofans.androidbox.R.string.text_bilibili),
                 "快捷方式",
-                "随机"
+                "随机",
+                "号码自动添加前缀"
         )
         listView_tools.init(this, tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
@@ -83,12 +90,12 @@ class ToolsActivity : AppCompatActivity() {
                     )
                     val nowSdk = Build.VERSION.SDK_INT
                     selector("你是" + if (nowSdk <= sdks.size) sdks[nowSdk - 1] else "UNKNOWN", sdks) { _, i ->
-                        val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
+                        val acts = listOf(getString(com.zhihaofans.androidbox.R.string.text_copy), getString(com.zhihaofans.androidbox.R.string.text_share))
                         selector(sdks[i], acts) { _, ii ->
                             when (ii) {
                                 0 -> {
                                     copy(sdks[i])
-                                    coordinatorLayout_tools.snackbar(R.string.text_finish)
+                                    coordinatorLayout_tools.snackbar(com.zhihaofans.androidbox.R.string.text_finish)
                                 }
                                 1 -> share(sdks[i])
                             }
@@ -143,9 +150,9 @@ class ToolsActivity : AppCompatActivity() {
 
                         val favoritesMod = FavoritesMod()
                         if (favoritesMod.deleteDataBase()) {
-                            coordinatorLayout_tools.snackbar(R.string.text_yes)
+                            coordinatorLayout_tools.snackbar(com.zhihaofans.androidbox.R.string.text_yes)
                         } else {
-                            coordinatorLayout_tools.snackbar(R.string.text_no)
+                            coordinatorLayout_tools.snackbar(com.zhihaofans.androidbox.R.string.text_no)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -172,8 +179,69 @@ class ToolsActivity : AppCompatActivity() {
                 8 -> startActivity<BilibiliActivity>()
                 9 -> startActivity<ShortcutsActivity>()
                 10 -> startActivity<RandomActivity>()
+                11 -> number()
             }
         }
     }
 
+    private fun number() {
+        val list = listOf(
+                "125831"
+        )
+        BottomSheet.BottomListSheetBuilder(this)
+                .apply {
+                    list.map {
+                        addItem(it)
+                    }
+                }
+                .setOnSheetItemClickListener { dialog, _, position, _ ->
+                    dialog.dismiss()
+                    xuiUtil.materialDialogInput4Int(
+                            "请输入号码", "开头自动加" + list[position], "请输入号码", "",
+                            getString(R.string.text_yes), getString(R.string.text_no), true
+                    ).onPositive { materialDialog: MaterialDialog, _: DialogAction ->
+                        val text = materialDialog.inputEditText!!.text
+                        if (text.isNullOrEmpty()) {
+                            ToastUtil.error("number is null")
+                        } else {
+                            BottomSheet.BottomListSheetBuilder(this)
+                                    .addItem("短信")
+                                    .apply {
+                                        if (PhoneUtils.isPhone() && !ScreenUtils.isTablet()) addItem("电话")
+                                    }
+                                    .setOnSheetItemClickListener { mDialog, _, mPosition, _ ->
+                                        mDialog.dismiss()
+                                        when (mPosition) {
+                                            0 -> try {
+                                                if (PhoneUtils.sendSms(list[position] + text, "")) {
+                                                    ToastUtil.success("成功")
+                                                } else {
+                                                    ToastUtil.error("失败")
+                                                }
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                                ToastUtil.error("Exception")
+                                            }
+                                            1 -> try {
+                                                if (PhoneUtils.dial(list[position] + text)) {
+                                                    ToastUtil.success("成功")
+                                                } else {
+                                                    ToastUtil.error("失败")
+                                                }
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                                ToastUtil.error("Exception")
+                                            }
+                                        }
+                                    }
+                                    .build()
+                                    .show()
+                        }
+                    }.onNegative { _: MaterialDialog, _: DialogAction ->
+                        xuiUtil.snackbar(coordinatorLayout_tools, getString(R.string.text_canceled_by_user))
+                    }.show()
+                }
+                .build()
+                .show()
+    }
 }

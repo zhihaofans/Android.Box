@@ -11,7 +11,8 @@ data class SiteInfo(
 
 data class ChannelInfo(
         val id: String,
-        val name: String
+        val name: String,
+        val onlyOnePage: Boolean = false
 )
 
 data class FeedParseRule(

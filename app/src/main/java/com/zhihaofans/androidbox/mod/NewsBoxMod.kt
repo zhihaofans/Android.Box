@@ -38,6 +38,7 @@ class NewsBoxMod {
                 ItemIdMod.FEED_ZHIHU_DAILY -> SiteInfoZhihudaily().getNewsList(channelId)
                 ItemIdMod.FEED_JUHE_WEIXIN_JINGXUAN -> SiteInfoWeixinjingxuan().getNewsList(channelId, page)
                 ItemIdMod.FEED_JUHE_TOUTIAO_NEWS -> SiteInfoToutiaoxinwen().getNewsList(channelId)
+                ItemIdMod.FEED_TOPHUB_TODAY -> SiteInfoTophubToday().getNewsList(channelId)
                 else -> null
             }
         }
@@ -80,13 +81,13 @@ class NewsBoxMod {
                             ItemIdMod.FEED_RSSHUB,
                             context.getString(R.string.text_site_rsshub),
                             listOf(
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_V2EX_TOPICS, context.getString(R.string.text_site_rsshub_v2ex_topics)),
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_DOUBAN_MOVIE_PLAYING, context.getString(R.string.text_site_rsshub_douban_movie_playing)),
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_JIKE_EDITOR_CHOICE, context.getString(R.string.text_site_rsshub_jike_editors_choice)),
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_JUEJIN_TRENDING_ANDROID, context.getString(R.string.text_site_rsshub_juejin_trending_android)),
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_BANGUMI_CALENDAR_TODAY, context.getString(R.string.text_site_rsshub_bangumi_calendar_today)),
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_NEW_RSS, context.getString(R.string.text_site_rsshub_new_rss)),
-                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_GUOKR_SCIENTIFIC, context.getString(R.string.text_site_rsshub_guokr_scientific))
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_V2EX_TOPICS, context.getString(R.string.text_site_rsshub_v2ex_topics), true),
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_DOUBAN_MOVIE_PLAYING, context.getString(R.string.text_site_rsshub_douban_movie_playing), true),
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_JIKE_EDITOR_CHOICE, context.getString(R.string.text_site_rsshub_jike_editors_choice), true),
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_JUEJIN_TRENDING_ANDROID, context.getString(R.string.text_site_rsshub_juejin_trending_android), true),
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_BANGUMI_CALENDAR_TODAY, context.getString(R.string.text_site_rsshub_bangumi_calendar_today), true),
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_NEW_RSS, context.getString(R.string.text_site_rsshub_new_rss), true),
+                                    ChannelInfo(ItemIdMod.FEED_RSSHUB_GUOKR_SCIENTIFIC, context.getString(R.string.text_site_rsshub_guokr_scientific), true)
                             )
                     ),
                     SiteInfo(
@@ -100,7 +101,7 @@ class NewsBoxMod {
                             ItemIdMod.FEED_ZHIHU_DAILY,
                             context.getString(R.string.text_site_zhihu_daily),
                             listOf(
-                                    ChannelInfo(ItemIdMod.FEED_ZHIHU_DAILY, context.getString(R.string.text_site_zhihu_daily))
+                                    ChannelInfo(ItemIdMod.FEED_ZHIHU_DAILY, context.getString(R.string.text_site_zhihu_daily), true)
                             )
                     ),
                     SiteInfo(
@@ -114,19 +115,29 @@ class NewsBoxMod {
                             ItemIdMod.FEED_JUHE_TOUTIAO_NEWS,
                             ItemNameMod.NAME_JUHE_TOUTIAO_NEWS,
                             listOf(
-                                    ChannelInfo(ItemIdMod.FEED_JUHE_TOUTIAO_NEWS, ItemNameMod.NAME_JUHE_TOUTIAO_NEWS)
+                                    ChannelInfo(ItemIdMod.FEED_JUHE_TOUTIAO_NEWS, ItemNameMod.NAME_JUHE_TOUTIAO_NEWS, true)
+                            )
+                    ),
+                    SiteInfo(
+                            ItemIdMod.FEED_TOPHUB_TODAY,
+                            ItemNameMod.NAME_TOPHUB_TODAY,
+                            listOf(
+                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_WEIBO, ItemNameMod.NAME_TOPHUB_TODAY_WEIBO, true),
+                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_JINRITOUTIAO, ItemNameMod.NAME_TOPHUB_TODAY_JINRITOUTIAO, true),
+                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_HUPUBUXINGJIE, ItemNameMod.NAME_TOPHUB_TODAY_HUPUBUXINGJIE, true)
                             )
                     )
             )
         }
 
-        fun getSiteChannelList(siteId: String): List<MutableMap<String, String>>? {
+        fun getSiteChannelList(siteId: String): List<MutableMap<String, Any>>? {
             this.getSiteList().map { mSite ->
                 if (mSite.id == siteId) {
                     return mSite.channels.map { mChannel ->
                         mutableMapOf(
                                 "channelId" to mChannel.id,
-                                "channelName" to mChannel.name
+                                "channelName" to mChannel.name,
+                                "isChannelOnlyOnePage" to mChannel.onlyOnePage
                         )
                     }.toList()
                 }
@@ -144,6 +155,7 @@ class NewsBoxMod {
             return null
 
         }
+
     }
 
 

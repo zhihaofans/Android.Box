@@ -294,7 +294,7 @@ class NewsSitesMod {
             } else {
                 val emptyElement = jsoupUtil.textorNull("search-none-text")
                 if (emptyElement.isNullOrEmpty()) {
-                    val appName = jsoupUtil.htmlorNull("div.det-name-int") ?: packageName
+                    val appName = jsoupUtil.htmlOrNull("div.det-name-int") ?: packageName
                     val appIcon = jsoupUtil.img("div.det-icon >img")
                     Logger.d("appIcon:$appIcon")
                     val appSize = jsoupUtil.html("div.det-size")

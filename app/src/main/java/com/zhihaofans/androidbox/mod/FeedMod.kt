@@ -3,6 +3,7 @@ package com.zhihaofans.androidbox.mod
 import android.content.Context
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.AppDownFeed
+import com.zhihaofans.androidbox.data.ChannelInfo
 import com.zhihaofans.androidbox.kotlinEx.isNullorEmpty
 
 /**
@@ -42,7 +43,7 @@ class FeedMod {
             siteList.map { site ->
                 val thisSite = site.id
                 val channelList = sites!!.getSiteChannelList(thisSite)!!.map {
-                    ChannelInfo(it["channelId"]!!, it["channelName"]!!)
+                    ChannelInfo(it["channelId"] as String, it["channelName"] as String)
                 }.toMutableList()
                 siteListNew.add(SiteInfoNew(site.id, site.name, channelList))
                 siteChannelList[thisSite] = channelList
@@ -85,6 +86,7 @@ class FeedMod {
                 } else {
                     var siteName = ""
                     var channelName = ""
+                    var isChannelOnlyOnePage = false
                     sites!!.getOldVerSiteList().map {
                         if (it["id"] == siteId) {
                             siteName = it["id"]!!
@@ -92,10 +94,11 @@ class FeedMod {
                     }
                     sites!!.getSiteChannelList(siteId)!!.map {
                         if (it["channelId"] == channelId) {
-                            channelName = it["channelId"]!!
+                            isChannelOnlyOnePage = it["isChannelOnlyOnePage"] as Boolean? ?: false
+                            channelName = it["channelId"] as String? ?: "null"
                         }
                     }
-                    cache = Cache(newsList!!, siteId, channelId, siteName, channelName, page)
+                    cache = Cache(newsList!!, siteId, channelId, siteName, channelName, page, isChannelOnlyOnePage)
                     cache
                 }
             } else {
@@ -129,13 +132,27 @@ class FeedMod {
             return ListView(titleList.toMutableList(), urlList.toMutableList())
         }
 
+        private fun isChannelOnlyOnePage(siteId: String, channelId: String): Boolean {
+            val channelList = siteChannelList[siteId]
+            return if (channelList.isNullOrEmpty()) {
+                false
+            } else {
+                channelList.map {
+                    if (it.id == channelId) return it.onlyOnePage
+                }
+                false
+            }
+
+        }
+
         data class Cache(
                 var newsList: MutableList<NewsInfo>,
                 var siteId: String,
                 var siteChannelId: String,
                 var siteName: String,
                 var channelName: String,
-                var nowPage: Int
+                var nowPage: Int,
+                var onlyOnePage: Boolean = false
         )
 
         data class SiteInfo(
@@ -149,10 +166,6 @@ class FeedMod {
                 val channel: MutableList<ChannelInfo>
         )
 
-        data class ChannelInfo(
-                val id: String,
-                val name: String
-        )
 
         data class NewsInfo(
                 val title: String,

@@ -5,7 +5,9 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.News
 import com.zhihaofans.androidbox.gson.*
 import com.zhihaofans.androidbox.kotlinEx.hasNotChild
+import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.util.HttpUtil
+import org.jsoup.Jsoup
 
 
 /**
@@ -335,6 +337,42 @@ class SiteInfoToutiaoxinwen {
                 }
             }
             else -> return null
+        }
+    }
+}
+
+class SiteInfoTophubToday {
+    fun getNewsList(channelId: String): MutableList<News>? {
+        return when (channelId) {
+            ItemIdMod.FEED_TOPHUB_TODAY_WEIBO -> topToday(UrlMod.TOPHUB_TODAY_WEIBO)
+            ItemIdMod.FEED_TOPHUB_TODAY_JINRITOUTIAO -> topToday(UrlMod.TOPHUB_TODAY_JINRITOUTIAO)
+            ItemIdMod.FEED_TOPHUB_TODAY_HUPUBUXINGJIE -> topToday(UrlMod.TOPHUB_TODAY_HUPUBUXINGJIE)
+            else -> null
+        }
+    }
+
+    private fun topToday(url: String): MutableList<News>? {
+        val newsList = mutableListOf<News>()
+        try {
+            val doc = Jsoup.connect(url).get()
+            if (doc.html().isNotNullAndEmpty()) {
+                val newsListElement = doc.select("table.table")
+                val newsItemList = newsListElement[0].select("tbody > tr > td.al > a")
+                newsItemList.map { newsItem ->
+                    val newsTitle = (newsList.size + 1).toString() + "." + newsItem.text()
+                    val newsLink = newsItem.attr("href")
+                    newsList.add(News(newsTitle, newsLink))
+                }
+                if (newsList.size == 0) {
+                    return null
+                }
+            } else {
+                return null
+            }
+            return newsList
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
         }
     }
 }

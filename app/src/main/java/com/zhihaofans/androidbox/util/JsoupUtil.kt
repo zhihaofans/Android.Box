@@ -56,18 +56,11 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun html(cssQuery: String, index: Int = 0): String {
-        val a: Elements = doc.select(cssQuery)
-        if (a.isNotEmpty()) {
-            if (a.size == 1) return a.html()
-            val html = a[index].html()
-            if (html.isNotEmpty()) {
-                return html
-            }
-        }
-        return ""
+        return this.htmlOrNull(cssQuery, index) ?: ""
     }
 
-    fun htmlorNull(cssQuery: String, index: Int = 0): String? {
+
+    fun htmlOrNull(cssQuery: String, index: Int = 0): String? {
         val a = doc.select(cssQuery)
         if (a.isNotEmpty()) {
             if (a.size == 1) return html(cssQuery)
@@ -78,6 +71,7 @@ class JsoupUtil(inputDoc: Document) {
         }
         return null
     }
+
 
     fun textorNull(cssQuery: String): String? {
         val a = doc.select(cssQuery)
@@ -91,14 +85,7 @@ class JsoupUtil(inputDoc: Document) {
     }
 
     fun text(cssQuery: String): String {
-        val a = doc.select(cssQuery)
-        if (a.isNotEmpty()) {
-            val text = a.html()
-            if (text.isNotEmpty()) {
-                return text
-            }
-        }
-        return ""
+        return this.textorNull(cssQuery) ?: ""
     }
 
     fun body(): Elements? {

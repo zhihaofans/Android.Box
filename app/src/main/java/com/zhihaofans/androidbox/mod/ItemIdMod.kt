@@ -28,6 +28,10 @@ class ItemIdMod {
         const val FEED_ZHIHU_DAILY = "zhihu_daily"
         const val FEED_JUHE_WEIXIN_JINGXUAN = "juhe_weixin_jingxuan"
         const val FEED_JUHE_TOUTIAO_NEWS = "juhe_toutiao_news"
+        const val FEED_TOPHUB_TODAY = "tophub_today"
+        const val FEED_TOPHUB_TODAY_WEIBO = "tophub_today_weibo"
+        const val FEED_TOPHUB_TODAY_JINRITOUTIAO = "tophub_today_jinritoutiao"
+        const val FEED_TOPHUB_TODAY_HUPUBUXINGJIE = "tophub_today_hupubuxingjie"
         // DateBase
         const val DATEBASE_KEY_FAVORITES_LIST = "datebase_key_favorites_list"
         // Favorites

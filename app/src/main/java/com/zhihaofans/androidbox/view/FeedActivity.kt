@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
-import com.google.android.material.tabs.TabLayout
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -40,21 +39,23 @@ class FeedActivity : AppCompatActivity() {
             when (nowTabPosition) {
                 0 -> {
                     val newsCache = newsBox.getCache()
+                    val menu = mutableListOf(
+                            getString(R.string.text_select_site),
+                            getString(R.string.text_refresh)
+                    )
                     if (newsCache == null) {
-                        selector("", mutableListOf(getString(R.string.text_select_site), getString(R.string.text_refresh))) { _, pos ->
+                        selector("", menu) { _, pos ->
                             when (pos) {
                                 0 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(2))
                                 1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
                             }
                         }
                     } else {
-                        val menu = mutableListOf(
-                                getString(R.string.text_select_site),
-                                getString(R.string.text_refresh),
-                                getString(R.string.text_next_page)
-                        )
-                        if (newsBox.page > 1) {
-                            menu.add(2, getString(R.string.text_previous_page))
+                        if (!newsCache.onlyOnePage) {
+                            menu.add(getString(R.string.text_next_page))
+                            if (newsBox.page > 1) {
+                                menu.add(2, getString(R.string.text_previous_page))
+                            }
                         }
                         selector("", menu) { _, pos ->
                             when (pos) {
@@ -89,6 +90,7 @@ class FeedActivity : AppCompatActivity() {
                 }
             }
         }
+        /*
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab) {
                 title = tab.text ?: getString(R.string.text_feed)
@@ -101,7 +103,7 @@ class FeedActivity : AppCompatActivity() {
 
             override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
-        })
+        })*/
     }
 
 
@@ -256,12 +258,16 @@ class FeedActivity : AppCompatActivity() {
 
     private fun initListView(loadingProgressBar: ProgressDialog, data: Any) {
         listView_feed.removeAllItems()
-        when (tabLayout.selectedTabPosition) {
+        val mNumber = 0
+        when (mNumber) {
             0 -> {
                 val newsList = data as FeedMod.News.ListView
                 listView_feed.init(this@FeedActivity, newsList.titleList)
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
-                    SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
+                    //SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
+                    if (!SystemUtil.browser2browser(this, newsList.urlList[index])) {
+                        ToastUtil.error("打开失败")
+                    }
                 }
                 loadingProgressBar.dismiss()
             }

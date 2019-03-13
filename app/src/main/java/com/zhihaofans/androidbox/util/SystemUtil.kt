@@ -15,6 +15,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isUrl
 import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
+import com.zhihaofans.androidbox.view.Browser2BrowserActivity
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import dev.utils.common.FileUtils
 import org.jetbrains.anko.browse
@@ -139,5 +140,14 @@ class SystemUtil {
             mContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         }
 
+        fun browser2browser(mContext: Context, uri: String): Boolean {
+            return try {
+                mContext.startActivity<Browser2BrowserActivity>("uri" to uri)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.IntentUtil
+import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.ContentResolverUtils
@@ -105,13 +106,8 @@ class QrcodeActivity : AppCompatActivity() {
         }
         button_open.setOnClickListener {
             if (editText_qrcode_content.text.isNotEmpty()) {
-                try {
-                    //SystemUtil.browse(this@QrcodeActivity, editText_qrcode_content.text.toString())
-                    startActivity<Browser2BrowserActivity>("uri" to editText_qrcode_content.text.toString())
-                } catch (e: Exception) {
+                if (!SystemUtil.browser2browser(this, editText_qrcode_content.text.toString())) {
                     ToastUtil.error("打开失败，错误的地址")
-                    //throw RuntimeException("No a correct url.", e)
-                    e.printStackTrace()
                 }
             }
         }

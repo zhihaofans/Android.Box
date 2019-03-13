@@ -103,4 +103,8 @@
     <string name="text_qrcode_scan_alipay">支付宝扫一扫</string>
     <string name="title_shortcuts">快捷方式</string>
     <string name="text_random">随机</string>
+    <string name="text_tophub_today">今日热榜</string>
+    <string name="text_tophub_today_weibo">今日热榜 - 微博</string>
+    <string name="text_tophub_today_jinritoutiao">今日热榜 - 今日头条</string>
+    <string name="text_tophub_today_hupubuxingjie">今日热榜 - 虎扑步行街</string>
 </resources>

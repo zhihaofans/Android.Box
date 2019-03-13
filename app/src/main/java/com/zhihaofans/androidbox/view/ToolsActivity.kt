@@ -14,8 +14,6 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.copy
 import com.zhihaofans.androidbox.kotlinEx.init
-import com.zhihaofans.androidbox.kotlinEx.snackbar
-import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.*
@@ -95,82 +93,41 @@ class ToolsActivity : AppCompatActivity() {
                             when (ii) {
                                 0 -> {
                                     copy(sdks[i])
-                                    coordinatorLayout_tools.snackbar(com.zhihaofans.androidbox.R.string.text_finish)
+                                    xuiUtil.snackbar(coordinatorLayout_tools, R.string.text_finish)
                                 }
                                 1 -> share(sdks[i])
                             }
                         }
                     }
                 }
-                1 -> {
-                    if (saveWallpaperStatus) {
-                        saveWallpaperStatus = false
-                        coordinatorLayout_tools.snackbar("正在导出壁纸")
-                        XXPermissions.with(this)
-                                .permission(Permission.Group.STORAGE)
-                                .request(object : OnPermission {
-                                    override fun hasPermission(granted: List<String>, isAll: Boolean) {
-                                        if (isAll) {
-                                            val time = DatetimeUtil.unixTimeStampMill()
-                                            val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "Wallpaper-$time.png"
-                                            doAsync {
-                                                try {
-                                                    val wallpaper = FileUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
-                                                    uiThread {
-                                                        coordinatorLayout_tools.snackbar("保存" + wallpaper.string("成功($saveTo)", "失败"))
-                                                        saveWallpaperStatus = true
-                                                    }
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                    uiThread {
-                                                        saveWallpaperStatus = true
-                                                        coordinatorLayout_tools.snackbar("失败:Exception")
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            saveWallpaperStatus = true
-                                            coordinatorLayout_tools.snackbar("未授权储存权限，无法保存")
-                                        }
-                                    }
-
-                                    override fun noPermission(denied: List<String>, quick: Boolean) {
-                                        saveWallpaperStatus = true
-                                        coordinatorLayout_tools.snackbar("未授权储存权限，无法保存")
-                                    }
-                                })
-                    } else {
-                        coordinatorLayout_tools.snackbar("处理中，请不要重复点击")
-                    }
-
-                }
+                1 -> saveWallpaper()
                 2 -> startActivity<FavoritesActivity>()
                 3 -> {
                     try {
 
                         val favoritesMod = FavoritesMod()
                         if (favoritesMod.deleteDataBase()) {
-                            coordinatorLayout_tools.snackbar(com.zhihaofans.androidbox.R.string.text_yes)
+                            xuiUtil.snackbar(coordinatorLayout_tools, R.string.text_yes)
                         } else {
-                            coordinatorLayout_tools.snackbar(com.zhihaofans.androidbox.R.string.text_no)
+                            xuiUtil.snackbarDanger(coordinatorLayout_tools, R.string.text_no)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        coordinatorLayout_tools.snackbar("Exception")
+                        xuiUtil.snackbarDanger(coordinatorLayout_tools, "Exception")
 
                     }
                 }
                 4 -> {
                     try {
                         val noId = notificationUtil.create("test", "测试", true)
-                        if (noId == null) {
-                            coordinatorLayout_tools.snackbar("失败!")
+                        if (noId !== null) {
+                            xuiUtil.snackbar(coordinatorLayout_tools, "成功")
                         } else {
-                            coordinatorLayout_tools.snackbar("成功")
+                            xuiUtil.snackbarDanger(coordinatorLayout_tools, "失败!")
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        coordinatorLayout_tools.snackbar("失败")
+                        xuiUtil.snackbarDanger(coordinatorLayout_tools, "失败")
                     }
                 }
                 5 -> startActivity<WeatherActivity>()
@@ -243,5 +200,52 @@ class ToolsActivity : AppCompatActivity() {
                 }
                 .build()
                 .show()
+    }
+
+    private fun saveWallpaper() {
+        if (saveWallpaperStatus) {
+            saveWallpaperStatus = false
+            xuiUtil.snackbar(coordinatorLayout_tools, "正在导出壁纸")
+            XXPermissions.with(this)
+                    .permission(Permission.Group.STORAGE)
+                    .request(object : OnPermission {
+                        override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                            if (isAll) {
+                                val time = DatetimeUtil.unixTimeStampMill()
+                                val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "Wallpaper-$time.png"
+                                doAsync {
+                                    try {
+                                        val wallpaper = FileUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
+                                        uiThread {
+                                            if (wallpaper) {
+                                                xuiUtil.snackbar(coordinatorLayout_tools, "保存成功($saveTo)")
+
+                                            } else {
+                                                xuiUtil.snackbarDanger(coordinatorLayout_tools, "保存失败")
+                                            }
+                                            saveWallpaperStatus = true
+                                        }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        uiThread {
+                                            saveWallpaperStatus = true
+                                            xuiUtil.snackbarDanger(coordinatorLayout_tools, "失败:Exception")
+                                        }
+                                    }
+                                }
+                            } else {
+                                saveWallpaperStatus = true
+                                xuiUtil.snackbarDanger(coordinatorLayout_tools, "未授权储存权限，无法保存")
+                            }
+                        }
+
+                        override fun noPermission(denied: List<String>, quick: Boolean) {
+                            saveWallpaperStatus = true
+                            xuiUtil.snackbarDanger(coordinatorLayout_tools, "未授权储存权限，无法保存")
+                        }
+                    })
+        } else {
+            xuiUtil.snackbarDanger(coordinatorLayout_tools, "处理中，请不要重复点击")
+        }
     }
 }

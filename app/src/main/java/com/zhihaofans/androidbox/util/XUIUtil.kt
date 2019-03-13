@@ -9,6 +9,7 @@ import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
+import dev.utils.app.AppUtils
 
 
 /**
@@ -112,20 +113,36 @@ DEMO
     }
     */
 
-    fun snackbar(view: View, message: String): SnackbarUtils {
-        return SnackbarUtils.Short(view, message)
+    fun snackbar(view: View, message: String) {
+        return SnackbarUtils.Short(view, message).show()
     }
 
-    fun snackbarDanger(view: View, message: String): SnackbarUtils {
-        return snackbar(view, message).danger()
+    fun snackbarDanger(view: View, message: String) {
+        return SnackbarUtils.Short(view, message).danger().show()
     }
 
-    fun snackbarLong(view: View, message: String): SnackbarUtils {
-        return SnackbarUtils.Short(view, message)
+    fun snackbarLong(view: View, message: String) {
+        return SnackbarUtils.Long(view, message).show()
     }
 
-    fun snackbarLongDanger(view: View, message: String): SnackbarUtils {
-        return snackbar(view, message).danger()
+    fun snackbarLongDanger(view: View, message: String) {
+        return SnackbarUtils.Long(view, message).danger().show()
+    }
+
+    fun snackbar(view: View, message: Int) {
+        return SnackbarUtils.Short(view, AppUtils.getString(message)).show()
+    }
+
+    fun snackbarDanger(view: View, message: Int) {
+        return SnackbarUtils.Short(view, AppUtils.getString(message)).danger().show()
+    }
+
+    fun snackbarLong(view: View, message: Int) {
+        return SnackbarUtils.Long(view, AppUtils.getString(message)).show()
+    }
+
+    fun snackbarLongDanger(view: View, message: Int) {
+        return SnackbarUtils.Long(view, AppUtils.getString(message)).danger().show()
     }
 
 }

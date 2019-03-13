@@ -47,9 +47,9 @@ class RandomActivity : AppCompatActivity() {
                                     val inputTextMax = dialogMax.inputEditText!!.string.toIntOrNull()
                                     Logger.d("inputTextMin:$inputTextMin\ninputTextMax:$inputTextMax")
                                     if (inputTextMin == null) {
-                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数为null").show()
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数为null")
                                     } else if (inputTextMax == null) {
-                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "最大数为null").show()
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "最大数为null")
                                     } else {
                                         if (inputTextMax > inputTextMin) {
                                             val randomResult = RandomUtil.getInt(inputTextMin, inputTextMax)
@@ -61,7 +61,7 @@ class RandomActivity : AppCompatActivity() {
                                                 }
                                             }.show()
                                         } else {
-                                            xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数不能大于最大数").show()
+                                            xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数不能大于最大数")
                                         }
                                     }
                                 }
@@ -78,11 +78,11 @@ class RandomActivity : AppCompatActivity() {
                             val inputTextList = dialogMin.inputEditText!!.string
                             Logger.d("inputTextList:$inputTextList")
                             if (inputTextList.isEmpty()) {
-                                xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空").show()
+                                xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空")
                             } else {
                                 val randomResult = RandomUtil.getStringItems(inputTextList.split(","), 1)
                                 if (randomResult == null) {
-                                    xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null").show()
+                                    xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null")
                                 } else {
                                     val resultStr = randomResult.string(",")
                                     xuiUtil.materialDialogInput4String("结果", "", resultStr, resultStr, getString(R.string.text_copy),
@@ -111,13 +111,13 @@ class RandomActivity : AppCompatActivity() {
                                     val inputTextLength = dialogMin.inputEditText!!.intOrNull
                                     Logger.d("inputTextList:$inputTextList")
                                     if (inputTextList.isEmpty()) {
-                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空").show()
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空")
                                     } else if (inputTextLength == null) {
-                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "随机次数为null").show()
+                                        xuiUtil.snackbarDanger(coordinatorLayout_random, "随机次数为null")
                                     } else {
                                         val randomResult = RandomUtil.getStringItems(inputTextList.split(","), inputTextLength)
                                         if (randomResult == null) {
-                                            xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null").show()
+                                            xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null")
                                         } else {
                                             val resultStr = randomResult.string(",")
                                             xuiUtil.materialDialogInput4String("结果", "", resultStr, resultStr, getString(R.string.text_copy),
@@ -136,7 +136,7 @@ class RandomActivity : AppCompatActivity() {
                         }
                     }.show()
                 }
-                else -> xuiUtil.snackbarDanger(coordinatorLayout_random, "未知错误").show()
+                else -> xuiUtil.snackbarDanger(coordinatorLayout_random, "未知错误")
             }
         }
     }

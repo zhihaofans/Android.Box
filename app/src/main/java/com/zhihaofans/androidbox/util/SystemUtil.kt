@@ -49,19 +49,23 @@ class SystemUtil {
         }
 
         fun browse(context: Context, url: String, title: String = url) {
-            val appSettingMod = AppSettingMod()
-            appSettingMod.init(context)
-            if (!url.isUrl()) {
-                throw Exception("Need Url.")
-            }
-            if (appSettingMod.imageUrlOpenWithBuiltinViewer && this.checkIfImageUrl(url)) {
-                context.startActivity<ImageViewActivity>("image" to url, "title" to title)
+            if (DeviceUtil.isXiaomi()) {
+                SystemUtil.browser2browser(context, url)
             } else {
-                try {
-                    this.chromeCustomTabs(context, url)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    context.browse(url)
+                val appSettingMod = AppSettingMod()
+                appSettingMod.init(context)
+                if (!url.isUrl()) {
+                    throw Exception("Need Url.")
+                }
+                if (appSettingMod.imageUrlOpenWithBuiltinViewer && this.checkIfImageUrl(url)) {
+                    context.startActivity<ImageViewActivity>("image" to url, "title" to title)
+                } else {
+                    try {
+                        this.chromeCustomTabs(context, url)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        context.browse(url)
+                    }
                 }
             }
         }

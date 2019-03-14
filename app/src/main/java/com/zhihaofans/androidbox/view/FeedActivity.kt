@@ -264,10 +264,7 @@ class FeedActivity : AppCompatActivity() {
                 val newsList = data as FeedMod.News.ListView
                 listView_feed.init(this@FeedActivity, newsList.titleList)
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
-                    //SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
-                    if (!SystemUtil.browser2browser(this, newsList.urlList[index])) {
-                        ToastUtil.error("打开失败")
-                    }
+                    SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
                 }
                 loadingProgressBar.dismiss()
             }

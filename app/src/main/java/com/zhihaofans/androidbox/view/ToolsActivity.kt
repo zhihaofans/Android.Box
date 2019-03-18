@@ -50,7 +50,8 @@ class ToolsActivity : AppCompatActivity() {
                 getString(com.zhihaofans.androidbox.R.string.text_bilibili),
                 "快捷方式",
                 "随机",
-                "号码自动添加前缀"
+                "号码自动添加前缀",
+                "传感器"
         )
         listView_tools.init(this, tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
@@ -137,6 +138,7 @@ class ToolsActivity : AppCompatActivity() {
                 9 -> startActivity<ShortcutsActivity>()
                 10 -> startActivity<RandomActivity>()
                 11 -> number()
+                12 -> startActivity<SensorActivity>()
             }
         }
     }

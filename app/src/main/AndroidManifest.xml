@@ -19,14 +19,18 @@
     <application
         android:name=".App"
         android:allowBackup="true"
+        android:appCategory="productivity"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true"
-        android:appCategory="productivity"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity
+            android:name=".view.SensorActivity"
+            android:label="@string/title_activity_sensor"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
         <activity
             android:name=".view.RandomActivity"
             android:label="@string/text_random"
@@ -96,8 +100,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.BilibiliActivity"
-            android:label="@string/text_bilibili"
             android:icon="@drawable/ic_bilibili"
+            android:label="@string/text_bilibili"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -137,7 +141,9 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
@@ -209,8 +215,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.FavoritesActivity"
-            android:label="@string/title_activity_favorites"
             android:icon="@drawable/ic_star"
+            android:label="@string/title_activity_favorites"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -235,8 +241,8 @@
         </activity>
         <activity
             android:name=".view.Browser2BrowserActivity"
-            android:label="@string/text_open_in_other_browser"
             android:icon="@drawable/ic_browser"
+            android:label="@string/text_open_in_other_browser"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -253,7 +259,9 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
@@ -264,12 +272,16 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>

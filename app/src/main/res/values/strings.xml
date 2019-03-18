@@ -108,4 +108,5 @@
     <string name="text_tophub_today_weibo">Tophub.Today - Weibo</string>
     <string name="text_tophub_today_jinritoutiao">Tophub.Today - Jinri Toutiao</string>
     <string name="text_tophub_today_hupubuxingjie">Tophub.Today - Hupu Buxingjie</string>
+    <string name="title_activity_sensor">Sensor</string>
 </resources>

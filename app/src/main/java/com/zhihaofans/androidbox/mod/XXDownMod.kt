@@ -2,13 +2,14 @@ package com.zhihaofans.androidbox.mod
 
 import com.zhihaofans.androidbox.data.XXDownResultData
 import okhttp3.Headers
+import java.net.URL
 
 /**
  * Created by zhihaofans on 2018/10/2.
  */
 class XXDownMod {
     companion object {
-        fun get(site: String, url: String): XXDownResultData? {
+        fun get(site: String, url: URL): XXDownResultData? {
             return when (site) {
                 ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL -> XXDownSitesMod.AcfunVideoThumbnail(url)
                 ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL -> XXDownSitesMod.BilibiliVideoThumbnail(url)

@@ -185,7 +185,7 @@ class ImageViewActivity : AppCompatActivity() {
                                             when (ii) {
                                                 0 -> {
                                                     when {
-                                                        OtherAppMod.admDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用ADM成功")
+                                                        OtherAppMod.admAutoDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用ADM成功")
                                                         else -> coordinatorLayout_imageView.snackbar("调用ADM失败")
                                                     }
                                                 }

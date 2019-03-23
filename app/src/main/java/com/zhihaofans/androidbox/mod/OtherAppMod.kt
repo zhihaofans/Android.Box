@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
+import java.net.URL
 
 
 /**
@@ -78,7 +79,8 @@ class OtherAppMod {
             }
         }
 
-        fun admDownload(mContext: Context, url: String?): Boolean {
+        fun admAutoDownload(mContext: Context, url: URL): Boolean = this.admAutoDownload(mContext, url.toString())
+        fun admAutoDownload(mContext: Context, url: String?): Boolean {
             if (url.isNullOrEmpty()) return false
             val _a = admProDownload1(mContext, url)
             if (_a) {

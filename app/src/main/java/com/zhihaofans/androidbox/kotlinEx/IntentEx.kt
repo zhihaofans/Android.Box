@@ -20,3 +20,19 @@ val Intent.isActionSend: Boolean
     get() = this.action == Intent.ACTION_SEND
 val Intent.isActionView: Boolean
     get() = this.action == Intent.ACTION_VIEW
+val Intent.isTypeTextPlain: Boolean
+    get() {
+        return if (this.isActionSend) {
+            this.type == "text/plain"
+        } else {
+            false
+        }
+    }
+
+fun Intent.getTextPlain(): String? {
+    return if (this.isTypeTextPlain) {
+        this.getStringExtra(Intent.EXTRA_TEXT)
+    } else {
+        null
+    }
+}

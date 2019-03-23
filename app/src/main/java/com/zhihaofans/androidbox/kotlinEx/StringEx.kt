@@ -45,6 +45,7 @@ fun String.endsWithList(list: List<String>): Boolean {
     return false
 }
 
+fun String.toUrl(): URL = URL(this)
 // String?
 fun String?.isNotNull() = this != null
 
@@ -59,7 +60,6 @@ fun String?.isUrl(): Boolean {
     }
 }
 
-fun String?.toUrl(): URL? = URL(this)
 fun String?.toURI(): URI? = URI(this)
 fun String?.startWith(prefix: String, ignoreCase: Boolean = false): Boolean {
 

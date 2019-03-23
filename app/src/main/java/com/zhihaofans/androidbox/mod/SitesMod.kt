@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.net.URL
 
 /**
 
@@ -374,7 +375,7 @@ class NewsSitesMod {
 
 class XXDownSitesMod {
     companion object {
-        fun AcfunVideoThumbnail(url: String): XXDownResultData? {
+        fun AcfunVideoThumbnail(url: URL): XXDownResultData? {
             val call = HttpUtil.httpClientGetCall(url, XXDownSite.headerbuild)
             try {
                 val response = call.execute()
@@ -398,7 +399,7 @@ class XXDownSitesMod {
             }
         }
 
-        fun BilibiliVideoThumbnail(url: String): XXDownResultData? {
+        fun BilibiliVideoThumbnail(url: URL): XXDownResultData? {
             val call = HttpUtil.httpClientGetCall(url, XXDownSite.headerbuild)
             try {
                 val response = call.execute()
@@ -422,9 +423,9 @@ class XXDownSitesMod {
             }
         }
 
-        fun githubReleaseXX(url: String): XXDownResultData? {
-            if (url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)) {
-                var mUrl = url.remove(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)
+        fun githubReleaseXX(url: URL): XXDownResultData? {
+            if (url.host.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE)) {
+                var mUrl = url.path
                 if (mUrl.endsWith("/")) mUrl = mUrl.substring(0, mUrl.length - 2)
                 val mList = mUrl.split("/")
                 if (mList.size != 2) return null

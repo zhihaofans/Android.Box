@@ -3,9 +3,10 @@ package com.zhihaofans.androidbox.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.zhihaofans.androidbox.kotlinEx.isActionSend
+import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ToastUtil
-import java.util.*
 
 
 /**
@@ -16,13 +17,17 @@ class Share2ClipboardActivity : Activity() {
     private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intent = intent
-        if (Objects.equals(Intent.ACTION_SEND, intent.action) && intent.type != null && Objects.equals("text/plain", intent.type)) {
-            val st = intent.getStringExtra(Intent.EXTRA_TEXT)
-            if (st != null) {
+        val mIntent = intent
+        if (mIntent.isActionSend && mIntent.type == "text/plain") {
+            val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
+            if (st.isNotNullAndEmpty()) {
                 clipboardUtil = ClipboardUtil(this@Share2ClipboardActivity)
-                clipboardUtil?.copy(st)
-                ToastUtil.success("已复制")
+                if (clipboardUtil == null) {
+                    ToastUtil.error("复制失败")
+                } else {
+                    clipboardUtil!!.copy(st)
+                    ToastUtil.success("已复制")
+                }
             } else {
                 ToastUtil.error("复制失败")
             }

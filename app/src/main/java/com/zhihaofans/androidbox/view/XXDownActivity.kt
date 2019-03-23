@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
 
 import org.jetbrains.anko.*
+import java.net.URL
 
 class XXDownActivity : AppCompatActivity() {
     private var resultList = mutableListOf<XXDownResultUrlData>()
@@ -63,7 +64,7 @@ class XXDownActivity : AppCompatActivity() {
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()
         doAsync {
-            val result = auto(url)
+            val result = auto(url.toUrl())
             uiThread {
                 if (result == null) {
                     loadingProgressBar.dismiss()
@@ -76,11 +77,13 @@ class XXDownActivity : AppCompatActivity() {
         }
     }
 
-    private fun auto(url: String): XXDownResultData? {
+    private fun auto(url: URL): XXDownResultData? {
+        val uriHost = url.host
         return when {
-            url.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
-            url.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
-            url.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
+            uriHost.isNullOrEmpty() -> null
+            uriHost.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
+            uriHost.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
+            uriHost.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
             else -> null
         }
     }
@@ -106,7 +109,7 @@ class XXDownActivity : AppCompatActivity() {
                         when (ii) {
                             0 -> SystemUtil.browse(this@XXDownActivity, itemUrl)
                             1 -> when {
-                                OtherAppMod.admDownload(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
+                                OtherAppMod.admAutoDownload(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
                                 else -> coordinatorLayout_imageView.snackbar("调用adm下载失败")
                             }
                         }
@@ -127,7 +130,7 @@ class XXDownActivity : AppCompatActivity() {
     private fun initShare() {
         val mIntent = intent
         when {
-            mIntent.isActionView && mIntent.type == "text/plain" -> {
+            mIntent.isActionSend && mIntent.type == "text/plain" -> {
                 val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
                 if (st != null) {
                     if (st.isUrl()) {

@@ -5,6 +5,7 @@ import okhttp3.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.IOException
+import java.net.URL
 
 /**
  * @author: zhihaofans
@@ -81,6 +82,12 @@ class HttpUtil {
         }
 
         fun httpClientGetCall(url: String, headers: Headers): Call {
+            val client = OkHttpClient()
+            val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
+            return client.newCall(request.url(url).headers(headers).build())
+        }
+
+        fun httpClientGetCall(url: URL, headers: Headers): Call {
             val client = OkHttpClient()
             val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
             return client.newCall(request.url(url).headers(headers).build())

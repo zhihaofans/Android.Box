@@ -28,8 +28,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".view.OpenerActivity"
-            android:label="@string/title_activity_opener"
+            android:name=".view.SensorActivity"
+            android:label="@string/title_activity_sensor"
             android:theme="@style/AppTheme.NoActionBar.NoActionBar"></activity>
         <activity
             android:name=".view.RandomActivity"

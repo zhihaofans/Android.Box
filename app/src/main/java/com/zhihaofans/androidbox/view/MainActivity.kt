@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtils.getAppVersionCode() == 114) startActivity<QrcodeActivity>()
+        if (AppUtils.getAppVersionCode() == 124) startActivity<SensorActivity>()
     }
 
     private fun initPermissions() {

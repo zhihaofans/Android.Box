@@ -7,6 +7,8 @@ import android.content.Intent
 /**
  * Created by zhihaofans on 2018/12/8.
  */
+fun Intent?.isNull() = this == null
+
 fun Intent.getPackageName(context: Context): String? {
     val packageManager = context.packageManager
     val packages = packageManager.queryIntentActivities(this, 0)

@@ -96,12 +96,12 @@ class SystemUtil {
 
         fun getUrlFromBiliShare(shareString: String): URL? {
             val biliScheme = listOf("http", "https", "bilibili")
-            var checked = shareString.toUrl()
-            var result: String? = null
-            Logger.d("getUrlFromBiliShare:1")
-            if (checked !== null) {
-                return checked
+            return if (shareString.isUrl()) {
+                shareString.toUrl()
             } else {
+                var result = ""
+                Logger.d("getUrlFromBiliShare:1")
+
                 Logger.d("getUrlFromBiliShare:2")
                 biliScheme.map {
                     Logger.d("Scheme:$it")
@@ -109,27 +109,24 @@ class SystemUtil {
                     if (_a >= 0) {
                         val _b = shareString.indexOf(" ", _a)
                         Logger.d("_a:$_a\n_b:$_b")
-                        if (_b > _a) {
-                            result = shareString.substring(_a, _b)
+                        result = if (_b > _a) {
+                            shareString.substring(_a, _b)
                         } else {
-                            result = shareString.substring(_a, shareString.length - 1)
+                            shareString.substring(_a, shareString.length - 1)
                         }
                         Logger.d("result:$result")
-                        checked = result.toUrl()
+                        val checked = result.toUrl()
                         Logger.d("getUrlFromBiliShare:3")
-                        return if (checked !== null) {
-                            checked
-                        } else {
-                            null
-                        }
+                        return checked
                     }
                 }
                 Logger.d("getUrlFromBiliShare:4")
-                return if (result.isNullOrEmpty()) {
+                return if (result.isEmpty()) {
                     null
                 } else {
                     result.toUrl()
                 }
+
             }
         }
 

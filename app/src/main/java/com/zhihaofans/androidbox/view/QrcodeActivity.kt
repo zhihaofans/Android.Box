@@ -19,10 +19,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
-import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.IntentUtil
-import com.zhihaofans.androidbox.util.SystemUtil
-import com.zhihaofans.androidbox.util.ToastUtil
+import com.zhihaofans.androidbox.util.*
 import dev.utils.app.AppUtils
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
@@ -106,8 +103,13 @@ class QrcodeActivity : AppCompatActivity() {
         }
         button_open.setOnClickListener {
             if (editText_qrcode_content.text.isNotEmpty()) {
-                if (!SystemUtil.browser2browser(this, editText_qrcode_content.text.toString())) {
-                    ToastUtil.error("打开失败，错误的地址")
+                /**/
+                if (DeviceUtil.isXiaomi()) {
+                    if (!SystemUtil.browser2browser(this, editText_qrcode_content.text.toString())) {
+                        ToastUtil.error("打开失败，错误的地址")
+                    }
+                } else {
+                    browse(editText_qrcode_content.text.toString())
                 }
             }
         }

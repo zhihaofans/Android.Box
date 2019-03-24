@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import dev.utils.app.UriUtils
+import java.net.URL
 
 /**
 
@@ -50,4 +51,8 @@ fun Uri.getFilePathByUri(context: Context): String? {
         UriUtils.getFilePathByUri(context, this)
     }
 
+}
+
+fun Uri?.toURL(): URL? {
+    return if (this == null) null else URL(this.toString())
 }

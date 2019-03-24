@@ -110,6 +110,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                                     title = "确定使用${appNameList[i]}打开网页吗?"
                                     yesButton {
                                         browserIntent.data = uri.toUri()
+                                        browserIntent.action = Intent.ACTION_VIEW
                                         startActivity(browserIntent)
                                         ToastUtil.success("已经尝试启动应用(${appNameList[i]})")
                                         finish()

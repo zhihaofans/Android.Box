@@ -12,19 +12,31 @@ import java.net.URL
  * @date: 2019-03-22 21:29
 
  */
-class OpenerMod(intent: Intent) {
-    private val mIntent = intent
-    fun isUrl(): Boolean {
-        return when {
-            mIntent.isActionView -> true
-            mIntent.isTypeTextPlain -> mIntent.getTextPlain().isUrl()
-            else -> false
-        }
+class OpenerMod {
+    private var mIntent: Intent? = null
+    fun init(intent: Intent) {
+        this.mIntent = intent
     }
 
+    fun isInitFinished() = mIntent !== null
+    fun isUrl(): Boolean {
+        val tf = when {
+            mIntent == null -> false
+            mIntent!!.isActionView -> true
+            mIntent!!.isTypeTextPlain -> mIntent!!.getTextPlain().isUrl()
+            else -> false
+        }
+        return tf
+    }
+
+    fun getIntent(): Intent? = mIntent
     fun getUrl(): URL? {
-        val mText = mIntent.getTextPlain()
-        return if (mText.isNullOrEmpty()) null else mText.toUrl()
+        return if (mIntent.isNull()) {
+            null
+        } else {
+            val mText = mIntent!!.getTextPlain()
+            if (mText.isNullOrEmpty()) mIntent!!.data.toURL() else mText.toUrl()
+        }
     }
 
     class UrlOpener(url: URL) {

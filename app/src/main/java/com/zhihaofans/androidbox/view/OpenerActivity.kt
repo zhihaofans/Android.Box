@@ -5,10 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.getTextPlain
-import com.zhihaofans.androidbox.kotlinEx.isActionSend
-import com.zhihaofans.androidbox.kotlinEx.isNull
-import com.zhihaofans.androidbox.kotlinEx.isTypeTextPlain
+import com.zhihaofans.androidbox.kotlinEx.*
 import com.zhihaofans.androidbox.mod.OpenerMod
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ToastUtil
@@ -124,6 +121,7 @@ class OpenerActivity : AppCompatActivity() {
         when (uri.scheme) {
             "http", "https" -> {
                 ToastUtil.info("开发中")
+                browse(url)
             }
             else -> {
                 ToastUtil.error("不支持该地址")

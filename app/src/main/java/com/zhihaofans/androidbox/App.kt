@@ -1,10 +1,16 @@
 package com.zhihaofans.androidbox
 
 import android.app.Application
+import android.content.Context
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator
+import com.scwang.smartrefresh.layout.api.RefreshHeader
+import com.scwang.smartrefresh.layout.api.RefreshLayout
+import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.simple.spiderman.SpiderMan
 import com.vondear.rxtool.RxTool
 import com.xuexiang.xui.XUI
@@ -32,7 +38,12 @@ class App : Application() {
         RxTool.init(this)
         XUI.init(this)
         XUI.debug(true)
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator(object : DefaultRefreshHeaderCreator {
+            override fun createRefreshHeader(context: Context, layout: RefreshLayout): RefreshHeader {
+                return ClassicsHeader(context)
+            }
+        })
     }
-
-
 }
+
+

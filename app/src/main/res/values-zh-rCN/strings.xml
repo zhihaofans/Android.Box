@@ -109,4 +109,5 @@
     <string name="text_tophub_today_hupubuxingjie">今日热榜 - 虎扑步行街</string>
     <string name="title_activity_sensor">传感器</string>
     <string name="text_androidbox_opener">安卓盒子...</string>
+    <string name="text_app_uninstall">卸载应用</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.graphics.Bitmap
@@ -13,11 +15,9 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.kotlinEx.getAppName
 import com.zhihaofans.androidbox.kotlinEx.snackbar
-import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.ConvertUtil
-import com.zhihaofans.androidbox.util.DatetimeUtil
-import com.zhihaofans.androidbox.util.FileUtil
+import com.zhihaofans.androidbox.util.*
 import dev.utils.app.AppUtils
+import dev.utils.app.IntentUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import kotlinx.android.synthetic.main.activity_app_management.*
@@ -28,6 +28,7 @@ import org.jetbrains.anko.*
 class AppManagementActivity : AppCompatActivity() {
     private var appList = mutableListOf<Map<String, Any>>()
     private var clipboardUtil: ClipboardUtil? = null
+    private var uninstallAppPackageName: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
@@ -90,7 +91,7 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppLastUpdateTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
                     val thisApkSize: Int = FileUtil.getFileSize(thisApkPath).toInt()
-                    val actApp = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk), getString(R.string.text_icon))
+                    val actApp = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk), getString(R.string.text_icon), getString(R.string.text_app_uninstall))
                     selector(childItem["appName"] as String, actApp) { _, i ->
                         when (i) {
                             0 -> {
@@ -190,6 +191,24 @@ class AppManagementActivity : AppCompatActivity() {
                                     }
                                 }.show()
                             }
+                            3 -> {
+                                val uninstallAppIntent = IntentUtils.getUninstallAppIntent(thisAppPackageName, true)
+                                when {
+                                    !AppUtils.isAppInstalled(thisAppPackageName) -> ToastUtil.error("未安装")
+                                    AppUtils.isAppSystem(thisAppPackageName) -> ToastUtil.error("不支持卸载系统应用")
+                                    !IntentUtils.isIntentAvailable(uninstallAppIntent) -> ToastUtil.error("跳转卸载失败")
+                                    else -> {
+                                        uninstallAppPackageName = thisAppPackageName
+                                        try {
+                                            startActivityForResult(uninstallAppIntent, 0)
+                                            ToastUtil.info("正在卸载")
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            ToastUtil.error("跳转卸载失败")
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -200,5 +219,27 @@ class AppManagementActivity : AppCompatActivity() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                when (requestCode) {
+                    0 -> {
+                        if (uninstallAppPackageName.isNullOrEmpty()) {
+                            ToastUtil.error("错误，欲卸载应用包名为空白")
+                        } else {
+                            if (AppUtils.isAppInstalled(uninstallAppPackageName!!)) {
+                                ToastUtil.error("错误，应用未卸载")
+                            } else {
+                                ToastUtil.success("应用已卸载")
+                            }
+                        }
+                    }
+                }
+            }
+            Activity.RESULT_CANCELED -> ToastUtil.warning(R.string.text_canceled_by_user)
+        }
+        uninstallAppPackageName = null
+    }
 
 }

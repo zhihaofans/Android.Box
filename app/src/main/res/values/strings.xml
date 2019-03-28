@@ -110,4 +110,5 @@
     <string name="text_tophub_today_hupubuxingjie">Tophub.Today - Hupu Buxingjie</string>
     <string name="title_activity_sensor">Sensor</string>
     <string name="text_androidbox_opener">Android Box...</string>
+    <string name="text_app_uninstall">Uninstall app</string>
 </resources>

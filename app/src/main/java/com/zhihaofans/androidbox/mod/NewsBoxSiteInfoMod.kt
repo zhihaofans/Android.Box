@@ -7,6 +7,7 @@ import com.zhihaofans.androidbox.gson.*
 import com.zhihaofans.androidbox.kotlinEx.hasNotChild
 import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.util.HttpUtil
+import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import org.jsoup.Jsoup
 
 
@@ -144,9 +145,7 @@ class SiteInfoRsshub {
         )
         val newsList = mutableListOf<News>()
         val thisUrl = when (channelId) {
-            ItemIdMod.FEED_RSSHUB_V2EX_TOPICS -> UrlMod.RSSHUB_V2EX
             ItemIdMod.FEED_RSSHUB_DOUBAN_MOVIE_PLAYING -> UrlMod.RSSHUB_DOUBANMOVIEPLAYING
-            ItemIdMod.FEED_RSSHUB_JIKE_EDITOR_CHOICE -> UrlMod.RSSHUB_JIKE
             ItemIdMod.FEED_RSSHUB_JUEJIN_TRENDING_ANDROID -> UrlMod.RSSHUB_JUEJINTRENDINGANDROID
             ItemIdMod.FEED_RSSHUB_BANGUMI_CALENDAR_TODAY -> UrlMod.RSSHUB_BANGUMITODAY
             ItemIdMod.FEED_RSSHUB_NEW_RSS -> UrlMod.RSSHUB_NEW_RSS
@@ -155,14 +154,16 @@ class SiteInfoRsshub {
         }
         if (thisUrl.isEmpty()) return null
         try {
-            val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
-            val newsListData = g.fromJson(newsListJson, Rss2jsonGson::class.java)
-            if (newsListData.status != "ok") return null
-            val newsListItemData = newsListData.items
+            val newsListXml = HttpUtil.httpGetString(thisUrl, headers) ?: return null
+            val newsListJson = XmlToJson.Builder(newsListXml).build().toString()
+            val newsListData = g.fromJson(newsListJson, Rss2jsonNewGson::class.java)
+            if (newsListData.rss == null) return null
+            val newsListItemData = newsListData.rss.channel.item
             if (newsListItemData.isNullOrEmpty()) return null
             newsListItemData.map {
                 newsList.add(News(it.title, it.link))
             }
+
             return newsList
         } catch (e: Exception) {
             e.printStackTrace()
@@ -303,43 +304,6 @@ class SiteInfoWeixinjingxuan {
     }
 }
 
-class SiteInfoToutiaoxinwen {
-    fun getNewsList(channelId: String): MutableList<News>? {
-        val g = Gson()
-        val newsList = mutableListOf<News>()
-        when (channelId) {
-            ItemIdMod.FEED_JUHE_TOUTIAO_NEWS -> {
-                val thisUrl = UrlMod.NEWS_TOUTIAO
-                val headers = mutableMapOf(
-                        Pair("content-type", "application/json;charset=UTF-8"),
-                        Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-                )
-                Logger.d(thisUrl)
-                try {
-                    val newsListJson = HttpUtil.httpGetString(thisUrl, headers)
-                            ?: return null
-                    if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
-                        val juheToutiao = g.fromJson(newsListJson, JuheToutiaoGson::class.java)
-                        if (juheToutiao.error_code != 0 || juheToutiao.result == null) return null
-                        juheToutiao.result.data.map { item ->
-                            newsList.add(News(item.title, item.url))
-                        }
-                        if (newsList.size == 0) {
-                            return null
-                        }
-                    } else {
-                        return null
-                    }
-                    return newsList
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    return null
-                }
-            }
-            else -> return null
-        }
-    }
-}
 
 class SiteInfoTophubToday {
     fun getNewsList(channelId: String): MutableList<News>? {
@@ -347,6 +311,8 @@ class SiteInfoTophubToday {
             ItemIdMod.FEED_TOPHUB_TODAY_WEIBO -> topToday(UrlMod.TOPHUB_TODAY_WEIBO)
             ItemIdMod.FEED_TOPHUB_TODAY_JINRITOUTIAO -> topToday(UrlMod.TOPHUB_TODAY_JINRITOUTIAO)
             ItemIdMod.FEED_TOPHUB_TODAY_HUPUBUXINGJIE -> topToday(UrlMod.TOPHUB_TODAY_HUPUBUXINGJIE)
+            ItemIdMod.FEED_TOPHUB_TODAY_ZHIHU_HOT -> topToday(UrlMod.TOPHUB_TODAY_ZHIHU_HOT)
+            ItemIdMod.FEED_TOPHUB_TODAY_V2EX_HOT -> topToday(UrlMod.TOPHUB_TODAY_V2EX_HOT)
             else -> null
         }
     }

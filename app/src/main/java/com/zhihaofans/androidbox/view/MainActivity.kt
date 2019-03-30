@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtils.getAppVersionCode() == 125) startActivity<FeedActivity>()
+        if (AppUtils.getAppVersionCode() == 127) startActivity<FeedActivity>()
     }
 
     private fun initPermissions() {

@@ -63,7 +63,6 @@
     <string name="text_manual_update">手动更新</string>
     <string name="text_site_rsshub">RSSHub</string>
     <string name="text_site_rsshub_douban_movie_playing">豆瓣正在上映的电影</string>
-    <string name="text_site_rsshub_v2ex_topics">V2EX-最新主题</string>
     <string name="text_download">下载</string>
     <string name="title_activity_app_down">应用下载</string>
     <string name="text_delete">删除</string>
@@ -80,7 +79,6 @@
     <string name="text_news">新闻</string>
     <string name="text_feed">订阅</string>
     <string name="text_app">应用</string>
-    <string name="text_site_rsshub_jike_editors_choice">即刻-精选</string>
     <string name="text_site_rsshub_juejin_trending_android">掘金Android本月最热</string>
     <string name="text_site_rsshub_bangumi_calendar_today">Bangumi 每日放送</string>
     <string name="text_site_rsshub_new_rss">RSSHub有新的RSS支持</string>
@@ -98,7 +96,6 @@
     <string name="text_title">标题</string>
     <string name="text_content">内容</string>
     <string name="text_weixin_jingxuan">微信精选文章</string>
-    <string name="text_toutiao_news">头条新闻</string>
     <string name="text_qrcode_scan_wechat">微信扫一扫</string>
     <string name="text_qrcode_scan_alipay">支付宝扫一扫</string>
     <string name="title_shortcuts">快捷方式</string>
@@ -108,6 +105,8 @@
     <string name="text_tophub_today_jinritoutiao">今日热榜 - 今日头条</string>
     <string name="text_tophub_today_hupubuxingjie">今日热榜 - 虎扑步行街</string>
     <string name="title_activity_sensor">传感器</string>
-    <string name="text_androidbox_opener">安卓盒子...</string>
+    <string name="text_androidbox_opener">安卓盒子…</string>
     <string name="text_app_uninstall">卸载应用</string>
+    <string name="text_tophub_today_zhihu_hot">今日热榜 - 知乎热榜</string>
+    <string name="text_tophub_today_v2ex_hot">今日热榜 - V2EX今日热榜</string>
 </resources>

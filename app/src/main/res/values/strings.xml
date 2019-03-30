@@ -65,7 +65,6 @@
     <string name="text_manual_update">Manual update</string>
     <string name="text_site_rsshub">RSSHub</string>
     <string name="text_site_rsshub_douban_movie_playing">Douban playing movie</string>
-    <string name="text_site_rsshub_v2ex_topics">V2EX - topics</string>
     <string name="title_activity_app_down">App download</string>
     <string name="text_download">Download</string>
     <string name="text_delete">Delete</string>
@@ -81,7 +80,6 @@
     <string name="text_feed">Feed</string>
     <string name="text_news">News</string>
     <string name="text_app">App</string>
-    <string name="text_site_rsshub_jike_editors_choice">jike - Editor\'s Choice</string>
     <string name="text_site_rsshub_juejin_trending_android">juejin Android trending</string>
     <string name="text_site_rsshub_bangumi_calendar_today">Bangumi calendar today</string>
     <string name="text_site_rsshub_new_rss">New RSS on RSSHub</string>
@@ -99,7 +97,6 @@
     <string name="text_title">Title</string>
     <string name="text_content">Content</string>
     <string name="text_weixin_jingxuan">WeChat featured articles</string>
-    <string name="text_toutiao_news">Toutiao News</string>
     <string name="text_qrcode_scan_wechat">WeChat Scan</string>
     <string name="text_qrcode_scan_alipay">Alipay Scan</string>
     <string name="title_shortcuts">Shortcuts</string>
@@ -109,6 +106,8 @@
     <string name="text_tophub_today_jinritoutiao">Tophub.Today - Jinri Toutiao</string>
     <string name="text_tophub_today_hupubuxingjie">Tophub.Today - Hupu Buxingjie</string>
     <string name="title_activity_sensor">Sensor</string>
-    <string name="text_androidbox_opener">Android Box...</string>
+    <string name="text_androidbox_opener">Android Box…</string>
     <string name="text_app_uninstall">Uninstall app</string>
+    <string name="text_tophub_today_zhihu_hot">Tophub.Today - Zhihu Hottest</string>
+    <string name="text_tophub_today_v2ex_hot">Tophub.Today - V2EX Hottest</string>
 </resources>

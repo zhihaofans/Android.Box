@@ -50,12 +50,20 @@ data class SspaiArticleListGson(
 )
 
 // RSSHub
-data class Rss2jsonGson(
-        val status: String,
-        val items: List<Rss2jsonItemGson>?
+data class Rss2jsonNewGson(
+        val rss: Rss2jsonNewRssGson?
 )
 
-data class Rss2jsonItemGson(
+data class Rss2jsonNewRssGson(
+        val channel: Rss2jsonNewChannelGson
+)
+
+data class Rss2jsonNewChannelGson(
+        val item: List<RsshubItemGson>?
+)
+
+
+data class RsshubItemGson(
         val link: String,
         val title: String
 )
@@ -144,28 +152,4 @@ data class JuheWeixinResultListGson(
         val firstImg: String,
         val mark: String,
         val url: String
-)
-// Juhe Toutiao
-
-data class JuheToutiaoGson(
-        val reason: String,
-        val result: JuheToutiaoResultGson?,
-        val error_code: Int
-)
-
-data class JuheToutiaoResultGson(
-        val stat: String,
-        val data: List<JuheToutiaoResultListGson>
-)
-
-data class JuheToutiaoResultListGson(
-        val uniquekey: String,
-        val title: String,
-        val date: String,
-        val category: String,
-        val author_name: String,
-        val url: String,
-        val thumbnail_pic_s: String,
-        val thumbnail_pic_s02: String,
-        val thumbnail_pic_s03: String
 )

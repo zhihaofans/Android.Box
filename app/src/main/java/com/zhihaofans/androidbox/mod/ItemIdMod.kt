@@ -16,9 +16,7 @@ class ItemIdMod {
         const val FEED_SSPAI = "sspai"
         const val FEED_SSPAI_ARTICLE = "sspai_article"
         const val FEED_RSSHUB = "rsshub"
-        const val FEED_RSSHUB_V2EX_TOPICS = "rsshub_v2ex_topics"
         const val FEED_RSSHUB_DOUBAN_MOVIE_PLAYING = "rsshub_douban_movie_playing"
-        const val FEED_RSSHUB_JIKE_EDITOR_CHOICE = "rsshub_jike_editor_choice"
         const val FEED_RSSHUB_JUEJIN_TRENDING_ANDROID = "rsshub_juejin_trending_android"
         const val FEED_RSSHUB_BANGUMI_CALENDAR_TODAY = "rsshub_bangumi_calendar_today"
         const val FEED_RSSHUB_NEW_RSS = "rsshub_new_rss"
@@ -27,11 +25,12 @@ class ItemIdMod {
         const val FEED_WANANDROID_INDEX = "wanandroid_index"
         const val FEED_ZHIHU_DAILY = "zhihu_daily"
         const val FEED_JUHE_WEIXIN_JINGXUAN = "juhe_weixin_jingxuan"
-        const val FEED_JUHE_TOUTIAO_NEWS = "juhe_toutiao_news"
         const val FEED_TOPHUB_TODAY = "tophub_today"
         const val FEED_TOPHUB_TODAY_WEIBO = "tophub_today_weibo"
         const val FEED_TOPHUB_TODAY_JINRITOUTIAO = "tophub_today_jinritoutiao"
         const val FEED_TOPHUB_TODAY_HUPUBUXINGJIE = "tophub_today_hupubuxingjie"
+        const val FEED_TOPHUB_TODAY_ZHIHU_HOT = "tophub_today_zhihu_hot"
+        const val FEED_TOPHUB_TODAY_V2EX_HOT = "tophub_today_v2ex_hot"
         // DateBase
         const val DATEBASE_KEY_FAVORITES_LIST = "datebase_key_favorites_list"
         // Favorites

@@ -10,6 +10,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator
 import com.scwang.smartrefresh.layout.api.RefreshHeader
 import com.scwang.smartrefresh.layout.api.RefreshLayout
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.simple.spiderman.SpiderMan
 import com.vondear.rxtool.RxTool
@@ -43,6 +44,9 @@ class App : Application() {
                 return ClassicsHeader(context)
             }
         })
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
+            ClassicsFooter(context).setDrawableSize(20f)
+        }
     }
 }
 

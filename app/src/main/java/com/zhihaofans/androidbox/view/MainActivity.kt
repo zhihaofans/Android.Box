@@ -60,8 +60,7 @@ class MainActivity : AppCompatActivity() {
                                             "ok"
                                         } else {
                                             "no"
-                                        }
-                                                + ":" + getString(R.string.text_buildin_web_browser) + ":" +
+                                        } + ":" + getString(R.string.text_buildin_web_browser) + ":" +
                                                 appSettingMod.buildinX5Browser.string(getString(R.string.text_yes),
                                                         getString(R.string.text_no))
                                 )
@@ -165,7 +164,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtils.getAppVersionCode() == 127) startActivity<FeedActivity>()
+        if (AppUtils.getAppVersionCode() == 128) startActivity<FeedActivity>()
     }
 
     private fun initPermissions() {

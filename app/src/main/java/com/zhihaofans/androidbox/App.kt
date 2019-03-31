@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox
 
 import android.app.Application
 import android.content.Context
+import com.didichuxing.doraemonkit.DoraemonKit
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.AndroidLogAdapter
@@ -47,6 +48,7 @@ class App : Application() {
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             ClassicsFooter(context).setDrawableSize(20f)
         }
+        DoraemonKit.install(this)
     }
 }
 

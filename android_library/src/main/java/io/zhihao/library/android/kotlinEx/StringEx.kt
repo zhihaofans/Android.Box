@@ -1,10 +1,10 @@
-package com.zhihaofans.androidbox.kotlinEx
+package io.zhihao.library.android.kotlinEx
 
 import android.webkit.URLUtil
-import com.orhanobut.logger.Logger
 import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
+
 
 /**
  * Created by zhihaofans on 2018/9/15.
@@ -19,13 +19,10 @@ fun String.replaces(list: Map<String, String>, ignoreCase: Boolean = false): Str
     var mStr = this
     list.map {
         mStr = mStr.replace(it.key, it.value, ignoreCase)
-        mStr.logd()
     }
-    mStr.logd()
     return mStr
 }
 
-fun String.logd() = Logger.d(this)
 fun String.toURLEncode() = URLEncoder.encode(this, "UTF-8")
 fun String.startsWithList(list: List<String>): Boolean {
     if (list.isNullOrEmpty()) return false

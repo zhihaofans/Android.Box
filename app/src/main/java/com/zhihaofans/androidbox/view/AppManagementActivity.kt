@@ -13,13 +13,13 @@ import androidx.core.graphics.drawable.toBitmap
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
-import com.zhihaofans.androidbox.kotlinEx.getAppName
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.*
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
+import io.zhihao.library.android.kotlinEx.getAppName
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*

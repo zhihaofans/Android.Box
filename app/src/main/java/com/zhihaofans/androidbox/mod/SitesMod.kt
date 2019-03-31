@@ -8,11 +8,11 @@ import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.RsshubFirimGson
-import com.zhihaofans.androidbox.kotlinEx.remove
 import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.DatetimeUtil
 import com.zhihaofans.androidbox.util.HttpUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
+import io.zhihao.library.android.kotlinEx.remove
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request

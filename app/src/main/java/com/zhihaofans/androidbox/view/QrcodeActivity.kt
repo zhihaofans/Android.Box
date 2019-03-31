@@ -27,6 +27,7 @@ import dev.utils.app.UriUtils
 import dev.utils.app.image.BitmapUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.DateUtils
+import io.zhihao.library.android.kotlinEx.snackbar
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.*

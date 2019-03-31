@@ -1,8 +1,8 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import com.zhihaofans.androidbox.kotlinEx.isNotNull
 import com.zhihaofans.androidbox.util.SharedPreferencesUtil
+import io.zhihao.library.android.kotlinEx.isNotNull
 
 /**
  * Created by zhihaofans on 2018/11/4.

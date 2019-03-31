@@ -1,7 +1,8 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Intent
-import com.zhihaofans.androidbox.kotlinEx.*
+import com.zhihaofans.androidbox.kotlinEx.toURL
+import io.zhihao.library.android.kotlinEx.*
 import java.net.URL
 
 /**

@@ -4,10 +4,10 @@ import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.News
 import com.zhihaofans.androidbox.gson.*
-import com.zhihaofans.androidbox.kotlinEx.hasNotChild
-import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.util.HttpUtil
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
+import io.zhihao.library.android.kotlinEx.hasNotChild
+import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
 import org.jsoup.Jsoup
 
 

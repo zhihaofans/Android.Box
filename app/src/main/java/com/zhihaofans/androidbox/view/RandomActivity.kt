@@ -7,11 +7,11 @@ import com.orhanobut.logger.Logger
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.copy
-import com.zhihaofans.androidbox.kotlinEx.init
-import com.zhihaofans.androidbox.kotlinEx.intOrNull
-import com.zhihaofans.androidbox.kotlinEx.string
 import com.zhihaofans.androidbox.util.RandomUtil
 import com.zhihaofans.androidbox.util.XUIUtil
+import io.zhihao.library.android.kotlinEx.init
+import io.zhihao.library.android.kotlinEx.intOrNull
+import io.zhihao.library.android.kotlinEx.string
 import kotlinx.android.synthetic.main.activity_random.*
 import kotlinx.android.synthetic.main.content_random.*
 

@@ -1,4 +1,4 @@
-package com.zhihaofans.androidbox.kotlinEx
+package io.zhihao.library.android.kotlinEx
 
 import android.content.Context
 import android.content.pm.PackageInfo

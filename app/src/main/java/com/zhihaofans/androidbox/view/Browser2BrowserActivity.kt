@@ -8,14 +8,14 @@ import com.google.gson.Gson
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.isActionSend
-import com.zhihaofans.androidbox.kotlinEx.isActionView
 import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.IntentUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
+import io.zhihao.library.android.kotlinEx.isActionSend
+import io.zhihao.library.android.kotlinEx.isActionView
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton

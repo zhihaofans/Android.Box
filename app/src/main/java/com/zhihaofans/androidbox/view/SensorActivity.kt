@@ -9,8 +9,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.util.ToastUtil
+import io.zhihao.library.android.kotlinEx.init
 import kotlinx.android.synthetic.main.activity_sensor.*
 import kotlinx.android.synthetic.main.content_sensor.*
 

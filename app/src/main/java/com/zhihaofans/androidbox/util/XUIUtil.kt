@@ -8,8 +8,8 @@ import com.xuexiang.xui.utils.WidgetUtils
 import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import dev.utils.app.AppUtils
+import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
 
 
 /**

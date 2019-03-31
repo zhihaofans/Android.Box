@@ -8,17 +8,17 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
-import com.zhihaofans.androidbox.kotlinEx.*
+import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.ItemIdMod
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.DialogUtils
+import io.zhihao.library.android.kotlinEx.*
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
-
 import org.jetbrains.anko.*
 import java.net.URL
 

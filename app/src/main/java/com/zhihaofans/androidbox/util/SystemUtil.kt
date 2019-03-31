@@ -12,12 +12,12 @@ import android.widget.EditText
 import androidx.browser.customtabs.CustomTabsIntent
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.isUrl
-import com.zhihaofans.androidbox.kotlinEx.toUrl
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.Browser2BrowserActivity
 import com.zhihaofans.androidbox.view.ImageViewActivity
 import dev.utils.common.FileUtils
+import io.zhihao.library.android.kotlinEx.isUrl
+import io.zhihao.library.android.kotlinEx.toUrl
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import java.net.URL

@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.*
+import com.zhihaofans.androidbox.kotlinEx.browse
 import com.zhihaofans.androidbox.mod.OpenerMod
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.UiUtil
+import io.zhihao.library.android.kotlinEx.getTextPlain
+import io.zhihao.library.android.kotlinEx.isActionSend
+import io.zhihao.library.android.kotlinEx.isNull
+import io.zhihao.library.android.kotlinEx.isTypeTextPlain
 import kotlinx.android.synthetic.main.activity_opener.*
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity

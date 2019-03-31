@@ -13,12 +13,12 @@ import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.copy
-import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.*
 import dev.utils.app.PhoneUtils
 import dev.utils.app.ScreenUtils
+import io.zhihao.library.android.kotlinEx.init
 import kotlinx.android.synthetic.main.activity_tools.*
 import kotlinx.android.synthetic.main.content_tools.*
 import org.jetbrains.anko.*

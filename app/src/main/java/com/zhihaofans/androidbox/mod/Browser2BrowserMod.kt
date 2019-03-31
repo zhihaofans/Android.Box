@@ -6,8 +6,8 @@ import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.AppIntentData
 import com.zhihaofans.androidbox.data.Browser2BrowserBlackListData
-import com.zhihaofans.androidbox.kotlinEx.hasNotChild
 import com.zhihaofans.androidbox.util.IntentUtil
+import io.zhihao.library.android.kotlinEx.hasNotChild
 import org.jetbrains.anko.newTask
 
 class Browser2BrowserMod {

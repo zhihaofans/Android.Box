@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutManagerCompat
 import com.google.android.material.snackbar.Snackbar
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.init
 import com.zhihaofans.androidbox.mod.FeedShortcuts
 import com.zhihaofans.androidbox.mod.QrcodeScanShortcuts
 import com.zhihaofans.androidbox.util.ShortcutsUtil
 import com.zhihaofans.androidbox.util.ToastUtil
+import io.zhihao.library.android.kotlinEx.init
 import kotlinx.android.synthetic.main.activity_shortcuts.*
 import kotlinx.android.synthetic.main.content_shortcuts.*
 

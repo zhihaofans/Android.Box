@@ -1,4 +1,4 @@
-package com.zhihaofans.androidbox.kotlinEx
+package io.zhihao.library.android.kotlinEx
 
 import java.net.URL
 

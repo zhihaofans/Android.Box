@@ -13,10 +13,10 @@ import androidx.core.graphics.drawable.toBitmap
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.orhanobut.logger.Logger
-import com.zhihaofans.androidbox.kotlinEx.remove
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.common.FileUtils
+import io.zhihao.library.android.kotlinEx.remove
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

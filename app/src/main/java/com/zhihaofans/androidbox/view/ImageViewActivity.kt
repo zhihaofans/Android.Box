@@ -24,10 +24,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.isActionSend
-import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.kotlinEx.snackbar
-import com.zhihaofans.androidbox.kotlinEx.startWith
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.ClipboardUtil
@@ -37,6 +34,10 @@ import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
 import dev.utils.common.FileUtils
+import io.zhihao.library.android.kotlinEx.isActionSend
+import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
+import io.zhihao.library.android.kotlinEx.snackbar
+import io.zhihao.library.android.kotlinEx.startWith
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*

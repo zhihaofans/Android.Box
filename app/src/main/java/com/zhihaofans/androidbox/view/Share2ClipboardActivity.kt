@@ -3,10 +3,10 @@ package com.zhihaofans.androidbox.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.zhihaofans.androidbox.kotlinEx.isActionSend
-import com.zhihaofans.androidbox.kotlinEx.isNotNullAndEmpty
 import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.ToastUtil
+import io.zhihao.library.android.kotlinEx.isActionSend
+import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
 
 
 /**

@@ -10,8 +10,8 @@ android {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 129
-        versionName "0.0.97.1"
+        versionCode 130
+        versionName "0.0.97.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
@@ -88,7 +88,6 @@ dependencies {
     implementation 'com.github.smart-fun:XmlToJson:1.4.4'
     debugImplementation "com.didichuxing.doraemonkit:doraemonkit:$doraemonkit_version"
     releaseImplementation "com.didichuxing.doraemonkit:doraemonkit-no-op:$doraemonkit_version"
-    implementation project(':android_library')
 }
 kotlin {
     experimental {

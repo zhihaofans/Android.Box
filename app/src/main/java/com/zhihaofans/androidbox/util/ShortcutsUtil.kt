@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Icon
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 
 
@@ -41,7 +40,6 @@ class ShortcutsUtil(context: Context) {
                 false
             }
         } else {
-            Logger.e("shortcutManager.isRequestPinShortcutSupported = false")
             false
         }
     }

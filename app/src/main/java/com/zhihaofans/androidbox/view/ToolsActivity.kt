@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.app.DownloadManager
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -15,10 +16,13 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.copy
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
-import com.zhihaofans.androidbox.util.*
+import com.zhihaofans.androidbox.util.NotificationUtil
+import com.zhihaofans.androidbox.util.ToastUtil
+import com.zhihaofans.androidbox.util.XUIUtil
 import dev.utils.app.PhoneUtils
 import dev.utils.app.ScreenUtils
 import io.zhihao.library.android.kotlinEx.init
+import io.zhihao.library.android.util.DatetimeUtil
 import kotlinx.android.synthetic.main.activity_tools.*
 import kotlinx.android.synthetic.main.content_tools.*
 import org.jetbrains.anko.*
@@ -214,14 +218,18 @@ class ToolsActivity : AppCompatActivity() {
                         override fun hasPermission(granted: List<String>, isAll: Boolean) {
                             if (isAll) {
                                 val time = DatetimeUtil.unixTimeStampMill()
-                                val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + "Wallpaper-$time.png"
+                                val fileName = "Wallpaper-$time.png"
+                                val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
                                 doAsync {
                                     try {
-                                        val wallpaper = FileUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
+                                        val wallpaper = com.zhihaofans.androidbox.util.FileOldUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
                                         uiThread {
                                             if (wallpaper) {
                                                 xuiUtil.snackbar(coordinatorLayout_tools, "保存成功($saveTo)")
-
+                                                val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+                                                downloadManager.addCompletedDownload(fileName, fileName, true, "image/png",
+                                                        saveTo, io.zhihao.library.android.util.FileUtil.getFileSize(saveTo), true
+                                                )
                                             } else {
                                                 xuiUtil.snackbarDanger(coordinatorLayout_tools, "保存失败")
                                             }

@@ -198,7 +198,7 @@ class Share2SaveActivity : Activity() {
                                                 finish()
 
                                             } else {
-                                                val saveSu = FileUtil.saveFile(saveUri, saveText)
+                                                val saveSu = FileOldUtil.saveFile(saveUri, saveText)
                                                 uiThread {
                                                     afterSave(saveSu)
                                                 }

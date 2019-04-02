@@ -19,7 +19,10 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
-import com.zhihaofans.androidbox.util.*
+import com.zhihaofans.androidbox.util.DeviceUtil
+import com.zhihaofans.androidbox.util.IntentUtil
+import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
@@ -28,6 +31,7 @@ import dev.utils.app.image.BitmapUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.DateUtils
 import io.zhihao.library.android.kotlinEx.snackbar
+import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.*

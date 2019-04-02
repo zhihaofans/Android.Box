@@ -11,5 +11,5 @@ import dev.utils.app.AppUtils
  * @date: 2019-03-31 20:49
 
  */
-val ActivityInfo.label
-    get() = this.loadLabel(AppUtils.getPackageManager())
+val ActivityInfo.label: String
+    get() = this.loadLabel(AppUtils.getPackageManager()).toString()

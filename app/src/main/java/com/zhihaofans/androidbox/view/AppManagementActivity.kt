@@ -14,12 +14,16 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.kotlinEx.snackbar
-import com.zhihaofans.androidbox.util.*
+import com.zhihaofans.androidbox.util.DatetimeUtil
+import com.zhihaofans.androidbox.util.FileOldUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.getAppName
+import io.zhihao.library.android.util.ClipboardUtil
+import io.zhihao.library.android.util.FileUtil
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*
@@ -90,7 +94,7 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppFirstInstallTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.firstInstallTime)
                     val thisAppLastUpdateTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.lastUpdateTime)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
-                    val thisApkSize: Int = FileUtil.getFileSize(thisApkPath).toInt()
+                    val thisApkSize = FileUtil.getFileSize(thisApkPath)
                     val actApp = listOf(getString(R.string.text_app_info), getString(R.string.text_app_apk), getString(R.string.text_icon), getString(R.string.text_app_uninstall))
                     selector(childItem["appName"] as String, actApp) { _, i ->
                         when (i) {
@@ -101,7 +105,7 @@ class AppManagementActivity : AppCompatActivity() {
                                         thisAppPackageName,
                                         "$thisAppVersionName ($thisAppVersionCode)",
                                         thisApkPath,
-                                        ConvertUtil.fileSizeInt2string(thisApkSize),
+                                        FileUtil.fileSizeLong2string(thisApkSize),
                                         thisAppFirstInstallTime,
                                         thisAppLastUpdateTime
                                 )
@@ -148,8 +152,8 @@ class AppManagementActivity : AppCompatActivity() {
 
                             1 -> {
                                 val apkPath = AppUtils.getAppPath(thisAppPackageName)
-                                val apkLength = ConvertUtil.fileSizeInt2string(FileUtil.getFileSize(apkPath))
-                                val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
+                                val apkLength = FileUtil.fileSizeLong2string(FileUtil.getFileSize(apkPath))
+                                val saveTo = FileOldUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-$thisAppVersionName.apk"
                                 alert {
                                     title = "是否导出安装包"
@@ -171,7 +175,7 @@ class AppManagementActivity : AppCompatActivity() {
                             }
 
                             2 -> {
-                                val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
+                                val saveTo = FileOldUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-icon.png"
                                 alert {
                                     title = "是否导出应用图标"

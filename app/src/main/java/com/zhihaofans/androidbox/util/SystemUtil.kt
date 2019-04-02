@@ -36,7 +36,7 @@ class SystemUtil {
         }
 
 
-        fun closeKeyborad(activity: Activity) {
+        fun closeKeyboard(activity: Activity) {
             (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
         }
 

@@ -10,10 +10,10 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
 import com.zhihaofans.androidbox.mod.OtherAppMod
-import com.zhihaofans.androidbox.util.ClipboardUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
+import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
 import okhttp3.*
@@ -164,7 +164,7 @@ class BilibiliActivity : AppCompatActivity() {
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
-                        SystemUtil.closeKeyborad(this@BilibiliActivity)
+                        SystemUtil.closeKeyboard(this@BilibiliActivity)
                         if (input.text.isNullOrEmpty() || input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
@@ -230,7 +230,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 val input_search = editText("")
                                                                                 input_search.setSingleLine(true)
                                                                                 okButton {
-                                                                                    SystemUtil.closeKeyborad(this@BilibiliActivity)
+                                                                                    SystemUtil.closeKeyboard(this@BilibiliActivity)
                                                                                     val search_key: String = input_search.text.toString()
                                                                                     if (search_key.isEmpty()) {
                                                                                         _search("请输入搜索内容")
@@ -367,7 +367,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun bilibiliCommentHash2uidJx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
-        SystemUtil.closeKeyborad(this)
+        SystemUtil.closeKeyboard(this)
         runOnUiThread {
             val uid = data[0].id
             val acts = mutableListOf(

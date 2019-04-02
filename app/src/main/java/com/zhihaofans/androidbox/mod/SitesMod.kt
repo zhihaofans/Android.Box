@@ -8,11 +8,11 @@ import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.RsshubFirimGson
-import com.zhihaofans.androidbox.util.ConvertUtil
 import com.zhihaofans.androidbox.util.DatetimeUtil
 import com.zhihaofans.androidbox.util.HttpUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import io.zhihao.library.android.kotlinEx.remove
+import io.zhihao.library.android.util.FileUtil
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -75,7 +75,7 @@ class NewsSitesMod {
                             it.browser_download_url,
                             it.download_count.toString(),
                             it.updated_at,
-                            ConvertUtil.fileSizeInt2string(it.size)
+                            FileUtil.fileSizeInt2string(it.size)
                     )
                 }.toMutableList()
                 )
@@ -172,7 +172,7 @@ class NewsSitesMod {
                                     latestUpdate.versionShort + "(${latestUpdate.version})",
                                     updateTime, pageageName, latestUpdate.update_url,
                                     mutableListOf(FileList(latestUpdate.versionShort + "(${latestUpdate.version})", latestUpdate.install_url,
-                                            null, updateTime, ConvertUtil.fileSizeInt2string(latestUpdate.binary.fsize)))
+                                            null, updateTime, FileUtil.fileSizeInt2string(latestUpdate.binary.fsize)))
                             )
                             result.success = true
                             result.code = 0

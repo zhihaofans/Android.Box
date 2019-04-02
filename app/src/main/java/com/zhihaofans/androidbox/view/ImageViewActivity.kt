@@ -27,8 +27,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
-import com.zhihaofans.androidbox.util.ClipboardUtil
-import com.zhihaofans.androidbox.util.FileUtil
+import com.zhihaofans.androidbox.util.FileOldUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.ContentResolverUtils
@@ -38,6 +37,7 @@ import io.zhihao.library.android.kotlinEx.isActionSend
 import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.startWith
+import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
@@ -262,7 +262,7 @@ class ImageViewActivity : AppCompatActivity() {
                 if (notification == null) {
                     notificationUtil.create("错误！", "创建下载通知失败")
                 }
-                FileUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
+                FileOldUtil.download(imageUrl!!, downloadPath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                     }
 
@@ -281,7 +281,7 @@ class ImageViewActivity : AppCompatActivity() {
                         if (notification !== null) notificationUtil.delete(notification.notificationId)
                         val stackBuilder = TaskStackBuilder.create(this@ImageViewActivity)
                         val resultPendingIntent = stackBuilder.apply {
-                            addNextIntent(FileUtil.getOpenImageFileIntent(this@ImageViewActivity, File(task.targetFilePath)))
+                            addNextIntent(FileOldUtil.getOpenImageFileIntent(this@ImageViewActivity, File(task.targetFilePath)))
                         }.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
                         if (resultPendingIntent == null) {
                             notificationUtil.create("错误！", "创建打开图片通知失败")
@@ -303,7 +303,7 @@ class ImageViewActivity : AppCompatActivity() {
                             }
                             positiveButton(R.string.text_open) {
                                 try {
-                                    FileUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+                                    FileOldUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                     snackbar(coordinatorLayout_imageView, "打开失败")

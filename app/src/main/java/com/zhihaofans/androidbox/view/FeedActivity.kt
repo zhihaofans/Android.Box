@@ -15,6 +15,7 @@ import com.zhihaofans.androidbox.util.*
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
 import io.zhihao.library.android.kotlinEx.snackbar
+import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
 import org.jetbrains.anko.alert
@@ -400,7 +401,7 @@ class FeedActivity : AppCompatActivity() {
             else -> {
                 val filePath = appBox.getSavePath() + fileName
                 val notification = notificationUtil.createProgress("正在下载", fileName)
-                FileUtil.download(url, filePath, object : FileDownloadListener() {
+                FileOldUtil.download(url, filePath, object : FileDownloadListener() {
                     override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
                     }
 
@@ -443,7 +444,7 @@ class FeedActivity : AppCompatActivity() {
                             }
                             negativeButton(R.string.text_open) {
                                 try {
-                                    FileUtil.installApk1(this@FeedActivity, task.targetFilePath)
+                                    FileOldUtil.installApk(this@FeedActivity, task.targetFilePath)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                     snackbar("安装失败")

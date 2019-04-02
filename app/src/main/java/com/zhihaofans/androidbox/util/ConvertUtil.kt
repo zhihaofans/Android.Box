@@ -29,18 +29,6 @@ class ConvertUtil {
             }
         }
 
-        fun fileSizeInt2string(fileSize: Long): String = this.fileSizeInt2string(fileSize.toInt())
-        fun fileSizeInt2string(fileSize: Int): String {
-            var result = fileSize.toFloat()
-            var times = 0
-            while (result >= 1024) {
-                result /= 1024
-                times++
-            }
-            val units = mutableListOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB", "CB")
-            val sizeUnit = if (times >= units.size) "???" else units[times]
-            return "$result $sizeUnit"
-        }
 
         fun json2List(jsonData: String): List<Any> {
             val gson = Gson()

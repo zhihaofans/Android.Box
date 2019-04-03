@@ -18,6 +18,7 @@ import com.zhihaofans.androidbox.view.ImageViewActivity
 import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.isUrl
 import io.zhihao.library.android.kotlinEx.toUrl
+import io.zhihao.library.android.util.FileUtil
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
 import java.net.URL
@@ -71,7 +72,7 @@ class SystemUtil {
         }
 
         fun checkIfImageUrl(imageUrl: String): Boolean {
-            return when (FileUtils.getFileSuffix(imageUrl).toLowerCase()) {
+            return when (FileUtil.getFileSuffix(imageUrl).toLowerCase()) {
                 "jpg", "jpeg", "bmp", "webp", "gif" -> true
                 else -> false
             }

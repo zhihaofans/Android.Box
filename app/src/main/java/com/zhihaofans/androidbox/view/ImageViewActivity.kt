@@ -38,6 +38,7 @@ import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.startWith
 import io.zhihao.library.android.util.ClipboardUtil
+import io.zhihao.library.android.util.FileUtil
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
@@ -88,7 +89,7 @@ class ImageViewActivity : AppCompatActivity() {
                 }
             } else if (mIntent.data !== null) {
                 imageUrl = mIntent.data!!.toString()
-                val imageTitle = FileUtils.getFileName(imageUrl)
+                val imageTitle = FileUtil.getFileName(imageUrl)
                 if (imageUrl == null) {
                     ToastUtil.error("null image")
                     finish()
@@ -204,8 +205,12 @@ class ImageViewActivity : AppCompatActivity() {
                                                                 .request(object : OnPermission {
                                                                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                                                                         if (isAll) {
-                                                                            val fileName = FileUtils.getFileName(imageUrl)
-                                                                            download(fileName, 0)
+                                                                            val fileName = FileUtil.getFileName(imageUrl)
+                                                                            if (fileName.isNullOrEmpty()){
+                                                                                ToastUtil.error("文件名空白")
+                                                                            }else{
+                                                                                download(fileName, 0)
+                                                                            }
                                                                         } else {
                                                                             Snackbar.make(coordinatorLayout_imageView, "需要储存权限", Snackbar.LENGTH_SHORT).setAction("授权") {
                                                                                 XXPermissions.gotoPermissionSettings(this@ImageViewActivity, true)

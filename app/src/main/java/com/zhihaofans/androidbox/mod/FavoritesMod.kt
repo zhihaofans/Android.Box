@@ -5,6 +5,7 @@ import com.zhihaofans.androidbox.gson.FavoritesGson
 import com.zhihaofans.androidbox.gson.FavoritesItemGson
 import dev.utils.common.FileUtils
 import io.paperdb.Paper
+import io.zhihao.library.android.util.FileUtil
 
 /**
  * @author: zhihaofans
@@ -62,7 +63,7 @@ class FavoritesMod {
 
     fun deleteDataBase(): Boolean {
         return try {
-            FileUtils.deleteFile(dbPath)
+            FileUtil.deleteFile(dbPath)
         } catch (e: Exception) {
             e.printStackTrace()
             false

@@ -13,6 +13,7 @@ import com.orhanobut.logger.Logger
 import dev.utils.app.AppUtils
 import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.remove
+import io.zhihao.library.android.util.FileUtil
 import java.io.File
 import java.io.FileOutputStream
 
@@ -24,9 +25,9 @@ class FileOldUtil {
         fun saveFile(filePath: String, content: String): Boolean {
             Logger.d("FileOldUtil.saveFile.filePath = $filePath")
             return try {
-                val fileName = FileUtils.getFileName(filePath)
+                val fileName = FileUtil.getFileName(filePath)?:return false
                 val saveTo = filePath.remove(fileName)
-                FileUtils.saveFile(saveTo, fileName, content)
+                FileUtil.saveFile(saveTo, fileName, content)
             } catch (e: Exception) {
                 e.printStackTrace()
                 false
@@ -43,7 +44,7 @@ class FileOldUtil {
 
         fun saveWallpaper(context: Context, filePath: String, imageFormat: Bitmap.CompressFormat): Boolean {
             File(filePath).apply {
-                if (!FileUtils.createOrExistsDir(this.parent)) return false
+                if (!FileUtil.createFolder(this.parent)) return false
             }
             return getWallpaper(context)?.compress(imageFormat, 100, FileOutputStream(filePath))
                     ?: false

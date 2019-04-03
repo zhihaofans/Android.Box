@@ -88,6 +88,7 @@ dependencies {
     implementation 'com.github.smart-fun:XmlToJson:1.4.4'
     debugImplementation "com.didichuxing.doraemonkit:doraemonkit:$doraemonkit_version"
     releaseImplementation "com.didichuxing.doraemonkit:doraemonkit-no-op:$doraemonkit_version"
+    implementation "io.zhihao:AndroidLibrary:v0.0.3"
 }
 kotlin {
     experimental {

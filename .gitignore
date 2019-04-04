@@ -73,3 +73,4 @@ misc.xml
 app/release/
 .project
 .classpath
+.settings/org.eclipse.buildship.core.prefs

@@ -210,52 +210,59 @@ class ToolsActivity : AppCompatActivity() {
 
     private fun saveWallpaper() {
         if (saveWallpaperStatus) {
-            saveWallpaperStatus = false
-            xuiUtil.snackbar(coordinatorLayout_tools, "正在导出壁纸")
-            XXPermissions.with(this)
-                    .permission(Permission.Group.STORAGE)
-                    .request(object : OnPermission {
-                        override fun hasPermission(granted: List<String>, isAll: Boolean) {
-                            if (isAll) {
-                                val time = DatetimeUtil.unixTimeStampMill()
-                                val fileName = "Wallpaper-$time.png"
-                                val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
-                                doAsync {
-                                    try {
-                                        val wallpaper = com.zhihaofans.androidbox.util.FileOldUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
-                                        uiThread {
-                                            if (wallpaper) {
-                                                xuiUtil.snackbar(coordinatorLayout_tools, "保存成功($saveTo)")
-                                                val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-                                                downloadManager.addCompletedDownload(fileName, fileName, true, "image/png",
-                                                        saveTo, io.zhihao.library.android.util.FileUtil.getFileSize(saveTo), true
-                                                )
-                                            } else {
-                                                xuiUtil.snackbarDanger(coordinatorLayout_tools, "保存失败")
+            xuiUtil.materialDialog("确定吗？", "确定后将检查储存权限", getString(R.string.text_yes), getString(R.string.text_no)).apply {
+                cancelListener {
+                    ToastUtil.warning(R.string.text_canceled_by_user)
+                }
+                onPositive { _, _ ->
+                    saveWallpaperStatus = false
+                    xuiUtil.snackbar(coordinatorLayout_tools, "正在导出壁纸")
+                    XXPermissions.with(this@ToolsActivity)
+                            .permission(Permission.Group.STORAGE)
+                            .request(object : OnPermission {
+                                override fun hasPermission(granted: List<String>, isAll: Boolean) {
+                                    if (isAll) {
+                                        val time = DatetimeUtil.unixTimeStampMill()
+                                        val fileName = "Wallpaper-$time.png"
+                                        val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
+                                        doAsync {
+                                            try {
+                                                val wallpaper = com.zhihaofans.androidbox.util.FileOldUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
+                                                uiThread {
+                                                    if (wallpaper) {
+                                                        ToastUtil.success("保存成功($saveTo)")
+                                                        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+                                                        downloadManager.addCompletedDownload(fileName, fileName, true, "image/png",
+                                                                saveTo, io.zhihao.library.android.util.FileUtil.getFileSize(saveTo), true
+                                                        )
+                                                    } else {
+                                                        ToastUtil.error("保存失败")
+                                                    }
+                                                    saveWallpaperStatus = true
+                                                }
+                                            } catch (e: Exception) {
+                                                e.printStackTrace()
+                                                uiThread {
+                                                    saveWallpaperStatus = true
+                                                    xuiUtil.snackbarDanger(coordinatorLayout_tools, "失败:Exception")
+                                                }
                                             }
-                                            saveWallpaperStatus = true
                                         }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                        uiThread {
-                                            saveWallpaperStatus = true
-                                            xuiUtil.snackbarDanger(coordinatorLayout_tools, "失败:Exception")
-                                        }
+                                    } else {
+                                        saveWallpaperStatus = true
+                                        ToastUtil.error("未授权储存权限，无法保存")
                                     }
                                 }
-                            } else {
-                                saveWallpaperStatus = true
-                                xuiUtil.snackbarDanger(coordinatorLayout_tools, "未授权储存权限，无法保存")
-                            }
-                        }
 
-                        override fun noPermission(denied: List<String>, quick: Boolean) {
-                            saveWallpaperStatus = true
-                            xuiUtil.snackbarDanger(coordinatorLayout_tools, "未授权储存权限，无法保存")
-                        }
-                    })
+                                override fun noPermission(denied: List<String>, quick: Boolean) {
+                                    saveWallpaperStatus = true
+                                    ToastUtil.error("未授权储存权限，无法保存")
+                                }
+                            })
+                }
+            }.show()
         } else {
-            xuiUtil.snackbarDanger(coordinatorLayout_tools, "处理中，请不要重复点击")
+            ToastUtil.error("处理中，请不要重复点击")
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.zhihaofans.androidbox.mod
 
-import com.zhihaofans.androidbox.util.FileOldUtil
+import io.zhihao.library.android.util.FileUtil
 
 /**
  * Created by zhihaofans on 2018/11/23.
@@ -35,8 +35,8 @@ class UrlMod {
         const val TOPHUB_TODAY_ZHIHU_HOT = "https://tophub.today/n/mproPpoq6O"
         const val TOPHUB_TODAY_V2EX_HOT = "https://tophub.today/n/wWmoORe4EO"
         // Local
-        val APP_DOWNLOAD_PATH = FileOldUtil.getDownloadPathString() + "Android.Box/"
-        val APP_PICTURE_DOWNLOAD_PATH = FileOldUtil.getPicturePathString() + "Android.Box/"
+        val APP_DOWNLOAD_PATH = FileUtil.getDownloadPathString() + "Android.Box/"
+        val APP_PICTURE_DOWNLOAD_PATH = FileUtil.getPicturePathString() + "Android.Box/"
         // XXDown
         const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "http://www.acfun.cn/v/"
         const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "https://www.bilibili.com/video/"

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Map;
 
+import io.zhihao.library.android.util.SystemServiceUtil;
+
 public class ListViewAdapter extends SimpleAdapter {
     private int[] mTo;
     private String[] mFrom;
@@ -30,7 +32,7 @@ public class ListViewAdapter extends SimpleAdapter {
         mResource = resource;
         mFrom = from;
         mTo = to;
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = SystemServiceUtil.Companion.getLayoutInflater();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {

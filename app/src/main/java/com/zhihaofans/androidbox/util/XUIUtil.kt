@@ -8,8 +8,8 @@ import com.xuexiang.xui.utils.WidgetUtils
 import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
-import dev.utils.app.AppUtils
 import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
+import io.zhihao.library.android.util.AppUtil
 
 
 /**
@@ -130,19 +130,19 @@ DEMO
     }
 
     fun snackbar(view: View, message: Int) {
-        return SnackbarUtils.Short(view, AppUtils.getString(message)).show()
+        return SnackbarUtils.Short(view, AppUtil.getString(message)).show()
     }
 
     fun snackbarDanger(view: View, message: Int) {
-        return SnackbarUtils.Short(view, AppUtils.getString(message)).danger().show()
+        return SnackbarUtils.Short(view, AppUtil.getString(message)).danger().show()
     }
 
     fun snackbarLong(view: View, message: Int) {
-        return SnackbarUtils.Long(view, AppUtils.getString(message)).show()
+        return SnackbarUtils.Long(view, AppUtil.getString(message)).show()
     }
 
     fun snackbarLongDanger(view: View, message: Int) {
-        return SnackbarUtils.Long(view, AppUtils.getString(message)).danger().show()
+        return SnackbarUtils.Long(view, AppUtil.getString(message)).danger().show()
     }
 
 }

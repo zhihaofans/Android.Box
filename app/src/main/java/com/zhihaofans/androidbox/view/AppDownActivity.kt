@@ -18,27 +18,26 @@ import com.zhihaofans.androidbox.kotlinEx.longSnackbar
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.FileOldUtil
-import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
+import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.util.ClipboardUtil
+import io.zhihao.library.android.util.FileUtil
 import kotlinx.android.synthetic.main.activity_app_down.*
 import kotlinx.android.synthetic.main.content_app_down.*
 import org.jetbrains.anko.*
 
 class AppDownActivity : AppCompatActivity() {
-    private val savePath: String = FileOldUtil.getDownloadPathString() + "Android.Box/"
+    private val savePath: String = FileUtil.getDownloadPathString() + "Android.Box/"
     private var appFeeds = mutableListOf<AppDownFeed>()
     private val dataBase = AppDownMod.DataBase()
     private val siteParser = AppDownMod.SiteParser()
     private val other = AppDownMod.Other()
-    private var clipboardUtil: ClipboardUtil? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_down)
         setSupportActionBar(toolbar_appdown)
         siteParser.init(this@AppDownActivity)
-        clipboardUtil = ClipboardUtil(this@AppDownActivity)
         initList()
         fab_appdown.setOnClickListener { view ->
             val fabAction = mutableListOf("添加订阅", getString(R.string.text_delete), "数据库操作")
@@ -79,7 +78,7 @@ class AppDownActivity : AppCompatActivity() {
                 Logger.d("appFeeds.size=0")
                 snackbar("列表空白")
             } else {
-                listView_app.adapter = SystemUtil.listViewAdapter(this@AppDownActivity, dataBase.getAppfeedNameList())
+                listView_app.init(dataBase.getAppfeedNameList())
                 listView_app.setOnItemClickListener { _, _, index, _ ->
                     val clickedApp = appFeeds[index]
                     alert {
@@ -202,7 +201,7 @@ class AppDownActivity : AppCompatActivity() {
                         customView {
                             verticalLayout {
                                 textView("Package name:")
-                                val inputOne = editText(if (SystemUtil.debug(this@AppDownActivity)) "com.linroid.zlive" else "com.zhihaofans.shortcutapp")
+                                val inputOne = editText("com.zhihaofans.shortcutapp")
                                 okButton {
                                     val idOne = inputOne.text.toString()
                                     if (idOne.isEmpty()) {
@@ -409,30 +408,27 @@ class AppDownActivity : AppCompatActivity() {
 
 
     private fun importDB() {
-        if (clipboardUtil == null) {
-            coordinatorLayout_appdown.snackbar("加载剪切板失败")
-        } else {
-            val pasteText = clipboardUtil!!.paste()
-            alert {
-                title = "导入数据库"
-                message = if (pasteText.isNullOrEmpty()) "请输入数据库备份文本" else "已自动粘贴剪切板文本"
-                customView {
-                    verticalLayout {
-                        val input = editText(pasteText)
-                        input.setSingleLine(true)
-                        positiveButton(R.string.text_import) {
-                            if (dataBase.importJson(input.text.toString())) {
-                                initList()
-                                snackbar("导入成功")
-                            } else {
-                                snackbar("导入失败，请检查备份是否完整")
-                            }
+        val pasteText = ClipboardUtil.paste()
+        alert {
+            title = "导入数据库"
+            message = if (pasteText.isNullOrEmpty()) "请输入数据库备份文本" else "已自动粘贴剪切板文本"
+            customView {
+                verticalLayout {
+                    val input = editText(pasteText)
+                    input.setSingleLine(true)
+                    positiveButton(R.string.text_import) {
+                        if (dataBase.importJson(input.text.toString())) {
+                            initList()
+                            snackbar("导入成功")
+                        } else {
+                            snackbar("导入失败，请检查备份是否完整")
                         }
                     }
                 }
-            }.show()
-        }
+            }
+        }.show()
     }
+
 
     private fun exportDB() {
         val db = dataBase.export2json()
@@ -445,12 +441,9 @@ class AppDownActivity : AppCompatActivity() {
                     input.setSingleLine(true)
                 }
                 positiveButton(R.string.text_copy) {
-                    if (clipboardUtil == null) {
-                        snackbar("加载剪切板失败")
-                    } else {
-                        clipboardUtil!!.copy(db)
-                        snackbar(R.string.text_copy)
-                    }
+                    ClipboardUtil.copy(db)
+                    snackbar(R.string.text_copy)
+
                 }
             }
         }.show()
@@ -522,12 +515,9 @@ class AppDownActivity : AppCompatActivity() {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
                             positiveButton(R.string.text_copy) {
-                                if (clipboardUtil == null) {
-                                    snackbar("加载剪切板失败")
-                                } else {
-                                    clipboardUtil!!.copy(task.targetFilePath)
-                                    snackbar("复制成功")
-                                }
+                                ClipboardUtil.copy(task.targetFilePath)
+                                snackbar("复制成功")
+
                             }
                             negativeButton(R.string.text_open) {
                                 try {

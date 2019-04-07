@@ -105,7 +105,7 @@ class OpenerActivity : AppCompatActivity() {
                             }
                             1 -> share(mUrl.toString())
                             2 -> {
-                                if (OtherAppMod.admAutoDownload(this, mUrl)) {
+                                if (OtherAppMod.admAutoDownload(mUrl)) {
                                     ToastUtil.info("尝试跳转至Advanced Download Manager")
                                 } else {
                                     ToastUtil.error("跳转下载失败，请确认有安装《Advanced Download Manager Pro》或者《Advanced Download Manager》")

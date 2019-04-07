@@ -24,7 +24,9 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.DialogUtils
+import io.zhihao.library.android.ZLibrary
 import io.zhihao.library.android.kotlinEx.string
+import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -34,7 +36,6 @@ import org.jetbrains.anko.*
 class MainActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private val appSettingMod = AppSettingMod()
-    private var clipboardUtil: ClipboardUtil? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                                     selector("", acts) { _, index ->
                                         when (index) {
                                             0 -> SystemUtil.browse(this@MainActivity, result)
-                                            1 -> clipboardUtil?.copy(result)
+                                            1 -> ClipboardUtil.copy(result)
                                             2 -> share(result)
                                         }
                                     }
@@ -156,15 +157,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        clipboardUtil = ClipboardUtil(this)
-        appSettingMod.init(this)
         checkUpdate()
-        if (SystemUtil.isApkDebugable(this)) debug()
+        if (AppUtil.isDebug()) debug()
     }
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtils.getAppVersionCode() == 128) startActivity<FeedActivity>()
+        if (AppUtils.getAppVersionCode() == 130) {
+            try {
+                ZLibrary.getContext()
+                Logger.d("ZLibrary.getContext()")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Logger.e("ZLibrary.getContext()")
+            }
+            startActivity<FeedActivity>()
+        }
     }
 
     private fun initPermissions() {

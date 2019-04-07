@@ -11,7 +11,8 @@ import com.orhanobut.logger.Logger
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.util.*
+import com.zhihaofans.androidbox.util.ToastUtil
+import com.zhihaofans.androidbox.util.XUIUtil
 import dev.utils.app.UriUtils
 import dev.utils.app.image.BitmapUtils
 import dev.utils.app.toast.ToastTintUtils
@@ -19,6 +20,9 @@ import io.zhihao.library.android.kotlinEx.hasNotChild
 import io.zhihao.library.android.kotlinEx.isActionSend
 import io.zhihao.library.android.kotlinEx.remove
 import io.zhihao.library.android.kotlinEx.startsWithList
+import io.zhihao.library.android.util.DatetimeUtil
+import io.zhihao.library.android.util.FileUtil
+import io.zhihao.library.android.util.IntentUtil
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -198,7 +202,7 @@ class Share2SaveActivity : Activity() {
                                                 finish()
 
                                             } else {
-                                                val saveSu = FileOldUtil.saveFile(saveUri, saveText)
+                                                val saveSu = FileUtil.saveFile(saveUri, saveText)
                                                 uiThread {
                                                     afterSave(saveSu)
                                                 }

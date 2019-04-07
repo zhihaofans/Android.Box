@@ -2,9 +2,9 @@ package com.zhihaofans.androidbox.service
 
 import android.service.quicksettings.TileService
 import com.zhihaofans.androidbox.mod.OtherAppMod
-import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.view.QrcodeActivity
+import io.zhihao.library.android.kotlinEx.collapseNotificationBar
 import org.jetbrains.anko.startActivity
 
 /**
@@ -17,7 +17,7 @@ class QrcodeScanQstService : TileService() {
 
     override fun onClick() {
         super.onClick()
-        SystemUtil.collapseNotificationBar(this)
+        collapseNotificationBar()
         startActivity<QrcodeActivity>("method" to "QRCODE_SCAN")
     }
 }
@@ -26,8 +26,8 @@ class WechatScanQstService : TileService() {
 
     override fun onClick() {
         super.onClick()
-        SystemUtil.collapseNotificationBar(this)
-        if (OtherAppMod.wechatQRCodeScan(this)) {
+        collapseNotificationBar()
+        if (OtherAppMod.wechatQRCodeScan()) {
             ToastUtil.success("启动成功")
         } else {
             ToastUtil.error("启动失败")
@@ -39,8 +39,8 @@ class AlipayQrcodeScanQstService : TileService() {
 
     override fun onClick() {
         super.onClick()
-        SystemUtil.collapseNotificationBar(this)
-        if (OtherAppMod.alipayQRCodeScan(this)) {
+        collapseNotificationBar()
+        if (OtherAppMod.alipayQRCodeScan()) {
             ToastUtil.success("启动成功")
         } else {
             ToastUtil.error("启动失败")

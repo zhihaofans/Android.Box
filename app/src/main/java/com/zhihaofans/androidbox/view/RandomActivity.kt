@@ -6,12 +6,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.copy
-import com.zhihaofans.androidbox.util.RandomUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.intOrNull
 import io.zhihao.library.android.kotlinEx.string
+import io.zhihao.library.android.util.ClipboardUtil
+import io.zhihao.library.android.util.RandomUtil
 import kotlinx.android.synthetic.main.activity_random.*
 import kotlinx.android.synthetic.main.content_random.*
 
@@ -31,7 +31,7 @@ class RandomActivity : AppCompatActivity() {
         val list = listOf(
                 "随机数", "多选一", "多选多"
         )
-        listViewRandom.init(this, list)
+        listViewRandom.init(list)
         listViewRandom.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
@@ -57,7 +57,7 @@ class RandomActivity : AppCompatActivity() {
                                                     getString(R.string.text_cancel)).apply {
                                                 inputRange(1, -1)
                                                 onPositive { dialogR, whichR ->
-                                                    copy(dialogR.inputEditText!!.string)
+                                                    ClipboardUtil.copy(dialogR.inputEditText!!.string)
                                                 }
                                             }.show()
                                         } else {
@@ -89,7 +89,7 @@ class RandomActivity : AppCompatActivity() {
                                             getString(R.string.text_cancel)).apply {
                                         inputRange(1, -1)
                                         onPositive { dialogR, _ ->
-                                            copy(dialogR.inputEditText!!.string)
+                                            ClipboardUtil.copy(dialogR.inputEditText!!.string)
                                         }
                                     }.show()
                                 }
@@ -124,7 +124,7 @@ class RandomActivity : AppCompatActivity() {
                                                     getString(R.string.text_cancel)).apply {
                                                 inputRange(1, -1)
                                                 onPositive { dialogR, _ ->
-                                                    copy(dialogR.inputEditText!!.string)
+                                                    ClipboardUtil.copy(dialogR.inputEditText!!.string)
                                                 }
                                             }.show()
                                         }

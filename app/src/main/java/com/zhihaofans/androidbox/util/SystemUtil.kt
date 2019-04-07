@@ -1,23 +1,18 @@
 package com.zhihaofans.androidbox.util
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.net.Uri
-import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.EditText
 import androidx.browser.customtabs.CustomTabsIntent
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.Browser2BrowserActivity
 import com.zhihaofans.androidbox.view.ImageViewActivity
-import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.isUrl
 import io.zhihao.library.android.kotlinEx.toUrl
+import io.zhihao.library.android.util.DeviceUtil
 import io.zhihao.library.android.util.FileUtil
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.startActivity
@@ -32,15 +27,6 @@ import java.net.URL
 @SuppressLint("SimpleDateFormat")
 class SystemUtil {
     companion object {
-        fun debug(context: Context): Boolean {
-            return this.isApkDebugable(context)
-        }
-
-
-        fun closeKeyboard(activity: Activity) {
-            (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(activity.window.decorView.windowToken, 0)
-        }
-
         fun chromeCustomTabs(context: Context, url: String) {
             val builder: CustomTabsIntent.Builder = CustomTabsIntent.Builder()
             val customTabsIntent: CustomTabsIntent = builder.build()
@@ -54,7 +40,6 @@ class SystemUtil {
                 SystemUtil.browser2browser(context, url)
             } else {
                 val appSettingMod = AppSettingMod()
-                appSettingMod.init(context)
                 if (!url.isUrl()) {
                     throw Exception("Need Url.")
                 }
@@ -76,23 +61,6 @@ class SystemUtil {
                 "jpg", "jpeg", "bmp", "webp", "gif" -> true
                 else -> false
             }
-        }
-
-        fun viewGetFocusable(editText: EditText) {
-            editText.isFocusable = true
-            editText.isFocusableInTouchMode = true
-            editText.requestFocus()
-        }
-
-        fun isApkDebugable(context: Context): Boolean {
-            try {
-                val info = context.applicationInfo
-                return info.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
-            } catch (e: Exception) {
-
-            }
-
-            return false
         }
 
         fun getUrlFromBiliShare(shareString: String): URL? {
@@ -129,11 +97,6 @@ class SystemUtil {
                 }
 
             }
-        }
-
-
-        fun listViewAdapter(context: Context, listData: List<String>): ArrayAdapter<String> {
-            return ArrayAdapter(context, android.R.layout.simple_list_item_1, listData)
         }
 
         fun collapseNotificationBar(mContext: Context) {

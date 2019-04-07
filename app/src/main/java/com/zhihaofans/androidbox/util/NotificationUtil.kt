@@ -5,12 +5,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.NotificationProgressData
 import com.zhihaofans.androidbox.kotlinEx.appName
+import io.zhihao.library.android.util.SystemServiceUtil
 
 /**
  * @author: zhihaofans
@@ -23,10 +23,10 @@ class NotificationUtil {
     private val defaultChannelId = "com.zhihaofans.androidbox.default"
     private val lowLevelChannelId = "com.zhihaofans.androidbox.low"
     private val downloadChannelId = "com.zhihaofans.androidbox.download"
+    private val nm = SystemServiceUtil.getNotificationManager()
     private fun getDefaultNotificationChannel(): NotificationChannel? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (mContext == null) return null
-            val nm = mContext!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             try {
                 val c = nm.getNotificationChannel(defaultChannelId)
                 c
@@ -43,7 +43,6 @@ class NotificationUtil {
     private fun getLowLevelNotificationChannel(): NotificationChannel? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (mContext == null) return null
-            val nm = mContext!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             try {
                 val c = nm.getNotificationChannel(lowLevelChannelId)
                 c
@@ -60,7 +59,6 @@ class NotificationUtil {
     private fun getDownloadNotificationChannel(): NotificationChannel? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (mContext == null) return null
-            val nm = mContext!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             try {
                 val c = nm.getNotificationChannel(downloadChannelId)
                 c
@@ -95,7 +93,6 @@ class NotificationUtil {
     private fun createChannel(id: String, name: String, desc: String, importance: Int): NotificationChannel? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (mContext == null) return null
-            val nm = mContext!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             var mChannel: NotificationChannel?
             try {
                 mChannel = nm.getNotificationChannel(id)
@@ -169,7 +166,6 @@ class NotificationUtil {
     }
 
     fun create(title: String, message: String, lowLevel: Boolean = false): Int? {
-        val nm = mContext!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = this.getNotificationId()
         val notification: Notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if ((if (lowLevel) this.getLowLevelNotificationChannel() else this.getDefaultNotificationChannel()) == null) {
@@ -185,7 +181,6 @@ class NotificationUtil {
     }
 
     fun createIntent(title: String, message: String, intent: PendingIntent, lowLevel: Boolean = false): Int? {
-        val nm = mContext!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = this.getNotificationId()
         val notification: Notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if ((if (lowLevel) this.getLowLevelNotificationChannel() else this.getDefaultNotificationChannel()) == null) {
@@ -205,7 +200,6 @@ class NotificationUtil {
         if (mContext == null) {
             return null
         }
-        val nm = mContext!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = this.getNotificationId()
         if (this.getDownloadNotificationChannel() == null) return null
         val mBuilder = getBaseBuilder(downloadChannelId, title, message, R.mipmap.ic_launcher).apply {
@@ -216,7 +210,6 @@ class NotificationUtil {
     }
 
     fun setProgressNotificationLength(notificationProgressData: NotificationProgressData, length: Int, maxProgress: Int): NotificationProgressData {
-        val nm = mContext!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val mBuilder = notificationProgressData.builder.apply {
             if (length == maxProgress) {
                 setProgress(0, 0, false)
@@ -231,7 +224,6 @@ class NotificationUtil {
     }
 
     fun delete(notificationId: Int) {
-        val nm = mContext!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.cancel(notificationId)
     }
 

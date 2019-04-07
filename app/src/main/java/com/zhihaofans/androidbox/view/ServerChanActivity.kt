@@ -10,9 +10,9 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.ServerChanGson
 import com.zhihaofans.androidbox.mod.AppSettingMod
-import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
+import io.zhihao.library.android.kotlinEx.viewGetFocusable
 import okhttp3.*
 import org.jetbrains.anko.*
 import java.io.IOException
@@ -28,7 +28,6 @@ class ServerChanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         /*setContentView(R.layout.activity_server_chan)
         setSupportActionBar(toolbar)*/
-        appSettingMod.init(this)
         val savedKey: String? = appSettingMod.serverChanKey
         if (savedKey.isNullOrEmpty()) {
             updateKey()
@@ -103,7 +102,7 @@ class ServerChanActivity : AppCompatActivity() {
                         editTextTitle.setOnEditorActionListener { v, actionId, event ->
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                                 if (editTextTitle.text.isNotEmpty()) {
-                                    SystemUtil.viewGetFocusable(editTextDesp)
+                                    editTextDesp.viewGetFocusable()
                                 }
                             }
                             false

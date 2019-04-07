@@ -11,11 +11,11 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
-import com.zhihaofans.androidbox.util.IntentUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
 import io.zhihao.library.android.kotlinEx.isActionSend
 import io.zhihao.library.android.kotlinEx.isActionView
+import io.zhihao.library.android.util.IntentUtil
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
@@ -37,7 +37,6 @@ class Browser2BrowserActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        appSettingMod.init(this)
         val mIntent = intent
         if (mIntent.isActionView) {
             val uri = mIntent.data
@@ -94,7 +93,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                     val appNameList = appList.map {
                         val activityName = it.resolveInfo.activityInfo.label
                         val appName = AppUtils.getAppName(it.packageName)
-                        "${if (activityName.isNullOrEmpty()) appName else activityName} ($appName)"
+                        "${if (activityName.isEmpty()) appName else activityName} ($appName)"
                     }.toList()
                     MaterialDialog.Builder(this)
                             .title("选择浏览器")
@@ -106,24 +105,28 @@ class Browser2BrowserActivity : AppCompatActivity() {
                             .itemsCallback { _, _, i, _ ->
                                 val mBrowser = appList[i]
                                 val browserIntent = IntentUtil.getLaunchAppIntentWithClassName(mBrowser.packageName, mBrowser.className)
-                                alert {
-                                    title = "确定使用${appNameList[i]}打开网页吗?"
-                                    yesButton {
-                                        browserIntent.data = uri.toUri()
-                                        browserIntent.action = Intent.ACTION_VIEW
-                                        startActivity(browserIntent)
-                                        ToastUtil.success("已经尝试启动应用(${appNameList[i]})")
-                                        finish()
-                                    }
-                                    noButton {
-                                        ToastUtil.warning(R.string.text_canceled_by_user)
-                                        finish()
-                                    }
-                                    onCancelled {
-                                        ToastUtil.warning(R.string.text_canceled_by_user)
-                                        finish()
-                                    }
-                                }.show()
+                                if (browserIntent == null) {
+                                    ToastUtil.error("打开失败")
+                                } else {
+                                    alert {
+                                        title = "确定使用${appNameList[i]}打开网页吗?"
+                                        yesButton {
+                                            browserIntent.data = uri.toUri()
+                                            browserIntent.action = Intent.ACTION_VIEW
+                                            startActivity(browserIntent)
+                                            ToastUtil.success("已经尝试启动应用(${appNameList[i]})")
+                                            finish()
+                                        }
+                                        noButton {
+                                            ToastUtil.warning(R.string.text_canceled_by_user)
+                                            finish()
+                                        }
+                                        onCancelled {
+                                            ToastUtil.warning(R.string.text_canceled_by_user)
+                                            finish()
+                                        }
+                                    }.show()
+                                }
                             }
                             .show()
                 }

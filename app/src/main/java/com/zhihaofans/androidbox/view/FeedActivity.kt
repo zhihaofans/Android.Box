@@ -28,7 +28,7 @@ class FeedActivity : AppCompatActivity() {
     private var nowTabPosition = 0
     private val newsBox = FeedMod.News()
     private val appBox = FeedMod.App()
-    private var clipboardUtil: ClipboardUtil? = null
+
     private val notificationUtil = NotificationUtil()
     private var firstRun = true
     private var manualRefresh = false
@@ -54,7 +54,6 @@ class FeedActivity : AppCompatActivity() {
 
 
     private fun init() {
-        clipboardUtil = ClipboardUtil(this)
         notificationUtil.init(this)
         newsBox.init(this@FeedActivity)
         appBox.init(this@FeedActivity)
@@ -295,7 +294,7 @@ class FeedActivity : AppCompatActivity() {
         when (mNumber) {
             0 -> {
                 val newsList = data as FeedMod.News.ListView
-                listView_feed.init(this@FeedActivity, newsList.titleList)
+                listView_feed.init(newsList.titleList)
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
                     SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
                 }
@@ -439,7 +438,7 @@ class FeedActivity : AppCompatActivity() {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
                             positiveButton(R.string.text_copy) {
-                                clipboardUtil?.copy(task.targetFilePath)
+                                ClipboardUtil.copy(task.targetFilePath)
                                 ToastUtil.success("复制成功")
                             }
                             negativeButton(R.string.text_open) {

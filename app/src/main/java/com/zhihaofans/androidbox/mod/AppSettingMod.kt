@@ -1,14 +1,15 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import com.zhihaofans.androidbox.util.SharedPreferencesUtil
 import io.zhihao.library.android.kotlinEx.isNotNull
+import io.zhihao.library.android.util.SharedPreferencesUtil
 
 /**
  * Created by zhihaofans on 2018/11/4.
  */
 class AppSettingMod {
-    private val sharedPreferencesUtil = SharedPreferencesUtil()
+    private val sharedPreferencesFileName = "android_box"
+    private val sharedPreferencesUtil = SharedPreferencesUtil(sharedPreferencesFileName)
     private var mContext: Context? = null
 
     // Setting
@@ -57,14 +58,6 @@ class AppSettingMod {
         set(key) {
             if (!key.isNullOrEmpty()) sharedPreferencesUtil.putString("BROWSER_TO_BROWSER_DEFAULT", key)
         }
-
-    // Function
-    fun init(context: Context): Boolean {
-        mContext = context
-        if (mContext == null) return false
-        sharedPreferencesUtil.init(mContext!!)
-        return true
-    }
 
 
 }

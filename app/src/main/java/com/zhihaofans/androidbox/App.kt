@@ -16,9 +16,10 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.simple.spiderman.SpiderMan
 import com.vondear.rxtool.RxTool
 import com.xuexiang.xui.XUI
-import com.zhihaofans.androidbox.util.SystemUtil
 import dev.DevUtils
 import io.paperdb.Paper
+import io.zhihao.library.android.ZLibrary
+import io.zhihao.library.android.util.AppUtil
 
 
 /**
@@ -29,10 +30,10 @@ import io.paperdb.Paper
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        ZLibrary.init(this)
         SpiderMan.init(this)
         Logger.addLogAdapter(AndroidLogAdapter())
-        val isDebug = SystemUtil.isApkDebugable(this)
-        Logger.d("Debug:$isDebug")
+        Logger.d("Debug:${AppUtil.isDebug()}")
         Paper.init(this)
         Fresco.initialize(this)
         FileDownloader.setupOnApplicationOnCreate(this)

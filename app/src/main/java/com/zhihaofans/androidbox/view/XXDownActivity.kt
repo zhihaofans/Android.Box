@@ -99,7 +99,7 @@ class XXDownActivity : AppCompatActivity() {
                 resultList.clear()
                 listView_xxdown.removeAllItems()
                 resultList = data.url.toMutableList()
-                listView_xxdown.init(this@XXDownActivity, resultList.map { i -> i.url })
+                listView_xxdown.init(resultList.map { i -> i.url })
                 listView_xxdown.setOnItemClickListener { _, _, pos, _ ->
                     val itemUrl = resultList[pos].url
                     val menus = listOf(
@@ -109,7 +109,7 @@ class XXDownActivity : AppCompatActivity() {
                         when (ii) {
                             0 -> SystemUtil.browse(this@XXDownActivity, itemUrl)
                             1 -> when {
-                                OtherAppMod.admAutoDownload(this, itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
+                                OtherAppMod.admAutoDownload(itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
                                 else -> coordinatorLayout_imageView.snackbar("调用adm下载失败")
                             }
                         }

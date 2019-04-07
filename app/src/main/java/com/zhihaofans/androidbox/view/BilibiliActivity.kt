@@ -13,6 +13,8 @@ import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
+import io.zhihao.library.android.kotlinEx.closeKeyboard
+import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_bilibili.*
 import kotlinx.android.synthetic.main.content_bilibili.*
@@ -32,12 +34,11 @@ class BilibiliActivity : AppCompatActivity() {
     private val g = Gson()
     private var defaultVid: String = "17027625"
     private var defaultPart: Int = 1
-    private var clipboardUtil: ClipboardUtil? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bilibili)
         setSupportActionBar(toolbar_bilibili)
-        clipboardUtil = ClipboardUtil(this@BilibiliActivity)
         fab_bilibili.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
@@ -45,7 +46,7 @@ class BilibiliActivity : AppCompatActivity() {
         val listData = mutableListOf(
                 "视频弹幕查用户uid", "小黑屋"
         )
-        listView_bilibili.adapter = SystemUtil.listViewAdapter(this, listData)
+        listView_bilibili.init(listData)
         listView_bilibili.setOnItemClickListener { _, _, index, _ ->
             if (defaultVid.startsWith("av")) {
                 defaultVid = defaultVid.substring(2, defaultVid.length - 1)
@@ -164,7 +165,7 @@ class BilibiliActivity : AppCompatActivity() {
                     input.inputType = InputType.TYPE_CLASS_NUMBER
                     input1.inputType = InputType.TYPE_CLASS_NUMBER
                     yesButton {
-                        SystemUtil.closeKeyboard(this@BilibiliActivity)
+                        closeKeyboard()
                         if (input.text.isNullOrEmpty() || input1.text.isNullOrEmpty()) {
                             Snackbar.make(coordinatorLayout_bilibili, "请输入视频id和第几P", Snackbar.LENGTH_SHORT).show()
                         } else if (input1.text.toString().toInt() <= 0) {
@@ -230,7 +231,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                 val input_search = editText("")
                                                                                 input_search.setSingleLine(true)
                                                                                 okButton {
-                                                                                    SystemUtil.closeKeyboard(this@BilibiliActivity)
+                                                                                    closeKeyboard()
                                                                                     val search_key: String = input_search.text.toString()
                                                                                     if (search_key.isEmpty()) {
                                                                                         _search("请输入搜索内容")
@@ -367,7 +368,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun bilibiliCommentHash2uidJx(data: MutableList<BilibiliDanmuGetHashItemGson>, client: OkHttpClient) {
-        SystemUtil.closeKeyboard(this)
+        closeKeyboard()
         runOnUiThread {
             val uid = data[0].id
             val acts = mutableListOf(
@@ -481,7 +482,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun bilibiliBlackroom() {
-        if (OtherAppMod.bilibiliBlackroom(this)) {
+        if (OtherAppMod.bilibiliBlackroom()) {
             ToastUtil.success("启动成功")
         } else {
             ToastUtil.error("启动失败")
@@ -489,7 +490,7 @@ class BilibiliActivity : AppCompatActivity() {
     }
 
     private fun copy(string: String) {//复制到剪切板
-        clipboardUtil?.copy(string)
+        ClipboardUtil.copy(string)
         Snackbar.make(coordinatorLayout_bilibili, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
     }
 }

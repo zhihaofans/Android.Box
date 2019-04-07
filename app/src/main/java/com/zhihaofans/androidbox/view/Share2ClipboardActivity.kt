@@ -14,20 +14,15 @@ import io.zhihao.library.android.util.ClipboardUtil
  */
 
 class Share2ClipboardActivity : Activity() {
-    private var clipboardUtil: ClipboardUtil? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mIntent = intent
         if (mIntent.isActionSend && mIntent.type == "text/plain") {
             val st = mIntent.getStringExtra(Intent.EXTRA_TEXT)
             if (st.isNotNullAndEmpty()) {
-                clipboardUtil = ClipboardUtil(this@Share2ClipboardActivity)
-                if (clipboardUtil == null) {
-                    ToastUtil.error("复制失败")
-                } else {
-                    clipboardUtil!!.copy(st)
-                    ToastUtil.success("已复制")
-                }
+                ClipboardUtil.copy(st)
+                ToastUtil.success("已复制")
             } else {
                 ToastUtil.error("复制失败")
             }

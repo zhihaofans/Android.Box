@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.DownloadManager
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,6 @@ import com.xuexiang.xui.widget.dialog.bottomsheet.BottomSheet
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.copy
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.NotificationUtil
@@ -22,7 +20,7 @@ import com.zhihaofans.androidbox.util.XUIUtil
 import dev.utils.app.PhoneUtils
 import dev.utils.app.ScreenUtils
 import io.zhihao.library.android.kotlinEx.init
-import io.zhihao.library.android.util.DatetimeUtil
+import io.zhihao.library.android.util.*
 import kotlinx.android.synthetic.main.activity_tools.*
 import kotlinx.android.synthetic.main.content_tools.*
 import org.jetbrains.anko.*
@@ -54,10 +52,9 @@ class ToolsActivity : AppCompatActivity() {
                 getString(com.zhihaofans.androidbox.R.string.text_bilibili),
                 "快捷方式",
                 "随机",
-                "号码自动添加前缀",
-                "传感器"
+                "号码自动添加前缀"
         )
-        listView_tools.init(this, tools)
+        listView_tools.init(tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
@@ -97,7 +94,7 @@ class ToolsActivity : AppCompatActivity() {
                         selector(sdks[i], acts) { _, ii ->
                             when (ii) {
                                 0 -> {
-                                    copy(sdks[i])
+                                    ClipboardUtil.copy(sdks[i])
                                     xuiUtil.snackbar(coordinatorLayout_tools, R.string.text_finish)
                                 }
                                 1 -> share(sdks[i])
@@ -142,7 +139,6 @@ class ToolsActivity : AppCompatActivity() {
                 9 -> startActivity<ShortcutsActivity>()
                 10 -> startActivity<RandomActivity>()
                 11 -> number()
-                12 -> startActivity<SensorActivity>()
             }
         }
     }
@@ -227,18 +223,23 @@ class ToolsActivity : AppCompatActivity() {
                                         val saveTo = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
                                         doAsync {
                                             try {
-                                                val wallpaper = com.zhihaofans.androidbox.util.FileOldUtil.saveWallpaperPng(this@ToolsActivity, saveTo)
-                                                uiThread {
-                                                    if (wallpaper) {
-                                                        ToastUtil.success("保存成功($saveTo)")
-                                                        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-                                                        downloadManager.addCompletedDownload(fileName, fileName, true, "image/png",
-                                                                saveTo, io.zhihao.library.android.util.FileUtil.getFileSize(saveTo), true
-                                                        )
-                                                    } else {
-                                                        ToastUtil.error("保存失败")
-                                                    }
+                                                val wallpaperBitmap = AppUtil.getWallpaperBitmap()
+                                                if (wallpaperBitmap == null) {
                                                     saveWallpaperStatus = true
+                                                    uiThread { ToastUtil.error("获取壁纸失败失败") }
+                                                } else {
+                                                    val wallpaper = FileUtil.saveImagePng(wallpaperBitmap, saveTo)
+                                                    uiThread {
+                                                        if (wallpaper) {
+                                                            ToastUtil.success("保存成功($saveTo)")
+                                                            SystemServiceUtil.getDownloadManager().addCompletedDownload(fileName, fileName, true, "image/png",
+                                                                    saveTo, FileUtil.getFileSize(saveTo), true
+                                                            )
+                                                        } else {
+                                                            ToastUtil.error("保存失败")
+                                                        }
+                                                        saveWallpaperStatus = true
+                                                    }
                                                 }
                                             } catch (e: Exception) {
                                                 e.printStackTrace()

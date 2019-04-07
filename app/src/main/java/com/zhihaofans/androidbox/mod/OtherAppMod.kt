@@ -1,12 +1,13 @@
 package com.zhihaofans.androidbox.mod
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
+import io.zhihao.library.android.ZLibrary
 import java.net.URL
 
 
@@ -20,7 +21,10 @@ import java.net.URL
 class OtherAppMod {
 
     companion object {
-        fun alipayQRCodeScan(mContext: Context): Boolean {
+        @SuppressLint("StaticFieldLeak")
+        private val mContext = ZLibrary.getContext()
+
+        fun alipayQRCodeScan(): Boolean {
             //打开支付宝扫一扫
             if (!AppUtils.isInstalledApp("com.eg.android.AlipayGphone")) return false
             return try {
@@ -36,7 +40,7 @@ class OtherAppMod {
             }
         }
 
-        fun wechatQRCodeScan(mContext: Context): Boolean {
+        fun wechatQRCodeScan(): Boolean {
             //打开微信扫一扫
             val packageName = "com.tencent.mm"
             if (!AppUtils.isInstalledApp(packageName)) return false
@@ -53,12 +57,12 @@ class OtherAppMod {
             }
         }
 
-        fun bilibiliBlackroom(mContext: Context): Boolean {
+        fun bilibiliBlackroom(): Boolean {
             //在哔哩哔哩动画客户端打开小黑屋网页
-            return this.bilibiliWebView(mContext, "https://www.bilibili.com/blackroom")
+            return this.bilibiliWebView("https://www.bilibili.com/blackroom")
         }
 
-        fun bilibiliWebView(mContext: Context, url: String): Boolean {
+        fun bilibiliWebView(url: String): Boolean {
             //在哔哩哔哩动画客户端打开网页（全屏显示，但无法隐藏系统状态栏）
             val packageName = "tv.danmaku.bili"
             if (!AppUtils.isInstalledApp(packageName)) {
@@ -79,29 +83,29 @@ class OtherAppMod {
             }
         }
 
-        fun admAutoDownload(mContext: Context, url: URL): Boolean = this.admAutoDownload(mContext, url.toString())
-        fun admAutoDownload(mContext: Context, url: String?): Boolean {
+        fun admAutoDownload(url: URL): Boolean = this.admAutoDownload(url.toString())
+        fun admAutoDownload(url: String?): Boolean {
             if (url.isNullOrEmpty()) return false
-            val _a = admProDownload1(mContext, url)
+            val _a = admProDownload1(url)
             if (_a) {
                 return _a
             }
-            val _b = admProDownload2(mContext, url)
+            val _b = admProDownload2(url)
             if (_b) {
                 return _b
             }
-            val _c = admDownload1(mContext, url)
+            val _c = admDownload1(url)
             if (_c) {
                 return _c
             }
-            val _d = admDownload2(mContext, url)
+            val _d = admDownload2(url)
             if (_d) {
                 return _d
             }
             return false
         }
 
-        fun admProDownload1(mContext: Context, url: String): Boolean {
+        fun admProDownload1(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm.pay"
             if (!AppUtils.isInstalledApp(packageName)) {
@@ -123,7 +127,7 @@ class OtherAppMod {
             }
         }
 
-        fun admProDownload2(mContext: Context, url: String): Boolean {
+        fun admProDownload2(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm.pay"
             if (!AppUtils.isInstalledApp(packageName)) {
@@ -145,7 +149,7 @@ class OtherAppMod {
             }
         }
 
-        fun admDownload1(mContext: Context, url: String): Boolean {
+        fun admDownload1(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm"
             if (!AppUtils.isInstalledApp(packageName)) {
@@ -167,7 +171,7 @@ class OtherAppMod {
             }
         }
 
-        fun admDownload2(mContext: Context, url: String): Boolean {
+        fun admDownload2(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm"
             if (!AppUtils.isInstalledApp(packageName)) {

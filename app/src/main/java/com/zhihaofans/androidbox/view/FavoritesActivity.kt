@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.copy
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemIdMod
@@ -15,6 +14,7 @@ import com.zhihaofans.androidbox.util.DatetimeUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import io.zhihao.library.android.kotlinEx.*
+import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_favorites.*
 import kotlinx.android.synthetic.main.content_favorites.*
 import org.jetbrains.anko.*
@@ -57,7 +57,7 @@ class FavoritesActivity : AppCompatActivity() {
             it.title
         }.toList()
         listView_favorites.removeAllItems()
-        listView_favorites.init(this, listViewData)
+        listView_favorites.init(listViewData)
         listView_favorites.setOnItemClickListener { parent, view, position, id ->
             val chooseFavorites = favoritesList[position]
             Logger.d("chooseFavorites:$chooseFavorites")
@@ -95,7 +95,7 @@ class FavoritesActivity : AppCompatActivity() {
                             selector("", listOf(getString(R.string.text_copy), getString(R.string.text_share))) { _: DialogInterface, i: Int ->
                                 when (i) {
                                     0 -> {
-                                        copy(chooseFavorites.content)
+                                        ClipboardUtil.copy(chooseFavorites.content)
                                         coordinatorLayout_favorites.snackbar("复制完毕")
                                     }
                                     1 -> share(chooseFavorites.content)
@@ -141,7 +141,7 @@ class FavoritesActivity : AppCompatActivity() {
 
     private fun initShare() {
         val mIntent = intent
-        var appName: String? = AppUtils.getAppName(mIntent.getPackageName(this))
+        var appName: String? = AppUtils.getAppName(mIntent.getPackageName())
         if (appName.isNullOrEmpty()) appName = "其他应用"
         var defaultTitle = "来自$appName"
         if ((mIntent.isActionSend) && mIntent.type != null && mIntent.type == "text/plain") {

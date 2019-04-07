@@ -19,8 +19,6 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
-import com.zhihaofans.androidbox.util.DeviceUtil
-import com.zhihaofans.androidbox.util.IntentUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
@@ -32,6 +30,8 @@ import dev.utils.app.image.ImageUtils
 import dev.utils.common.DateUtils
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.util.ClipboardUtil
+import io.zhihao.library.android.util.DeviceUtil
+import io.zhihao.library.android.util.IntentUtil
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.*
@@ -42,14 +42,13 @@ import java.util.*
 class QrcodeActivity : AppCompatActivity() {
     private val qrcode = QrcodeMod()
     private var methodId: String? = null
-    private var clipboardUtil: ClipboardUtil? = null
+
     private var hasQrcode = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
         setSupportActionBar(toolbar_qrcode)
         qrcode.setActivity(this@QrcodeActivity, true)
-        clipboardUtil = ClipboardUtil(this)
         fab_qrcode.setOnClickListener {
             if (hasQrcode) {
                 val fabMenu = mutableListOf("打开二维码图片文件", "保存二维码图片")
@@ -118,7 +117,7 @@ class QrcodeActivity : AppCompatActivity() {
                 }
             }
         }
-        button_copy.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) clipboardUtil?.copy(editText_qrcode_content.text.toString()) }
+        button_copy.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) ClipboardUtil.copy(editText_qrcode_content.text.toString()) }
         button_share.setOnClickListener { if (editText_qrcode_content.text.isNotEmpty()) share(editText_qrcode_content.text.toString()) }
         editText_qrcode_content.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

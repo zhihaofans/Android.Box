@@ -15,7 +15,6 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.util.DatetimeUtil
-import com.zhihaofans.androidbox.util.FileOldUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
@@ -31,13 +30,12 @@ import org.jetbrains.anko.*
 
 class AppManagementActivity : AppCompatActivity() {
     private var appList = mutableListOf<Map<String, Any>>()
-    private var clipboardUtil: ClipboardUtil? = null
+
     private var uninstallAppPackageName: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
         setSupportActionBar(toolbar_app)
-        clipboardUtil = ClipboardUtil(this@AppManagementActivity)
         appListInit()
         this@AppManagementActivity.title = getString(R.string.text_appmanagement)
     }
@@ -55,7 +53,7 @@ class AppManagementActivity : AppCompatActivity() {
         doAsync {
             // 排序
             val packs = pm.getInstalledPackages(0).sortedBy {
-                it.getAppName(pm)
+                it.getAppName()
             }
             //得到系统 安装的所有程序包的PackageInfo对象
             Logger.d("appList\nlist------>${packs.size}")
@@ -137,12 +135,9 @@ class AppManagementActivity : AppCompatActivity() {
 
                                                 }
                                                 positiveButton(R.string.text_copy) {
-                                                    if (clipboardUtil == null) {
-                                                        coordinatorLayout_app.snackbar("fail")
-                                                    } else {
-                                                        clipboardUtil!!.copy(input)
-                                                        coordinatorLayout_app.snackbar("ok")
-                                                    }
+                                                    ClipboardUtil.copy(input)
+                                                    coordinatorLayout_app.snackbar("ok")
+
                                                 }
                                             }
                                         }
@@ -153,7 +148,7 @@ class AppManagementActivity : AppCompatActivity() {
                             1 -> {
                                 val apkPath = AppUtils.getAppPath(thisAppPackageName)
                                 val apkLength = FileUtil.fileSizeLong2string(FileUtil.getFileSize(apkPath))
-                                val saveTo = FileOldUtil.getDownloadPathString() + "Android.Box/"
+                                val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-$thisAppVersionName.apk"
                                 alert {
                                     title = "是否导出安装包"
@@ -175,7 +170,7 @@ class AppManagementActivity : AppCompatActivity() {
                             }
 
                             2 -> {
-                                val saveTo = FileOldUtil.getDownloadPathString() + "Android.Box/"
+                                val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-icon.png"
                                 alert {
                                     title = "是否导出应用图标"

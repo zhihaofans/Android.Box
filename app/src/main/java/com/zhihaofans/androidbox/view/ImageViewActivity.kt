@@ -32,13 +32,13 @@ import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
-import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.isActionSend
 import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.startWith
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.FileUtil
+import io.zhihao.library.android.util.IntentUtil
 import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.content_image_view.*
 import org.jetbrains.anko.*
@@ -47,14 +47,13 @@ import java.io.File
 
 class ImageViewActivity : AppCompatActivity() {
     private var imageUrl: String? = null
-    private var clipboardUtil: ClipboardUtil? = null
+
     private val notificationUtil = NotificationUtil()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view)
         setSupportActionBar(toolbar_image)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        clipboardUtil = ClipboardUtil(this)
         try {
             val mIntent = intent
             if (mIntent.isActionSend && mIntent.type.isNotNullAndEmpty()) {
@@ -187,7 +186,7 @@ class ImageViewActivity : AppCompatActivity() {
                                             when (ii) {
                                                 0 -> {
                                                     when {
-                                                        OtherAppMod.admAutoDownload(this@ImageViewActivity, imageUrl) -> coordinatorLayout_imageView.snackbar("调用ADM成功")
+                                                        OtherAppMod.admAutoDownload(imageUrl) -> coordinatorLayout_imageView.snackbar("调用ADM成功")
                                                         else -> coordinatorLayout_imageView.snackbar("调用ADM失败")
                                                     }
                                                 }
@@ -206,9 +205,9 @@ class ImageViewActivity : AppCompatActivity() {
                                                                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                                                                         if (isAll) {
                                                                             val fileName = FileUtil.getFileName(imageUrl)
-                                                                            if (fileName.isNullOrEmpty()){
+                                                                            if (fileName.isNullOrEmpty()) {
                                                                                 ToastUtil.error("文件名空白")
-                                                                            }else{
+                                                                            } else {
                                                                                 download(fileName, 0)
                                                                             }
                                                                         } else {
@@ -231,7 +230,7 @@ class ImageViewActivity : AppCompatActivity() {
                                     }
                                     1 -> browse(imageUrl.toString())
                                     2 -> {
-                                        clipboardUtil?.copy(imageUrl!!)
+                                        ClipboardUtil.copy(imageUrl!!)
                                         Snackbar.make(coordinatorLayout_imageView, "ok", Snackbar.LENGTH_SHORT).show()
                                     }
                                     3 -> share(imageUrl!!)
@@ -286,7 +285,7 @@ class ImageViewActivity : AppCompatActivity() {
                         if (notification !== null) notificationUtil.delete(notification.notificationId)
                         val stackBuilder = TaskStackBuilder.create(this@ImageViewActivity)
                         val resultPendingIntent = stackBuilder.apply {
-                            addNextIntent(FileOldUtil.getOpenImageFileIntent(this@ImageViewActivity, File(task.targetFilePath)))
+                            addNextIntent(IntentUtil.getOpenImageFileIntent(File(task.targetFilePath)))
                         }.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
                         if (resultPendingIntent == null) {
                             notificationUtil.create("错误！", "创建打开图片通知失败")
@@ -303,12 +302,14 @@ class ImageViewActivity : AppCompatActivity() {
                             title = "下载完成"
                             message = "文件路径:" + task.targetFilePath
                             negativeButton(R.string.text_copy) {
-                                clipboardUtil?.copy(task.targetFilePath)
+                                ClipboardUtil.copy(task.targetFilePath)
                                 ToastUtil.success("复制成功")
                             }
                             positiveButton(R.string.text_open) {
                                 try {
-                                    FileOldUtil.openImageFile(this@ImageViewActivity, task.targetFilePath)
+
+                                    val intent = IntentUtil.getOpenImageFileIntent(File(task.targetFilePath))
+                                    startActivity(intent)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                     snackbar(coordinatorLayout_imageView, "打开失败")

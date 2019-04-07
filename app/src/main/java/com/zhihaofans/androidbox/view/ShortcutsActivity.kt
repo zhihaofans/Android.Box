@@ -9,14 +9,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FeedShortcuts
 import com.zhihaofans.androidbox.mod.QrcodeScanShortcuts
-import com.zhihaofans.androidbox.util.ShortcutsUtil
 import com.zhihaofans.androidbox.util.ToastUtil
+import io.zhihao.library.android.ZLibrary
 import io.zhihao.library.android.kotlinEx.init
+import io.zhihao.library.android.util.ShortcutsUtil
 import kotlinx.android.synthetic.main.activity_shortcuts.*
 import kotlinx.android.synthetic.main.content_shortcuts.*
 
 class ShortcutsActivity : AppCompatActivity() {
-    private val shortcutsUtil = ShortcutsUtil(this)
+    private val shortcutsUtil = ShortcutsUtil()
+    private val defaultIcon = Icon.createWithResource(ZLibrary.getContext(), R.mipmap.ic_launcher)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shortcuts)
@@ -37,12 +39,12 @@ class ShortcutsActivity : AppCompatActivity() {
                 getString(R.string.text_feed),
                 getString(R.string.text_qrcode_scan)
         )
-        listViewShortcuts.init(this, shortcutList)
+        listViewShortcuts.init(shortcutList)
         listViewShortcuts.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
                     val launchIntent = Intent(this, FeedShortcuts::class.java)
-                    if (shortcutsUtil.addPinShortcut("$packageName.FeedActivity", launchIntent, shortcutList[position])) {
+                    if (shortcutsUtil.addPinShortcut("$packageName.FeedActivity", launchIntent, shortcutList[position], defaultIcon)) {
                         ToastUtil.success("创建快捷方式成功")
                     } else {
                         ToastUtil.error("创建快捷方式失败")

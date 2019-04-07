@@ -275,10 +275,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.SensorActivity"
-            android:label="@string/title_activity_sensor"
-            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
-        <activity
             android:name=".view.RandomActivity"
             android:label="@string/text_random"
             android:theme="@style/AppTheme.NoActionBar.NoActionBar" />

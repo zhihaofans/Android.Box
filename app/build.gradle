@@ -51,7 +51,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
@@ -125,9 +125,9 @@ dependencies {
     debugImplementation "com.didichuxing.doraemonkit:doraemonkit:$doraemonkit_version"
     releaseImplementation "com.didichuxing.doraemonkit:doraemonkit-no-op:$doraemonkit_version"
 
-    // AndroidLibrary
-    releaseImplementation 'io.zhihao:AndroidLibrary:v0.0.3'
-    debugImplementation files('libs/AndroidLibrary-v0.0.3-debug.aar')
+    // AndroidLibrary <https://github.com/zhihaofans/AndroidLibrary>
+    debugImplementation files("libs/AndroidLibrary-v$androidlibrary_version-debug.aar")
+    releaseImplementation "io.zhihao:AndroidLibrary:$androidlibrary_version"
 }
 kotlin {
     experimental {

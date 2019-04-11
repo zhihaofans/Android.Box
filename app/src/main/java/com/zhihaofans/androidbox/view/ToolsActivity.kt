@@ -41,15 +41,15 @@ class ToolsActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         val tools = listOf(
-                getString(com.zhihaofans.androidbox.R.string.text_androidsdk),
+                getString(R.string.text_androidsdk),
                 "获取当前壁纸",
                 "收藏夹",
                 "修复收藏夹",
                 "测试通知",
-                getString(com.zhihaofans.androidbox.R.string.text_weather),
-                getString(com.zhihaofans.androidbox.R.string.title_activity_xxdown),
+                getString(R.string.text_weather),
+                getString(R.string.title_activity_xxdown),
                 "Waterfall test",
-                getString(com.zhihaofans.androidbox.R.string.text_bilibili),
+                getString(R.string.text_bilibili),
                 "快捷方式",
                 "随机",
                 "号码自动添加前缀"
@@ -90,7 +90,7 @@ class ToolsActivity : AppCompatActivity() {
                     )
                     val nowSdk = Build.VERSION.SDK_INT
                     selector("你是" + if (nowSdk <= sdks.size) sdks[nowSdk - 1] else "UNKNOWN", sdks) { _, i ->
-                        val acts = listOf(getString(com.zhihaofans.androidbox.R.string.text_copy), getString(com.zhihaofans.androidbox.R.string.text_share))
+                        val acts = listOf(getString(R.string.text_copy), getString(R.string.text_share))
                         selector(sdks[i], acts) { _, ii ->
                             when (ii) {
                                 0 -> {

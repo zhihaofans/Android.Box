@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -10,14 +11,12 @@ import com.zhihaofans.androidbox.mod.OpenerMod
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.UiUtil
-import io.zhihao.library.android.kotlinEx.getTextPlain
-import io.zhihao.library.android.kotlinEx.isActionSend
-import io.zhihao.library.android.kotlinEx.isNull
-import io.zhihao.library.android.kotlinEx.isTypeTextPlain
+import io.zhihao.library.android.kotlinEx.*
 import kotlinx.android.synthetic.main.activity_opener.*
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
 import java.net.URL
+
 
 class OpenerActivity : AppCompatActivity() {
     private val openerMod = OpenerMod()
@@ -51,21 +50,14 @@ class OpenerActivity : AppCompatActivity() {
             openerMod.isUrl() -> urlMenu()
             mIntent.isActionSend -> {
                 when {
-                    mIntent.isTypeTextPlain -> {
-                        val st = mIntent.getTextPlain()
-                        if (st.isNullOrEmpty()) {
-                            ToastUtil.error("分享文本为空(st.isNullOrEmpty:${st.isNullOrEmpty()})")
-                            finish()
-                        } else {
-                            textMenu()
-                        }
-                    }
+                    mIntent.isTypeTextPlain -> textMenu()
                     else -> {
                         ToastUtil.error("未知分享内容")
                         finish()
                     }
                 }
             }
+            mIntent.isActionProcessText -> textMenu()
             else -> {
                 ToastUtil.error("?")
                 finish()
@@ -134,13 +126,27 @@ class OpenerActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun textMenu() {
+    private fun textMenu(textData: String? = null) {
+        val mIntent = intent
         if (!openerMod.isInitFinished()) {
             ToastUtil.error("初始化失败即将退出")
             finish()
         } else {
-            val mIntent = intent
-            val text = mIntent.getTextPlain()
+            val text = if (textData == null) {
+                var mText = mIntent.getTextPlain()
+                if (mText.isNullOrEmpty()) {
+                    mText = mIntent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
+                    if (mText.isNullOrEmpty()) {
+                        null
+                    } else {
+                        mText
+                    }
+                } else {
+                    mText
+                }
+            } else {
+                textData
+            }
             if (text.isNullOrEmpty()) {
                 ToastUtil.error("textMenu:分享文本为空")
                 finish()
@@ -155,6 +161,9 @@ class OpenerActivity : AppCompatActivity() {
                                 0 -> share(text)
                                 1 -> {
                                     UiUtil.mdSelector(this, "保存到哪里", listOf("保存到本地", "保存到收藏夹")).cancelListener {
+                                        ToastUtil.warning(R.string.text_canceled_by_user)
+                                        finish()
+                                    }.cancelListener {
                                         ToastUtil.warning(R.string.text_canceled_by_user)
                                         finish()
                                     }.itemsCallback { _, _, ii, _ ->

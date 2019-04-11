@@ -21,22 +21,35 @@ class OpenerMod {
 
     fun isInitFinished() = mIntent !== null
     fun isUrl(): Boolean {
-        val tf = when {
+        return when {
             mIntent == null -> false
             mIntent!!.isActionView -> true
             mIntent!!.isTypeTextPlain -> mIntent!!.getTextPlain().isUrl()
+            mIntent!!.isActionProcessText -> mIntent!!.getProcessText().isUrl()
             else -> false
         }
-        return tf
     }
 
     fun getIntent(): Intent? = mIntent
     fun getUrl(): URL? {
-        return if (mIntent.isNull()) {
+        return if (mIntent.isNull() || !isUrl()) {
             null
         } else {
-            val mText = mIntent!!.getTextPlain()
-            if (mText.isNullOrEmpty()) mIntent!!.data.toURL() else mText.toUrl()
+            val mText = when {
+                mIntent!!.isActionView -> mIntent!!.data.toURL()
+                mIntent!!.isTypeTextPlain -> if (mIntent!!.getTextPlain().isNullOrEmpty()) {
+                    null
+                } else {
+                    mIntent!!.getTextPlain()!!.toUrl()
+                }
+                mIntent!!.isActionProcessText -> if (mIntent!!.getProcessText().isNullOrEmpty()) {
+                    null
+                } else {
+                    mIntent!!.getProcessText()!!.toUrl()
+                }
+                else -> null
+            }
+            if (mText.isNull()) null else mText
         }
     }
 

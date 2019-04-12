@@ -101,12 +101,13 @@
     <string name="text_qrcode_scan_alipay">Alipay Scan</string>
     <string name="title_shortcuts">Shortcuts</string>
     <string name="text_random">Random</string>
-    <string name="text_tophub_today">Tophub.Today</string>
-    <string name="text_tophub_today_weibo">Tophub.Today - Weibo</string>
-    <string name="text_tophub_today_jinritoutiao">Tophub.Today - Jinri Toutiao</string>
-    <string name="text_tophub_today_hupubuxingjie">Tophub.Today - Hupu Buxingjie</string>
+    <string name="text_site_tophub_today">Tophub.Today</string>
+    <string name="text_site_tophub_today_weibo">Tophub.Today - Weibo</string>
+    <string name="text_site_tophub_today_hupubuxingjie">Tophub.Today - Hupu Buxingjie</string>
     <string name="text_androidbox_opener">Android Box…</string>
     <string name="text_app_uninstall">Uninstall app</string>
     <string name="text_tophub_today_zhihu_hot">Tophub.Today - Zhihu Hottest</string>
     <string name="text_tophub_today_v2ex_hot">Tophub.Today - V2EX Hottest</string>
+    <string name="text_site_tophub_baidu">Tophub.Today - Baidu</string>
+    <string name="text_site_tophub_qdaily">Tophub.Today - qdaily</string>
 </resources>

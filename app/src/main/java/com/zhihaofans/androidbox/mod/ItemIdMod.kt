@@ -27,10 +27,11 @@ class ItemIdMod {
         const val FEED_JUHE_WEIXIN_JINGXUAN = "juhe_weixin_jingxuan"
         const val FEED_TOPHUB_TODAY = "tophub_today"
         const val FEED_TOPHUB_TODAY_WEIBO = "tophub_today_weibo"
-        const val FEED_TOPHUB_TODAY_JINRITOUTIAO = "tophub_today_jinritoutiao"
+        const val FEED_TOPHUB_TODAY_BAIDU = "tophub_today_baidu"
         const val FEED_TOPHUB_TODAY_HUPUBUXINGJIE = "tophub_today_hupubuxingjie"
         const val FEED_TOPHUB_TODAY_ZHIHU_HOT = "tophub_today_zhihu_hot"
         const val FEED_TOPHUB_TODAY_V2EX_HOT = "tophub_today_v2ex_hot"
+        const val FEED_TOPHUB_TODAY_QDAILY = "tophub_today_qdaily"
         // DateBase
         const val DATEBASE_KEY_FAVORITES_LIST = "datebase_key_favorites_list"
         // Favorites

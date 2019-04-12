@@ -309,10 +309,11 @@ class SiteInfoTophubToday {
     fun getNewsList(channelId: String): MutableList<News>? {
         return when (channelId) {
             ItemIdMod.FEED_TOPHUB_TODAY_WEIBO -> topToday(UrlMod.TOPHUB_TODAY_WEIBO)
-            ItemIdMod.FEED_TOPHUB_TODAY_JINRITOUTIAO -> topToday(UrlMod.TOPHUB_TODAY_JINRITOUTIAO)
+            ItemIdMod.FEED_TOPHUB_TODAY_BAIDU -> topToday(UrlMod.TOPHUB_TODAY_JINRITOUTIAO)
             ItemIdMod.FEED_TOPHUB_TODAY_HUPUBUXINGJIE -> topToday(UrlMod.TOPHUB_TODAY_HUPUBUXINGJIE)
             ItemIdMod.FEED_TOPHUB_TODAY_ZHIHU_HOT -> topToday(UrlMod.TOPHUB_TODAY_ZHIHU_HOT)
             ItemIdMod.FEED_TOPHUB_TODAY_V2EX_HOT -> topToday(UrlMod.TOPHUB_TODAY_V2EX_HOT)
+            ItemIdMod.FEED_TOPHUB_TODAY_QDAILY -> topToday(UrlMod.TOPHUB_TODAY_QDAILY)
             else -> null
         }
     }

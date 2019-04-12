@@ -113,10 +113,11 @@ class NewsBoxMod {
                             ItemNameMod.NAME_TOPHUB_TODAY,
                             listOf(
                                     ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_WEIBO, ItemNameMod.NAME_TOPHUB_TODAY_WEIBO, true),
-                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_JINRITOUTIAO, ItemNameMod.NAME_TOPHUB_TODAY_JINRITOUTIAO, true),
+                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_BAIDU, ItemNameMod.NAME_TOPHUB_TODAY_BAIDU, true),
                                     ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_HUPUBUXINGJIE, ItemNameMod.NAME_TOPHUB_TODAY_HUPUBUXINGJIE, true),
                                     ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_ZHIHU_HOT, ItemNameMod.NAME_TOPHUB_TODAY_ZHIHU_HOT, true),
-                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_V2EX_HOT, ItemNameMod.NAME_TOPHUB_TODAY_V2EX_HOT, true)
+                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_V2EX_HOT, ItemNameMod.NAME_TOPHUB_TODAY_V2EX_HOT, true),
+                                    ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_QDAILY, ItemNameMod.NAME_TOPHUB_TODAY_QDAILY, true)
                             )
                     )
             )

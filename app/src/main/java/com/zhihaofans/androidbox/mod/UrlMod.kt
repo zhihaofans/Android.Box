@@ -31,9 +31,10 @@ class UrlMod {
         const val WEIXIN_JINGXUAN = "http://v.juhe.cn/weixin/query?dtype=json&ps=20&key=" + ApiKeyMod.APIKEY_JUHE_WEIXIN + "&pno="
         const val TOPHUB_TODAY_WEIBO = "https://tophub.today/n/KqndgxeLl9"
         const val TOPHUB_TODAY_JINRITOUTIAO = "https://tophub.today/n/20MdKa2ow1"
-        const val TOPHUB_TODAY_HUPUBUXINGJIE = "https://tophub.today/n/G47o8weMmN"
+        const val TOPHUB_TODAY_HUPUBUXINGJIE = "https://tophub.today/n/Jb0vmloB1G"
         const val TOPHUB_TODAY_ZHIHU_HOT = "https://tophub.today/n/mproPpoq6O"
         const val TOPHUB_TODAY_V2EX_HOT = "https://tophub.today/n/wWmoORe4EO"
+        const val TOPHUB_TODAY_QDAILY = "https://tophub.today/n/Y3QeLGAd7k"
         // Local
         val APP_DOWNLOAD_PATH = FileUtil.getDownloadPathString() + "Android.Box/"
         val APP_PICTURE_DOWNLOAD_PATH = FileUtil.getPicturePathString() + "Android.Box/"

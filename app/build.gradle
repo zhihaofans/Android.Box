@@ -126,7 +126,7 @@ dependencies {
 
     // AndroidLibrary <https://github.com/zhihaofans/AndroidLibrary>
     debugImplementation files("libs/android_library-release.aar")
-    releaseImplementation 'io.zhihao:AndroidLibrary:0.0.5'
+    releaseImplementation 'io.zhihao:AndroidLibrary:0.0.6'
 }
 kotlin {
     experimental {

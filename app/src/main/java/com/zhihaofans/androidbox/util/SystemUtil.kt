@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import com.orhanobut.logger.Logger
@@ -97,12 +96,6 @@ class SystemUtil {
                 }
 
             }
-        }
-
-        fun collapseNotificationBar(mContext: Context) {
-            //折叠通知栏
-            //感谢：https://stackoverflow.com/questions/15568754
-            mContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         }
 
         fun browser2browser(mContext: Context, uri: String): Boolean {

@@ -8,11 +8,11 @@ import com.google.gson.Gson
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.label
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.AppUtils
+import io.zhihao.library.android.kotlinEx.getLabel
 import io.zhihao.library.android.kotlinEx.isActionSend
 import io.zhihao.library.android.kotlinEx.isActionView
 import io.zhihao.library.android.util.IntentUtil
@@ -91,7 +91,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                     finish()
                 } else {
                     val appNameList = appList.map {
-                        val activityName = it.resolveInfo.activityInfo.label
+                        val activityName = it.resolveInfo.activityInfo.getLabel()
                         val appName = AppUtils.getAppName(it.packageName)
                         "${if (activityName.isEmpty()) appName else activityName} ($appName)"
                     }.toList()

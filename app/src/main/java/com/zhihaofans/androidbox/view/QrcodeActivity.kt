@@ -16,7 +16,6 @@ import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
 import com.xuexiang.xqrcode.XQRCode
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil

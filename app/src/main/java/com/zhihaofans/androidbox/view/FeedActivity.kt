@@ -9,7 +9,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FeedMod
 import com.zhihaofans.androidbox.util.*
 import io.zhihao.library.android.kotlinEx.init

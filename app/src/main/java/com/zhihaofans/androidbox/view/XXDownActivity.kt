@@ -8,7 +8,6 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.ItemIdMod
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod

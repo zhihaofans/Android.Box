@@ -14,13 +14,13 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.kotlinEx.logD
-import com.zhihaofans.androidbox.kotlinEx.longSnackbar
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.FileOldUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.init
+import io.zhihao.library.android.kotlinEx.longSnackbar
+import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.FileUtil
 import kotlinx.android.synthetic.main.activity_app_down.*

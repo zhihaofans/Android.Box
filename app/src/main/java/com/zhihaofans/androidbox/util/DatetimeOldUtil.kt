@@ -14,7 +14,7 @@ import java.util.*
 
  */
 @SuppressLint("SimpleDateFormat")
-class DatetimeUtil {
+class DatetimeOldUtil {
     companion object {
 
         @SuppressLint("SimpleDateFormat")
@@ -35,18 +35,6 @@ class DatetimeUtil {
             return localFormater.format(gpsUTCDate!!.time)
         }
 
-        fun unixTime2date(time: Int): String = unixTime2date(time.toLong())
-
-
-        fun unixTime2date(time: Long): String {
-            return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(Date(time)) as String
-        }
-
-        fun nowDate(full: Boolean = false): String {
-            val formatter = SimpleDateFormat(if (full) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd")
-            val curDate = Date()
-            return formatter.format(curDate)
-        }
 
         fun datePlus(day: String, Num: Int): String {
             Logger.d(day)

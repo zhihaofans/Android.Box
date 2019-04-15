@@ -8,10 +8,11 @@ import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
 import com.zhihaofans.androidbox.gson.GithubReleaseItem
 import com.zhihaofans.androidbox.gson.RsshubFirimGson
-import com.zhihaofans.androidbox.util.DatetimeUtil
+import com.zhihaofans.androidbox.util.DatetimeOldUtil
 import com.zhihaofans.androidbox.util.HttpUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
 import io.zhihao.library.android.kotlinEx.remove
+import io.zhihao.library.android.util.DatetimeUtil
 import io.zhihao.library.android.util.FileUtil
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -19,6 +20,7 @@ import okhttp3.Request
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.net.URL
+import java.util.*
 
 /**
 
@@ -68,7 +70,7 @@ class NewsSitesMod {
                 Logger.d(lastRelease)
                 result.result = AppInfo(author, project, project, "GITHUB_RELEASES", author,
                         if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else lastRelease.name,
-                        DatetimeUtil.githubUtc2Local(lastRelease.published_at), null,
+                        DatetimeOldUtil.githubUtc2Local(lastRelease.published_at), null,
                         lastRelease.html_url, lastRelease.assets.map {
                     FileList(
                             it.name,
@@ -106,7 +108,7 @@ class NewsSitesMod {
                 //val author = if (appInfos.size != 4) "" else appInfos[3].split("：")[1]
                 val rawTime = if (appInfos.size != 4) "" else appInfos[appInfos.size - 3].split("：")[1]
                 var newTime = if (appInfos.size != 4) "" else rawTime.replace("-", "/")
-                if (newTime.endsWith("天前")) newTime = DatetimeUtil.datePlus(DatetimeUtil.nowDate(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
+                if (newTime.endsWith("天前")) newTime = DatetimeOldUtil.datePlus(DatetimeUtil.nowDatetime(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
                         ?: 0))
                 Logger.d("rawTime:$rawTime\nnewTime:$newTime")
                 val updateTime = if (newTime.isEmpty()) rawTime else newTime
@@ -167,7 +169,7 @@ class NewsSitesMod {
                             val latestUpdate = g.fromJson(jsonData, FirimApiLatestUpdate::class.java)
                             result.message = ""
                             Logger.d(latestUpdate.updated_at)
-                            val updateTime = DatetimeUtil.unixTime2date("${latestUpdate.updated_at}000".toLong())
+                            val updateTime = DatetimeUtil.unixTime2date("${latestUpdate.updated_at}000".toLong(), Locale.CHINA)
                             result.result = AppInfo(pageageName, apiToken, latestUpdate.name, "FIRIM_V1", "",
                                     latestUpdate.versionShort + "(${latestUpdate.version})",
                                     updateTime, pageageName, latestUpdate.update_url,
@@ -303,7 +305,7 @@ class NewsSitesMod {
                     Logger.d("downloadUrl:$downloadUrl")
                     val appVersion = jsoupUtil.html("div.det-othinfo-data", 0)
                     val updateUnixTime = jsoupUtil.attr("#J_ApkPublishTime", "data-apkpublishtime").toLong()
-                    val updateTime = DatetimeUtil.unixTime2date(updateUnixTime * 1000)
+                    val updateTime = DatetimeUtil.unixTime2date(updateUnixTime * 1000, Locale.CHINA)
                     Logger.d("updateUnixTime:$updateUnixTime")
                     Logger.d("updateTime:$updateTime")
                     val author = jsoupUtil.html("div.det-othinfo-data", 2)

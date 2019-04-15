@@ -24,7 +24,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.FileOldUtil

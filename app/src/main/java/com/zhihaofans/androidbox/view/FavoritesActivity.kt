@@ -7,14 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemIdMod
-import com.zhihaofans.androidbox.util.DatetimeUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import io.zhihao.library.android.kotlinEx.*
 import io.zhihao.library.android.util.ClipboardUtil
+import io.zhihao.library.android.util.DatetimeUtil
 import kotlinx.android.synthetic.main.activity_favorites.*
 import kotlinx.android.synthetic.main.content_favorites.*
 import org.jetbrains.anko.*

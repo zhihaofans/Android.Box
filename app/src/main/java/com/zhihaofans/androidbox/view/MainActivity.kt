@@ -17,7 +17,6 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
-import com.zhihaofans.androidbox.kotlinEx.snackbar
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
@@ -25,6 +24,7 @@ import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.ZLibrary
+import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.string
 import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil

@@ -110,4 +110,5 @@
     <string name="text_tophub_today_v2ex_hot">Tophub.Today - V2EX Hottest</string>
     <string name="text_site_tophub_baidu">Tophub.Today - Baidu</string>
     <string name="text_site_tophub_qdaily">Tophub.Today - qdaily</string>
+    <string name="title_activity_tophub">Tophub</string>
 </resources>

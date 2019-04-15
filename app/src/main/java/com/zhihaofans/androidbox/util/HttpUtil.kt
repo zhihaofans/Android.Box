@@ -15,7 +15,7 @@ import java.net.URL
  */
 class HttpUtil {
     companion object {
-        fun httpGetString(url: String, headers: MutableMap<String, String>? = null): String? {
+        fun httpGetString(url: String, headers: Map<String, String>? = null): String? {
             val client = OkHttpClient()
             val requestBuilder = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(url)
             headers?.map {

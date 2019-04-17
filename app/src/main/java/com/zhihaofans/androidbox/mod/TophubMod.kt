@@ -15,7 +15,7 @@ import org.jsoup.nodes.Element
  */
 class TophubMod {
     companion object {
-        private val userAgent = "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Mobile Safari/537.36"
+        private const val userAgent = "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Mobile Safari/537.36"
         private val httpHeader = mapOf("User-Agent" to userAgent)
         fun getHomePage(): TophubHomepage? {
             val url = UrlMod.TOPHUB_MOD_HOMEPAGE
@@ -39,13 +39,19 @@ class TophubMod {
                             val groupList: MutableList<TophubHomepageGroup> = mutableListOf()
                             var thisGroup = TophubHomepageGroup("", mutableListOf())
                             list.map { element ->
-                                if (element.hasClass("weui-cells__title")) thisGroup = TophubHomepageGroup("", mutableListOf())
+                                if (element.hasClass("weui-cells__title")) {
+                                    thisGroup = TophubHomepageGroup(element.text()
+                                            ?: "", mutableListOf())
+                                }
                                 if (element.hasClass("weui-cells")) {
                                     val itemListHtml = element.select("a.weui-cell.weui-cell_access")
                                     itemListHtml.map { item ->
                                         val itemTitle = item.select("div.weui-cell__bd > p").html()
                                                 ?: ""
-                                        val itemUrl = item.attr("href") ?: ""
+                                        var itemUrl = item.attr("href") ?: ""
+                                        if (itemUrl.startsWith("/")) {
+                                            itemUrl = url + itemUrl
+                                        }
                                         val itemIcon = item.select("div.weui-cell__hd > img").attr("src")
                                                 ?: ""
                                         thisGroup.items.add(TophubHomepageGroupItem(itemTitle, itemUrl, itemIcon))
@@ -73,7 +79,10 @@ class TophubMod {
                     val doc = Jsoup.parse(result, webSiteUrl)
                     val siteTitle = doc.select("h1.custom-title").text() ?: webSiteUrl
                     val subTitle = doc.select("div.official-topic-brief").text() ?: webSiteUrl
-                    val siteIcon = doc.select("img.custom-pic").attr("src") ?: ""
+                    var siteIcon = doc.select("img.custom-pic").attr("src") ?: ""
+                    if (siteIcon.startsWith("/")) {
+                        siteIcon = UrlMod.TOPHUB_MOD_HOMEPAGE + siteIcon
+                    }
                     val elementGroup = doc.select("div.weui-panel.weui-panel_access")
                     if (elementGroup.size == 3) {
                         val hotList = mutableListOf<TophubModSiteList>()
@@ -90,7 +99,10 @@ class TophubMod {
                         }?.map {
                             val itemTitle = it.select("div.weui-media-box__bd > h4.weui-media-box__title").text()
                             val subtitle = it.select("div.weui-media-box__bd > p.weui-media-box__desc").text()
-                            val itemUrl = it.attr("href") ?: ""
+                            var itemUrl = it.attr("href") ?: ""
+                            if (itemUrl.startsWith("/")) {
+                                itemUrl = UrlMod.TOPHUB_MOD_HOMEPAGE + itemUrl
+                            }
                             hotList.add(TophubModSiteList(itemTitle, subtitle, itemUrl))
                         }
                         // History list
@@ -99,7 +111,10 @@ class TophubMod {
                         }?.map {
                             val itemTitle = it.select("div.weui-media-box__bd > h4.weui-media-box__title").text()
                             val subtitle = it.select("div.weui-media-box__bd > p.weui-media-box__desc").text()
-                            val itemUrl = it.attr("href") ?: ""
+                            var itemUrl = it.attr("href") ?: ""
+                            if (itemUrl.startsWith("/")) {
+                                itemUrl = UrlMod.TOPHUB_MOD_HOMEPAGE + itemUrl
+                            }
                             historyList.add(TophubModSiteList(itemTitle, subtitle, itemUrl))
                         }
                         // Recommend site list
@@ -108,9 +123,15 @@ class TophubMod {
                         }?.map {
                             val itemTitle = it.select("div.weui-media-box__bd > h4.weui-media-box__title").text()
                             val subtitle = it.select("div.weui-media-box__bd > p.weui-media-box__desc").text()
-                            val itemUrl = it.attr("href") ?: ""
-                            val iconUrl = it.select("div.weui-media-box__hd > img.weui-media-box__thumb radius").attr("src")
+                            var itemUrl = it.attr("href") ?: ""
+                            if (itemUrl.startsWith("/")) {
+                                itemUrl = UrlMod.TOPHUB_MOD_HOMEPAGE + itemUrl
+                            }
+                            var iconUrl = it.select("div.weui-media-box__hd > img.weui-media-box__thumb radius").attr("src")
                                     ?: ""
+                            if (iconUrl.startsWith("/")) {
+                                iconUrl = UrlMod.TOPHUB_MOD_HOMEPAGE + iconUrl
+                            }
                             recommendSiteList.add(TophubModSiteRecommend(itemTitle, subtitle, itemUrl, iconUrl))
                         }
                         TophubModSite(siteTitle, subTitle, webSiteUrl, siteIcon, updateText, hotList, historyList, recommendSiteList)

@@ -23,7 +23,6 @@ import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.AppUtils
 import dev.utils.app.DialogUtils
-import io.zhihao.library.android.ZLibrary
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.string
 import io.zhihao.library.android.util.AppUtil
@@ -163,15 +162,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtils.getAppVersionCode() == 130) {
-            try {
-                ZLibrary.getContext()
-                Logger.d("ZLibrary.getContext()")
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Logger.e("ZLibrary.getContext()")
-            }
-            startActivity<FeedActivity>()
+        if (AppUtils.getAppVersionCode() == 132) {
+            startActivity<TophubActivity>()
         }
     }
 

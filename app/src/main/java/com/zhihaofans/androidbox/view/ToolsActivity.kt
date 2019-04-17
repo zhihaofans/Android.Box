@@ -52,7 +52,8 @@ class ToolsActivity : AppCompatActivity() {
                 getString(R.string.text_bilibili),
                 "快捷方式",
                 "随机",
-                "号码自动添加前缀"
+                "号码自动添加前缀",
+                getString(R.string.title_activity_tophub)
         )
         listView_tools.init(tools)
         listView_tools.setOnItemClickListener { _, _, position, _ ->
@@ -139,6 +140,7 @@ class ToolsActivity : AppCompatActivity() {
                 9 -> startActivity<ShortcutsActivity>()
                 10 -> startActivity<RandomActivity>()
                 11 -> number()
+                12 -> startActivity<TophubActivity>()
             }
         }
     }

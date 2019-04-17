@@ -9,6 +9,7 @@ package com.zhihaofans.androidbox.data
 
  */
 
+
 // Home page
 data class TophubHomepage(
         val groupList: List<TophubHomepageGroup>

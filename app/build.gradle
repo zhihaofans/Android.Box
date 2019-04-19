@@ -46,7 +46,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testImplementation 'junit:junit:4.12'
 
-    // Android
+    // Android / Google
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -57,77 +57,76 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.0.1'
     implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
-    // Anko
+    // Anko <https://github.com/Kotlin/anko>
     implementation "org.jetbrains.anko:anko:$anko_version"
 
-    // Logger
+    // Logger <https://github.com/orhanobut/logger>
     implementation 'com.orhanobut:logger:2.2.0'
 
-    //RxAndroid
+    // RxAndroid <https://github.com/ReactiveX/RxAndroid>
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
-    // OkHttp 3
+    // OkHttp3 <https://github.com/square/okhttp>
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.okio:okio:1.14.0'
 
-    // Gson
-    implementation 'com.google.code.gson:gson:2.8.5'
-
-    // Jsoup
+    // Jsoup <https://github.com/jhy/jsoup>
     implementation 'org.jsoup:jsoup:1.11.3'
 
-    // Fresco
+    // Fresco <https://github.com/facebook/fresco>
     implementation "com.facebook.fresco:fresco:$fresco_version"
     implementation "com.facebook.fresco:animated-webp:$fresco_version"
     implementation "com.facebook.fresco:webpsupport:$fresco_version"
     implementation "com.facebook.fresco:animated-gif:$fresco_version"
 
-    // XQRCode
+    // XQRCode <https://github.com/xuexiangjys/XQRCode>
     implementation 'com.github.xuexiangjys:XQRCode:1.0.0'
 
-    // FileDownloader
+    // FileDownloader <https://github.com/lingochamp/FileDownloader>
     implementation 'com.liulishuo.filedownloader:library:1.7.4'
 
-    // xxpermissions
+    // XXPermissions <https://github.com/getActivity/XXPermissions>
     implementation 'com.hjq:xxpermissions:3.6'
 
-    // DevUtils
+    // DevUtils <https://github.com/afkT/DevUtils>
     implementation 'com.github.afkT:DevUtils:1.5.5@aar'
 
-    // Paperdb
+    // Paperdb <https://github.com/pilgr/Paper>
     implementation 'io.paperdb:paperdb:2.6'
 
-    // AppUpdater
+    // AppUpdater <https://github.com/javiersantos/AppUpdater>
     implementation 'com.github.javiersantos:AppUpdater:2.7'
 
-    // RxTool
+    // RxTool <https://github.com/vondear/RxTool>
     implementation 'com.github.vondear.RxTool:RxKit:v2.2.7'
     implementation 'com.github.vondear.RxTool:RxUI:v2.2.7'
     implementation 'com.github.vondear.RxTool:RxCamera:v2.2.7'
 
-    //spiderman
+    // SpiderMan <https://github.com/simplepeng/SpiderMan>
     implementation 'com.simple:spiderman:1.0.8'
 
-    // XUI
+    // XUI <https://github.com/xuexiangjys/XUI>
     implementation 'com.github.xuexiangjys:XUI:1.0.1'
 
-    // SmartRefreshLayout
+    // SmartRefreshLayout <https://github.com/scwang90/SmartRefreshLayout>
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-4'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-andx-4'
 
-    // XmlToJson
+    // XmlToJson <https://github.com/smart-fun/XmlToJson>
     implementation 'com.github.smart-fun:XmlToJson:1.4.4'
 
-    // DoraemonKit
+    // DoraemonKit <https://github.com/didi/DoraemonKit>
     debugImplementation "com.didichuxing.doraemonkit:doraemonkit:$doraemonkit_version"
     releaseImplementation "com.didichuxing.doraemonkit:doraemonkit-no-op:$doraemonkit_version"
 
     // AndroidLibrary <https://github.com/zhihaofans/AndroidLibrary>
     debugImplementation files("libs/android_library-release.aar")
     releaseImplementation 'io.zhihao:AndroidLibrary:0.0.6'
-    // BaseRecyclerViewAdapterHelper: https://github.com/CymChad/BaseRecyclerViewAdapterHelper
+    
+    // BaseRecyclerViewAdapterHelper <https://github.com/CymChad/BaseRecyclerViewAdapterHelper>
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
 }
 kotlin {

@@ -2,15 +2,18 @@ package com.zhihaofans.androidbox.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.adapter.MultipleItemQuickAdapter
+import com.zhihaofans.androidbox.data.DataServer
 import com.zhihaofans.androidbox.data.TophubHomepage
 import com.zhihaofans.androidbox.data.TophubHomepageGroupItem
 import com.zhihaofans.androidbox.mod.TophubMod
 import com.zhihaofans.androidbox.util.ToastUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
-import kotlinx.android.synthetic.main.activity_tophub.*
+import kotlinx.android.synthetic.main.activity_multiple_item_use.rv_list
 import kotlinx.android.synthetic.main.content_tophub.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.doAsync
@@ -21,13 +24,28 @@ class TophubActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         XUI.initTheme(this)
         super.onCreate(savedInstanceState)
+        /*
         setContentView(R.layout.activity_tophub)
         setSupportActionBar(toolbar_tophub)
+        listview_tophub.visibility = View.INVISIBLE
         init()
         fab_tophub.setOnClickListener {
-            init()
+            //init()
         }
+        */
+        newInit()
+    }
 
+    private fun newInit() {
+        setContentView(R.layout.activity_multiple_item_use)
+        title = "MultipleItem Use"
+
+        val data = DataServer.getMultipleItemData()
+        val multipleItemAdapter = MultipleItemQuickAdapter(data)
+        val manager = GridLayoutManager(this, 4)
+        rv_list.layoutManager = manager
+        multipleItemAdapter.setSpanSizeLookup { _, position -> data[position].spanSize }
+        rv_list.adapter = multipleItemAdapter
     }
 
     private fun init() {

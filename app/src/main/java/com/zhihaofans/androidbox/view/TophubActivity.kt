@@ -14,19 +14,30 @@ import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
-import kotlinx.android.synthetic.main.activity_multiple_item_use.rv_list
+import kotlinx.android.synthetic.main.activity_multiple_item_use.*
 import kotlinx.android.synthetic.main.activity_tophub.*
 import kotlinx.android.synthetic.main.content_tophub.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
+
 class TophubActivity : AppCompatActivity() {
     private val xui = XUIUtil(this)
+    private var isHomepage = true
     override fun onCreate(savedInstanceState: Bundle?) {
         XUI.initTheme(this)
         super.onCreate(savedInstanceState)
         init()
+    }
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        backKeyListen()
+    }
+
+    private fun backKeyListen() {
+        if (isHomepage) finish() else loading()
     }
 
     private fun newInit() {
@@ -45,26 +56,31 @@ class TophubActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_tophub)
         loading()
         fab_tophub.setOnClickListener {
-            init()
+            loading()
         }
     }
 
     private fun loading() {
         listview_tophub.removeAllItems()
         this@TophubActivity.title = "Loading..."
+        isHomepage = true
         doAsync {
             try {
                 val homePage = TophubMod.getHomePage()
                 uiThread {
                     if (homePage == null) {
                         ToastUtil.error("加载主页失败")
+                        this@TophubActivity.title = getString(R.string.title_activity_tophub)
                     } else {
                         listViewHomePageInit(homePage)
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                ToastUtil.error("加载出错")
+                uiThread {
+                    ToastUtil.error("加载出错")
+                    this@TophubActivity.title = getString(R.string.title_activity_tophub)
+                }
             }
         }
     }
@@ -91,8 +107,11 @@ class TophubActivity : AppCompatActivity() {
                         0 -> listViewSiteHotInit(chooseSite)
                         1 -> listViewSiteHistoryInit(chooseSite)
                     }
+                    isHomepage = false
                 }.show()
             }
+            this@TophubActivity.title = getString(R.string.title_activity_tophub)
+            ToastUtil.success("加载主页完毕")
         }
     }
 

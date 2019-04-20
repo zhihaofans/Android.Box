@@ -9,6 +9,8 @@ import com.zhihaofans.androidbox.adapter.MultipleItemQuickAdapter
 import com.zhihaofans.androidbox.data.DataServer
 import com.zhihaofans.androidbox.data.TophubHomepage
 import com.zhihaofans.androidbox.data.TophubHomepageGroupItem
+import com.zhihaofans.androidbox.mod.OtherAppMod
+import com.zhihaofans.androidbox.mod.SettingMod
 import com.zhihaofans.androidbox.mod.TophubMod
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
@@ -130,7 +132,7 @@ class TophubActivity : AppCompatActivity() {
                         listview_tophub.removeAllItems()
                         listview_tophub.init(hotList.map { it.title })
                         listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                            browse(hotList[position].url)
+                            browseWeb(hotList[position].url)
                         }
                         ToastUtil.success("加载主页完毕")
                     }
@@ -154,12 +156,20 @@ class TophubActivity : AppCompatActivity() {
                         listview_tophub.removeAllItems()
                         listview_tophub.init(historyList.map { it.title })
                         listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                            browse(historyList[position].url)
+                            browseWeb(historyList[position].url)
                         }
                         ToastUtil.success("加载主页完毕")
                     }
                 }
             }
+        }
+    }
+
+    private fun browseWeb(url: String) {
+        if (SettingMod.loadBooleanSetting("ACTIVITY_TOPHUB_BROWSER_LYNKET") == true) {
+            OtherAppMod.browserByLynket(url)
+        } else {
+            browse(url)
         }
     }
 }

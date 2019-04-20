@@ -192,5 +192,28 @@ class OtherAppMod {
                 false
             }
         }
+
+        fun browserByLynket(url: String): Boolean {
+            if (url.isEmpty()) return false
+            val packageName = "arun.com.chromer"
+            val className = "arun.com.chromer.browsing.browserintercept.BrowserInterceptActivity"
+            if (!AppUtils.isInstalledApp(packageName)) {
+                Logger.d("未安装 $packageName")
+                return false
+            }
+            return try {
+                val mIntent = IntentUtils.getLaunchAppIntent(packageName).apply {
+                    data = url.toUri()
+                    setClassName(packageName, className)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+                if (!IntentUtils.isIntentAvailable(mIntent)) return false
+                mContext.startActivity(mIntent)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
     }
 }

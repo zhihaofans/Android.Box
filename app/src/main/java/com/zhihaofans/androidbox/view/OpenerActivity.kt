@@ -24,7 +24,7 @@ class OpenerActivity : AppCompatActivity() {
         XUI.initTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_opener)
-        setSupportActionBar(toolbar_tophub)
+        setSupportActionBar(toolbar_opener)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

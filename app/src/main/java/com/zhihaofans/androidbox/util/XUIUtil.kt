@@ -145,4 +145,11 @@ DEMO
         return SnackbarUtils.Long(view, AppUtil.getString(message)).danger().show()
     }
 
+    fun selector(title: String, items: List<String>): MaterialDialog.Builder {
+        return MaterialDialog.Builder(mContext)
+                .title(title)
+                .items(items)
+        //.itemsCallback({ dialog, view, which, text -> Toast(which + ": " + text) })
+        //.show()
+    }
 }

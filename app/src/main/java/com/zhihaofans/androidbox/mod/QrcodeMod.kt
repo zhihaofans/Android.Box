@@ -2,8 +2,6 @@ package com.zhihaofans.androidbox.mod
 
 import android.app.Activity
 import android.content.Intent
-import com.xuexiang.xqrcode.XQRCode
-import com.xuexiang.xqrcode.ui.CaptureActivity
 
 
 /**
@@ -14,14 +12,9 @@ import com.xuexiang.xqrcode.ui.CaptureActivity
 class QrcodeMod {
     private var activity: Activity = Activity()
     var isInstallQrPlugin = false
-    fun setActivity(activity: Activity) {
-        this@QrcodeMod.activity = activity
-        XQRCode.debug(false)
-    }
 
     fun setActivity(activity: Activity, debug: Boolean) {
         this@QrcodeMod.activity = activity
-        XQRCode.debug(debug)
     }
 
     fun file() {
@@ -31,8 +24,9 @@ class QrcodeMod {
         //0:调用自带 1:调用mark.qrcode 2:调用org.noear.scan
         when (qrcodeFrame) {
             0 -> {
+                /*
                 val intent = Intent(activity, CaptureActivity::class.java)
-                activity.startActivityForResult(intent, 0)
+                activity.startActivityForResult(intent, 0)*/
             }
             1 -> {
                 val intent = Intent("mark.qrcode.SCAN")
@@ -66,6 +60,8 @@ class QrcodeMod {
      * @param data
      */
     fun handleScanResult(data: Intent?): MutableMap<String, String> {
+        return mutableMapOf()
+        /*
         val returnMessage = mutableMapOf(
                 "code" to "0",
                 "message" to "ok",
@@ -88,6 +84,6 @@ class QrcodeMod {
             returnMessage["code"] = "3"
             returnMessage["message"] = "data = null"
         }
-        return returnMessage
+        return returnMessage*/
     }
 }

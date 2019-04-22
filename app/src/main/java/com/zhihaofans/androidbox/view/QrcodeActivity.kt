@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.view
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.text.Editable
@@ -14,7 +13,7 @@ import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.orhanobut.logger.Logger
-import com.xuexiang.xqrcode.XQRCode
+import com.vondear.rxfeature.tool.RxQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
@@ -30,7 +29,6 @@ import dev.utils.common.DateUtils
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.DeviceUtil
-import io.zhihao.library.android.util.IntentUtil
 import kotlinx.android.synthetic.main.activity_qrcode.*
 import kotlinx.android.synthetic.main.content_qrcode.*
 import org.jetbrains.anko.*
@@ -167,6 +165,9 @@ class QrcodeActivity : AppCompatActivity() {
                                 val realUri = UriUtils.getFilePathByUri(this, uri)
                                 Logger.d("uri:${uri.path}")
                                 Logger.d("realUri:$realUri")
+                                snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
+                                //TODO:修复解析qrcode失败的BUG
+                                /*
                                 val qrcodeResult = XQRCode.getAnalyzeQRCodeResult(realUri)
                                 if (qrcodeResult == null) {
                                     snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
@@ -175,7 +176,7 @@ class QrcodeActivity : AppCompatActivity() {
                                     Logger.d("qrcodeStr:$qrcodeStr")
                                     editText_qrcode_content.setText(qrcodeStr)
                                     snackbar(coordinatorLayout_qrcode, "解析完毕")
-                                }
+                                }*/
                             }
                         } else {
                             snackbar(coordinatorLayout_qrcode, "返回空白数据")
@@ -224,11 +225,12 @@ class QrcodeActivity : AppCompatActivity() {
     private fun generateQR(firstRun: Boolean = false) {
         val qrcodeContentInput = editText_qrcode_content.text.toString()
         if (qrcodeContentInput.isNotEmpty()) {
-            val qrcodeData = XQRCode.createQRCodeWithLogo(qrcodeContentInput, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-            if (qrcodeData !== null) {
+            try {
+                val qrcodeData = RxQRCode.creatQRCode(qrcodeContentInput)
                 imageView_qrcode.setImageDrawable(BitmapDrawable(resources, qrcodeData))
                 hasQrcode = true
-            } else {
+            } catch (e: Exception) {
+                e.printStackTrace()
                 coordinatorLayout_qrcode.snackbar("生成二维码失败，返回null数据")
             }
         } else {
@@ -245,10 +247,15 @@ class QrcodeActivity : AppCompatActivity() {
                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                         if (isAll) {
                             try {
-                                qrcode.scan(0)
+                                qrcode.scan(1)
                             } catch (e: Exception) {
                                 e.printStackTrace()
-                                coordinatorLayout_qrcode.snackbar("启动失败")
+                                try {
+                                    qrcode.scan(2)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    coordinatorLayout_qrcode.snackbar("启动失败")
+                                }
                             }
                         } else {
                             Snackbar.make(coordinatorLayout_qrcode, "未授权储存权限，无法扫码", Snackbar.LENGTH_SHORT).setAction("授权") { getCameraPermission() }.show()
@@ -262,6 +269,8 @@ class QrcodeActivity : AppCompatActivity() {
     }
 
     private fun openFile() {
+        ToastUtil.error("解析二维码图片功能失效，请等待修复")
+        /*
         try {
             val photoPickerIntent = IntentUtil.getChooseImageFileIntent()
             startActivityForResult(photoPickerIntent, 666)
@@ -269,7 +278,7 @@ class QrcodeActivity : AppCompatActivity() {
             e.printStackTrace()
             coordinatorLayout_qrcode.snackbar("打开文件失败")
         }
-
+        */
         //val intent = Intent(Intent.ACTION_GET_CONTENT)
         //intent.type = "image/*"//设置类型，我这里是任意类型，任意后缀的可以这样写。
         //intent.addCategory(Intent.CATEGORY_OPENABLE)

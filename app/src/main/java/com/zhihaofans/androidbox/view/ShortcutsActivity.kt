@@ -37,30 +37,40 @@ class ShortcutsActivity : AppCompatActivity() {
     private fun init() {
         val shortcutList = listOf(
                 getString(R.string.text_feed),
-                getString(R.string.text_qrcode_scan)
+                getString(R.string.text_qrcode_scan),
+                getString(R.string.title_activity_tophub),
+                getString(R.string.text_setting)
         )
         listViewShortcuts.init(shortcutList)
         listViewShortcuts.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
                     val launchIntent = Intent(this, FeedShortcuts::class.java)
-                    if (shortcutsUtil.addPinShortcut("$packageName.FeedActivity", launchIntent, shortcutList[position], defaultIcon)) {
-                        ToastUtil.success("创建快捷方式成功")
-                    } else {
-                        ToastUtil.error("创建快捷方式失败")
-                    }
+                    addPinShortcut("$packageName.FeedActivity", launchIntent, shortcutList[position], defaultIcon)
                 }
                 1 -> {
                     val launchIntent = Intent(this, QrcodeScanShortcuts::class.java)
-                    if (shortcutsUtil.addPinShortcut("$packageName.QrcodeScan", launchIntent, shortcutList[position],
-                                    Icon.createWithResource(this, R.drawable.ic_camera))) {
-                        ToastUtil.success("创建快捷方式成功")
-                    } else {
-                        ToastUtil.error("创建快捷方式失败")
-                    }
+                    addPinShortcut("$packageName.QrcodeScan", launchIntent, shortcutList[position],
+                            Icon.createWithResource(this, R.drawable.ic_camera))
+                }
+                2 -> {
+                    val launchIntent = Intent(this, TophubActivity::class.java)
+                    addPinShortcut("$packageName.TophubActivity", launchIntent, shortcutList[position], defaultIcon)
+                }
+                3 -> {
+                    val launchIntent = Intent(this, SettingActivity::class.java)
+                    addPinShortcut("$packageName.SettingActivity", launchIntent, shortcutList[position], defaultIcon)
                 }
                 else -> ToastUtil.error("未知错误")
             }
+        }
+    }
+
+    private fun addPinShortcut(id: String, intent: Intent, shortcutName: String, icon: Icon) {
+        if (shortcutsUtil.addPinShortcut(id, intent, shortcutName, icon)) {
+            ToastUtil.success("创建快捷方式成功")
+        } else {
+            ToastUtil.error("创建快捷方式失败")
         }
     }
 }

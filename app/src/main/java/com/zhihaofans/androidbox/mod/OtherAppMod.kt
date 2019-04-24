@@ -5,9 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
-import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import io.zhihao.library.android.ZLibrary
+import io.zhihao.library.android.util.AppUtil
 import java.net.URL
 
 
@@ -26,7 +26,7 @@ class OtherAppMod {
 
         fun alipayQRCodeScan(): Boolean {
             //打开支付宝扫一扫
-            if (!AppUtils.isInstalledApp("com.eg.android.AlipayGphone")) return false
+            if (!AppUtil.isAppInstalled("com.eg.android.AlipayGphone")) return false
             return try {
                 val uri = Uri.parse("alipayqr://platformapi/startapp?saId=10000007")
                 val intent = Intent(Intent.ACTION_VIEW, uri).apply {
@@ -43,7 +43,7 @@ class OtherAppMod {
         fun wechatQRCodeScan(): Boolean {
             //打开微信扫一扫
             val packageName = "com.tencent.mm"
-            if (!AppUtils.isInstalledApp(packageName)) return false
+            if (!AppUtil.isAppInstalled(packageName)) return false
             return try {
                 val intent = IntentUtils.getLaunchAppIntent(packageName).apply {
                     putExtra("LauncherUI.From.Scaner.Shortcut", true)
@@ -65,7 +65,7 @@ class OtherAppMod {
         fun bilibiliWebView(url: String): Boolean {
             //在哔哩哔哩动画客户端打开网页（全屏显示，但无法隐藏系统状态栏）
             val packageName = "tv.danmaku.bili"
-            if (!AppUtils.isInstalledApp(packageName)) {
+            if (!AppUtil.isAppInstalled(packageName)) {
                 Logger.d("未安装$packageName")
                 return false
             }
@@ -108,7 +108,7 @@ class OtherAppMod {
         fun admProDownload1(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm.pay"
-            if (!AppUtils.isInstalledApp(packageName)) {
+            if (!AppUtil.isAppInstalled(packageName)) {
                 Logger.d("未安装 $packageName")
                 return false
             }
@@ -130,7 +130,7 @@ class OtherAppMod {
         fun admProDownload2(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm.pay"
-            if (!AppUtils.isInstalledApp(packageName)) {
+            if (!AppUtil.isAppInstalled(packageName)) {
                 Logger.d("未安装 $packageName")
                 return false
             }
@@ -152,7 +152,7 @@ class OtherAppMod {
         fun admDownload1(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm"
-            if (!AppUtils.isInstalledApp(packageName)) {
+            if (!AppUtil.isAppInstalled(packageName)) {
                 Logger.d("未安装 $packageName")
                 return false
             }
@@ -174,7 +174,7 @@ class OtherAppMod {
         fun admDownload2(url: String): Boolean {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm"
-            if (!AppUtils.isInstalledApp(packageName)) {
+            if (!AppUtil.isAppInstalled(packageName)) {
                 Logger.d("未安装 $packageName")
                 return false
             }
@@ -197,8 +197,8 @@ class OtherAppMod {
             if (url.isEmpty()) return false
             val packageName = "arun.com.chromer"
             val className = "arun.com.chromer.browsing.browserintercept.BrowserInterceptActivity"
-            if (!AppUtils.isInstalledApp(packageName)) {
-                Logger.d("未安装 $packageName")
+            if (!AppUtil.isAppInstalled(packageName)) {
+                Logger.e("未安装 $packageName")
                 return false
             }
             return try {

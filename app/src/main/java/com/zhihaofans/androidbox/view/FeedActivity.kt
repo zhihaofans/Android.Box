@@ -1,23 +1,18 @@
 package com.zhihaofans.androidbox.view
 
-import android.app.PendingIntent
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.TaskStackBuilder
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FeedMod
-import com.zhihaofans.androidbox.util.*
+import com.zhihaofans.androidbox.util.NotificationUtil
+import com.zhihaofans.androidbox.util.SystemUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
 import io.zhihao.library.android.kotlinEx.snackbar
-import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_feed.*
 import kotlinx.android.synthetic.main.content_feed.*
-import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.uiThread
@@ -389,94 +384,7 @@ class FeedActivity : AppCompatActivity() {
 
             }*/
         }
-        snackbar(coordinatorLayout_feed, "加载完毕")
-    }
-
-    private fun downloadFile(url: String, fileName: String) {
-        when {
-            url.isEmpty() -> snackbar("下载失败：下载地址空白")
-            fileName.isEmpty() -> snackbar("下载失败：文件名空白")
-            else -> {
-                val filePath = appBox.getSavePath() + fileName
-                val notification = notificationUtil.createProgress("正在下载", fileName)
-                FileOldUtil.download(url, filePath, object : FileDownloadListener() {
-                    override fun pending(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun connected(task: BaseDownloadTask?, etag: String?, isContinue: Boolean, soFarBytes: Int, totalBytes: Int) {
-
-                    }
-
-                    override fun progress(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        if (totalBytes > 0 && notification !== null) {
-                            notificationUtil.setProgressNotificationLength(notification, soFarBytes, totalBytes)
-                        }
-                    }
-
-                    override fun blockComplete(task: BaseDownloadTask?) {}
-
-                    override fun retry(task: BaseDownloadTask?, ex: Throwable?, retryingTimes: Int, soFarBytes: Int) {
-                        coordinatorLayout_feed.snackbar("Retry,Times: $retryingTimes")
-                        if (notification !== null) {
-                            notificationUtil.delete(notification.notificationId)
-                        }
-                    }
-
-                    override fun completed(task: BaseDownloadTask) {
-                        if (notification !== null) notificationUtil.delete(notification.notificationId)
-                        val stackBuilder = TaskStackBuilder.create(this@FeedActivity)
-                        val resultPendingIntent = stackBuilder.apply {
-                            addNextIntent(IntentUtil.getInstallIntent(this@FeedActivity, task.targetFilePath))
-                        }.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-                        if (resultPendingIntent == null) {
-                            notificationUtil.create("错误！", "创建安装通知失败")
-                        } else {
-                            notificationUtil.createIntent("下载完毕", "点击安装", resultPendingIntent, true)
-                        }
-                        alert {
-                            title = "下载完成"
-                            message = "文件路径:" + task.targetFilePath
-                            positiveButton(R.string.text_copy) {
-                                ClipboardUtil.copy(task.targetFilePath)
-                                ToastUtil.success("复制成功")
-                            }
-                            negativeButton(R.string.text_open) {
-                                try {
-                                    FileOldUtil.installApk(this@FeedActivity, task.targetFilePath)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                    snackbar("安装失败")
-                                }
-                            }
-                        }.show()
-
-                    }
-
-                    override fun paused(task: BaseDownloadTask, soFarBytes: Int, totalBytes: Int) {
-                        coordinatorLayout_feed.snackbar("paused")
-                        if (notification !== null) {
-                            notificationUtil.delete(notification.notificationId)
-                        }
-
-                    }
-
-                    override fun error(task: BaseDownloadTask, e: Throwable) {
-                        e.printStackTrace()
-                        Logger.d("Download error\nfileName:" + task.filename)
-                        if (notification !== null) {
-                            notificationUtil.delete(notification.notificationId)
-                        }
-                        notificationUtil.create("下载失败", task.filename)
-                    }
-
-                    override fun warn(task: BaseDownloadTask) {}
-                })
-            }
-        }
-    }
-
-    private fun snackbar(msg: String) {
-        coordinatorLayout_feed.snackbar(msg)
+        coordinatorLayout_feed.snackbar("加载完毕")
     }
 }
 

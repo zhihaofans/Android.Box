@@ -19,7 +19,6 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
-import dev.utils.app.AppUtils
 import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
 import dev.utils.app.UriUtils
@@ -27,6 +26,7 @@ import dev.utils.app.image.BitmapUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.DateUtils
 import io.zhihao.library.android.kotlinEx.snackbar
+import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.DeviceUtil
 import kotlinx.android.synthetic.main.activity_qrcode.*
@@ -95,7 +95,7 @@ class QrcodeActivity : AppCompatActivity() {
 
         }
         checkMethod()
-        if (AppUtils.isAppDebug()) {
+        if (AppUtil.isDebug()) {
             editText_qrcode_content.setText(UrlMod.UPDATE_FIR_IM)
             generateQR()
         }

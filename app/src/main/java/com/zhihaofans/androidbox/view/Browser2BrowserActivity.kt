@@ -11,10 +11,10 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.Browser2BrowserMod
 import com.zhihaofans.androidbox.util.ToastUtil
-import dev.utils.app.AppUtils
 import io.zhihao.library.android.kotlinEx.getLabel
 import io.zhihao.library.android.kotlinEx.isActionSend
 import io.zhihao.library.android.kotlinEx.isActionView
+import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.IntentUtil
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -92,7 +92,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 } else {
                     val appNameList = appList.map {
                         val activityName = it.resolveInfo.activityInfo.getLabel()
-                        val appName = AppUtils.getAppName(it.packageName)
+                        val appName = AppUtil.getAppName(it.packageName)
                         "${if (activityName.isEmpty()) appName else activityName} ($appName)"
                     }.toList()
                     MaterialDialog.Builder(this)

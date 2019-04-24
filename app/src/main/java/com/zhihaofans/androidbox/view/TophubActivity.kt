@@ -16,6 +16,7 @@ import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
+import io.zhihao.library.android.util.AppUtil
 import kotlinx.android.synthetic.main.activity_multiple_item_use.*
 import kotlinx.android.synthetic.main.activity_tophub.*
 import kotlinx.android.synthetic.main.content_tophub.*
@@ -166,10 +167,28 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun browseWeb(url: String) {
-        if (SettingMod.loadBooleanSetting("ACTIVITY_TOPHUB_BROWSER_LYNKET") == true) {
-            OtherAppMod.browserByLynket(url)
-        } else {
-            browse(url)
+        try {
+            if (SettingMod.loadBooleanSetting("ACTIVITY_TOPHUB_BROWSER_LYNKET") == true) {
+                val pn = "arun.com.chromer"
+                if (AppUtil.isAppInstalled(pn)) {
+                    if (OtherAppMod.browserByLynket(url)) {
+                        ToastUtil.success("启动成功")
+                    } else {
+                        ToastUtil.error("启动失败")
+                    }
+                } else {
+                    ToastUtil.error("启动失败,未安装$pn")
+                }
+            } else {
+                if (browse(url)) {
+                    ToastUtil.success("启动成功")
+                } else {
+                    ToastUtil.error("启动失败")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ToastUtil.error("启动失败,发现应用异常")
         }
     }
 }

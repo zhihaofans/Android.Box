@@ -10,8 +10,8 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemIdMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import dev.utils.app.AppUtils
 import io.zhihao.library.android.kotlinEx.*
+import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.DatetimeUtil
 import kotlinx.android.synthetic.main.activity_favorites.*
@@ -140,7 +140,7 @@ class FavoritesActivity : AppCompatActivity() {
 
     private fun initShare() {
         val mIntent = intent
-        var appName: String? = AppUtils.getAppName(mIntent.getPackageName())
+        var appName: String? = AppUtil.getAppName(mIntent.getPackageName().toString())
         if (appName.isNullOrEmpty()) appName = "其他应用"
         var defaultTitle = "来自$appName"
         if ((mIntent.isActionSend) && mIntent.type != null && mIntent.type == "text/plain") {

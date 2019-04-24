@@ -21,7 +21,6 @@ import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
-import dev.utils.app.AppUtils
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.string
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        toolbar_main.subtitle = "v" + AppUtils.getAppVersionName()
+        toolbar_main.subtitle = "v" + AppUtil.getAppVersionName()
         setSupportActionBar(toolbar_main)
         init()
         toolbar_main.setOnMenuItemClickListener { item ->
@@ -162,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtils.getAppVersionCode() == 132) {
+        if (AppUtil.getAppVersionCode() == 132) {
             startActivity<TophubActivity>()
         }
     }
@@ -243,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                                     coordinatorLayout_main.snackbar("检测更新失败")
                                     null
                                 } else {
-                                    if (githubReleaseResult.version != AppUtils.getAppVersionName()) {
+                                    if (githubReleaseResult.version != AppUtil.getAppVersionName()) {
                                         val fileList = githubReleaseResult.fileList
                                         if (fileList.isEmpty()) {
                                             coordinatorLayout_main.snackbar("检测更新失败,返回空白文件列表")

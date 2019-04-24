@@ -14,12 +14,12 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.util.ToastUtil
-import dev.utils.app.AppUtils
 import dev.utils.app.IntentUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.getAppName
 import io.zhihao.library.android.kotlinEx.snackbar
+import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.DatetimeUtil
 import io.zhihao.library.android.util.FileUtil
@@ -89,7 +89,8 @@ class AppManagementActivity : AppCompatActivity() {
                     val thisAppIcon: Drawable = thisAppInfo.loadIcon(pm)
                     val thisAppPackageName: String = thisAppInfo.packageName
                     val thisAppVersionName: String = thisPackageInfo.versionName
-                    val thisAppVersionCode: Int = AppUtils.getAppVersionCode(thisAppInfo.packageName)
+                    val thisAppVersionCode: Int = AppUtil.getAppVersionCode(thisAppInfo.packageName)
+                            ?: -1
                     val thisAppFirstInstallTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.firstInstallTime, Locale.CHINA)
                     val thisAppLastUpdateTime: String = DatetimeUtil.unixTime2date(thisPackageInfo.lastUpdateTime, Locale.CHINA)
                     val thisApkPath: String = thisPackageInfo.applicationInfo.sourceDir
@@ -147,8 +148,8 @@ class AppManagementActivity : AppCompatActivity() {
                             }
 
                             1 -> {
-                                val apkPath = AppUtils.getAppPath(thisAppPackageName)
-                                val apkLength = FileUtil.fileSizeLong2string(FileUtil.getFileSize(apkPath))
+                                val apkPath = AppUtil.getAppPath(thisAppPackageName)
+                                val apkLength = if (apkPath.isNullOrEmpty()) "null" else FileUtil.fileSizeLong2string(FileUtil.getFileSize(apkPath))
                                 val saveTo = FileUtil.getDownloadPathString() + "Android.Box/"
                                 val savePath = "$saveTo$thisAppName-$thisAppPackageName-$thisAppVersionName.apk"
                                 alert {
@@ -194,8 +195,8 @@ class AppManagementActivity : AppCompatActivity() {
                             3 -> {
                                 val uninstallAppIntent = IntentUtils.getUninstallAppIntent(thisAppPackageName, true)
                                 when {
-                                    !AppUtils.isAppInstalled(thisAppPackageName) -> ToastUtil.error("未安装")
-                                    AppUtils.isAppSystem(thisAppPackageName) -> ToastUtil.error("不支持卸载系统应用")
+                                    !AppUtil.isAppInstalled(thisAppPackageName) -> ToastUtil.error("未安装")
+                                    AppUtil.isSystemApp(thisAppPackageName) -> ToastUtil.error("不支持卸载系统应用")
                                     !IntentUtils.isIntentAvailable(uninstallAppIntent) -> ToastUtil.error("跳转卸载失败")
                                     else -> {
                                         uninstallAppPackageName = thisAppPackageName
@@ -228,7 +229,7 @@ class AppManagementActivity : AppCompatActivity() {
                         if (uninstallAppPackageName.isNullOrEmpty()) {
                             ToastUtil.error("错误，欲卸载应用包名为空白")
                         } else {
-                            if (AppUtils.isAppInstalled(uninstallAppPackageName!!)) {
+                            if (AppUtil.isAppInstalled(uninstallAppPackageName!!)) {
                                 ToastUtil.error("错误，应用未卸载")
                             } else {
                                 ToastUtil.success("应用已卸载")

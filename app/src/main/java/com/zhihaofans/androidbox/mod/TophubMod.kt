@@ -15,8 +15,19 @@ import org.jsoup.nodes.Element
  */
 class TophubMod {
     companion object {
+        const val NOW_TYPE_HOMEPAGE = "now_type_homepage"
+        const val NOW_TYPE_CATEGORY = "now_type_category"
+        const val NOW_TYPE_SITE = "now_type_site"
         private const val userAgent = "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Mobile Safari/537.36"
         private val httpHeader = mapOf("User-Agent" to userAgent)
+        private val categoryList = mutableListOf<TophubModCategoryData>().apply {
+            add(TophubModCategoryData("综合", "https://tophub.today/c/news"))
+            add(TophubModCategoryData("科技", "https://tophub.today/c/tech"))
+            add(TophubModCategoryData("娱乐", "https://tophub.today/c/ent"))
+            add(TophubModCategoryData("购物", "https://tophub.today/c/shopping"))
+            add(TophubModCategoryData("社区", "https://tophub.today/c/community"))
+        }
+
         fun getHomePage(): TophubHomepage? {
             val url = UrlMod.TOPHUB_MOD_HOMEPAGE
             try {
@@ -63,6 +74,39 @@ class TophubMod {
                         }
                     }
 
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
+            }
+        }
+
+        fun getCategoryList() = categoryList
+        fun getCategoryContent(url: String, page: Int = 1): TophubModCategoryContentData? {
+            try {
+                val result = HttpUtil.httpGetString("$url?p=$page", httpHeader)
+                return if (result.isNullOrEmpty()) {
+                    null
+                } else {
+                    val doc = Jsoup.parse(result, url)
+                    val categoryTitle = doc.select("a.weui_tab_nav_item.weui_tab_nav_item_red.weui_tab_nav_item_red_on").text()
+                    val categorySubtitle = doc.select("div.weui-cells__title").text()
+                    val itemList = doc.select("a.weui-cell.weui-cell_access")
+                    if (itemList.isNullOrEmpty()) {
+                        null
+                    } else {
+                        val list = mutableListOf<TophubModCategoryItemData>()
+                        itemList.map { element ->
+                            val itemTitle = element.select("div.weui-cell__bd > p").text()
+                            var itemIcon = element.select("div.weui-cell__hd > img").attr("src")
+                            var itemUrl = element.attr("href")
+                            if (itemIcon.startsWith("/")) itemIcon = "https://tophub.today$itemIcon"
+                            if (itemUrl.startsWith("/")) itemUrl = "https://tophub.today$itemUrl"
+                            list.add(TophubModCategoryItemData(itemTitle, itemUrl, itemIcon))
+
+                        }
+                        TophubModCategoryContentData(categoryTitle, categorySubtitle, list)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

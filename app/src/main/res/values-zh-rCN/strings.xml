@@ -110,4 +110,7 @@
     <string name="text_site_tophub_baidu">今日热榜 - 百度</string>
     <string name="text_site_tophub_qdaily">今日热榜 - 好奇心日报</string>
     <string name="title_activity_tophub">今日热榜</string>
+    <string name="text_homepage">主页</string>
+    <string name="text_category">类别</string>
+    <string name="text_page">页码</string>
 </resources>

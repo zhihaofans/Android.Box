@@ -111,4 +111,7 @@
     <string name="text_site_tophub_baidu">Tophub.Today - Baidu</string>
     <string name="text_site_tophub_qdaily">Tophub.Today - qdaily</string>
     <string name="title_activity_tophub">Tophub</string>
+    <string name="text_homepage">Home page</string>
+    <string name="text_category">Category</string>
+    <string name="text_page">Page</string>
 </resources>

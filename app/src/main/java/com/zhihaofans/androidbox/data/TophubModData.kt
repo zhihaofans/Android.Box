@@ -50,3 +50,21 @@ data class TophubModSiteRecommend(
         val url: String,
         val iconUrl: String
 )
+
+// Category
+data class TophubModCategoryData(
+        val title: String,
+        val url: String
+)
+
+data class TophubModCategoryContentData(
+        val title: String,
+        val subtitle: String,
+        val item: List<TophubModCategoryItemData>
+)
+
+data class TophubModCategoryItemData(
+        val title: String,
+        val url: String,
+        val icon: String
+)

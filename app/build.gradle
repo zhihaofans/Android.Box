@@ -124,6 +124,8 @@ dependencies {
     // BaseRecyclerViewAdapterHelper <https://github.com/CymChad/BaseRecyclerViewAdapterHelper>
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
 
+    // FloatingActionButton <https://github.com/hannesa2/FloatingActionButton>
+    implementation 'com.github.hannesa2:FloatingActionButton:2.2'
 }
 kotlin {
     experimental {

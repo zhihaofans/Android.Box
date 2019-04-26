@@ -152,4 +152,12 @@ DEMO
         //.itemsCallback({ dialog, view, which, text -> Toast(which + ": " + text) })
         //.show()
     }
+
+    fun selector(title: Int, items: List<String>): MaterialDialog.Builder {
+        return MaterialDialog.Builder(mContext)
+                .title(title)
+                .items(items)
+        //.itemsCallback({ dialog, view, which, text -> Toast(which + ": " + text) })
+        //.show()
+    }
 }

@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun debug() {
         // Debug时自动调用
-        if (AppUtil.getAppVersionCode() == 136) {
+        if (AppUtil.getAppVersionCode() == 137) {
             startActivity<TophubActivity>()
         }
     }

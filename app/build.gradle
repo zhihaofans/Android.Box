@@ -119,7 +119,7 @@ dependencies {
 
     // AndroidLibrary <https://github.com/zhihaofans/AndroidLibrary>
     debugImplementation files("libs/android_library-release.aar")
-    releaseImplementation 'io.zhihao:AndroidLibrary:0.0.7'
+    releaseImplementation 'io.zhihao:AndroidLibrary:0.0.8'
 
     // BaseRecyclerViewAdapterHelper <https://github.com/CymChad/BaseRecyclerViewAdapterHelper>
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'

@@ -19,13 +19,13 @@ import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
-import dev.utils.app.ContentResolverUtils
 import dev.utils.app.DialogUtils
 import dev.utils.app.UriUtils
 import dev.utils.app.image.BitmapUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.DateUtils
 import io.zhihao.library.android.kotlinEx.snackbar
+import io.zhihao.library.android.util.AndroidUtil
 import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil
 import io.zhihao.library.android.util.DeviceUtil
@@ -78,7 +78,7 @@ class QrcodeActivity : AppCompatActivity() {
                                             } else {
                                                 ToastUtil.error("保存失败")
                                             }
-                                            ContentResolverUtils.notifyMediaStore(File(fileName))
+                                            AndroidUtil.notifyMediaStore(File(fileName))
                                         }
                                     }
                                 }
@@ -272,7 +272,7 @@ class QrcodeActivity : AppCompatActivity() {
         ToastUtil.error("解析二维码图片功能失效，请等待修复")
         /*
         try {
-            val photoPickerIntent = IntentUtil.getChooseImageFileIntent()
+            val photoPickerIntent = IntentOldUtil.getChooseImageFileIntent()
             startActivityForResult(photoPickerIntent, 666)
         } catch (e: Exception) {
             e.printStackTrace()

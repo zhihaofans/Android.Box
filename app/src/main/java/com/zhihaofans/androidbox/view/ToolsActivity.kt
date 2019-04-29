@@ -18,7 +18,6 @@ import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import dev.utils.app.PhoneUtils
-import dev.utils.app.ScreenUtils
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.util.*
 import kotlinx.android.synthetic.main.activity_tools.*
@@ -168,7 +167,7 @@ class ToolsActivity : AppCompatActivity() {
                             BottomSheet.BottomListSheetBuilder(this)
                                     .addItem("短信")
                                     .apply {
-                                        if (PhoneUtils.isPhone() && !ScreenUtils.isTablet()) addItem("电话")
+                                        if (DeviceUtil.isPhone() && !DeviceUtil.isTablet()) addItem("电话")
                                     }
                                     .setOnSheetItemClickListener { mDialog, _, mPosition, _ ->
                                         mDialog.dismiss()

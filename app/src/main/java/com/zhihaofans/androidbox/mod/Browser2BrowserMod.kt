@@ -6,7 +6,7 @@ import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.AppIntentData
 import com.zhihaofans.androidbox.data.Browser2BrowserBlackListData
-import com.zhihaofans.androidbox.util.IntentUtil
+import com.zhihaofans.androidbox.util.IntentOldUtil
 import io.zhihao.library.android.kotlinEx.hasNotChild
 import org.jetbrains.anko.newTask
 
@@ -27,7 +27,7 @@ class Browser2BrowserMod {
                 newTask()
             }
             val newList = mutableListOf<AppIntentData>()
-            val launcherList = IntentUtil.getLauncherListOfIntent(mIntent) ?: return listOf()
+            val launcherList = IntentOldUtil.getLauncherListOfIntent(mIntent) ?: return listOf()
             Logger.d("launcherList:$launcherList")
             launcherList.map { appIntentGson ->
                 val browser2BrowserBlockData: Browser2BrowserBlackListData? = blackList[appIntentGson.packageName]

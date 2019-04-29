@@ -44,7 +44,7 @@ class FavoritesMod {
 
     fun export(saveTo: String): Boolean {
         return try {
-            FileUtils.copyFile(dbPath, saveTo + FileUtils.getFileName(dbPath), true)
+            FileUtils.copyFile(dbPath, saveTo + FileUtil.getFileName(dbPath), true)
         } catch (e: Exception) {
             e.printStackTrace()
             false

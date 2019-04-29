@@ -14,15 +14,11 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
 import com.zhihaofans.androidbox.util.ToastUtil
-import dev.utils.app.IntentUtils
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
 import io.zhihao.library.android.kotlinEx.getAppName
 import io.zhihao.library.android.kotlinEx.snackbar
-import io.zhihao.library.android.util.AppUtil
-import io.zhihao.library.android.util.ClipboardUtil
-import io.zhihao.library.android.util.DatetimeUtil
-import io.zhihao.library.android.util.FileUtil
+import io.zhihao.library.android.util.*
 import kotlinx.android.synthetic.main.activity_app_management.*
 import kotlinx.android.synthetic.main.content_app_management.*
 import org.jetbrains.anko.*
@@ -193,11 +189,11 @@ class AppManagementActivity : AppCompatActivity() {
                                 }.show()
                             }
                             3 -> {
-                                val uninstallAppIntent = IntentUtils.getUninstallAppIntent(thisAppPackageName, true)
+                                val uninstallAppIntent = IntentUtil.getUninstallAppIntent(thisAppPackageName, true)
                                 when {
                                     !AppUtil.isAppInstalled(thisAppPackageName) -> ToastUtil.error("未安装")
                                     AppUtil.isSystemApp(thisAppPackageName) -> ToastUtil.error("不支持卸载系统应用")
-                                    !IntentUtils.isIntentAvailable(uninstallAppIntent) -> ToastUtil.error("跳转卸载失败")
+                                    uninstallAppIntent == null || !IntentUtil.isIntentAvailable(uninstallAppIntent) -> ToastUtil.error("跳转卸载失败")
                                     else -> {
                                         uninstallAppPackageName = thisAppPackageName
                                         try {
@@ -205,7 +201,7 @@ class AppManagementActivity : AppCompatActivity() {
                                             ToastUtil.info("正在卸载")
                                         } catch (e: Exception) {
                                             e.printStackTrace()
-                                            ToastUtil.error("跳转卸载失败")
+                                            ToastUtil.error("发生异常，跳转卸载失败")
                                         }
                                     }
                                 }

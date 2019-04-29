@@ -142,11 +142,11 @@ class Browser2BrowserActivity : AppCompatActivity() {
                 val appIntentGson = g.fromJson(defaultBrowser, AppIntentData::class.java)
                 val packageName = appIntentGson.packageName
                 val className = appIntentGson.className
-                val intent = IntentUtil.getLaunchAppIntentWithClassName(packageName, className).apply {
+                val intent = IntentOldUtil.getLaunchAppIntentWithClassName(packageName, className).apply {
                     data = uri.toUri()
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }
-                if (IntentUtils.isIntentAvailable(intent) && IntentUtil.isIntentHasAppToLaunch(intent)) {
+                if (IntentOldUtil.isIntentAvailable(intent) && IntentOldUtil.isIntentHasAppToLaunch(intent)) {
                     startActivity(intent)
                     toast("已经尝试启动应用")
                 } else {

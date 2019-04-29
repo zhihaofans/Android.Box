@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.content_shortcuts.*
 
 class ShortcutsActivity : AppCompatActivity() {
     private val shortcutsUtil = ShortcutsUtil()
-    private val defaultIcon = Icon.createWithResource(ZLibrary.getContext(), R.mipmap.ic_launcher)
+    private val defaultIcon = Icon.createWithResource(ZLibrary.getAppContext(), R.mipmap.ic_launcher)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shortcuts)

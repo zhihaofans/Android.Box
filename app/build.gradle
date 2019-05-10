@@ -47,16 +47,16 @@ dependencies {
     testImplementation 'junit:junit:4.13-beta-2'
 
     // Android / Google
-    androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+    androidTestImplementation 'androidx.test:runner:1.2.0-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha05'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.core:core-ktx:1.1.0-alpha05'
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha06'
     implementation 'com.google.code.gson:gson:2.8.5'
 
     // Anko <https://github.com/Kotlin/anko>

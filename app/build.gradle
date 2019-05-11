@@ -86,7 +86,7 @@ dependencies {
     implementation 'com.hjq:xxpermissions:3.6'
 
     // DevUtils <https://github.com/afkT/DevUtils>
-    implementation 'com.github.afkT:DevUtils:1.5.5@aar'
+    implementation 'com.github.afkT:DevUtils:1.6.3@aar'
 
     // Paperdb <https://github.com/pilgr/Paper>
     implementation 'io.paperdb:paperdb:2.6'

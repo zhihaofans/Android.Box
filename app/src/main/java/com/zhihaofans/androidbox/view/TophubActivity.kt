@@ -180,6 +180,7 @@ class TophubActivity : AppCompatActivity() {
             }
             listview_tophub.init(siteList.map { it.title })
             listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                fab_tophub.close(true)
                 siteInit(siteList[position])
             }
             this@TophubActivity.title = getString(R.string.title_activity_tophub)
@@ -209,6 +210,7 @@ class TophubActivity : AppCompatActivity() {
                             }
                             listview_tophub.init(siteList.map { it.title })
                             listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                                fab_tophub.close(true)
                                 siteInit(siteList[position])
                             }
                             nowCategory = category
@@ -257,6 +259,7 @@ class TophubActivity : AppCompatActivity() {
                         listview_tophub.removeAllItems()
                         listview_tophub.init(resultList.map { it.title })
                         listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                            fab_tophub.close(true)
                             browseWeb(resultList[position].url)
                         }
                         ToastUtil.success("加载主页完毕")

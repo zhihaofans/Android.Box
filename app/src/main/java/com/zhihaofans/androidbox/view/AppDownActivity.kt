@@ -71,15 +71,15 @@ class AppDownActivity : AppCompatActivity() {
     }
 
     private fun initList() {
-        listView_app.adapter = null
+        listView_app_down.adapter = null
         try {
             appFeeds = dataBase.getAppFeeds()
             if (appFeeds.size == 0) {
                 Logger.d("appFeeds.size=0")
                 snackbar("列表空白")
             } else {
-                listView_app.init(dataBase.getAppfeedNameList())
-                listView_app.setOnItemClickListener { _, _, index, _ ->
+                listView_app_down.init(dataBase.getAppfeedNameList())
+                listView_app_down.setOnItemClickListener { _, _, index, _ ->
                     val clickedApp = appFeeds[index]
                     alert {
                         title = clickedApp.name

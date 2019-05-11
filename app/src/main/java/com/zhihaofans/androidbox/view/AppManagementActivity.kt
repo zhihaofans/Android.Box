@@ -39,7 +39,7 @@ class AppManagementActivity : AppCompatActivity() {
 
 
     private fun appListInit(onlyUserApp: Boolean = false) {
-        listView_app.visibility = ListView.INVISIBLE
+        listView_app_management.visibility = ListView.INVISIBLE
         val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
@@ -74,10 +74,10 @@ class AppManagementActivity : AppCompatActivity() {
             }
             //参数:Context,ArrayList(item的集合),item的layout,包含ArrayList中Hashmap的key的数组,key所对应的值相对应的控件id
             uiThread {
-                listView_app.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
+                listView_app_management.adapter = ListViewAdapter(this@AppManagementActivity, appList, R.layout.piitem, arrayOf("icon", "appName", "packageName"), intArrayOf(R.id.icon, R.id.appName, R.id.packageName))
                 loadingProgressBar.dismiss()
-                listView_app.visibility = ListView.VISIBLE
-                listView_app.setOnItemClickListener { _, _, index, _ ->
+                listView_app_management.visibility = ListView.VISIBLE
+                listView_app_management.setOnItemClickListener { _, _, index, _ ->
                     val childItem = appList[index]
                     val thisPackageInfo: PackageInfo = childItem["packageInfo"] as PackageInfo
                     val thisAppInfo: ApplicationInfo = thisPackageInfo.applicationInfo

@@ -107,7 +107,7 @@ class TophubActivity : AppCompatActivity() {
             if (hasPage) {
                 when {
                     nowCategory !== null -> {
-                        xui.materialDialogInput4Int(getString(R.string.text_page), "必须大于0", nowCategoryPage.toString(), nowCategoryPage.toString(), getString(R.string.text_yes),
+                        xui.materialDialogInputInt(getString(R.string.text_page), "必须大于0", nowCategoryPage.toString(), nowCategoryPage.toString(), getString(R.string.text_yes),
                                 getString(R.string.text_cancel)).apply {
                             inputRange(1, -1)
                             onPositive { dialogMax, _ ->

@@ -156,7 +156,7 @@ class ToolsActivity : AppCompatActivity() {
                 }
                 .setOnSheetItemClickListener { dialog, _, position, _ ->
                     dialog.dismiss()
-                    xuiUtil.materialDialogInput4Int(
+                    xuiUtil.materialDialogInputInt(
                             "请输入号码", "开头自动加" + list[position], "请输入号码", "",
                             getString(R.string.text_yes), getString(R.string.text_no), true
                     ).onPositive { materialDialog: MaterialDialog, _: DialogAction ->

@@ -35,12 +35,12 @@ class RandomActivity : AppCompatActivity() {
         listViewRandom.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
-                    xuiUtil.materialDialogInput4IntSigned("请输入最小数", "", "", "", getString(R.string.text_yes),
+                    xuiUtil.materialDialogInputIntSigned("请输入最小数", "", "", "", getString(R.string.text_yes),
                             getString(R.string.text_cancel)).apply {
                         inputRange(1, -1)
                         onPositive { dialogMin, _ ->
                             val inputTextMin = dialogMin.inputEditText!!.string.toIntOrNull()
-                            xuiUtil.materialDialogInput4IntSigned("请输入最大数", "必须大于$inputTextMin", "", "", getString(R.string.text_yes),
+                            xuiUtil.materialDialogInputIntSigned("请输入最大数", "必须大于$inputTextMin", "", "", getString(R.string.text_yes),
                                     getString(R.string.text_cancel)).apply {
                                 inputRange(1, -1)
                                 onPositive { dialogMax, _ ->
@@ -53,7 +53,7 @@ class RandomActivity : AppCompatActivity() {
                                     } else {
                                         if (inputTextMax > inputTextMin) {
                                             val randomResult = RandomUtil.getInt(inputTextMin, inputTextMax)
-                                            xuiUtil.materialDialogInput4IntSigned("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
+                                            xuiUtil.materialDialogInputIntSigned("结果", "", randomResult.toString(), randomResult.toString(), getString(R.string.text_copy),
                                                     getString(R.string.text_cancel)).apply {
                                                 inputRange(1, -1)
                                                 onPositive { dialogR, whichR ->
@@ -71,7 +71,7 @@ class RandomActivity : AppCompatActivity() {
 
                 }
                 1 -> {
-                    xuiUtil.materialDialogInput4String("请输入想要随机的文本列表", "用英文逗号分割", "", "", getString(R.string.text_yes),
+                    xuiUtil.materialDialogInputString("请输入想要随机的文本列表", "用英文逗号分割", "", "", getString(R.string.text_yes),
                             getString(R.string.text_cancel)).apply {
                         inputRange(1, -1)
                         onPositive { dialogMin, _ ->
@@ -85,7 +85,7 @@ class RandomActivity : AppCompatActivity() {
                                     xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null")
                                 } else {
                                     val resultStr = randomResult.string(",")
-                                    xuiUtil.materialDialogInput4String("结果", "", resultStr, resultStr, getString(R.string.text_copy),
+                                    xuiUtil.materialDialogInputString("结果", "", resultStr, resultStr, getString(R.string.text_copy),
                                             getString(R.string.text_cancel)).apply {
                                         inputRange(1, -1)
                                         onPositive { dialogR, _ ->
@@ -99,12 +99,12 @@ class RandomActivity : AppCompatActivity() {
                     }.show()
                 }
                 2 -> {
-                    xuiUtil.materialDialogInput4String("请输入想要随机的文本列表", "用英文逗号分割", "", "", getString(R.string.text_yes),
+                    xuiUtil.materialDialogInputString("请输入想要随机的文本列表", "用英文逗号分割", "", "", getString(R.string.text_yes),
                             getString(R.string.text_cancel)).apply {
                         inputRange(1, -1)
                         onPositive { dialogMin, _ ->
                             val inputTextList = dialogMin.inputEditText!!.string
-                            xuiUtil.materialDialogInput4Int("请输入想要随机的文本列表", "用英文逗号分割", "", "1", getString(R.string.text_yes),
+                            xuiUtil.materialDialogInputInt("请输入想要随机的文本列表", "用英文逗号分割", "", "1", getString(R.string.text_yes),
                                     getString(R.string.text_cancel)).apply {
                                 inputRange(1, -1)
                                 onPositive { dialogMin, _ ->
@@ -120,7 +120,7 @@ class RandomActivity : AppCompatActivity() {
                                             xuiUtil.snackbarDanger(coordinatorLayout_random, "返回结果为null")
                                         } else {
                                             val resultStr = randomResult.string(",")
-                                            xuiUtil.materialDialogInput4String("结果", "", resultStr, resultStr, getString(R.string.text_copy),
+                                            xuiUtil.materialDialogInputString("结果", "", resultStr, resultStr, getString(R.string.text_copy),
                                                     getString(R.string.text_cancel)).apply {
                                                 inputRange(1, -1)
                                                 onPositive { dialogR, _ ->

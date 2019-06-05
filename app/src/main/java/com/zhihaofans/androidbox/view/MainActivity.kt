@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun checkUpdate(manual: Boolean = false) {
-        //val url = UrlMod.APP_GITHUB_RELEASE.replaces(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
+        //val url = UrlMod.APP_GITHUB_RELEASE.replaceByList(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
         val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…").apply {
             setCancelable(false)
             setCanceledOnTouchOutside(false)

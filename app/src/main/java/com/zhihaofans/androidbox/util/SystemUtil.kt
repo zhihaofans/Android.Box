@@ -36,7 +36,7 @@ class SystemUtil {
 
         fun browse(context: Context, url: String, title: String = url) {
             if (DeviceUtil.isXiaomi()) {
-                SystemUtil.browser2browser(context, url)
+                this.browser2browser(context, url)
             } else {
                 val appSettingMod = AppSettingMod()
                 if (!url.isUrl()) {

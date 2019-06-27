@@ -1,16 +1,13 @@
 package com.zhihaofans.androidbox
 
 import android.app.Application
-import android.content.Context
 import com.didichuxing.doraemonkit.DoraemonKit
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.liulishuo.filedownloader.FileDownloader
+import com.lxj.androidktx.AndroidKtxConfig
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator
-import com.scwang.smartrefresh.layout.api.RefreshHeader
-import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.simple.spiderman.SpiderMan
@@ -30,26 +27,45 @@ import io.zhihao.library.android.util.AppUtil
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        // AndroidLibrary
         ZLibrary.init(this)
+
+        // SpiderMan
         SpiderMan.init(this)
+
+        // Logger
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d("Debug:${AppUtil.isDebug()}")
+
+        // PaperDB
         Paper.init(this)
+
+        // Fresco
         Fresco.initialize(this)
+
+        // FileDownloader
         FileDownloader.setupOnApplicationOnCreate(this)
+
+        // DevUtils
         DevUtils.init(this)
+
+        // RXTool
         RxTool.init(this)
+
+        // XUI
         XUI.init(this)
         XUI.debug(true)
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator(object : DefaultRefreshHeaderCreator {
-            override fun createRefreshHeader(context: Context, layout: RefreshLayout): RefreshHeader {
-                return ClassicsHeader(context)
-            }
-        })
+
+        // SmartRefreshLayout
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ -> ClassicsHeader(context) }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             ClassicsFooter(context).setDrawableSize(20f)
         }
+        // DoraemonKit
         DoraemonKit.install(this)
+
+        // AndroidKTX
+        AndroidKtxConfig.init(this)
     }
 }
 

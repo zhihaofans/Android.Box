@@ -126,6 +126,9 @@ dependencies {
 
     // FloatingActionButton <https://github.com/hannesa2/FloatingActionButton>
     implementation 'com.github.hannesa2:FloatingActionButton:2.2'
+
+    // AndroidKTX <https://github.com/li-xiaojun/AndroidKTX>
+    implementation 'com.lxj:androidktx:1.2.28-x'
 }
 kotlin {
     experimental {

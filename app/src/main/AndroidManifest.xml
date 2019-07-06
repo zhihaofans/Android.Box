@@ -29,6 +29,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
+            android:name=".view.ApplicationDownActivity"
+            android:label="@string/title_activity_application_down"
+            android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
+        <activity
             android:name=".view.TextActivity"
             android:label="@string/text_text"
             android:theme="@style/AppTheme.NoActionBar.NoActionBar" />

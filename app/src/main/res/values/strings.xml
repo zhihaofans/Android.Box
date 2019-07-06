@@ -115,4 +115,6 @@
     <string name="text_category">Category</string>
     <string name="text_page">Page</string>
     <string name="text_text">Text</string>
+    <string name="title_activity_application_down" translatable="false">Application Down</string>
+    <string name="text_search">Search</string>
 </resources>

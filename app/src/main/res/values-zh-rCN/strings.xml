@@ -114,4 +114,5 @@
     <string name="text_category">类别</string>
     <string name="text_page">页码</string>
     <string name="text_text">文本</string>
+    <string name="text_search">搜索</string>
 </resources>

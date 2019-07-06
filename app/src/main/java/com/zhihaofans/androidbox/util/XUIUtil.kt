@@ -26,6 +26,11 @@ class XUIUtil(context: Context) {
         return materialDialogInput(null, title, content, InputType.TYPE_CLASS_TEXT, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)
     }
 
+    fun materialDialogInputString(title: String, content: String, positiveButton: String,
+                                  neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
+        return materialDialogInput(null, title, content, InputType.TYPE_CLASS_TEXT, "", "", positiveButton, neativeButton, cancelable)
+    }
+
     fun materialDialogInputString(icon: Int, title: String, content: String, inputHint: String, inputPreFill: String, positiveButton: String,
                                   neativeButton: String, cancelable: Boolean = false): MaterialDialog.Builder {
         return materialDialogInput(icon, title, content, InputType.TYPE_CLASS_TEXT, inputHint, inputPreFill, positiveButton, neativeButton, cancelable)

@@ -129,6 +129,8 @@ dependencies {
 
     // AndroidKTX <https://github.com/li-xiaojun/AndroidKTX>
     implementation 'com.lxj:androidktx:1.2.28-x'
+    // MMKV for Android <https://github.com/Tencent/MMKV>
+    implementation 'com.tencent:mmkv-static:1.0.22'
 }
 kotlin {
     experimental {

@@ -25,8 +25,9 @@ import java.io.IOException
 class ApplicationDownMod(context: Context) {
     private val mContext = context
     private val cachePath = PathUtils.getInternalAppCodeCacheDir() + "/ApplicationDown/"
-    private val buckets = Buckets(mContext, cachePath)
-
+    val buckets = Buckets(mContext, cachePath)
+    val cache = Cache(cachePath)
+    val urlList = UrlList()
     fun getGooglePlayVersion(packageName: String, language: String = "en"): String? {
         return try {
             if (NetworkUtil.isConnected()) {
@@ -48,12 +49,54 @@ class ApplicationDownMod(context: Context) {
 
 }
 
+class Cache(cachePath: String) {
+    private val g = Gson()
+    //private val cachePath = PathUtils.getInternalAppCodeCacheDir() + "/ApplicationDown/"
+    val pathList = getPathList(cachePath)
+    private val bucketSourceUrl = "https://github.com/zhihaofans/Android-ApplicationDown/raw/master/buckets.json"
+
+    fun getPathList(cachePath: String): PathList {
+        return PathList(
+                cachePath, "$cachePath/buckets/", "$cachePath/buckets.json"
+        )
+    }
+
+    // Bucket Source
+
+    fun getBucketSource(): Map<String, String>? {
+        val jsonString = if (FileUtil.isFileExists(pathList.bucketSourceCacheFilePath)) {
+            (FileUtils.getFile(pathList.bucketSourceCacheFilePath) ?: return null).toString()
+        } else {
+            return null
+        }
+        return g.fromJson(jsonString, object : TypeToken<Map<String, String>>() {}.type)
+    }
+
+    fun setBucketSource(jsonString: String): Boolean {
+        return setBucketSource(g.toJson(jsonString, object : TypeToken<Map<String, String>>() {}.type))
+    }
+
+    fun setBucketSource(cacheData: Map<String, String>): Boolean {
+        return when {
+            cacheData.isEmpty() -> false
+            else -> if (FileUtil.createFolder(pathList.bucketSourceCacheFilePath)) {
+                val dataString = g.toJson(cacheData, object : TypeToken<Map<String, String>>() {}.type)
+                FileUtil.saveFile(pathList.bucketSourceCacheFilePath, dataString)
+            } else {
+                false
+            }
+        }
+    }
+
+    fun hasBucketSource(): Boolean {
+        return FileUtil.isFileExists(pathList.bucketSourceCacheFilePath)
+    }
+}
+
 class Buckets(mContext: Context, cachePath: String) {
     private val g = Gson()
     private val bucketsCachePath = "$cachePath/buckets/"
     private val bucketSourceCachePath = "$cachePath/buckets.json"
-
-    private val bucketSourceUrl = "https://github.com/zhihaofans/Android-ApplicationDown/raw/master/buckets.json"
     fun getBucketDataFromOnline(bucketName: String) {
 
     }
@@ -84,3 +127,13 @@ class Buckets(mContext: Context, cachePath: String) {
         return FileUtil.isFileExists(bucketSourceCachePath)
     }
 }
+
+data class UrlList(
+        val bucketSource: String = "https://github.com/zhihaofans/Android-ApplicationDown/raw/master/buckets.json"
+)
+
+data class PathList(
+        val cachePath: String,
+        val bucketsCachePath: String,
+        val bucketSourceCacheFilePath: String
+)

@@ -131,6 +131,8 @@ dependencies {
     implementation 'com.lxj:androidktx:1.2.28-x'
     // MMKV for Android <https://github.com/Tencent/MMKV>
     implementation 'com.tencent:mmkv-static:1.0.22'
+    // PRDownloader <https://github.com/MindorksOpenSource/PRDownloader>
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
 }
 kotlin {
     experimental {

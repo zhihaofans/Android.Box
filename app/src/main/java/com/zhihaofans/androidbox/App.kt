@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox
 
 import android.app.Application
 import com.didichuxing.doraemonkit.DoraemonKit
+import com.downloader.PRDownloader
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.liulishuo.filedownloader.FileDownloader
 import com.lxj.androidktx.AndroidKtxConfig
@@ -28,29 +29,29 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         // AndroidLibrary
-        ZLibrary.init(this)
+        ZLibrary.init(applicationContext)
 
         // SpiderMan
-        SpiderMan.init(this)
+        SpiderMan.init(applicationContext)
 
         // Logger
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d("Debug:${AppUtil.isDebug()}")
 
         // PaperDB
-        Paper.init(this)
+        Paper.init(applicationContext)
 
         // Fresco
-        Fresco.initialize(this)
+        Fresco.initialize(applicationContext)
 
         // FileDownloader
         FileDownloader.setupOnApplicationOnCreate(this)
 
         // DevUtils
-        DevUtils.init(this)
+        DevUtils.init(applicationContext)
 
         // RXTool
-        RxTool.init(this)
+        RxTool.init(applicationContext)
 
         // XUI
         XUI.init(this)
@@ -65,7 +66,10 @@ class App : Application() {
         DoraemonKit.install(this)
 
         // AndroidKTX
-        AndroidKtxConfig.init(this)
+        AndroidKtxConfig.init(applicationContext)
+
+        // PRDownloader
+        PRDownloader.initialize(applicationContext)
     }
 }
 

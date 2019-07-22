@@ -62,7 +62,11 @@ class ApplicationDownActivity : AppCompatActivity() {
     }
 
     private fun searchApp(searchKey: String) {
+        if (appDownMod.cache.hasBucketSource()) {
 
+        } else {
+            ToastUtil.error("搜索失败，不存在缓存，请加载在线数据。")
+        }
     }
 
     private fun updateBucketSourceCache(data: String) {
@@ -70,6 +74,9 @@ class ApplicationDownActivity : AppCompatActivity() {
     }
 
     private fun updateBucketCache(url: String) {
+
+
+        val data = ""
         appDownMod.cache.setBucketSource(data)
     }
 
@@ -98,7 +105,8 @@ class ApplicationDownActivity : AppCompatActivity() {
                 .start(object : OnDownloadListener {
                     override fun onDownloadComplete() {
                         when (taskIndex) {
-                            0 ->
+                            0 -> {
+                            }
                         }
                     }
 

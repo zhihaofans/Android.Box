@@ -1,7 +1,6 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import io.zhihao.library.android.kotlinEx.isNotNull
 import io.zhihao.library.android.util.SharedPreferencesUtil
 
 /**
@@ -13,11 +12,6 @@ class AppSettingMod {
     private var mContext: Context? = null
 
     // Setting
-    var serverChanKey: String?
-        get() = sharedPreferencesUtil.getString("SERVER_CHAN_KEY")
-        set(key) {
-            if (key.isNotNull()) sharedPreferencesUtil.putString("SERVER_CHAN_KEY", key!!)
-        }
     var imageUrlOpenWithBuiltinViewer: Boolean
         get() = imageUrlOpenWithBuiltinViewer()
         set(value) {

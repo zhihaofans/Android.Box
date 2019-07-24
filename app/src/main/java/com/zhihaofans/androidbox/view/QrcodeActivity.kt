@@ -54,7 +54,7 @@ class QrcodeActivity : AppCompatActivity() {
                         0 -> openFile()
                         1 -> {
                             try {
-                                val qrcodeImage = BitmapUtils.drawable2Bitmap(imageView_qrcode.image)
+                                val qrcodeImage = BitmapUtils.drawableToBitmap(imageView_qrcode.image)
                                 if (qrcodeImage == null) {
                                     coordinatorLayout_qrcode.snackbar("空白二维码，保存失败")
                                 } else {

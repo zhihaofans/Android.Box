@@ -43,8 +43,6 @@
     <string name="text_bilibili">Bilibili</string>
     <string name="text_remove_temp_files">Remove temp files</string>
     <string name="text_send">Send</string>
-    <string name="text_serverchan">Server Chan</string>
-    <string name="text_sendto_serverchan">Send to Server Chan</string>
     <string name="text_save">Save</string>
     <string name="text_site_sspai">Sspai</string>
     <string name="text_all">All</string>

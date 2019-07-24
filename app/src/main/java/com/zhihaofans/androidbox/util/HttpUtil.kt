@@ -25,10 +25,10 @@ class HttpUtil {
             val call = client.newCall(request)
             return try {
                 val response = call.execute()
-                if (response.body() == null) {
+                if (response.body == null) {
                     null
                 } else {
-                    response.body()!!.string()
+                    response.body!!.string()
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -37,7 +37,11 @@ class HttpUtil {
 
         }
 
-        fun httpPostString(url: String, body: MutableMap<String, String> = mutableMapOf(), headers: MutableMap<String, String>? = null): String? {
+        fun httpPostString(url: URL, body: Map<String, String> = mutableMapOf(), headers: Map<String, String>? = null): String? {
+            return this.httpPostString(url.path, body, headers)
+        }
+
+        fun httpPostString(url: String, body: Map<String, String> = mutableMapOf(), headers: Map<String, String>? = null): String? {
             Logger.d("httpPostString\nurl:$url\nbody:$body\nheader:$headers")
             val requestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
@@ -54,11 +58,11 @@ class HttpUtil {
             Logger.d("httpPostString")
             return try {
                 val response = call.execute()
-                val responseBody = response.body()
-                Logger.d("response.code():${response.code()}")
+                val responseBody = response.body
+                Logger.d("response.code:${response.code}")
                 Logger.d("httpPostString")
                 if (responseBody == null) {
-                    Logger.e("response.body() = null")
+                    Logger.e("response.body = null")
                     null
                 } else {
                     val str = responseBody.string()

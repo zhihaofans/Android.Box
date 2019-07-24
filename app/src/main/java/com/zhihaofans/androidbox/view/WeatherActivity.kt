@@ -48,7 +48,7 @@ class WeatherActivity : AppCompatActivity() {
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                val resBody = response.body()
+                val resBody = response.body
                 var responseStr = ""
                 if (resBody != null) {
                     responseStr = resBody.string()

@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         val listData = listOf(
                 getString(R.string.text_qrcode),
                 getString(R.string.text_appmanagement),
-                getString(R.string.text_serverchan),
                 getString(R.string.text_feed),
                 "更多工具"
         )
@@ -101,9 +100,8 @@ class MainActivity : AppCompatActivity() {
             when (index) {
                 0 -> startActivity<QrcodeActivity>()
                 1 -> startActivity<AppManagementActivity>()
-                2 -> startActivity<ServerChanActivity>()
-                3 -> startActivity<FeedActivity>()
-                4 -> startActivity<ToolsActivity>()
+                2 -> startActivity<FeedActivity>()
+                3 -> startActivity<ToolsActivity>()
             }
         }
         checkPermissions()

@@ -38,9 +38,7 @@
 
 2. 通过视频vid获取封面图片
 
-七. [Server酱](http://sc.ftqq.com/3.version) :可以推送消息至微信公众号。
-
-八. 应用下载：支持以下站点的应用昵称、版本、更新日期、网页地址、下载地址。
+七. 应用下载：支持以下站点的应用昵称、版本、更新日期、网页地址、下载地址。
 
 1. GitHub release。通过调用[Github官方API](https://developer.github.com/)来获取GitHub 项目的release 列表，如:[zhihaofans/Android.Box的releases](https://github.com/zhihaofans/Android.Box/releases)。
 

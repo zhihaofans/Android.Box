@@ -45,10 +45,10 @@ class NewsSitesMod {
                 val call = client.newCall(request)
                 try {
                     val response = call.execute()
-                    if (response.body() == null) {
+                    if (response.body == null) {
                         result.message = ""
                     } else {
-                        val jsonData = response.body()!!.string()
+                        val jsonData = response.body!!.string()
                         result = githubApiReleaseJson2Class(author, project, jsonData)
                     }
                 } catch (e: IOException) {
@@ -138,11 +138,11 @@ class NewsSitesMod {
             }
             try {
                 val response = call.execute()
-                if (response.body() == null) {
+                if (response.body == null) {
                     result.code = 1
                     result.message = "Error: response.body is null"
                 } else {
-                    val jsonData = response.body()!!.string()
+                    val jsonData = response.body!!.string()
                     if (jsonData.isEmpty()) {
                         result.code = 1
                         result.message = "Error: jsonData is null"
@@ -209,11 +209,11 @@ class NewsSitesMod {
             }
             try {
                 val response = call.execute()
-                if (response.body() == null) {
+                if (response.body == null) {
                     result.code = 1
                     result.message = "Error: response.body is null"
                 } else {
-                    val jsonData = response.body()!!.string()
+                    val jsonData = response.body!!.string()
                     if (jsonData.isEmpty()) {
                         result.code = 1
                         result.message = "Error: jsonData is null"
@@ -381,10 +381,10 @@ class XXDownSitesMod {
             val call = HttpUtil.httpClientGetCall(url, XXDownSite.headerbuild)
             try {
                 val response = call.execute()
-                val body = response.body()
+                val body = response.body
                         ?: return XXDownResultData(false, "Http body is null", listOf())
                 val bodyStr = body.string()
-                if (!response.isSuccessful) return XXDownResultData(false, "Http get error(${response.message()})", listOf())
+                if (!response.isSuccessful) return XXDownResultData(false, "Http get error(${response.message})", listOf())
                 if (bodyStr.isEmpty()) return XXDownResultData(false, "Http body is empty", listOf())
                 Logger.d(bodyStr)
                 val doc = Jsoup.parse(bodyStr)
@@ -405,10 +405,10 @@ class XXDownSitesMod {
             val call = HttpUtil.httpClientGetCall(url, XXDownSite.headerbuild)
             try {
                 val response = call.execute()
-                val body = response.body()
+                val body = response.body
                         ?: return XXDownResultData(false, "Http body is null", listOf())
                 val bodyStr = body.string()
-                if (!response.isSuccessful) return XXDownResultData(false, "Http get error(${response.message()})", listOf())
+                if (!response.isSuccessful) return XXDownResultData(false, "Http get error(${response.message})", listOf())
                 if (bodyStr.isEmpty()) return XXDownResultData(false, "Http body is empty", listOf())
                 Logger.d(bodyStr)
                 val doc = Jsoup.parse(bodyStr)
@@ -450,6 +450,28 @@ class XXDownSitesMod {
                 }
             } else {
                 return null
+            }
+        }
+
+        fun instagram(url: URL): XXDownResultData? {
+            return try {
+                if (url.host.startsWith(UrlMod.XXDOWN_SITE_INSTAGRAM)) {
+
+                    val htmlText = HttpUtil.httpPostString(UrlMod.XXDOWN_SITE_10INSTA, mutableMapOf("url" to url.path), XXDownSite.headers_map)
+                            ?: return null
+                    val tenInsta = HtmlParserMod.tenInsta(htmlText) ?: return null
+                    if (tenInsta.item.isEmpty()) return null
+                    val itemList = tenInsta.item.map {
+                        val itemType = if (it.isVideo) XXDownUrlType.video else XXDownUrlType.image
+                        XXDownResultUrlData(it.url, itemType)
+                    }
+                    XXDownResultData(true, "", itemList)
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
             }
         }
     }

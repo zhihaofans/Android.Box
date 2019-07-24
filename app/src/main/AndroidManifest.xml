@@ -128,19 +128,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.ServerChanActivity"
-            android:icon="@drawable/ic_serverchan"
-            android:label="@string/text_sendto_serverchan"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".view.ImageViewActivity"
             android:label="@string/title_activity_image_view"
             android:theme="@style/AppTheme.NoActionBar">
@@ -169,10 +156,6 @@
             android:name=".mod.QrcodeScanShortcuts"
             android:icon="@drawable/ic_qrcode"
             android:label="@string/text_qrcode_scan" />
-        <activity
-            android:name=".mod.ServerChanShortcuts"
-            android:icon="@drawable/ic_qrcode"
-            android:label="@string/text_serverchan" />
         <activity
             android:name=".mod.FeedShortcuts"
             android:label="@string/text_feed" />

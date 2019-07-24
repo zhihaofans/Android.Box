@@ -193,7 +193,7 @@ class BilibiliActivity : AppCompatActivity() {
 
                                 @Throws(IOException::class)
                                 override fun onResponse(_call: Call, _response: Response) {
-                                    val resBody_cid = _response.body()
+                                    val resBody_cid = _response.body
                                     runOnUiThread {
                                         loadingProgressBar_cid.dismiss()
                                     }
@@ -320,7 +320,7 @@ class BilibiliActivity : AppCompatActivity() {
 
             @Throws(IOException::class)
             override fun onResponse(_call: Call, _response: Response) {
-                val resBody_hash = _response.body()
+                val resBody_hash = _response.body
                 runOnUiThread {
                     loadingProgressBar_hash.dismiss()
                 }
@@ -396,7 +396,7 @@ class BilibiliActivity : AppCompatActivity() {
 
                             @Throws(IOException::class)
                             override fun onResponse(call: Call, response: Response) {
-                                val resBody = response.body()
+                                val resBody = response.body
                                 var responseStr = ""
                                 runOnUiThread {
                                     loadingProgressBar.dismiss()

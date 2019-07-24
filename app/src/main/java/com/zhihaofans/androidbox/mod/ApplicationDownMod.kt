@@ -49,7 +49,7 @@ class ApplicationDownMod(context: Context) {
 class Cache(cachePath: String) {
     private val g = Gson()
     //private val cachePath = PathUtils.getInternalAppCodeCacheDir() + "/ApplicationDown/"
-    val pathList = Buckets.ValList.getPathList(cachePath)
+    val pathList = ValList.getPathList(cachePath)
     private val bucketSourceUrl = "https://github.com/zhihaofans/Android-ApplicationDown/raw/master/buckets.json"
 
     // Bucket Source
@@ -86,7 +86,7 @@ class Cache(cachePath: String) {
 class BucketSource(cachePath: String) {
     private val bucketSourceCachePath = "$cachePath/buckets.json"
     private val g = Gson()
-    private val pathList = Buckets.ValList.getPathList(cachePath)
+    private val pathList = ValList.getPathList(cachePath)
     fun get(): Map<String, String>? {
         val jsonString = if (this.has()) {
             (FileUtils.getFile(pathList.bucketSourceCacheFilePath)

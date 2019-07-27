@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
                 .request(object : OnPermission {
                     override fun hasPermission(granted: List<String>, isAll: Boolean) {
                         var t = "${granted.size}个权限通过授权"
-                        if (!isAll) t += "，可能影响正常使用"
+                        if (!isAll) t = "只有$t，可能影响正常使用"
                         Snackbar.make(coordinatorLayout_main, t, Snackbar.LENGTH_SHORT).show()
                     }
 

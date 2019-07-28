@@ -10,8 +10,8 @@ android {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 139
-        versionName "0.0.102"
+        versionCode 140
+        versionName "0.0.102.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -49,14 +49,14 @@ dependencies {
     // Android / Google
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha06'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.2.0-alpha02'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'com.google.android.material:material:1.1.0-alpha08'
     implementation 'com.google.code.gson:gson:2.8.5'
 
     // Anko <https://github.com/Kotlin/anko>

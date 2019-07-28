@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.xuexiang.xui.XUI
-import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.MultipleItemQuickAdapter
 import com.zhihaofans.androidbox.data.DataServer
 import com.zhihaofans.androidbox.data.TophubHomepage
@@ -25,6 +24,7 @@ import kotlinx.android.synthetic.main.content_tophub.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.net.URL
 
 
 class TophubActivity : AppCompatActivity() {
@@ -50,7 +50,7 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun newInit() {
-        setContentView(R.layout.activity_multiple_item_use)
+        setContentView(com.zhihaofans.androidbox.R.layout.activity_multiple_item_use)
         title = "MultipleItem Use"
         val data = DataServer.getMultipleItemData()
         val multipleItemAdapter = MultipleItemQuickAdapter(data)
@@ -61,7 +61,7 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        setContentView(R.layout.activity_tophub)
+        setContentView(com.zhihaofans.androidbox.R.layout.activity_tophub)
         setSupportActionBar(toolbar_tophub)
         loading()
         fab_tophub_refresh.setOnClickListener {
@@ -95,7 +95,7 @@ class TophubActivity : AppCompatActivity() {
                 ToastUtil.error("加载失败，分类列表为空白")
                 nowCategory = null
             } else {
-                xui.selector(R.string.text_category, categoryList.map { it.title }).itemsCallback { _, _, which, _ ->
+                xui.selector(com.zhihaofans.androidbox.R.string.text_category, categoryList.map { it.title }).itemsCallback { _, _, which, _ ->
                     listview_tophub.removeAllItems()
                     this@TophubActivity.title = "Loading..."
                     listViewCategoryInit(categoryList[which])
@@ -107,8 +107,8 @@ class TophubActivity : AppCompatActivity() {
             if (hasPage) {
                 when {
                     nowCategory !== null -> {
-                        xui.materialDialogInputInt(getString(R.string.text_page), "必须大于0", nowCategoryPage.toString(), nowCategoryPage.toString(), getString(R.string.text_yes),
-                                getString(R.string.text_cancel)).apply {
+                        xui.materialDialogInputInt(getString(com.zhihaofans.androidbox.R.string.text_page), "必须大于0", nowCategoryPage.toString(), nowCategoryPage.toString(), getString(com.zhihaofans.androidbox.R.string.text_yes),
+                                getString(com.zhihaofans.androidbox.R.string.text_cancel)).apply {
                             inputRange(1, -1)
                             onPositive { dialogMax, _ ->
                                 try {
@@ -150,7 +150,7 @@ class TophubActivity : AppCompatActivity() {
                 uiThread {
                     if (homePage == null) {
                         ToastUtil.error("加载主页失败")
-                        this@TophubActivity.title = getString(R.string.title_activity_tophub)
+                        this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
                     } else {
                         listViewHomePageInit(homePage)
                     }
@@ -159,7 +159,7 @@ class TophubActivity : AppCompatActivity() {
                 e.printStackTrace()
                 uiThread {
                     ToastUtil.error("加载出错")
-                    this@TophubActivity.title = getString(R.string.title_activity_tophub)
+                    this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
                 }
             }
         }
@@ -170,7 +170,7 @@ class TophubActivity : AppCompatActivity() {
         val resultList = tophubHomepage.groupList
         if (resultList.isNullOrEmpty()) {
             ToastUtil.error("获取主页失败，服务器返回空白数据")
-            this@TophubActivity.title = getString(R.string.title_activity_tophub)
+            this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
         } else {
             val siteList = mutableListOf<TophubHomepageGroupItem>()
             resultList.map { group ->
@@ -183,7 +183,7 @@ class TophubActivity : AppCompatActivity() {
                 fab_tophub.close(true)
                 siteInit(siteList[position])
             }
-            this@TophubActivity.title = getString(R.string.title_activity_tophub)
+            this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
             ToastUtil.success("加载主页完毕")
         }
     }
@@ -270,22 +270,23 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun browseWeb(url: String, defaultBrowser: Boolean = false) {
+        val newUrl = urlRedirect(url)
         try {
             if (SettingMod.loadBooleanSetting("ACTIVITY_TOPHUB_BROWSER_LYNKET") == true && !defaultBrowser) {
                 val pn = "arun.com.chromer"
                 if (AppUtil.isAppInstalled(pn)) {
-                    if (OtherAppMod.browserByLynket(url)) {
+                    if (OtherAppMod.browserByLynket(newUrl)) {
                         ToastUtil.success("启动成功")
                     } else {
                         ToastUtil.error("启动失败")
-                        browseWeb(url, true)
+                        browseWeb(newUrl, true)
                     }
                 } else {
                     ToastUtil.error("启动失败,未安装$pn")
-                    browseWeb(url, true)
+                    browseWeb(newUrl, true)
                 }
             } else {
-                if (browse(url)) {
+                if (browse(newUrl)) {
                     ToastUtil.success("启动成功")
                 } else {
                     ToastUtil.error("启动失败")
@@ -295,5 +296,31 @@ class TophubActivity : AppCompatActivity() {
             e.printStackTrace()
             ToastUtil.error("启动失败,发现应用异常")
         }
+    }
+
+    private fun urlRedirect(url: String): String {
+        return if (url.isEmpty()) {
+            url
+        } else {
+            try {
+                val mURL = URL(url)
+                urlRedirect(mURL).toString()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                url
+            }
+        }
+    }
+
+    private fun urlRedirect(url: URL): URL {
+        val redirectList = mutableMapOf(
+                "www.zhihu.com" to "www.zhihuvvv.com"
+        )
+        val newHost = if (redirectList[url.host] == null) {
+            url.host
+        } else {
+            redirectList[url.host]
+        }
+        return URL(url.protocol, newHost, url.port, url.file)
     }
 }

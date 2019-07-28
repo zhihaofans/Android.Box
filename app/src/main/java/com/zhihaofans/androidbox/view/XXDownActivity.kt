@@ -77,13 +77,13 @@ class XXDownActivity : AppCompatActivity() {
     }
 
     private fun auto(url: URL): XXDownResultData? {
-        val uriHost = url.host
+        val mUrl = url.toString()
         return when {
-            uriHost.isNullOrEmpty() -> null
-            uriHost.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
-            uriHost.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
-            uriHost.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
-            uriHost.startsWith(UrlMod.XXDOWN_SITE_INSTAGRAM) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_INSTAGRAM, url) //Instagram
+            mUrl.isEmpty() -> null
+            mUrl.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
+            mUrl.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
+            mUrl.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
+            mUrl.startsWith(UrlMod.XXDOWN_SITE_INSTAGRAM) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_INSTAGRAM, url) //Instagram
             else -> null
         }
     }

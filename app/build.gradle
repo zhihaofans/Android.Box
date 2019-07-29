@@ -10,8 +10,8 @@ android {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 140
-        versionName "0.0.102.1"
+        versionCode 141
+        versionName "0.0.102.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -132,7 +132,7 @@ dependencies {
 
     // MMKV for Android <https://github.com/Tencent/MMKV>
     //implementation 'com.tencent:mmkv-static:1.0.22'
-    
+
     // PRDownloader <https://github.com/MindorksOpenSource/PRDownloader>
     implementation 'com.mindorks.android:prdownloader:0.6.0'
 }

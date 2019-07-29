@@ -78,13 +78,16 @@ class XXDownActivity : AppCompatActivity() {
 
     private fun auto(url: URL): XXDownResultData? {
         val mUrl = url.toString()
+        Logger.d(mUrl)
+        Logger.d(url.host)
         return when {
-            mUrl.isEmpty() -> null
             mUrl.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
             mUrl.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
-            mUrl.startsWith(UrlMod.XXDOWN_SITE_GITHUB_RELEASE) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
-            mUrl.startsWith(UrlMod.XXDOWN_SITE_INSTAGRAM) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_INSTAGRAM, url) //Instagram
-            else -> null
+            else -> when (url.host) {
+                UrlMod.XXDOWN_SITE_HOST_INSTAGRAM -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_INSTAGRAM, url) //Instagram
+                UrlMod.XXDOWN_SITE_HOST_GITHUB_RELEASE -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
+                else -> null
+            }
         }
     }
 

@@ -49,25 +49,19 @@ class HttpUtil {
                 requestBody.addFormDataPart(it.key, it.value)
             }
             val client = OkHttpClient.Builder().retryOnConnectionFailure(true).build()
-
             val requestBuilder = Request.Builder().url(url).post(requestBody.build())
             headers?.map {
                 requestBuilder.addHeader(it.key, it.value)
             }
             val call = client.newCall(requestBuilder.build())
-            Logger.d("httpPostString")
             return try {
                 val response = call.execute()
                 val responseBody = response.body
-                Logger.d("response.code:${response.code}")
-                Logger.d("httpPostString")
                 if (responseBody == null) {
-                    Logger.e("response.body = null")
                     null
                 } else {
                     val str = responseBody.string()
                     response.close()
-                    Logger.d(str)
                     str
                 }
             } catch (e: Exception) {

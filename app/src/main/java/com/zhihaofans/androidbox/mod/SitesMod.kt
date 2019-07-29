@@ -454,16 +454,18 @@ class XXDownSitesMod {
         }
 
         fun instagram(url: URL): XXDownResultData? {
+            Logger.d("instagram($url")
             return try {
-                if (url.host.startsWith(UrlMod.XXDOWN_SITE_INSTAGRAM)) {
-
-                    val htmlText = HttpUtil.httpPostString(UrlMod.XXDOWN_SITE_10INSTA, mutableMapOf("url" to url.path), XXDownSite.headers_map)
+                if (url.host == UrlMod.XXDOWN_SITE_HOST_INSTAGRAM) {
+                    val htmlText = HttpUtil.httpPostString(UrlMod.XXDOWN_SITE_10INSTA, mutableMapOf("url" to url.toString()), XXDownSite.headers_map)
                             ?: return null
                     val tenInsta = HtmlParserMod.tenInsta(htmlText) ?: return null
                     if (tenInsta.item.isEmpty()) return null
                     val itemList = tenInsta.item.map {
                         val itemType = if (it.isVideo) XXDownUrlType.video else XXDownUrlType.image
-                        XXDownResultUrlData(it.url, itemType)
+                        var mUrl = it.url
+                        if (!mUrl.startsWith("https://www.10insta.net/")) mUrl = "https://www.10insta.net/$mUrl"
+                        XXDownResultUrlData(mUrl, itemType)
                     }
                     XXDownResultData(true, "", itemList)
                 } else {

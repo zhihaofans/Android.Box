@@ -17,7 +17,7 @@ class HtmlParserMod {
         fun tenInsta(htmlText: String): TenInstaNetData? {
             // Instagram
             val doc = Jsoup.parse(htmlText)
-            val items = doc.select("div#grid-gallery > section.grid-wrap > div.row> div.portfolio-item")
+            val items = doc.select("div.portfolio-item")
             if (items.size == 0) return null
             val itemList = items.map {
                 val itemTypeText = it.select("div.card > div.card-body > h4.card-title > a").text().toLowerCase()

@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
@@ -15,7 +16,6 @@ import com.zhihaofans.androidbox.mod.XXDownMod
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.*
-import kotlinx.android.synthetic.main.activity_image_view.*
 import kotlinx.android.synthetic.main.activity_xxdown.*
 import kotlinx.android.synthetic.main.content_xxdown.*
 import org.jetbrains.anko.*
@@ -28,24 +28,7 @@ class XXDownActivity : AppCompatActivity() {
         setContentView(R.layout.activity_xxdown)
         setSupportActionBar(toolbar_xxdown)
         fab_xxdown.setOnClickListener {
-            alert {
-                customView {
-                    val inputUrl = editText()
-                    okButton {
-                        when {
-                            inputUrl.string.isEmpty() -> {
-                                coordinatorLayout_xxdown.snackbar("请输入内容")
-                            }
-                            inputUrl.string.isUrl() -> {
-                                start(inputUrl.string)
-                            }
-                            else -> {
-                                coordinatorLayout_xxdown.snackbar("请输入正确的网址")
-                            }
-                        }
-                    }
-                }
-            }.show()
+            input()
         }
         initShare()
     }
@@ -55,6 +38,31 @@ class XXDownActivity : AppCompatActivity() {
         Logger.d("onDestroy")
         finish()
         Logger.d("finish")
+    }
+
+    private fun input() {
+        alert {
+            customView {
+                val inputUrl = editText()
+                okButton {
+                    when {
+                        inputUrl.string.isEmpty() -> {
+                            Snackbar.make(coordinatorLayout_xxdown, "请输入内容", Snackbar.LENGTH_SHORT).setAction("重新输入") {
+                                input()
+                            }.show()
+                        }
+                        inputUrl.string.isUrl() -> {
+                            start(inputUrl.string)
+                        }
+                        else -> {
+                            Snackbar.make(coordinatorLayout_xxdown, "请输入正确的网址", Snackbar.LENGTH_SHORT).setAction("重新输入") {
+                                input()
+                            }.show()
+                        }
+                    }
+                }
+            }
+        }.show()
     }
 
     private fun start(url: String) {
@@ -67,7 +75,9 @@ class XXDownActivity : AppCompatActivity() {
             uiThread {
                 if (result == null) {
                     loadingProgressBar.dismiss()
-                    coordinatorLayout_xxdown.snackbar("解析失败，不支持该网址")
+                    Snackbar.make(coordinatorLayout_xxdown, "解析失败，不支持该网址", Snackbar.LENGTH_SHORT).setAction("重新输入") {
+                        input()
+                    }.show()
                     Logger.d("解析失败，不支持该网址")
                 } else {
                     initListView(loadingProgressBar, result)
@@ -112,8 +122,8 @@ class XXDownActivity : AppCompatActivity() {
                         when (ii) {
                             0 -> SystemUtil.browse(this@XXDownActivity, itemUrl)
                             1 -> when {
-                                OtherAppMod.admAutoDownload(itemUrl) -> coordinatorLayout_imageView.snackbar("调用adm下载成功")
-                                else -> coordinatorLayout_imageView.snackbar("调用adm下载失败")
+                                OtherAppMod.admAutoDownload(itemUrl) -> coordinatorLayout_xxdown.snackbar("调用adm下载成功")
+                                else -> coordinatorLayout_xxdown.snackbar("调用adm下载失败")
                             }
                         }
                     }

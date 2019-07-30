@@ -203,11 +203,11 @@ class MainActivity : AppCompatActivity() {
                                 title = "检测更新"
                                 message = "发现更新，是否调用打开下载地址？"
                                 yesButton {
-                                    val myItems = listOf("打开Github下载页面", "打开国内下载页面")
+                                    val myItems = listOf("打开Github下载页面", "打开国内第三方下载页面")
                                     selector("选择更新站点", myItems) { _, index ->
                                         when (index) {
                                             0 -> browse(update.urlToDownload.toString(), true)
-                                            1 -> browse(UrlMod.UPDATE_FIR_IM, true)
+                                            1 -> browse(UrlMod.UPDATE_PGYER, true)
                                         }
                                     }
                                 }

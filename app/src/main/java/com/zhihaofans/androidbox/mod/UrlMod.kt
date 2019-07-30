@@ -9,6 +9,7 @@ class UrlMod {
     companion object {
         // Update
         const val UPDATE_FIR_IM = "https://fir.im/fkw1"
+        const val UPDATE_PGYER = "https://www.pgyer.com/Tka7"
         // News
         //  App
         const val APP_GITHUB_RELEASE = "https://api.github.com/repos/@author@/@project@/releases"

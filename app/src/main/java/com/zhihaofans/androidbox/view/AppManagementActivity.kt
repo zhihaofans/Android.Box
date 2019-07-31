@@ -40,7 +40,7 @@ class AppManagementActivity : AppCompatActivity() {
 
     private fun appListInit(onlyUserApp: Boolean = false) {
         listView_app_management.visibility = ListView.INVISIBLE
-        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "下载中...")
+        val loadingProgressBar = indeterminateProgressDialog(message = "Please wait a bit…", title = "加载中...")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
         loadingProgressBar.show()

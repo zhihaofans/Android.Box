@@ -229,7 +229,7 @@
         </activity>
         <activity
             android:name=".view.Browser2BrowserActivity"
-            android:icon="@drawable/ic_browser"
+            android:icon="@drawable/ic_open_in_browser"
             android:label="@string/text_open_in_other_browser"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

@@ -90,5 +90,23 @@ class HttpUtil {
             val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build())
             return client.newCall(request.url(url).headers(headers).build())
         }
+
+        fun createCookies(url: String, cookiesName: String, cookiesValue: String, httpOnly: Boolean = true, secure: Boolean = true): Cookie {
+            val mUrl = URL(url)
+            return createCookies(mUrl.host, mUrl.path, cookiesName, cookiesValue, httpOnly, secure)
+        }
+
+        fun createCookies(domain: String, path: String, cookiesName: String, cookiesValue: String, httpOnly: Boolean = true, secure: Boolean = true): Cookie {
+            return Cookie.Builder()
+                    .domain(domain)
+                    .path(path)
+                    .name(cookiesName)
+                    .value(cookiesValue)
+                    .apply {
+                        if (httpOnly) httpOnly()
+                        if (secure) secure()
+                    }
+                    .build()
+        }
     }
 }

@@ -115,4 +115,5 @@
     <string name="text_text">Text</string>
     <string name="title_activity_application_down" translatable="false">Application Down</string>
     <string name="text_search">Search</string>
+    <string name="text_login">Login</string>
 </resources>

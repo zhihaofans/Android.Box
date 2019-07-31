@@ -3,6 +3,8 @@ package com.zhihaofans.androidbox.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.orhanobut.logger.Logger
+import com.tencent.mmkv.MMKV
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.adapter.MultipleItemQuickAdapter
 import com.zhihaofans.androidbox.data.DataServer
@@ -63,6 +65,8 @@ class TophubActivity : AppCompatActivity() {
     private fun init() {
         setContentView(com.zhihaofans.androidbox.R.layout.activity_tophub)
         setSupportActionBar(toolbar_tophub)
+        val rootDir = MMKV.initialize(this)
+        Logger.d("mmkv root: $rootDir")
         loading()
         fab_tophub_refresh.setOnClickListener {
             fab_tophub.close(true)
@@ -322,5 +326,9 @@ class TophubActivity : AppCompatActivity() {
             redirectList[url.host]
         }
         return URL(url.protocol, newHost, url.port, url.file)
+    }
+
+    private fun importCookies(value: String) {
+        TophubMod.setCookies(value)
     }
 }

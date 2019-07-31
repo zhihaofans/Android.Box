@@ -1,5 +1,6 @@
 package com.zhihaofans.androidbox.mod
 
+import com.lxj.androidktx.core.mmkv
 import com.zhihaofans.androidbox.data.*
 import com.zhihaofans.androidbox.util.HttpUtil
 import org.jsoup.Jsoup
@@ -18,8 +19,9 @@ class TophubMod {
         const val NOW_TYPE_HOMEPAGE = "now_type_homepage"
         const val NOW_TYPE_CATEGORY = "now_type_category"
         const val NOW_TYPE_SITE = "now_type_site"
+        private const val MMKV_MOD_TOPHUB = "mod_tophub"
         private const val userAgent = "Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Mobile Safari/537.36"
-        private val httpHeader = mapOf("User-Agent" to userAgent)
+        private val httpHeader = mapOf("User-Agent" to userAgent, "cookies" to "itc_center_user=")
         private val categoryList = mutableListOf<TophubModCategoryData>().apply {
             add(TophubModCategoryData("综合", "https://tophub.today/c/news"))
             add(TophubModCategoryData("科技", "https://tophub.today/c/tech"))
@@ -188,5 +190,27 @@ class TophubMod {
                 null
             }
         }
+
+        fun getCookies(): String? {
+            return try {
+                val cookies = mmkv(id = MMKV_MOD_TOPHUB).getString("cookies", "")
+                if (cookies.isNullOrEmpty()) null else cookies
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        fun setCookies(value: String): Boolean {
+            return try {
+                mmkv(MMKV_MOD_TOPHUB).putString("cookies", value)
+                mmkv(MMKV_MOD_TOPHUB).getString("cookies", null) == null
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+
+        }
+
     }
 }

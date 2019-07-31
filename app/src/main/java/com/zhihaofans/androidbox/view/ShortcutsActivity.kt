@@ -55,7 +55,8 @@ class ShortcutsActivity : AppCompatActivity() {
                 }
                 2 -> {
                     val launchIntent = Intent(this, TophubActivity::class.java)
-                    addPinShortcut("$packageName.TophubActivity", launchIntent, shortcutList[position], defaultIcon)
+                    val mIcon = Icon.createWithResource(ZLibrary.getAppContext(), R.drawable.ic_tophub_today)
+                    addPinShortcut("$packageName.TophubActivity", launchIntent, shortcutList[position], mIcon)
                 }
                 3 -> {
                     val launchIntent = Intent(this, SettingActivity::class.java)

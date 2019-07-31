@@ -135,6 +135,14 @@ dependencies {
 
     // PRDownloader <https://github.com/MindorksOpenSource/PRDownloader>
     implementation 'com.mindorks.android:prdownloader:0.6.0'
+
+    // Material Dialogs <https://github.com/afollestad/material-dialogs>
+    implementation 'com.afollestad.material-dialogs:core:3.1.0'
+    implementation 'com.afollestad.material-dialogs:input:3.1.0'
+    implementation 'com.afollestad.material-dialogs:bottomsheets:3.1.0'
+
+    // AwesomeDialog <https://github.com/blennerSilva/AwesomeDialog>
+    implementation 'com.github.blennerSilva:AwesomeDialog:2.0.6'
 }
 kotlin {
     experimental {

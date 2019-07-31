@@ -3,9 +3,12 @@ package com.zhihaofans.androidbox.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.orhanobut.logger.Logger
 import com.tencent.mmkv.MMKV
 import com.xuexiang.xui.XUI
+import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.MultipleItemQuickAdapter
 import com.zhihaofans.androidbox.data.DataServer
 import com.zhihaofans.androidbox.data.TophubHomepage
@@ -137,6 +140,21 @@ class TophubActivity : AppCompatActivity() {
                 }
             } else {
                 ToastUtil.error("不支持更改页码")
+            }
+        }
+        fab_tophub_login.setOnClickListener {
+            MaterialDialog(this).show {
+                input { _: MaterialDialog, char: CharSequence ->
+                    message(text = "itc_center_user")
+                    if (char.isEmpty()) {
+                        ToastUtil.error("请输入cookies")
+                    } else {
+                        if (TophubMod.loginByCookies(char.toString())) {
+                            
+                        }
+                    }
+                }
+                positiveButton(R.string.text_login)
             }
         }
     }

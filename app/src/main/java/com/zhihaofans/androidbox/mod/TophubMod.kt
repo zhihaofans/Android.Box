@@ -191,9 +191,17 @@ class TophubMod {
             }
         }
 
+        fun isLogin(): Boolean {
+            return getCookies() == null
+        }
+
+        fun loginByCookies(value: String): Boolean {
+            return setCookies("itc_center_user=$value")
+        }
+
         fun getCookies(): String? {
             return try {
-                val cookies = mmkv(id = MMKV_MOD_TOPHUB).getString("cookies", "")
+                val cookies = mmkv(MMKV_MOD_TOPHUB).getString("cookies", "")
                 if (cookies.isNullOrEmpty()) null else cookies
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -210,6 +218,10 @@ class TophubMod {
                 false
             }
 
+        }
+
+        fun removeCookies() {
+            mmkv(MMKV_MOD_TOPHUB).remove("cookies")
         }
 
     }

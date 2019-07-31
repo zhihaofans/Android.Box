@@ -78,11 +78,24 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_refresh_24"
+            android:src="@drawable/ic_refresh"
             app:fab_colorNormal="@color/cyan"
             app:fab_colorPressed="@color/darkcyan"
             app:fab_label="@string/text_refresh"
             app:fab_size="normal" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_tophub_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_person_black_24dp"
+            app:fab_colorNormal="@color/cyan"
+            app:fab_colorPressed="@color/darkcyan"
+            app:fab_label="@string/text_login"
+            app:fab_size="normal" />
     </com.github.clans.fab.FloatingActionMenu>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

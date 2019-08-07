@@ -30,14 +30,15 @@ class NewsBoxMod {
         private fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<News>? {
             Logger.d("getNewsList($siteId,$channelId,$page)")
             return when (siteId) {
-                ItemIdMod.FEED_SSPAI -> SiteInfoSspai().getNewsList(channelId, page)
-                ItemIdMod.FEED_DGTLE -> SiteInfoDgtle().getNewsList(channelId, page)
-                ItemIdMod.FEED_GANK_IO -> SiteInfoGankio().getNewsList(channelId, page)
-                ItemIdMod.FEED_RSSHUB -> SiteInfoRsshub().getNewsList(channelId)
-                ItemIdMod.FEED_WANANDROID -> SiteInfoWanandroid().getNewsList(channelId, page)
-                ItemIdMod.FEED_ZHIHU_DAILY -> SiteInfoZhihudaily().getNewsList(channelId)
-                ItemIdMod.FEED_JUHE_WEIXIN_JINGXUAN -> SiteInfoWeixinjingxuan().getNewsList(channelId, page)
-                ItemIdMod.FEED_TOPHUB_TODAY -> SiteInfoTophubToday().getNewsList(channelId)
+                ItemIdMod.FEED_SSPAI -> SiteInfoSspai.getNewsList(channelId, page)
+                ItemIdMod.FEED_DGTLE -> SiteInfoDgtle.getNewsList(channelId, page)
+                ItemIdMod.FEED_GANK_IO -> SiteInfoGankio.getNewsList(channelId, page)
+                ItemIdMod.FEED_RSSHUB -> SiteInfoRsshub.getNewsList(channelId)
+                ItemIdMod.FEED_WANANDROID -> SiteInfoWanandroid.getNewsList(channelId, page)
+                ItemIdMod.FEED_ZHIHU_DAILY -> SiteInfoZhihudaily.getNewsList(channelId)
+                ItemIdMod.FEED_JUHE_WEIXIN_JINGXUAN -> SiteInfoWeixinjingxuan.getNewsList(channelId, page)
+                ItemIdMod.FEED_TOPHUB_TODAY -> SiteInfoTophubToday.getNewsList(channelId)
+                ItemIdMod.FEED_FISH_POND_HOT_LIST -> SiteInfoFishPondHotList.start(channelId)
                 else -> null
             }
         }
@@ -119,15 +120,20 @@ class NewsBoxMod {
                                     ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_V2EX_HOT, ItemNameMod.NAME_TOPHUB_TODAY_V2EX_HOT, true),
                                     ChannelInfo(ItemIdMod.FEED_TOPHUB_TODAY_QDAILY, ItemNameMod.NAME_TOPHUB_TODAY_QDAILY, true)
                             )
+                    ),
+                    SiteInfo(
+                            ItemIdMod.FEED_TOPHUB_TODAY,
+                            ItemNameMod.NAME_TOPHUB_TODAY,
+                            SiteInfoFishPondHotList.getChannel()
                     )
             )
         }
 
-        fun getSiteChannelList(siteId: String): List<MutableMap<String, Any>>? {
+        fun getSiteChannelList(siteId: String): List<Map<String, Any>>? {
             this.getSiteList().map { mSite ->
                 if (mSite.id == siteId) {
                     return mSite.channels.map { mChannel ->
-                        mutableMapOf(
+                        mapOf(
                                 "channelId" to mChannel.id,
                                 "channelName" to mChannel.name,
                                 "isChannelOnlyOnePage" to mChannel.onlyOnePage
@@ -146,15 +152,6 @@ class NewsBoxMod {
                 else -> null
             }*/
             return null
-
         }
-
     }
-
-
-    fun setContext(context: Context) {
-        nowContext = context
-    }
-
-
 }

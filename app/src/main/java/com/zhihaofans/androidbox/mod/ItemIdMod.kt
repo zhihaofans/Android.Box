@@ -32,6 +32,7 @@ class ItemIdMod {
         const val FEED_TOPHUB_TODAY_ZHIHU_HOT = "tophub_today_zhihu_hot"
         const val FEED_TOPHUB_TODAY_V2EX_HOT = "tophub_today_v2ex_hot"
         const val FEED_TOPHUB_TODAY_QDAILY = "tophub_today_qdaily"
+        const val FEED_FISH_POND_HOT_LIST = "fish_pond_hot_list"
         // DateBase
         const val DATEBASE_KEY_FAVORITES_LIST = "datebase_key_favorites_list"
         // Favorites

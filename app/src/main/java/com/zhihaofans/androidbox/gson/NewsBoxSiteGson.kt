@@ -153,3 +153,16 @@ data class JuheWeixinResultListGson(
         val mark: String,
         val url: String
 )
+
+data class FishPondHotListGson(
+        val Code: Int,
+        val Message: String,
+        val Data: List<FishPondHotListDataGson>?
+)
+
+data class FishPondHotListDataGson(
+        val id: String?,
+        val title: String,
+        val url: String?,
+        val sort: String?
+)

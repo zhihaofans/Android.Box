@@ -122,8 +122,8 @@ class NewsBoxMod {
                             )
                     ),
                     SiteInfo(
-                            ItemIdMod.FEED_TOPHUB_TODAY,
-                            ItemNameMod.NAME_TOPHUB_TODAY,
+                            ItemIdMod.FEED_FISH_POND_HOT_LIST,
+                            ItemNameMod.NAME_FEED_FISH_POND_HOT_LIST,
                             SiteInfoFishPondHotList.getChannel()
                     )
             )

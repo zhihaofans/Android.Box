@@ -21,5 +21,6 @@ class ItemNameMod {
         var NAME_TOPHUB_TODAY_ZHIHU_HOT = AppUtil.getString(R.string.text_tophub_today_zhihu_hot)
         var NAME_TOPHUB_TODAY_V2EX_HOT = AppUtil.getString(R.string.text_tophub_today_v2ex_hot)
         var NAME_TOPHUB_TODAY_QDAILY = AppUtil.getString(R.string.text_site_tophub_qdaily)
+        var NAME_FEED_FISH_POND_HOT_LIST = AppUtil.getString(R.string.text_site_fish_pond_hot_list)
     }
 }

@@ -116,4 +116,5 @@
     <string name="title_activity_application_down" translatable="false">Application Down</string>
     <string name="text_search">Search</string>
     <string name="text_login">Login</string>
+    <string name="text_site_fish_pond_hot_list">Fish pond hot list</string>
 </resources>

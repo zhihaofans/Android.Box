@@ -56,7 +56,7 @@ dependencies {
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.2.0-alpha02'
-    implementation 'com.google.android.material:material:1.1.0-alpha08'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation 'com.google.code.gson:gson:2.8.5'
 
     // Anko <https://github.com/Kotlin/anko>

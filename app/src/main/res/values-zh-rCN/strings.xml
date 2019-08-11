@@ -113,6 +113,6 @@
     <string name="text_page">页码</string>
     <string name="text_text">文本</string>
     <string name="text_search">搜索</string>
-    <string name="text_login">登陆</string>
+    <string name="text_login">登录</string>
     <string name="text_site_fish_pond_hot_list">鱼塘热榜</string>
 </resources>

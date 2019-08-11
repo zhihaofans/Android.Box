@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
+import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 import com.tencent.mmkv.MMKV
 import com.xuexiang.xui.XUI
@@ -21,6 +22,7 @@ import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
+import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.string
 import io.zhihao.library.android.util.AppUtil
 import kotlinx.android.synthetic.main.activity_multiple_item_use.*
@@ -34,7 +36,8 @@ import java.net.URL
 
 class TophubActivity : AppCompatActivity() {
     private val xui = XUIUtil(this)
-    private var nowType = TophubMod.NOW_TYPE_HOMEPAGE
+    private val tophubMod = TophubMod()
+    private var nowType = tophubMod.NOW_TYPE_HOMEPAGE
     private var nowSite: TophubHomepageGroupItem? = null
     private var nowCategory: TophubModCategoryData? = null
     private var nowCategoryPage: Int? = null
@@ -51,11 +54,11 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun backKeyListen() {
-        if (nowType == TophubMod.NOW_TYPE_HOMEPAGE) finish() else loading()
+        if (nowType == tophubMod.NOW_TYPE_HOMEPAGE) finish() else loading()
     }
 
     private fun newInit() {
-        setContentView(com.zhihaofans.androidbox.R.layout.activity_multiple_item_use)
+        setContentView(R.layout.activity_multiple_item_use)
         title = "MultipleItem Use"
         val data = DataServer.getMultipleItemData()
         val multipleItemAdapter = MultipleItemQuickAdapter(data)
@@ -66,7 +69,7 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        setContentView(com.zhihaofans.androidbox.R.layout.activity_tophub)
+        setContentView(R.layout.activity_tophub)
         setSupportActionBar(toolbar_tophub)
         val rootDir = MMKV.initialize(this)
         Logger.d("mmkv root: $rootDir")
@@ -74,17 +77,17 @@ class TophubActivity : AppCompatActivity() {
         fab_tophub_refresh.setOnClickListener {
             fab_tophub.close(true)
             when (nowType) {
-                TophubMod.NOW_TYPE_HOMEPAGE -> loading()
-                TophubMod.NOW_TYPE_CATEGORY -> {
+                tophubMod.NOW_TYPE_HOMEPAGE -> loading()
+                tophubMod.NOW_TYPE_CATEGORY -> {
                     if (nowCategory == null) {
-                        nowType = TophubMod.NOW_TYPE_HOMEPAGE
+                        nowType = tophubMod.NOW_TYPE_HOMEPAGE
                     } else {
                         listViewCategoryInit(nowCategory!!)
                     }
                 }
-                TophubMod.NOW_TYPE_SITE -> {
+                tophubMod.NOW_TYPE_SITE -> {
                     if (nowSite == null) {
-                        nowType = TophubMod.NOW_TYPE_HOMEPAGE
+                        nowType = tophubMod.NOW_TYPE_HOMEPAGE
                     } else {
                         siteInit(nowSite!!)
                     }
@@ -97,12 +100,12 @@ class TophubActivity : AppCompatActivity() {
         }
         fab_tophub_category.setOnClickListener {
             fab_tophub.close(true)
-            val categoryList = TophubMod.getCategoryList()
+            val categoryList = tophubMod.getCategoryList()
             if (categoryList.isEmpty()) {
                 ToastUtil.error("加载失败，分类列表为空白")
                 nowCategory = null
             } else {
-                xui.selector(com.zhihaofans.androidbox.R.string.text_category, categoryList.map { it.title }).itemsCallback { _, _, which, _ ->
+                xui.selector(R.string.text_category, categoryList.map { it.title }).itemsCallback { _, _, which, _ ->
                     listview_tophub.removeAllItems()
                     this@TophubActivity.title = "Loading..."
                     listViewCategoryInit(categoryList[which])
@@ -114,8 +117,8 @@ class TophubActivity : AppCompatActivity() {
             if (hasPage) {
                 when {
                     nowCategory !== null -> {
-                        xui.materialDialogInputInt(getString(com.zhihaofans.androidbox.R.string.text_page), "必须大于0", nowCategoryPage.toString(), nowCategoryPage.toString(), getString(com.zhihaofans.androidbox.R.string.text_yes),
-                                getString(com.zhihaofans.androidbox.R.string.text_cancel)).apply {
+                        xui.materialDialogInputInt(getString(R.string.text_page), "必须大于0", nowCategoryPage.toString(), nowCategoryPage.toString(), getString(R.string.text_yes),
+                                getString(R.string.text_cancel)).apply {
                             inputRange(1, -1)
                             onPositive { dialogMax, _ ->
                                 try {
@@ -143,18 +146,26 @@ class TophubActivity : AppCompatActivity() {
             }
         }
         fab_tophub_login.setOnClickListener {
-            MaterialDialog(this).show {
-                input { _: MaterialDialog, char: CharSequence ->
-                    message(text = "itc_center_user")
-                    if (char.isEmpty()) {
-                        ToastUtil.error("请输入cookies")
-                    } else {
-                        if (TophubMod.loginByCookies(char.toString())) {
-                            
+            if (tophubMod.libs.isLogin()) {
+                Snackbar.make(coordinatorLayout_tophub, "已登录，是否清除登录记录?", Snackbar.LENGTH_SHORT).setAction("清除") {
+                    coordinatorLayout_tophub.snackbar("注销" + tophubMod.libs.logout().string("成功", "失败"))
+                }
+            } else {
+                MaterialDialog(this).show {
+                    input { _: MaterialDialog, char: CharSequence ->
+                        message(text = "itc_center_user")
+                        if (char.isEmpty()) {
+                            ToastUtil.error("请输入cookies")
+                        } else {
+                            if (tophubMod.libs.loginByCookies(char.toString())) {
+                                ToastUtil.success("成功保存登录信息")
+                            } else {
+                                ToastUtil.error("保存失败登录信息")
+                            }
                         }
                     }
+                    positiveButton(R.string.text_login)
                 }
-                positiveButton(R.string.text_login)
             }
         }
     }
@@ -163,16 +174,16 @@ class TophubActivity : AppCompatActivity() {
         hasPage = false
         listview_tophub.removeAllItems()
         this@TophubActivity.title = "Loading..."
-        nowType = TophubMod.NOW_TYPE_HOMEPAGE
+        nowType = tophubMod.NOW_TYPE_HOMEPAGE
         nowCategory = null
         nowSite = null
         doAsync {
             try {
-                val homePage = TophubMod.getHomePage()
+                val homePage = tophubMod.getHomePage()
                 uiThread {
                     if (homePage == null) {
                         ToastUtil.error("加载主页失败")
-                        this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
+                        this@TophubActivity.title = getString(R.string.title_activity_tophub)
                     } else {
                         listViewHomePageInit(homePage)
                     }
@@ -181,7 +192,7 @@ class TophubActivity : AppCompatActivity() {
                 e.printStackTrace()
                 uiThread {
                     ToastUtil.error("加载出错")
-                    this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
+                    this@TophubActivity.title = getString(R.string.title_activity_tophub)
                 }
             }
         }
@@ -192,7 +203,7 @@ class TophubActivity : AppCompatActivity() {
         val resultList = tophubHomepage.groupList
         if (resultList.isNullOrEmpty()) {
             ToastUtil.error("获取主页失败，服务器返回空白数据")
-            this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
+            this@TophubActivity.title = getString(R.string.title_activity_tophub)
         } else {
             val siteList = mutableListOf<TophubHomepageGroupItem>()
             resultList.map { group ->
@@ -205,7 +216,7 @@ class TophubActivity : AppCompatActivity() {
                 fab_tophub.close(true)
                 siteInit(siteList[position])
             }
-            this@TophubActivity.title = getString(com.zhihaofans.androidbox.R.string.title_activity_tophub)
+            this@TophubActivity.title = getString(R.string.title_activity_tophub)
             ToastUtil.success("加载主页完毕")
         }
     }
@@ -218,7 +229,7 @@ class TophubActivity : AppCompatActivity() {
         } else {
             val siteList = mutableListOf<TophubHomepageGroupItem>()
             doAsync {
-                val categoryContent = TophubMod.getCategoryContent(category.url, page)
+                val categoryContent = tophubMod.getCategoryContent(category.url, page)
                 uiThread {
                     if (categoryContent == null) {
                         ToastUtil.error("获取主页失败，服务器返回空白数据")
@@ -256,7 +267,7 @@ class TophubActivity : AppCompatActivity() {
                 1 -> listViewSiteInit(chooseSite, true)
             }
             nowSite = chooseSite
-            nowType = TophubMod.NOW_TYPE_SITE
+            nowType = tophubMod.NOW_TYPE_SITE
         }.show()
     }
 
@@ -264,7 +275,7 @@ class TophubActivity : AppCompatActivity() {
         nowCategory = null
         nowSite = null
         doAsync {
-            val siteContent = TophubMod.getWebSite(groupItem.url)
+            val siteContent = tophubMod.getWebSite(groupItem.url)
             uiThread {
                 if (siteContent == null) {
                     ToastUtil.error("获取站点失败，服务器返回空白数据")
@@ -347,6 +358,6 @@ class TophubActivity : AppCompatActivity() {
     }
 
     private fun importCookies(value: String) {
-        TophubMod.setCookies(value)
+        tophubMod.libs.loginByCookies(value)
     }
 }

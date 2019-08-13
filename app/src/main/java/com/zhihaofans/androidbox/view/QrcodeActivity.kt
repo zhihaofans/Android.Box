@@ -17,6 +17,7 @@ import com.vondear.rxfeature.tool.RxQRCode
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
@@ -69,7 +70,7 @@ class QrcodeActivity : AppCompatActivity() {
                                         Logger.e("BitmapUtils.saveBitmapToSDCardPNG = $saveSu")
                                         if (!saveSu) {
                                             saveSu = ImageUtils.save(qrcodeImage, fileName, Bitmap.CompressFormat.PNG)
-                                            Logger.d("ImageUtils.save = $saveSu")
+                                            LogUtil.d("ImageUtils.save = $saveSu")
                                         }
                                         uiThread {
                                             DialogUtils.closeDialog(progressDialog)
@@ -141,17 +142,17 @@ class QrcodeActivity : AppCompatActivity() {
                         when (qrResult["code"]) {
                             "0" -> {
                                 val qrData = qrResult["qrcodeData"].toString()
-                                Logger.d(qrData)
+                                LogUtil.d(qrData)
                                 editText_qrcode_content.setText(qrData)
                             }
                         }
                     }
                     1, 2 -> {
                         if (qrcode.isInstallQrPlugin && data != null) {
-                            Logger.d(data.extras)
+                            LogUtil.d(data.extras)
                             if (data.hasExtra("data")) {
                                 val result: String = data.getStringExtra("data")
-                                Logger.d(result)
+                                LogUtil.d(result)
                                 editText_qrcode_content.setText(result)
                             }
                         }
@@ -163,8 +164,8 @@ class QrcodeActivity : AppCompatActivity() {
                                 coordinatorLayout_qrcode.snackbar("解析失败(uri=null)")
                             } else {
                                 val realUri = UriUtils.getFilePathByUri(this, uri)
-                                Logger.d("uri:${uri.path}")
-                                Logger.d("realUri:$realUri")
+                                LogUtil.d("uri:${uri.path}")
+                                LogUtil.d("realUri:$realUri")
                                 snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
                                 //TODO:修复解析qrcode失败的BUG
                                 /*
@@ -173,7 +174,7 @@ class QrcodeActivity : AppCompatActivity() {
                                     snackbar(coordinatorLayout_qrcode, "解析失败(qrcodeResult=null)")
                                 } else {
                                     val qrcodeStr = qrcodeResult.text
-                                    Logger.d("qrcodeStr:$qrcodeStr")
+                                    LogUtil.d("qrcodeStr:$qrcodeStr")
                                     editText_qrcode_content.setText(qrcodeStr)
                                     snackbar(coordinatorLayout_qrcode, "解析完毕")
                                 }*/

@@ -10,6 +10,7 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.*
 import com.zhihaofans.androidbox.mod.OtherAppMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
@@ -67,9 +68,9 @@ class BilibiliActivity : AppCompatActivity() {
             if (st.isNullOrEmpty()) {
                 ToastUtil.error("你分享了个空白链接")
             } else {
-                Logger.d("url:$st")
+                LogUtil.d("url:$st")
                 val urlCheck = SystemUtil.getUrlFromBiliShare(st)
-                Logger.d("urlCheck:$urlCheck")
+                LogUtil.d("urlCheck:$urlCheck")
                 if (urlCheck == null) {
                     ToastUtil.error("你分享的不是链接")
                     finish()
@@ -80,7 +81,7 @@ class BilibiliActivity : AppCompatActivity() {
                         "http", "https" -> {
                             when (urlCheck.host) {
                                 "www.bilibili.com", "m.bilibili.com", "bilibili.com" -> {
-                                    Logger.d(urlPath)
+                                    LogUtil.d(urlPath)
                                     if (!urlPath.startsWith("/")) {
                                         urlPath = "/$urlPath"
                                     }
@@ -180,7 +181,7 @@ class BilibiliActivity : AppCompatActivity() {
                             loadingProgressBar_cid.setCanceledOnTouchOutside(false)
                             loadingProgressBar_cid.show()
                             request.url(videoPartCidUrl).header("Content-Type", "application/json; charset=utf-8")
-                            Logger.d("videoPartCidUrl:$videoPartCidUrl")
+                            LogUtil.d("videoPartCidUrl:$videoPartCidUrl")
                             val call_cid = client.newCall(request.build())
                             call_cid.enqueue(object : Callback {
                                 override fun onFailure(_call: Call, e: IOException) {
@@ -205,7 +206,7 @@ class BilibiliActivity : AppCompatActivity() {
                                             }
                                         } else {
                                             runOnUiThread {
-                                                Logger.d(responseStr_cid)
+                                                LogUtil.d(responseStr_cid)
                                                 val loadingProgressBar_comment = indeterminateProgressDialog(message = "Please wait a bit…", title = "Loading...")
                                                 loadingProgressBar_comment.setCancelable(false)
                                                 loadingProgressBar_comment.setCanceledOnTouchOutside(false)
@@ -221,7 +222,7 @@ class BilibiliActivity : AppCompatActivity() {
                                                         doAsync {
                                                             val doc: Document = Jsoup.connect(commentUrl).get()
                                                             uiThread {
-                                                                //Logger.d(doc.html())
+                                                                //LogUtil.d(doc.html())
                                                                 val body: Element = Jsoup.parseBodyFragment(doc.html())
                                                                 val comments: Elements = body.getElementsByTag("d")
                                                                 fun _search(_msg: String = "") {
@@ -250,8 +251,8 @@ class BilibiliActivity : AppCompatActivity() {
                                                                                                 val commentStr = thisComment.html()
                                                                                                 val commentAttr = thisComment.attr("p")
                                                                                                 val commentAttrList = commentAttr.split(",")
-                                                                                                Logger.d("outerHtml:${thisComment.outerHtml()}")
-                                                                                                Logger.d("commentAttrList:$commentAttrList")
+                                                                                                LogUtil.d("outerHtml:${thisComment.outerHtml()}")
+                                                                                                LogUtil.d("commentAttrList:$commentAttrList")
                                                                                                 if (commentAttrList.size != 8) {
                                                                                                     alert(thisComment.outerHtml(), "弹幕解析失败").show()
                                                                                                 } else {
@@ -306,8 +307,8 @@ class BilibiliActivity : AppCompatActivity() {
         loadingProgressBar_hash.show()
         val userHashUrl = "https://biliquery.typcn.com/api/user/hash/$userHash"
         request.url(userHashUrl).header("Content-Type", "application/json; charset=utf-8")
-        Logger.d("userHash:$userHash")
-        Logger.d("userHashUrl:$userHashUrl")
+        LogUtil.d("userHash:$userHash")
+        LogUtil.d("userHashUrl:$userHashUrl")
         val call_hash = client.newCall(request.build())
         call_hash.enqueue(object : Callback {
             override fun onFailure(_call: Call, e: IOException) {
@@ -383,7 +384,7 @@ class BilibiliActivity : AppCompatActivity() {
                         loadingProgressBar.show()
                         val uInfoUrl = "https://api.bilibili.com/x/web-interface/card?mid=$uid&type=json"
                         request.url(uInfoUrl).header("Content-Type", "application/json;charset=utf-8")
-                        Logger.d("url:$uInfoUrl")
+                        LogUtil.d("url:$uInfoUrl")
                         val call = client.newCall(request.build())
                         call.enqueue(object : Callback {
                             override fun onFailure(call: Call, e: IOException) {

@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FavoritesMod
 import com.zhihaofans.androidbox.mod.ItemIdMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import io.zhihao.library.android.kotlinEx.*
 import io.zhihao.library.android.util.AppUtil
@@ -59,7 +59,7 @@ class FavoritesActivity : AppCompatActivity() {
         listView_favorites.init(listViewData)
         listView_favorites.setOnItemClickListener { parent, view, position, id ->
             val chooseFavorites = favoritesList[position]
-            Logger.d("chooseFavorites:$chooseFavorites")
+            LogUtil.d("chooseFavorites:$chooseFavorites")
             when (chooseFavorites.type) {
                 ItemIdMod.FAVORITES_TYPE_TEXT -> {
                     alert {

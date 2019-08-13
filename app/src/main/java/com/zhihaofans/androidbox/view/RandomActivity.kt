@@ -3,9 +3,9 @@ package com.zhihaofans.androidbox.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.orhanobut.logger.Logger
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.intOrNull
@@ -45,7 +45,7 @@ class RandomActivity : AppCompatActivity() {
                                 inputRange(1, -1)
                                 onPositive { dialogMax, _ ->
                                     val inputTextMax = dialogMax.inputEditText!!.string.toIntOrNull()
-                                    Logger.d("inputTextMin:$inputTextMin\ninputTextMax:$inputTextMax")
+                                    LogUtil.d("inputTextMin:$inputTextMin\ninputTextMax:$inputTextMax")
                                     if (inputTextMin == null) {
                                         xuiUtil.snackbarDanger(coordinatorLayout_random, "最小数为null")
                                     } else if (inputTextMax == null) {
@@ -76,7 +76,7 @@ class RandomActivity : AppCompatActivity() {
                         inputRange(1, -1)
                         onPositive { dialogMin, _ ->
                             val inputTextList = dialogMin.inputEditText!!.string
-                            Logger.d("inputTextList:$inputTextList")
+                            LogUtil.d("inputTextList:$inputTextList")
                             if (inputTextList.isEmpty()) {
                                 xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空")
                             } else {
@@ -109,7 +109,7 @@ class RandomActivity : AppCompatActivity() {
                                 inputRange(1, -1)
                                 onPositive { dialogMin, _ ->
                                     val inputTextLength = dialogMin.inputEditText!!.intOrNull
-                                    Logger.d("inputTextList:$inputTextList")
+                                    LogUtil.d("inputTextList:$inputTextList")
                                     if (inputTextList.isEmpty()) {
                                         xuiUtil.snackbarDanger(coordinatorLayout_random, "文本列表为空")
                                     } else if (inputTextLength == null) {

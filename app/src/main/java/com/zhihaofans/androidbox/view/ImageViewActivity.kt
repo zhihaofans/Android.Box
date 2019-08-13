@@ -22,11 +22,11 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.FileOldUtil
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.ContentResolverUtils
@@ -63,7 +63,7 @@ class ImageViewActivity : AppCompatActivity() {
                         finish()
                     } else {
                         imageUrl = imageUri.toString()
-                        Logger.d(imageUrl.toString())
+                        LogUtil.d(imageUrl.toString())
                         if (imageUrl.isNullOrEmpty()) {
                             ToastUtil.error("Empty image")
                             finish()
@@ -142,7 +142,7 @@ class ImageViewActivity : AppCompatActivity() {
                     .build()
             val controllerListener: ControllerListener<ImageInfo> = object : BaseControllerListener<ImageInfo>() {
                 override fun onIntermediateImageSet(id: String, imageInfo: ImageInfo?) {
-                    Logger.d("Intermediate image received")
+                    LogUtil.d("Intermediate image received")
                 }
 
                 override fun onFailure(id: String, throwable: Throwable) {
@@ -158,7 +158,7 @@ class ImageViewActivity : AppCompatActivity() {
                         return
                     }
                     val qualityInfo = imageInfo.qualityInfo
-                    Logger.d("Final image received! " +
+                    LogUtil.d("Final image received! " +
                             "Size ${imageInfo.width} x ${imageInfo.height}\n" +
                             "Quality level ${qualityInfo.quality}, good enough: ${qualityInfo.isOfGoodEnoughQuality}, full quality: ${qualityInfo.isOfFullQuality}\n"
                     )
@@ -254,7 +254,7 @@ class ImageViewActivity : AppCompatActivity() {
     private fun download(fileName: String, engine: Int) {
         notificationUtil.init(this@ImageViewActivity)
         val downloadPath: String = UrlMod.APP_PICTURE_DOWNLOAD_PATH + fileName
-        Logger.d("downloadPath:$downloadPath")
+        LogUtil.d("downloadPath:$downloadPath")
         val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
@@ -324,7 +324,7 @@ class ImageViewActivity : AppCompatActivity() {
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
-                        Logger.d("Download error\nfileName:" + task.filename)
+                        LogUtil.d("Download error\nfileName:" + task.filename)
                         loadingProgressBar.dismiss()
                         Snackbar.make(coordinatorLayout_imageView, "下载失败", Snackbar.LENGTH_SHORT).show()
                     }

@@ -7,6 +7,7 @@ import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.data.AppInfo
 import com.zhihaofans.androidbox.data.AppInfoResult
+import com.zhihaofans.androidbox.util.LogUtil
 import io.paperdb.Paper
 
 /**
@@ -28,7 +29,7 @@ class AppDownMod {
                     //mutableMapOf("id" to "APKPURE", "name" to "ApkPure" + " v1", "version" to "1")// ApkPure
                     mutableMapOf("id" to "FIRIM_V2", "name" to "Fir.im v2", "version" to "1")// Fir.im v2 (RSSHub)
             )
-            Logger.d(sites)
+            LogUtil.d(sites)
             return this.mcontext
         }
 
@@ -46,7 +47,7 @@ class AppDownMod {
 
         fun getApp(site: String, idOne: String, idTwo: String? = null): AppInfoResult? {
             val i = getSiteIds().indexOf(site)
-            Logger.d("getApp:$site/$idOne/$idTwo\nno:$i\n${getSiteIds()}")
+            LogUtil.d("getApp:$site/$idOne/$idTwo\nno:$i\n${getSiteIds()}")
             when (i) {
                 0 -> {
                     when {
@@ -132,11 +133,11 @@ class AppDownMod {
 
         fun addFeed(appDownFeed: AppDownFeed): Boolean {
             val dataBase = this.getAppFeeds()
-            Logger.d("appDownFeed:$dataBase")
+            LogUtil.d("appDownFeed:$dataBase")
             dataBase.add(appDownFeed)
             this.write("feeds", dataBase)
             val dataBaseNew = this.getAppFeeds()
-            Logger.d("appDownFeed:$dataBaseNew")
+            LogUtil.d("appDownFeed:$dataBaseNew")
             return dataBaseNew == dataBase
         }
 
@@ -146,7 +147,7 @@ class AppDownMod {
             val delFeedItem = dataBase[feedNo]
             return if (delFeedItem == appDownFeed) {
                 dataBase.removeAt(feedNo)
-                Logger.d("Delete feed item")
+                LogUtil.d("Delete feed item")
                 this.updateFeedList(dataBase)
             } else {
                 Logger.e("Not this feed item")

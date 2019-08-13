@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
+import com.zhihaofans.androidbox.util.LogUtil
 import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.IntentUtil
 import java.net.URL
@@ -64,7 +65,7 @@ class OtherAppMod {
             //在哔哩哔哩动画客户端打开网页（全屏显示，但无法隐藏系统状态栏）
             val packageName = "tv.danmaku.bili"
             if (!AppUtil.isAppInstalled(packageName)) {
-                Logger.d("未安装$packageName")
+                LogUtil.d("未安装$packageName")
                 return false
             }
             return try {
@@ -107,7 +108,7 @@ class OtherAppMod {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm.pay"
             if (!AppUtil.isAppInstalled(packageName)) {
-                Logger.d("未安装 $packageName")
+                LogUtil.d("未安装 $packageName")
                 return false
             }
             return try {
@@ -129,7 +130,7 @@ class OtherAppMod {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm.pay"
             if (!AppUtil.isAppInstalled(packageName)) {
-                Logger.d("未安装 $packageName")
+                LogUtil.d("未安装 $packageName")
                 return false
             }
             return try {
@@ -151,7 +152,7 @@ class OtherAppMod {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm"
             if (!AppUtil.isAppInstalled(packageName)) {
-                Logger.d("未安装 $packageName")
+                LogUtil.d("未安装 $packageName")
                 return false
             }
             return try {
@@ -173,7 +174,7 @@ class OtherAppMod {
             if (url.isEmpty()) return false
             val packageName = "com.dv.adm"
             if (!AppUtil.isAppInstalled(packageName)) {
-                Logger.d("未安装 $packageName")
+                LogUtil.d("未安装 $packageName")
                 return false
             }
             return try {

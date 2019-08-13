@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.util
 import android.content.Context
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
-import com.orhanobut.logger.Logger
 import dev.utils.app.AppUtils
 
 /**
@@ -13,7 +12,7 @@ class FileOldUtil {
     companion object {
         fun installApk(context: Context, filePath: String) = AppUtils.installApp(filePath, context.packageName + ".fileprovider")
         fun download(url: String, savePath: String, listener: FileDownloadListener): Int {
-            Logger.d("com.zhihaofans.androidbox.download ->\nurl:$url\nsavePath:$savePath")
+            LogUtil.d("com.zhihaofans.androidbox.download ->\nurl:$url\nsavePath:$savePath")
             return FileDownloader.getImpl().create(url)
                     .setPath(savePath)
                     .setListener(listener).start()

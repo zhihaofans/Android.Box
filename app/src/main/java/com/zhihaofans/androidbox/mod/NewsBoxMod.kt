@@ -1,11 +1,11 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.ChannelInfo
 import com.zhihaofans.androidbox.data.News
 import com.zhihaofans.androidbox.data.SiteInfo
+import com.zhihaofans.androidbox.util.LogUtil
 
 
 /**
@@ -28,7 +28,7 @@ class NewsBoxMod {
         }
 
         private fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<News>? {
-            Logger.d("getNewsList($siteId,$channelId,$page)")
+            LogUtil.d("getNewsList($siteId,$channelId,$page)")
             return when (siteId) {
                 ItemIdMod.FEED_SSPAI -> SiteInfoSspai.getNewsList(channelId, page)
                 ItemIdMod.FEED_DGTLE -> SiteInfoDgtle.getNewsList(channelId, page)

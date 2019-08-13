@@ -15,11 +15,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
 import com.zhihaofans.androidbox.mod.UrlMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.snackbar
@@ -114,10 +114,10 @@ class MainActivity : AppCompatActivity() {
                 when (requestCode) { // 0:Qrcode
                     0 -> {
                         if (qrcode.isInstallQrPlugin && data != null) {
-                            Logger.d(data.extras)
+                            LogUtil.d(data.extras)
                             if (data.hasExtra("data")) {
                                 val result: String = data.getStringExtra("data")
-                                Logger.d(result)
+                                LogUtil.d(result)
                                 Snackbar.make(coordinatorLayout_main, result, Snackbar.LENGTH_LONG).setAction(R.string.text_more) {
                                     val acts = mutableListOf<String>(getString(R.string.text_open), getString(R.string.text_copy), getString(R.string.text_share))
                                     selector("", acts) { _, index ->

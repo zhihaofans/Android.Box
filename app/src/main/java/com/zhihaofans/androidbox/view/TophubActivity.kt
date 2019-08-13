@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.google.android.material.snackbar.Snackbar
-import com.orhanobut.logger.Logger
 import com.tencent.mmkv.MMKV
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
@@ -15,9 +14,11 @@ import com.zhihaofans.androidbox.data.DataServer
 import com.zhihaofans.androidbox.data.TophubHomepage
 import com.zhihaofans.androidbox.data.TophubHomepageGroupItem
 import com.zhihaofans.androidbox.data.TophubModCategoryData
+import com.zhihaofans.androidbox.kotlinEx.close
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.SettingMod
 import com.zhihaofans.androidbox.mod.TophubMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import io.zhihao.library.android.kotlinEx.init
@@ -72,10 +73,10 @@ class TophubActivity : AppCompatActivity() {
         setContentView(R.layout.activity_tophub)
         setSupportActionBar(toolbar_tophub)
         val rootDir = MMKV.initialize(this)
-        Logger.d("mmkv root: $rootDir")
+        LogUtil.d("mmkv root: $rootDir")
         loading()
         fab_tophub_refresh.setOnClickListener {
-            fab_tophub.close(true)
+            fab_tophub.close()
             when (nowType) {
                 tophubMod.NOW_TYPE_HOMEPAGE -> loading()
                 tophubMod.NOW_TYPE_CATEGORY -> {
@@ -95,11 +96,11 @@ class TophubActivity : AppCompatActivity() {
             }
         }
         fab_tophub_homepage.setOnClickListener {
-            fab_tophub.close(true)
+            fab_tophub.close()
             loading()
         }
         fab_tophub_category.setOnClickListener {
-            fab_tophub.close(true)
+            fab_tophub.close()
             val categoryList = tophubMod.getCategoryList()
             if (categoryList.isEmpty()) {
                 ToastUtil.error("加载失败，分类列表为空白")
@@ -113,7 +114,7 @@ class TophubActivity : AppCompatActivity() {
             }
         }
         fab_tophub_page.setOnClickListener {
-            fab_tophub.close(true)
+            fab_tophub.close()
             if (hasPage) {
                 when {
                     nowCategory !== null -> {
@@ -213,7 +214,7 @@ class TophubActivity : AppCompatActivity() {
             }
             listview_tophub.init(siteList.map { it.title })
             listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                fab_tophub.close(true)
+                fab_tophub.close()
                 siteInit(siteList[position])
             }
             this@TophubActivity.title = getString(R.string.title_activity_tophub)
@@ -243,7 +244,7 @@ class TophubActivity : AppCompatActivity() {
                             }
                             listview_tophub.init(siteList.map { it.title })
                             listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                                fab_tophub.close(true)
+                                fab_tophub.close()
                                 siteInit(siteList[position])
                             }
                             nowCategory = category
@@ -292,7 +293,7 @@ class TophubActivity : AppCompatActivity() {
                         listview_tophub.removeAllItems()
                         listview_tophub.init(resultList.map { it.title })
                         listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                            fab_tophub.close(true)
+                            fab_tophub.close()
                             browseWeb(resultList[position].url)
                         }
                         ToastUtil.success("加载主页完毕")

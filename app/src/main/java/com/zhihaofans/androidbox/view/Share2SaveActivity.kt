@@ -11,6 +11,7 @@ import com.orhanobut.logger.Logger
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.LoadingDialog
 import com.zhihaofans.androidbox.R
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
 import dev.utils.app.UriUtils
@@ -90,8 +91,7 @@ class Share2SaveActivity : Activity() {
                     }
                 }
             } else if (mIntent!!.extras !== null) {
-                val mType: String? = mIntent!!.extras!!.getString("type", null)
-                when (mType) {
+                when (mIntent!!.extras!!.getString("type", null)) {
                     null -> {
                         ToastUtil.error("null type")
                         finish()
@@ -106,7 +106,7 @@ class Share2SaveActivity : Activity() {
                             val time = DatetimeUtil.unixTimeStampMill().toString()
                             val saveIntent = IntentUtil.getSaveFileByDocumentIntent("share-$time.txt", "text/plain")
                             mimeType = "text"
-                            Logger.d(saveIntent)
+                            LogUtil.d(saveIntent)
                             if (IntentUtil.isIntentHasAppToLaunch(saveIntent)) {
                                 startActivityForResult(saveIntent, 0)
                             } else {
@@ -127,7 +127,7 @@ class Share2SaveActivity : Activity() {
                             if (fileNameExtList.hasNotChild(fileNameExt)) fileNameExt = "png"
                             val time = DatetimeUtil.unixTimeStampMill().toString()
                             val saveIntent = IntentUtil.getSaveFileByDocumentIntent("share-$time.$fileNameExt", mimeType)
-                            Logger.d(saveIntent)
+                            LogUtil.d(saveIntent)
                             if (IntentUtil.isIntentHasAppToLaunch(saveIntent)) {
                                 startActivityForResult(saveIntent, 0)
                             } else {
@@ -151,7 +151,7 @@ class Share2SaveActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
         when (resultCode) {
-            Activity.RESULT_OK -> {
+            RESULT_OK -> {
                 when (requestCode) {
                     0 -> {
                         afterCreateFile(resultData)
@@ -162,7 +162,7 @@ class Share2SaveActivity : Activity() {
                     }
                 }
             }
-            Activity.RESULT_CANCELED -> {
+            RESULT_CANCELED -> {
                 ToastUtil.warning(R.string.text_canceled_by_user)
                 finish()
             }
@@ -172,8 +172,7 @@ class Share2SaveActivity : Activity() {
     private fun afterCreateFile(resultData: Intent?) {
         // Save file
         if (resultData != null) {
-            val uri = resultData.data
-            when (uri) {
+            when (val uri = resultData.data) {
                 null -> {
                     ToastTintUtils.error("获取保存路径失败，即将退出")
                     finish()
@@ -210,12 +209,12 @@ class Share2SaveActivity : Activity() {
                                         }
                                         mimeType.startsWith("image/") -> {
                                             val image = mIntent!!.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as Uri
-                                            Logger.d("image:$image")
+                                            LogUtil.d("image:$image")
                                             val inputStream = contentResolver.openInputStream(image)
                                             val bmp = BitmapFactory.decodeStream(inputStream)
                                             inputStream?.close()
                                             //val imagePath = UriUtils.getFilePathByUri(this@Share2SaveActivity, image)
-                                            //Logger.d("imagePath:$imagePath")
+                                            //LogUtil.d("imagePath:$imagePath")
                                             //val saveSu = FileUtils.copyFile(imagePath, saveUri, true)
                                             val format = when (mIntent!!.type!!.remove("image/")) {
                                                 "png" -> Bitmap.CompressFormat.PNG

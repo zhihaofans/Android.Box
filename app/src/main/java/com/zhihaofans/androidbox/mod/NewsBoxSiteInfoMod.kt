@@ -6,6 +6,7 @@ import com.zhihaofans.androidbox.data.ChannelInfo
 import com.zhihaofans.androidbox.data.News
 import com.zhihaofans.androidbox.gson.*
 import com.zhihaofans.androidbox.util.HttpUtil
+import com.zhihaofans.androidbox.util.LogUtil
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import io.zhihao.library.android.kotlinEx.hasNotChild
 import io.zhihao.library.android.kotlinEx.isNotNullAndEmpty
@@ -203,7 +204,7 @@ class SiteInfoWanandroid {
                             Pair("content-type", "application/json;charset=UTF-8"),
                             Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                     )
-                    Logger.d(thisUrl)
+                    LogUtil.d(thisUrl)
                     try {
                         val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
 
@@ -247,12 +248,12 @@ class SiteInfoZhihudaily {
                             Pair("content-type", "application/json;charset=UTF-8"),
                             Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                     )
-                    Logger.d(thisUrl)
+                    LogUtil.d(thisUrl)
                     try {
                         val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
                         if (newsListJson.startsWith("{") && newsListJson.endsWith("}")) {
                             val newsIndex = g.fromJson(newsListJson, ZhihuDailyGson::class.java)
-                            Logger.d("SiteInfoZhihudaily.getNewsList.date:" + newsIndex.date)
+                            LogUtil.d("SiteInfoZhihudaily.getNewsList.date:" + newsIndex.date)
                             val urlList = mutableListOf<String>()
                             newsIndex.top_stories.map {
                                 val mUrl = UrlMod.ZHIHU_DAILY_WEB + it.id
@@ -299,7 +300,7 @@ class SiteInfoWeixinjingxuan {
                             Pair("content-type", "application/json;charset=UTF-8"),
                             Pair("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                     )
-                    Logger.d(thisUrl)
+                    LogUtil.d(thisUrl)
                     try {
                         val newsListJson = HttpUtil.httpGetString(thisUrl, headers)
                                 ?: return null

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
@@ -13,6 +12,7 @@ import com.zhihaofans.androidbox.mod.ItemIdMod
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.mod.XXDownMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.*
@@ -35,9 +35,7 @@ class XXDownActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Logger.d("onDestroy")
         finish()
-        Logger.d("finish")
     }
 
     private fun input() {
@@ -78,7 +76,7 @@ class XXDownActivity : AppCompatActivity() {
                     Snackbar.make(coordinatorLayout_xxdown, "解析失败，不支持该网址", Snackbar.LENGTH_SHORT).setAction("重新输入") {
                         input()
                     }.show()
-                    Logger.d("解析失败，不支持该网址")
+                    LogUtil.d("解析失败，不支持该网址")
                 } else {
                     initListView(loadingProgressBar, result)
                 }
@@ -88,8 +86,8 @@ class XXDownActivity : AppCompatActivity() {
 
     private fun auto(url: URL): XXDownResultData? {
         val mUrl = url.toString()
-        Logger.d(mUrl)
-        Logger.d(url.host)
+        LogUtil.d(mUrl)
+        LogUtil.d(url.host)
         return when {
             mUrl.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
             mUrl.startsWith(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail

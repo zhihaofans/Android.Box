@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.mod
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.*
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
@@ -11,6 +10,7 @@ import com.zhihaofans.androidbox.gson.RsshubFirimGson
 import com.zhihaofans.androidbox.util.DatetimeOldUtil
 import com.zhihaofans.androidbox.util.HttpUtil
 import com.zhihaofans.androidbox.util.JsoupUtil
+import com.zhihaofans.androidbox.util.LogUtil
 import io.zhihao.library.android.kotlinEx.remove
 import io.zhihao.library.android.util.DatetimeUtil
 import io.zhihao.library.android.util.FileUtil
@@ -67,7 +67,7 @@ class NewsSitesMod {
                 result.message = "错误：github.isEmpty"
             } else {
                 val lastRelease = github[0]
-                Logger.d(lastRelease)
+                LogUtil.d(lastRelease)
                 result.result = AppInfo(author, project, project, "GITHUB_RELEASES", author,
                         if (lastRelease.name.isNullOrEmpty()) lastRelease.tag_name else lastRelease.name,
                         DatetimeOldUtil.githubUtc2Local(lastRelease.published_at), null,
@@ -92,7 +92,7 @@ class NewsSitesMod {
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
             val result = defaultAppResult
-            Logger.d(doc.html())
+            LogUtil.d(doc.html())
             val title = jsoupUtil.title()
             if (title != "出错了") {
                 val body = jsoupUtil.html("body")
@@ -100,7 +100,7 @@ class NewsSitesMod {
                 val b = body.indexOf("window.location.href = \"") + 24
                 val c = jsoupUtil.html("p.apk_topba_message").split(" / ")
                 val appInfos = jsoupUtil.html("div.apk_left_title > p.apk_left_title_info", 1).split("<br>")
-                //Logger.d("appInfos:size:${appInfos.size}\n$appInfos")
+                //LogUtil.d("appInfos:size:${appInfos.size}\n$appInfos")
                 val appName = a.substring(0, a.indexOf("<span class=\"list_app_info\">"))
                 val appVersion = jsoupUtil.text("p.detail_app_title > span.list_app_info")
                 val appSize = c[0]
@@ -110,7 +110,7 @@ class NewsSitesMod {
                 var newTime = if (appInfos.size != 4) "" else rawTime.replace("-", "/")
                 if (newTime.endsWith("天前")) newTime = DatetimeOldUtil.datePlus(DatetimeUtil.nowDatetime(), -(newTime.substring(0, newTime.length - 2).toIntOrNull()
                         ?: 0))
-                Logger.d("rawTime:$rawTime\nnewTime:$newTime")
+                LogUtil.d("rawTime:$rawTime\nnewTime:$newTime")
                 val updateTime = if (newTime.isEmpty()) rawTime else newTime
                 val downCount = c[1]
                 result.result = AppInfo(packageName, null, appName, "COOLAPK_WEB", "", appVersion, updateTime, packageName, webUrl,
@@ -126,7 +126,7 @@ class NewsSitesMod {
 
         fun FirimApi(pageageName: String, apiToken: String): AppInfoResult {
             val apiUrl = "https://api.fir.im/apps/latest/$pageageName?type=android&api_token=$apiToken"
-            Logger.d("apiUrl:$apiUrl")
+            LogUtil.d("apiUrl:$apiUrl")
             val client = OkHttpClient()
             val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl).build()
             val call = client.newCall(request)
@@ -168,7 +168,7 @@ class NewsSitesMod {
                             result.message = "Error:Gson to firimV1"
                             val latestUpdate = g.fromJson(jsonData, FirimApiLatestUpdate::class.java)
                             result.message = ""
-                            Logger.d(latestUpdate.updated_at)
+                            LogUtil.d(latestUpdate.updated_at)
                             val updateTime = DatetimeUtil.unixTime2date("${latestUpdate.updated_at}000".toLong(), Locale.CHINA)
                             result.result = AppInfo(pageageName, apiToken, latestUpdate.name, "FIRIM_V1", "",
                                     latestUpdate.versionShort + "(${latestUpdate.version})",
@@ -197,7 +197,7 @@ class NewsSitesMod {
 
         fun FirimRsshub(projectId: String): AppInfoResult {
             val apiUrl = "https://rsshub.app/fir/update/$projectId.json"
-            Logger.d("apiUrl:$apiUrl")
+            LogUtil.d("apiUrl:$apiUrl")
             val client = OkHttpClient()
             val request = Request.Builder().get().cacheControl(CacheControl.Builder().noCache().build()).url(apiUrl).build()
             val call = client.newCall(request)
@@ -257,7 +257,7 @@ class NewsSitesMod {
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
             val result = defaultAppResult
-            Logger.d(doc.html())
+            LogUtil.d(doc.html())
             val title = jsoupUtil.title()
             val body = jsoupUtil.body()
             if (body == null) {
@@ -290,7 +290,7 @@ class NewsSitesMod {
             if (packageName.isEmpty()) return result
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
-            Logger.d(doc.html())
+            LogUtil.d(doc.html())
             val body = jsoupUtil.body()
             if (body == null) {
                 result.message = "错误，找不到应用，服务器返回空白信息"
@@ -299,15 +299,15 @@ class NewsSitesMod {
                 if (emptyElement.isNullOrEmpty()) {
                     val appName = jsoupUtil.htmlOrNull("div.det-name-int") ?: packageName
                     val appIcon = jsoupUtil.img("div.det-icon >img")
-                    Logger.d("appIcon:$appIcon")
+                    LogUtil.d("appIcon:$appIcon")
                     val appSize = jsoupUtil.html("div.det-size")
                     val downloadUrl = jsoupUtil.attr("a.det-down-btn", "data-apkurl")
-                    Logger.d("downloadUrl:$downloadUrl")
+                    LogUtil.d("downloadUrl:$downloadUrl")
                     val appVersion = jsoupUtil.html("div.det-othinfo-data", 0)
                     val updateUnixTime = jsoupUtil.attr("#J_ApkPublishTime", "data-apkpublishtime").toLong()
                     val updateTime = DatetimeUtil.unixTime2date(updateUnixTime * 1000, Locale.CHINA)
-                    Logger.d("updateUnixTime:$updateUnixTime")
-                    Logger.d("updateTime:$updateTime")
+                    LogUtil.d("updateUnixTime:$updateUnixTime")
+                    LogUtil.d("updateTime:$updateTime")
                     val author = jsoupUtil.html("div.det-othinfo-data", 2)
                     val downCount = jsoupUtil.html("div.det-ins-num")
                     result.result = AppInfo(packageName, null, appName, "MYAPP", author, appVersion, updateTime, packageName, webUrl,
@@ -328,7 +328,7 @@ class NewsSitesMod {
             if (packageName.isEmpty()) return result
             val doc = Jsoup.connect(webUrl).get()
             val jsoupUtil = JsoupUtil(doc)
-            Logger.d(doc.html())
+            LogUtil.d(doc.html())
             val body = jsoupUtil.body()
             if (body == null) {
                 result.message = "错误，找不到应用，服务器返回空白信息"
@@ -386,7 +386,7 @@ class XXDownSitesMod {
                 val bodyStr = body.string()
                 if (!response.isSuccessful) return XXDownResultData(false, "Http get error(${response.message})", listOf())
                 if (bodyStr.isEmpty()) return XXDownResultData(false, "Http body is empty", listOf())
-                Logger.d(bodyStr)
+                LogUtil.d(bodyStr)
                 val doc = Jsoup.parse(bodyStr)
                 val jsoupUtil = JsoupUtil(doc)
                 val image = jsoupUtil.attrOrNull("div#pageInfo", "data-pic")
@@ -410,10 +410,10 @@ class XXDownSitesMod {
                 val bodyStr = body.string()
                 if (!response.isSuccessful) return XXDownResultData(false, "Http get error(${response.message})", listOf())
                 if (bodyStr.isEmpty()) return XXDownResultData(false, "Http body is empty", listOf())
-                Logger.d(bodyStr)
+                LogUtil.d(bodyStr)
                 val doc = Jsoup.parse(bodyStr)
                 val jsoupUtil = JsoupUtil(doc)
-                Logger.d(jsoupUtil.html("head > meta[itemprop='image']"))
+                LogUtil.d(jsoupUtil.html("head > meta[itemprop='image']"))
                 val image = jsoupUtil.attr("head > meta[itemprop=\"image\"]", "content")
                 return when {
                     image.isEmpty() -> XXDownResultData(false, "image is empty", listOf())
@@ -454,7 +454,7 @@ class XXDownSitesMod {
         }
 
         fun instagram(url: URL): XXDownResultData? {
-            Logger.d("instagram($url")
+            LogUtil.d("instagram($url")
             return try {
                 if (url.host == UrlMod.XXDOWN_SITE_HOST_INSTAGRAM) {
                     val htmlText = HttpUtil.httpPostString(UrlMod.XXDOWN_SITE_10INSTA, mutableMapOf("url" to url.toString()), XXDownSite.headers_map)

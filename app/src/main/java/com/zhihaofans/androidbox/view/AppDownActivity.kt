@@ -16,6 +16,7 @@ import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.kotlinEx.logD
 import com.zhihaofans.androidbox.mod.AppDownMod
 import com.zhihaofans.androidbox.util.FileOldUtil
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.init
@@ -75,7 +76,7 @@ class AppDownActivity : AppCompatActivity() {
         try {
             appFeeds = dataBase.getAppFeeds()
             if (appFeeds.size == 0) {
-                Logger.d("appFeeds.size=0")
+                LogUtil.d("appFeeds.size=0")
                 snackbar("列表空白")
             } else {
                 listView_app_down.init(dataBase.getAppfeedNameList())
@@ -432,7 +433,7 @@ class AppDownActivity : AppCompatActivity() {
 
     private fun exportDB() {
         val db = dataBase.export2json()
-        Logger.d("export2json:$db")
+        LogUtil.d("export2json:$db")
         alert {
             title = getString(R.string.text_export)
             customView {
@@ -538,7 +539,7 @@ class AppDownActivity : AppCompatActivity() {
 
                     override fun error(task: BaseDownloadTask, e: Throwable) {
                         e.printStackTrace()
-                        Logger.d("Download error\nfileName:" + task.filename)
+                        LogUtil.d("Download error\nfileName:" + task.filename)
                         loadingProgressBar.dismiss()
                         coordinatorLayout_appdown.snackbar("下载失败")
                     }

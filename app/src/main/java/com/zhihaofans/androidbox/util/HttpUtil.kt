@@ -1,6 +1,5 @@
 package com.zhihaofans.androidbox.util
 
-import com.orhanobut.logger.Logger
 import okhttp3.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -42,7 +41,7 @@ class HttpUtil {
         }
 
         fun httpPostString(url: String, body: Map<String, String> = mutableMapOf(), headers: Map<String, String>? = null): String? {
-            Logger.d("httpPostString\nurl:$url\nbody:$body\nheader:$headers")
+            LogUtil.d("httpPostString\nurl:$url\nbody:$body\nheader:$headers")
             val requestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
             body.map {
@@ -72,7 +71,7 @@ class HttpUtil {
         }
 
         fun httpGetJsoup(url: String, headers: MutableMap<String, String>? = null, timeout: Int = 10000): Document {
-            Logger.d("httpGetJsoup:$url,$headers,$timeout")
+            LogUtil.d("httpGetJsoup:$url,$headers,$timeout")
             return Jsoup.connect(url)
                     .headers(headers)
                     .timeout(timeout)

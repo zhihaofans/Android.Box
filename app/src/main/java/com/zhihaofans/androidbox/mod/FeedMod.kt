@@ -1,9 +1,9 @@
 package com.zhihaofans.androidbox.mod
 
 import android.content.Context
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.AppDownFeed
 import com.zhihaofans.androidbox.data.ChannelInfo
+import com.zhihaofans.androidbox.util.LogUtil
 import io.zhihao.library.android.kotlinEx.isNullorEmpty
 
 /**
@@ -55,7 +55,7 @@ class FeedMod {
         }
 
         fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<NewsInfo>? {
-            Logger.d("getNewsList:$siteId/$channelId/$page")
+            LogUtil.d("getNewsList:$siteId/$channelId/$page")
             val newsL = sites!!.getOldVerNewsList(siteId, channelId, page)
             return newsL?.map { NewsInfo(it["title"]!!, it["web_url"]!!) }?.toMutableList()
 
@@ -107,7 +107,7 @@ class FeedMod {
         }
 
         fun changePage(page: Int): Cache? {
-            Logger.d("changePage:$page")
+            LogUtil.d("changePage:$page")
             return when {
                 cache == null -> null
                 page == cache!!.nowPage -> cache

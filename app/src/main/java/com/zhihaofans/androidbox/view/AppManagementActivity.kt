@@ -10,9 +10,9 @@ import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.adapter.ListViewAdapter
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import dev.utils.app.image.ImageUtils
 import dev.utils.common.FileUtils
@@ -53,7 +53,7 @@ class AppManagementActivity : AppCompatActivity() {
                 it.getAppName()
             }
             //得到系统 安装的所有程序包的PackageInfo对象
-            Logger.d("appList\nlist------>${packs.size}")
+            LogUtil.d("appList\nlist------>${packs.size}")
             packs.map { pi ->
                 val map = hashMapOf<String, Any>()
                 map["icon"] = pi.applicationInfo.loadIcon(pm)
@@ -120,7 +120,7 @@ class AppManagementActivity : AppCompatActivity() {
                                     actAppInfo.add("$item:" + listA[indexA])
                                     indexA++
                                 }
-                                Logger.d(actAppInfo)
+                                LogUtil.d(actAppInfo)
                                 selector(getString(R.string.text_app_info), actAppInfo) { _, ii ->
                                     alert {
                                         customView {

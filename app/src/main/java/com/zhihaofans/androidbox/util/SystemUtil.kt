@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.view.Browser2BrowserActivity
@@ -68,27 +67,25 @@ class SystemUtil {
                 shareString.toUrl()
             } else {
                 var result = ""
-                Logger.d("getUrlFromBiliShare:1")
-
-                Logger.d("getUrlFromBiliShare:2")
+                LogUtil.d("getUrlFromBiliShare:1")
                 biliScheme.map {
-                    Logger.d("Scheme:$it")
+                    LogUtil.d("Scheme:$it")
                     val _a = shareString.indexOf("$it://")
                     if (_a >= 0) {
                         val _b = shareString.indexOf(" ", _a)
-                        Logger.d("_a:$_a\n_b:$_b")
+                        LogUtil.d("_a:$_a\n_b:$_b")
                         result = if (_b > _a) {
                             shareString.substring(_a, _b)
                         } else {
                             shareString.substring(_a, shareString.length - 1)
                         }
-                        Logger.d("result:$result")
+                        LogUtil.d("result:$result")
                         val checked = result.toUrl()
-                        Logger.d("getUrlFromBiliShare:3")
+                        LogUtil.d("getUrlFromBiliShare:3")
                         return checked
                     }
                 }
-                Logger.d("getUrlFromBiliShare:4")
+                LogUtil.d("getUrlFromBiliShare:4")
                 return if (result.isEmpty()) {
                     null
                 } else {

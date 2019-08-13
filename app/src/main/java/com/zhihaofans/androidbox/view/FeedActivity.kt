@@ -3,9 +3,9 @@ package com.zhihaofans.androidbox.view
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FeedMod
+import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import io.zhihao.library.android.kotlinEx.init
@@ -96,7 +96,7 @@ class FeedActivity : AppCompatActivity() {
                                 1 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))//刷新
                                 2 -> {
                                     val pageTemp = newsCache.nowPage + if (menu.size == 4) -1 else 1
-                                    Logger.d("pageTemp:$pageTemp")
+                                    LogUtil.d("pageTemp:$pageTemp")
                                     this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, pageTemp))//上一页(非第一页时)、下一页
                                 }
                                 3 -> this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage + 1))//下一页
@@ -141,7 +141,7 @@ class FeedActivity : AppCompatActivity() {
                         data as FeedMod.News.Init
                     }
                     doAsync {
-                        Logger.d("newsInit")
+                        LogUtil.d("newsInit")
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread {
                             if (cache == null) {
@@ -162,7 +162,7 @@ class FeedActivity : AppCompatActivity() {
             val appFeeds = appBox.initAppList()
             try {
                 if (appFeeds.size == 0) {
-                    Logger.d("appFeeds.size=0")
+                    LogUtil.d("appFeeds.size=0")
                     XPopup.get(this).dismiss()
                     snackbar("列表空白")
                 } else {
@@ -217,7 +217,7 @@ class FeedActivity : AppCompatActivity() {
                             manualRefresh = true
                             refreshLayout.autoRefresh()
                             val page = update.data as Int
-                            Logger.d("updateFeed->page:$page")
+                            LogUtil.d("updateFeed->page:$page")
                             doAsync {
                                 if (cache == null) {
                                     snackbar(coordinatorLayout_feed, "空白订阅数据")
@@ -247,7 +247,7 @@ class FeedActivity : AppCompatActivity() {
                                 if (channelList.size > 1) {
                                     selector(getString(R.string.text_channel), channelList.map { it.name }) { _, channelIndex ->
                                         channelId = channelList[channelIndex].id
-                                        Logger.d("ChangeSite:$siteId/$channelId")
+                                        LogUtil.d("ChangeSite:$siteId/$channelId")
                                         manualRefresh = true
                                         refreshLayout.autoRefresh()
                                         initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
@@ -255,7 +255,7 @@ class FeedActivity : AppCompatActivity() {
                                 } else {
                                     manualRefresh = true
                                     refreshLayout.autoRefresh()
-                                    Logger.d("ChangeSite:$siteId/$channelId")
+                                    LogUtil.d("ChangeSite:$siteId/$channelId")
                                     initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                 }
                             }

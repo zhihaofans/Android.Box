@@ -9,6 +9,7 @@ import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.gson.WeatherNowGson
 import com.zhihaofans.androidbox.gson.WeatherNowResultGson
+import com.zhihaofans.androidbox.util.LogUtil
 import kotlinx.android.synthetic.main.activity_weather.*
 import kotlinx.android.synthetic.main.content_weather.*
 import okhttp3.*
@@ -74,7 +75,7 @@ class WeatherActivity : AppCompatActivity() {
                         Snackbar.make(coordinatorLayout_weather, "空白数据", Snackbar.LENGTH_SHORT).show()
                     }
                 }
-                Logger.d(responseStr)
+                LogUtil.d(responseStr)
                 //loadingProgressBar.dismiss()
                 runOnUiThread {
                 }

@@ -1,7 +1,6 @@
 package com.zhihaofans.androidbox.util
 
 import android.annotation.SuppressLint
-import com.orhanobut.logger.Logger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,7 +36,7 @@ class DatetimeOldUtil {
 
 
         fun datePlus(day: String, Num: Int): String {
-            Logger.d(day)
+            LogUtil.d(day)
             val df = SimpleDateFormat(if (day.indexOf(":") >= 0) "yyyy/MM/dd HH:mm:ss" else "yyyy/MM/dd")
             var nowDate: Date? = null
             try {

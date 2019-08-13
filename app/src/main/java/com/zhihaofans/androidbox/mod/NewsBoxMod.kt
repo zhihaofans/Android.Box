@@ -12,9 +12,7 @@ import com.zhihaofans.androidbox.util.LogUtil
  * Created by zhihaofans on 2018/3/9.
  */
 class NewsBoxMod {
-    private var nowContext: Context? = null
-
-    class sites(_context: Context) {
+    class Sites(_context: Context) {
         private val context = _context
 
         fun getOldVerNewsList(siteId: String, channelId: String, page: Int): List<MutableMap<String, String>>? {
@@ -27,7 +25,7 @@ class NewsBoxMod {
             }.toList()
         }
 
-        private fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<News>? {
+        private fun getNewsList(siteId: String, channelId: String, page: Int): List<News>? {
             LogUtil.d("getNewsList($siteId,$channelId,$page)")
             return when (siteId) {
                 ItemIdMod.FEED_SSPAI -> SiteInfoSspai.getNewsList(channelId, page)

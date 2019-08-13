@@ -13,7 +13,7 @@ import io.zhihao.library.android.kotlinEx.isNullorEmpty
 class FeedMod {
     class News {
         private var mContext: Context? = null
-        private var sites: NewsBoxMod.sites? = null
+        private var Sites: NewsBoxMod.Sites? = null
         private var cache: Cache? = null
         private var siteList = mutableListOf<SiteInfo>()
         private var siteListNew = mutableListOf<SiteInfoNew>()
@@ -36,13 +36,13 @@ class FeedMod {
 
         fun init(context: Context) {
             mContext = context
-            sites = NewsBoxMod.sites(mContext!!)
-            siteList = sites!!.getOldVerSiteList().map {
+            Sites = NewsBoxMod.Sites(mContext!!)
+            siteList = Sites!!.getOldVerSiteList().map {
                 SiteInfo(it["id"]!!, it["name"]!!)
             }.toMutableList()
             siteList.map { site ->
                 val thisSite = site.id
-                val channelList = sites!!.getSiteChannelList(thisSite)!!.map {
+                val channelList = Sites!!.getSiteChannelList(thisSite)!!.map {
                     ChannelInfo(it["channelId"] as String, it["channelName"] as String)
                 }.toMutableList()
                 siteListNew.add(SiteInfoNew(site.id, site.name, channelList))
@@ -50,13 +50,13 @@ class FeedMod {
             }
         }
 
-        fun getSites(): NewsBoxMod.sites? {
-            return sites
+        fun getSites(): NewsBoxMod.Sites? {
+            return Sites
         }
 
         fun getNewsList(siteId: String, channelId: String, page: Int): MutableList<NewsInfo>? {
             LogUtil.d("getNewsList:$siteId/$channelId/$page")
-            val newsL = sites!!.getOldVerNewsList(siteId, channelId, page)
+            val newsL = Sites!!.getOldVerNewsList(siteId, channelId, page)
             return newsL?.map { NewsInfo(it["title"]!!, it["web_url"]!!) }?.toMutableList()
 
         }
@@ -87,12 +87,12 @@ class FeedMod {
                     var siteName = ""
                     var channelName = ""
                     var isChannelOnlyOnePage = false
-                    sites!!.getOldVerSiteList().map {
+                    Sites!!.getOldVerSiteList().map {
                         if (it["id"] == siteId) {
                             siteName = it["id"]!!
                         }
                     }
-                    sites!!.getSiteChannelList(siteId)!!.map {
+                    Sites!!.getSiteChannelList(siteId)!!.map {
                         if (it["channelId"] == channelId) {
                             isChannelOnlyOnePage = it["isChannelOnlyOnePage"] as Boolean? ?: false
                             channelName = it["channelId"] as String? ?: "null"

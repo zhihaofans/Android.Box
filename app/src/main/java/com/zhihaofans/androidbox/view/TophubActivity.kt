@@ -83,14 +83,14 @@ class TophubActivity : AppCompatActivity() {
                     if (nowCategory == null) {
                         nowType = tophubMod.NOW_TYPE_HOMEPAGE
                     } else {
-                        listViewCategoryInit(nowCategory!!)
+                        initCategory(nowCategory!!)
                     }
                 }
                 tophubMod.NOW_TYPE_SITE -> {
                     if (nowSite == null) {
                         nowType = tophubMod.NOW_TYPE_HOMEPAGE
                     } else {
-                        siteInit(nowSite!!)
+                        initSite(nowSite!!)
                     }
                 }
             }
@@ -109,7 +109,7 @@ class TophubActivity : AppCompatActivity() {
                 xui.selector(R.string.text_category, categoryList.map { it.title }).itemsCallback { _, _, which, _ ->
                     listview_tophub.removeAllItems()
                     this@TophubActivity.title = "Loading..."
-                    listViewCategoryInit(categoryList[which])
+                    initCategory(categoryList[which])
                 }.show()
             }
         }
@@ -125,7 +125,7 @@ class TophubActivity : AppCompatActivity() {
                                 try {
                                     val input = dialogMax.inputEditText!!.string.toIntOrNull()
                                     if (input !== null && input > 0) {
-                                        listViewCategoryInit(nowCategory!!, input)
+                                        initCategory(nowCategory!!, input)
                                     } else {
                                         ToastUtil.error("未知错误")
                                         hasPage = false
@@ -186,7 +186,7 @@ class TophubActivity : AppCompatActivity() {
                         ToastUtil.error("加载主页失败")
                         this@TophubActivity.title = getString(R.string.title_activity_tophub)
                     } else {
-                        listViewHomePageInit(homePage)
+                        initHomePage(homePage)
                     }
                 }
             } catch (e: Exception) {
@@ -199,7 +199,7 @@ class TophubActivity : AppCompatActivity() {
         }
     }
 
-    private fun listViewHomePageInit(tophubHomepage: TophubHomepage) {
+    private fun initHomePage(tophubHomepage: TophubHomepage) {
         hasPage = false
         val resultList = tophubHomepage.groupList
         if (resultList.isNullOrEmpty()) {
@@ -215,7 +215,7 @@ class TophubActivity : AppCompatActivity() {
             listview_tophub.init(siteList.map { it.title })
             listview_tophub.setOnItemClickListener { _, _, position, _ ->
                 fab_tophub.close()
-                siteInit(siteList[position])
+                initSite(siteList[position])
             }
             this@TophubActivity.title = getString(R.string.title_activity_tophub)
             ToastUtil.success("加载主页完毕")
@@ -223,7 +223,7 @@ class TophubActivity : AppCompatActivity() {
     }
 
 
-    private fun listViewCategoryInit(category: TophubModCategoryData, page: Int = 1) {
+    private fun initCategory(category: TophubModCategoryData, page: Int = 1) {
         hasPage = true
         if (category.url.isEmpty()) {
             ToastUtil.error("获取分类内容失败，地址为空白")
@@ -245,7 +245,7 @@ class TophubActivity : AppCompatActivity() {
                             listview_tophub.init(siteList.map { it.title })
                             listview_tophub.setOnItemClickListener { _, _, position, _ ->
                                 fab_tophub.close()
-                                siteInit(siteList[position])
+                                initSite(siteList[position])
                             }
                             nowCategory = category
                             nowCategoryPage = page
@@ -258,21 +258,52 @@ class TophubActivity : AppCompatActivity() {
         }
     }
 
-    private fun siteInit(chooseSite: TophubHomepageGroupItem) {
+    private fun initSite(chooseSite: TophubHomepageGroupItem) {
         hasPage = false
         xui.selector(chooseSite.title, listOf("热门", "历史")).itemsCallback { _, _, which, _ ->
             listview_tophub.removeAllItems()
             this@TophubActivity.title = "Loading..."
             when (which) {
-                0 -> listViewSiteInit(chooseSite, false)
-                1 -> listViewSiteInit(chooseSite, true)
+                0 -> initSiteList(chooseSite, false)
+                1 -> initSiteList(chooseSite, true)
             }
             nowSite = chooseSite
             nowType = tophubMod.NOW_TYPE_SITE
         }.show()
     }
 
-    private fun listViewSiteInit(groupItem: TophubHomepageGroupItem, history: Boolean) {
+    private fun initSiteList(groupItem: TophubHomepageGroupItem, history: Boolean) {
+        nowCategory = null
+        nowSite = null
+        doAsync {
+            val siteContent = tophubMod.getWebSite(groupItem.url)
+            uiThread {
+                if (siteContent == null) {
+                    ToastUtil.error("获取站点失败，服务器返回空白数据")
+                } else {
+                    val resultList = if (history) {
+                        siteContent.historyList
+                    } else {
+                        siteContent.hotList
+                    }
+                    if (resultList.isNullOrEmpty()) {
+                        ToastUtil.error("获取站点内容失败，服务器返回空白列表")
+                    } else {
+                        this@TophubActivity.title = siteContent.title
+                        listview_tophub.removeAllItems()
+                        listview_tophub.init(resultList.map { it.title })
+                        listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                            fab_tophub.close()
+                            browseWeb(resultList[position].url)
+                        }
+                        ToastUtil.success("加载主页完毕")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initDashboard(groupItem: TophubHomepageGroupItem, history: Boolean) {
         nowCategory = null
         nowSite = null
         doAsync {

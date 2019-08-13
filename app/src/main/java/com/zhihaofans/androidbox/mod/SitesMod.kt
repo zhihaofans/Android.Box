@@ -271,7 +271,7 @@ class NewsSitesMod {
                     val appVersion = jsoupUtil.html("dl.infos-list > dd", 3).replace("&nbsp;", "")
                     val appSize = jsoupUtil.attr("dl.infos-list > dd > meta", "content")
                     val downloadUrl = jsoupUtil.link("a.install-btn")
-                    val author = jsoupUtil.html("span.dev-sites")
+                    val author = jsoupUtil.html("span.dev-Sites")
                     val updateTime = jsoupUtil.attr("time#baidu_time", "datetime")
                     val downCount = jsoupUtil.html("span.item.install > i")
                     result.result = AppInfo(packageName, null, appName, "WANDOUJIA_V1", author, appVersion, updateTime, packageName, webUrl,

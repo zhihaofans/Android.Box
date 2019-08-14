@@ -15,6 +15,7 @@ class XXDownMod {
                 ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL -> XXDownSitesMod.BilibiliVideoThumbnail(url)
                 ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE -> XXDownSitesMod.githubReleaseXX(url)
                 ItemIdMod.XXDOWN_SITE_INSTAGRAM -> XXDownSitesMod.instagram(url)
+                ItemIdMod.XXDOWN_SITE_TWITTER -> XXDownSitesMod.twitter(url)
                 else -> null
             }
 
@@ -29,5 +30,13 @@ class XXDownSite {
         )
         val headerbuild = headers_map.toHeaders()
 
+    }
+}
+
+class XXDownUrlType {
+    companion object {
+        val other: Int = -1
+        val image: Int = 0
+        val video: Int = 1
     }
 }

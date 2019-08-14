@@ -1,7 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
-import com.zhihaofans.androidbox.data.TenInstaNetData
-import com.zhihaofans.androidbox.data.TenInstaNetItemData
+import com.zhihaofans.androidbox.data.ImageVideoData
+import com.zhihaofans.androidbox.data.ImageVideoItemData
 import org.jsoup.Jsoup
 
 /**
@@ -14,7 +14,7 @@ import org.jsoup.Jsoup
  */
 class HtmlParserMod {
     companion object {
-        fun tenInsta(htmlText: String): TenInstaNetData? {
+        fun tenInsta(htmlText: String): ImageVideoData? {
             // Instagram
             val doc = Jsoup.parse(htmlText)
             val items = doc.select("div.portfolio-item")
@@ -23,9 +23,23 @@ class HtmlParserMod {
                 val itemTypeText = it.select("div.card > div.card-body > h4.card-title > a").text().toLowerCase()
                 val itemUrl = it.select("div.card > div.card-body > p.card-text > a").attr("href")
                 val isVideo = itemTypeText !== "image"
-                TenInstaNetItemData(isVideo, itemUrl)
+                ImageVideoItemData(isVideo, itemUrl)
             }
-            return TenInstaNetData(itemList)
+            return ImageVideoData(itemList)
+        }
+
+        fun tubeoffline(htmlText: String): ImageVideoData? {
+            // Instagram
+            val doc = Jsoup.parse(htmlText)
+            val items = doc.select("div#videoDownload > table > tbody > tr > td > a")
+            if (items.size == 0) return null
+            val itemList = items.map {
+                //val itemTypeText = it.select("div.card > div.card-body > h4.card-title > a").text().toLowerCase()
+                val itemUrl = it.attr("href")
+                val isVideo = false
+                ImageVideoItemData(isVideo, itemUrl)
+            }
+            return ImageVideoData(itemList)
         }
     }
 }

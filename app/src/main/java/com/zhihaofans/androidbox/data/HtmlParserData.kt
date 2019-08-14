@@ -8,11 +8,12 @@ package com.zhihaofans.androidbox.data
  * @date: 2019-07-24 18:35
 
  */
-data class TenInstaNetData(
-        val item: List<TenInstaNetItemData>
+
+data class ImageVideoData(
+        val item: List<ImageVideoItemData>
 )
 
-data class TenInstaNetItemData(
+data class ImageVideoItemData(
         val isVideo: Boolean,
         val url: String
 )

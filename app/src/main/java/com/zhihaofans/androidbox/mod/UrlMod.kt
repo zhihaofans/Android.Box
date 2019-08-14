@@ -48,5 +48,7 @@ class UrlMod {
         const val XXDOWN_SITE_INSTAGRAM = "https://www.instagram.com/p/"
         const val XXDOWN_SITE_HOST_INSTAGRAM = "www.instagram.com"
         const val XXDOWN_SITE_10INSTA = "https://www.10insta.net/"
+        const val XXDOWN_SITE_HOST_TWITTER = "twitter.com"
+        const val XXDOWN_SITE_TUBEOFFLINE = "https://www.tubeoffline.com/downloadFrom.php?host=%s&video=%s"
     }
 }

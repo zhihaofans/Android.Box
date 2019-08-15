@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.mod
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import androidx.core.net.toUri
 import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.util.LogUtil
 import io.zhihao.library.android.util.AppUtil
@@ -70,7 +69,7 @@ class OtherAppMod {
             }
             return try {
                 val intent = (IntentUtil.getLaunchAppIntent(packageName) ?: return false).apply {
-                    data = url.toUri()
+                    data = Uri.parse(url)
                     setClassName(packageName, "tv.danmaku.bili.ui.game.web.GameCenterWebActivity")
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }
@@ -113,7 +112,7 @@ class OtherAppMod {
             }
             return try {
                 val mIntent = (IntentUtil.getLaunchAppIntent(packageName) ?: return false).apply {
-                    data = url.toUri()
+                    data = Uri.parse(url)
                     setClassName(packageName, "com.dv.adm.pay.AEditor")
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }
@@ -135,7 +134,7 @@ class OtherAppMod {
             }
             return try {
                 val mIntent = (IntentUtil.getLaunchAppIntent(packageName) ?: return false).apply {
-                    data = url.toUri()
+                    data = Uri.parse(url)
                     setClassName(packageName, "com.dv.get.AEditor")
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }
@@ -157,7 +156,7 @@ class OtherAppMod {
             }
             return try {
                 val mIntent = (IntentUtil.getLaunchAppIntent(packageName) ?: return false).apply {
-                    data = url.toUri()
+                    data = Uri.parse(url)
                     setClassName(packageName, "com.dv.adm.AEditor")
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }
@@ -179,7 +178,7 @@ class OtherAppMod {
             }
             return try {
                 val mIntent = (IntentUtil.getLaunchAppIntent(packageName) ?: return false).apply {
-                    data = url.toUri()
+                    data = Uri.parse(url)
                     setClassName(packageName, "com.dv.get.AEditor")
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }
@@ -202,7 +201,7 @@ class OtherAppMod {
             }
             return try {
                 val mIntent = (IntentUtil.getLaunchAppIntent(packageName) ?: return false).apply {
-                    data = url.toUri()
+                    data = Uri.parse(url)
                     setClassName(packageName, className)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 }

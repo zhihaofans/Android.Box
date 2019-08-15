@@ -3,7 +3,6 @@ package com.zhihaofans.androidbox.view
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isNotEmpty
 import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.TextMod
@@ -28,7 +27,7 @@ class TextActivity : AppCompatActivity() {
         setContentView(R.layout.activity_text)
         setSupportActionBar(toolbar)
         fab.setOnClickListener {
-            if (hasChoose && listview_text.isNotEmpty()) {
+            if (hasChoose && listview_text.childCount > 0) {
 
             } else {
                 ToastUtil.error("未完成")

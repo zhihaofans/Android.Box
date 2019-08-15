@@ -1,9 +1,9 @@
 package com.zhihaofans.androidbox.view
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.xuexiang.xui.XUI
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
@@ -111,7 +111,7 @@ class Browser2BrowserActivity : AppCompatActivity() {
                                     alert {
                                         title = "确定使用${appNameList[i]}打开网页吗?"
                                         yesButton {
-                                            browserIntent.data = uri.toUri()
+                                            browserIntent.data = Uri.parse(uri)
                                             browserIntent.action = Intent.ACTION_VIEW
                                             startActivity(browserIntent)
                                             ToastUtil.success("已经尝试启动应用(${appNameList[i]})")

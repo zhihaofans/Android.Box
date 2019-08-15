@@ -2,7 +2,6 @@ package com.zhihaofans.androidbox.mod
 
 import android.content.Intent
 import android.net.Uri
-import androidx.core.net.toUri
 import com.zhihaofans.androidbox.data.AppIntentData
 import com.zhihaofans.androidbox.data.Browser2BrowserBlackListData
 import com.zhihaofans.androidbox.util.IntentOldUtil
@@ -20,7 +19,7 @@ class Browser2BrowserMod {
                 "com.taobao.taobao" to Browser2BrowserBlackListData(listOf("com.taobao.browser.BrowserActivity"), null)
         )
 
-        fun getLauncherListWithBlackList(uri: String): List<AppIntentData> = getLauncherListWithBlackList(uri.toUri())
+        fun getLauncherListWithBlackList(uri: String): List<AppIntentData> = getLauncherListWithBlackList(Uri.parse(uri))
         fun getLauncherListWithBlackList(uri: Uri): List<AppIntentData> {
             val mIntent = Intent(Intent.ACTION_VIEW).apply {
                 data = uri

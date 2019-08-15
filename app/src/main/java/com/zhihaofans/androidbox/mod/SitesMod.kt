@@ -478,7 +478,7 @@ class XXDownSitesMod {
         }
 
         fun twitter(url: URL): XXDownResultData? {
-            LogUtil.d("instagram($url")
+            LogUtil.d("twitter($url")
             return try {
                 if (url.host == UrlMod.XXDOWN_SITE_HOST_TWITTER) {
                     val htmlText = HttpUtil.httpGetString(UrlMod.XXDOWN_SITE_TUBEOFFLINE.format("Twitter", url), XXDownSite.headers_map)
@@ -487,8 +487,7 @@ class XXDownSitesMod {
                     if (imageVideoData.item.isEmpty()) return null
                     val itemList = imageVideoData.item.map {
                         val itemType = if (it.isVideo) XXDownUrlType.video else XXDownUrlType.image
-                        var mUrl = it.url
-                        if (!mUrl.startsWith("https://www.10insta.net/")) mUrl = "https://www.10insta.net/$mUrl"
+                        val mUrl = it.url
                         XXDownResultUrlData(mUrl, itemType)
                     }
                     XXDownResultData(true, "", itemList)

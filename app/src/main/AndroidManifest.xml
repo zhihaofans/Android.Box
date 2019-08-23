@@ -52,7 +52,7 @@
 
                 <data
                     android:host="tophub.com"
-                    android:path="/s/*"
+                    android:path="/s/"
                     android:scheme="https" />
             </intent-filter>
         </activity>

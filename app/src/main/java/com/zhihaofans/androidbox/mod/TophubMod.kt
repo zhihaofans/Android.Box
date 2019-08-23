@@ -20,6 +20,7 @@ class TophubMod {
     val NOW_TYPE_SITE = "now_type_site"
     private val MMKV_MOD_TOPHUB = "mod_tophub"
     private val categoryList = mutableListOf<TophubModCategoryData>().apply {
+        add(TophubModCategoryData("动态", "https://tophub.today/dashboard"))
         add(TophubModCategoryData("综合", "https://tophub.today/c/news"))
         add(TophubModCategoryData("科技", "https://tophub.today/c/tech"))
         add(TophubModCategoryData("娱乐", "https://tophub.today/c/ent"))

@@ -229,28 +229,53 @@ class TophubActivity : AppCompatActivity() {
             ToastUtil.error("获取分类内容失败，地址为空白")
         } else {
             val siteList = mutableListOf<TophubHomepageGroupItem>()
-            doAsync {
-                val categoryContent = tophubMod.getCategoryContent(category.url, page)
-                uiThread {
-                    if (categoryContent == null) {
-                        ToastUtil.error("获取主页失败，服务器返回空白数据")
-                    } else {
-                        if (categoryContent.item.isEmpty()) {
-                            nowCategory = null
-                            ToastUtil.error("获取主页失败，服务器返回空白列表")
+            if (category.url == "https://tophub.today/dashboard") {
+                if (tophubMod.libs.isLogin()) {
+                    doAsync {
+                        val dashboard = tophubMod.getDashboard()
+                        uiThread {
+                            if (dashboard.isNullOrEmpty()) {
+                                ToastUtil.error("获取动态失败，网络或服务器错误")
+                            } else {
+                                this@TophubActivity.title = "动态"
+                                listview_tophub.removeAllItems()
+                                listview_tophub.init(dashboard.map { it.title })
+                                listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                                    fab_tophub.close()
+                                    browseWeb(dashboard[position].url)
+                                }
+                                nowType = tophubMod.NOW_TYPE_SITE
+                                ToastUtil.success("加载动态完毕")
+                            }
+                        }
+                    }
+                } else {
+                    ToastUtil.error("获取动态失败，未登录")
+                }
+            } else {
+                doAsync {
+                    val categoryContent = tophubMod.getCategoryContent(category.url, page)
+                    uiThread {
+                        if (categoryContent == null) {
+                            ToastUtil.error("获取主页失败，服务器返回空白数据")
                         } else {
-                            categoryContent.item.map {
-                                siteList.add(TophubHomepageGroupItem(it.title, it.url, it.icon))
+                            if (categoryContent.item.isEmpty()) {
+                                nowCategory = null
+                                ToastUtil.error("获取主页失败，服务器返回空白列表")
+                            } else {
+                                categoryContent.item.map {
+                                    siteList.add(TophubHomepageGroupItem(it.title, it.url, it.icon))
+                                }
+                                listview_tophub.init(siteList.map { it.title })
+                                listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                                    fab_tophub.close()
+                                    initSite(siteList[position])
+                                }
+                                nowCategory = category
+                                nowCategoryPage = page
+                                this@TophubActivity.title = category.title
+                                ToastUtil.success("加载${categoryContent.title}第 $page 页完毕,${categoryContent.subtitle}")
                             }
-                            listview_tophub.init(siteList.map { it.title })
-                            listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                                fab_tophub.close()
-                                initSite(siteList[position])
-                            }
-                            nowCategory = category
-                            nowCategoryPage = page
-                            this@TophubActivity.title = category.title
-                            ToastUtil.success("加载${categoryContent.title}第 $page 页完毕,${categoryContent.subtitle}")
                         }
                     }
                 }

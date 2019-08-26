@@ -3,6 +3,7 @@ package com.zhihaofans.androidbox.mod
 import com.lxj.androidktx.core.mmkv
 import com.zhihaofans.androidbox.data.*
 import com.zhihaofans.androidbox.util.HttpUtil
+import com.zhihaofans.androidbox.util.LogUtil
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
@@ -195,11 +196,16 @@ class TophubMod {
             val mUrl = "https://tophub.today/dashboard"
             val result = HttpUtil.httpGetString(mUrl, libs.httpHeader)
             if (result.isNullOrEmpty()) {
+                LogUtil.e("result.isNullOrEmpty()")
                 null
             } else {
                 val doc = Jsoup.parse(result, mUrl)
-                val itemList = doc.select("div.weui-panel__bd > a.weui-media-box.weui-media-box_appmsg")
-                if (itemList.isEmpty()) return null
+                val itemList = doc.select("a.weui-media-box.weui-media-box_appmsg")
+                LogUtil.d(itemList)
+                if (itemList.isEmpty()) {
+                    LogUtil.e("itemList.isEmpty()")
+                    return null
+                }
                 itemList.map {
                     val siteName = it.select("p.weui-media-box__desc").text() ?: return null
                     var siteIcon = it.select("p.weui-media-box__desc > img.radius").attr("src")

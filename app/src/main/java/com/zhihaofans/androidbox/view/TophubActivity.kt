@@ -150,7 +150,7 @@ class TophubActivity : AppCompatActivity() {
             if (tophubMod.libs.isLogin()) {
                 Snackbar.make(coordinatorLayout_tophub, "已登录，是否清除登录记录?", Snackbar.LENGTH_SHORT).setAction("清除") {
                     coordinatorLayout_tophub.snackbar("注销" + tophubMod.libs.logout().string("成功", "失败"))
-                }
+                }.show()
             } else {
                 MaterialDialog(this).show {
                     input { _: MaterialDialog, char: CharSequence ->
@@ -234,18 +234,20 @@ class TophubActivity : AppCompatActivity() {
                     doAsync {
                         val dashboard = tophubMod.getDashboard()
                         uiThread {
-                            if (dashboard.isNullOrEmpty()) {
-                                ToastUtil.error("获取动态失败，网络或服务器错误")
-                            } else {
-                                this@TophubActivity.title = "动态"
-                                listview_tophub.removeAllItems()
-                                listview_tophub.init(dashboard.map { it.title })
-                                listview_tophub.setOnItemClickListener { _, _, position, _ ->
-                                    fab_tophub.close()
-                                    browseWeb(dashboard[position].url)
+                            when {
+                                dashboard == null -> ToastUtil.error("获取动态失败，网络或服务器错误")
+                                dashboard.isEmpty() -> ToastUtil.error("获取动态失败，解析结果为空白")
+                                else -> {
+                                    this@TophubActivity.title = "动态"
+                                    listview_tophub.removeAllItems()
+                                    listview_tophub.init(dashboard.map { it.title })
+                                    listview_tophub.setOnItemClickListener { _, _, position, _ ->
+                                        fab_tophub.close()
+                                        browseWeb(dashboard[position].url)
+                                    }
+                                    nowType = tophubMod.NOW_TYPE_SITE
+                                    ToastUtil.success("加载动态完毕")
                                 }
-                                nowType = tophubMod.NOW_TYPE_SITE
-                                ToastUtil.success("加载动态完毕")
                             }
                         }
                     }

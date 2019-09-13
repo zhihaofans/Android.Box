@@ -1,15 +1,15 @@
 package com.zhihaofans.androidbox.mod
 
-import android.content.Context
+import com.zhihaofans.androidbox.kotlinEx.mmkv
 import io.zhihao.library.android.util.SharedPreferencesUtil
 
 /**
  * Created by zhihaofans on 2018/11/4.
  */
 class AppSettingMod {
+    private val MMKV_ID = "appsetting"
     private val sharedPreferencesFileName = "android_box"
     private val sharedPreferencesUtil = SharedPreferencesUtil(sharedPreferencesFileName)
-    private var mContext: Context? = null
 
     // Setting
     var imageUrlOpenWithBuiltinViewer: Boolean
@@ -25,6 +25,10 @@ class AppSettingMod {
 
     fun imageUrlOpenWithBuiltinViewer(boolean: Boolean? = null): Boolean {
         val key = "IMAGE_URL_OPEN_WITH_BUILTIN_VIEWER"
+        mmkv(MMKV_ID).getBoolean(key, false)
+        mmkv(MMKV_ID).apply {
+            this.allKeys()
+        }
         sharedPreferencesUtil.apply {
             return if (boolean == null) {
                 getBoolean(key) ?: true

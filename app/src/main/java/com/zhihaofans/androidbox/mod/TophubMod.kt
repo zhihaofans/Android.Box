@@ -1,7 +1,7 @@
 package com.zhihaofans.androidbox.mod
 
-import com.lxj.androidktx.core.mmkv
 import com.zhihaofans.androidbox.data.*
+import com.zhihaofans.androidbox.kotlinEx.mmkv
 import com.zhihaofans.androidbox.util.HttpUtil
 import com.zhihaofans.androidbox.util.LogUtil
 import org.jsoup.Jsoup

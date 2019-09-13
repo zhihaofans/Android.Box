@@ -4,12 +4,12 @@ apply plugin: "kotlin-android"
 
 apply plugin: "kotlin-android-extensions"
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.zhihaofans.androidbox"
         minSdkVersion 26
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 146
         versionName "0.0.105"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -143,6 +143,7 @@ dependencies {
 
     // AwesomeDialog <https://github.com/blennerSilva/AwesomeDialog>
     implementation 'com.github.blennerSilva:AwesomeDialog:2.0.6'
+    implementation 'androidx.exifinterface:exifinterface:1.1.0-beta01'
 }
 kotlin {
     experimental {

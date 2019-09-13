@@ -402,7 +402,14 @@ class XXDownSitesMod {
         }
 
         fun BilibiliVideoThumbnail(url: URL): XXDownResultData? {
-            val call = HttpUtil.httpClientGetCall(url, XXDownSite.headerbuild)
+            val newUrl = if (url.host == "acg.tv") {
+                var videoId = if (url.path.indexOf("av") >= 0) url.path else "av" + url.path
+                if (videoId.startsWith("/")) videoId = videoId.remove("/")
+                URL("https://www.bilibili.com/video/$videoId")
+            } else {
+                url
+            }
+            val call = HttpUtil.httpClientGetCall(newUrl, XXDownSite.headerbuild)
             try {
                 val response = call.execute()
                 val body = response.body

@@ -43,6 +43,7 @@ class UrlMod {
         // XXDown
         const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "http://www.acfun.cn/v/"
         const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "https://www.bilibili.com/video/"
+        const val XXDOWN_SITE_BILIBILI_ACG_VIDEO_THUMBNAIL = "https://acg.tv/"
         const val XXDOWN_SITE_GITHUB_RELEASE = "https://github.com/"
         const val XXDOWN_SITE_HOST_GITHUB_RELEASE = "github.com"
         const val XXDOWN_SITE_INSTAGRAM = "https://www.instagram.com/p/"

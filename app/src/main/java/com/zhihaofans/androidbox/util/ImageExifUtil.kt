@@ -23,7 +23,7 @@ class ImageExifUtil(fileName: String) {
     var deviceBrand
         get() = getExifStr(ExifInterface.TAG_MAKE)
         set(value) = setExif(ExifInterface.TAG_MAKE, value)
-    var deviceModel
+    var deviceModel0
         get() = getExifStr(ExifInterface.TAG_MODEL)
         set(value) = setExif(ExifInterface.TAG_MODEL, value)
     var dateTime

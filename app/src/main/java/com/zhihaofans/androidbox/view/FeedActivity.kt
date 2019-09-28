@@ -5,9 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FeedMod
+import com.zhihaofans.androidbox.mod.OtherAppMod
+import com.zhihaofans.androidbox.mod.UrlRedirectMod
 import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
+import com.zhihaofans.androidbox.util.ToastUtil
 import io.zhihao.library.android.kotlinEx.init
 import io.zhihao.library.android.kotlinEx.removeAllItems
 import io.zhihao.library.android.kotlinEx.snackbar
@@ -290,7 +293,14 @@ class FeedActivity : AppCompatActivity() {
                 val newsList = data as FeedMod.News.ListView
                 listView_feed.init(newsList.titleList)
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
-                    SystemUtil.browse(this@FeedActivity, newsList.urlList[index], newsList.titleList[index])
+                    val newUrl = UrlRedirectMod.urlRedirect(newsList.urlList[index]).toString()
+                    if (OtherAppMod.browserByLynket(newUrl)) {
+                        ToastUtil.success("启动成功")
+                    } else {
+                        ToastUtil.error("启动失败")
+                        //browseWeb(newUrl, true)
+                        SystemUtil.browse(this@FeedActivity, newUrl, newsList.titleList[index])
+                    }
                 }
                 refreshLayout.finishRefresh(500, true)
                 refreshLayout.finishLoadMore(0, true, newsBox.getCache()?.onlyOnePage ?: true)

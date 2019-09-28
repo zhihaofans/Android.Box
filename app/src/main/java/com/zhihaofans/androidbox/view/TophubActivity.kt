@@ -18,6 +18,7 @@ import com.zhihaofans.androidbox.kotlinEx.close
 import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.mod.SettingMod
 import com.zhihaofans.androidbox.mod.TophubMod
+import com.zhihaofans.androidbox.mod.UrlRedirectMod
 import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.XUIUtil
@@ -396,7 +397,7 @@ class TophubActivity : AppCompatActivity() {
         } else {
             try {
                 val mURL = URL(url)
-                urlRedirect(mURL).toString()
+                UrlRedirectMod.urlRedirect(mURL).toString()
             } catch (e: Exception) {
                 e.printStackTrace()
                 url
@@ -404,17 +405,6 @@ class TophubActivity : AppCompatActivity() {
         }
     }
 
-    private fun urlRedirect(url: URL): URL {
-        val redirectList = mutableMapOf(
-                "www.zhihu.com" to "www.zhihuvvv.com"
-        )
-        val newHost = if (redirectList[url.host] == null) {
-            url.host
-        } else {
-            redirectList[url.host]
-        }
-        return URL(url.protocol, newHost, url.port, url.file)
-    }
 
     private fun importCookies(value: String) {
         tophubMod.libs.loginByCookies(value)

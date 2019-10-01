@@ -3,6 +3,13 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 
 apply plugin: "kotlin-android-extensions"
+
+// 加载本地keystore.properties中的签名配置
+def keyPropertiesFile = rootProject.file("keystore.properties")
+def keyProperties = new Properties()
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+}
 android {
     compileSdkVersion 29
     buildToolsVersion '28.0.3'
@@ -38,6 +45,14 @@ android {
                 }
                 outputFileName = fileName
             }
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("../zhihaofans_android.jks")
+            storePassword keyProperties.containsKey("KEYSTORE_PASS") ? keyProperties['KEYSTORE_PASS'] : System.getenv("KEYSTORE_PASS")
+            keyAlias keyProperties.containsKey("ALIAS_NAME") ? keyProperties['ALIAS_NAME'] : System.getenv("ALIAS_NAME")
+            keyPassword keyProperties.containsKey("ALIAS_PASS") ? keyProperties['ALIAS_PASS'] : System.getenv("ALIAS_PASS")
         }
     }
 }

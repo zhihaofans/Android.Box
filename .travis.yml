@@ -3,21 +3,28 @@ jdk: oraclejdk8
 sudo: false
 android:
   components:
-  - build-tools-28.0.3
-  - android-28
-  - extra-android-m2repository
-  - extra-android-support
+    - build-tools-29.0.2
+    - android-29
+    - extra-android-m2repository
+    - extra-android-support
 before_script:
-- chmod +x gradlew
+  - chmod +x gradlew
 script:
-- "./gradlew assembleRelease"
+  - "./gradlew assembleRelease"
 before_install:
-- openssl aes-256-cbc -K $encrypted_21cc456f46e0_key -iv $encrypted_21cc456f46e0_iv
-  -in zhihaofans_android.jks.enc -out zhihaofans_android.jks -d
-- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:                   #指定缓存目录
+  - openssl aes-256-cbc -K $encrypted_21cc456f46e0_key -iv $encrypted_21cc456f46e0_iv
+    -in zhihaofans_android.jks.enc -out zhihaofans_android.jks -d
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
 directories:
-- $HOME/.gradle/caches/
-- $HOME/.gradle/wrapper/
-- $HOME/.android/build-cache
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+deploy:
+  provider: releases
+  api_key:
+    secure: gB3dFLtl2omqTL9rmQQX/mtQ09EdIfABaTdk2jmlCQMFSvJE8NApCaD7p2lzYYoVlIEb2lCTN+4GP6FiFDZcHrUZfBgI1cSXiiRImiA7bX0WrNRGcFtjPKFM5PnNpqzlZYPqElvm8PetI3qqraybQ1nb4MztVNGOMhSkBjwQ6seTWodtRJfzfAoloe1xmlAKOdpuYT7NnmGy7w63xYh+rEdzsRCM+3vYG5kLmy4Qp0JBDaO8o4L25TQPge6hySMOOD7bjuX8/Wi1oliq+V1gfE6cveUsNpN4JW210kg9nphShQr8k9XofaKhkkJjO9Mt0pBFv1bz83LT0p4kiL8Sl/iEjvrAhrlQd/fED74lif4oy2jFQM8rfLtGK5pAkL2ONgdoLK/li5DjJcxZx16mX55vR1mQLUdUJRLmWUb3gnohHU7GEjsMcjf1SaxUhyFhGpv6y4tso4TtUaG8iml0hc7FOlalriFiItnBHAnsChkDmRIrV4ReCJDZz6tBe15NFl6Mx5xHXxc/y6S9B/QwrzhFzNs8RVcEmi9rPU17kDBYnUVHzfXfhSs0HBFf09Erru9rU9qukYqTuDPQSLr9XPF7psgwSHaozL5dRSWz3uhKpHLSHebcTGuTCh6pXXAFuR6Hz7y74Tsfo9hCZ7goXQgtP99RmYCobFPxu/FZgr8=
+  file: app/release/Android.Box-v0.0.105.1.apk
+  on:
+    repo: zhihaofans/Android.Box

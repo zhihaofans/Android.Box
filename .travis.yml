@@ -1,0 +1,16 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+android:
+  components:
+  - build-tools-28.0.3
+  - android-28
+  - extra-android-m2repository
+  - extra-android-support
+before_script:
+- chmod +x gradlew
+script:
+- "./gradlew assembleRelease"
+before_install:
+- openssl aes-256-cbc -K $encrypted_21cc456f46e0_key -iv $encrypted_21cc456f46e0_iv
+  -in zhihaofans_android.jks.enc -out zhihaofans_android.jks -d

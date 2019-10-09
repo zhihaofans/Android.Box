@@ -36,7 +36,7 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 // 显示app名称+当前版本号
-                def fileName = "Android.Box-v${variant.versionName}"
+                def fileName = "Android.Box"
                 // 如果是debug版本，加入beta版本号
                 if ('debug' == variant.buildType.name) {
                     fileName = fileName + "-debug.apk"

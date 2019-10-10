@@ -76,3 +76,4 @@ app/release/
 .settings/org.eclipse.buildship.core.prefs
 keystore.properties
 app/.settings/org.eclipse.buildship.core.prefs
+.vscode/settings.json

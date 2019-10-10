@@ -18,7 +18,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 29
         versionCode 147
-        versionName "0.0.105.1"
+        versionName "0.0.105.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -67,12 +67,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta05'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.core:core-ktx:1.2.0-alpha04'
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'androidx.core:core-ktx:1.2.0-beta01'
+    implementation 'com.google.android.material:material:1.1.0-beta01'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Anko <https://github.com/Kotlin/anko>
     implementation "org.jetbrains.anko:anko:$anko_version"
@@ -82,8 +82,8 @@ dependencies {
 
 
     // OkHttp3 <https://github.com/square/okhttp>
-    implementation 'com.squareup.okhttp3:okhttp:4.2.0'
-    implementation 'com.squareup.okio:okio:2.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'com.squareup.okio:okio:2.4.1'
 
     // Jsoup <https://github.com/jhy/jsoup>
     implementation 'org.jsoup:jsoup:1.12.1'
@@ -158,7 +158,7 @@ dependencies {
 
     // AwesomeDialog <https://github.com/blennerSilva/AwesomeDialog>
     implementation 'com.github.blennerSilva:AwesomeDialog:2.0.6'
-    implementation 'androidx.exifinterface:exifinterface:1.1.0-beta01'
+    implementation 'androidx.exifinterface:exifinterface:1.1.0-rc01'
 }
 kotlin {
     experimental {

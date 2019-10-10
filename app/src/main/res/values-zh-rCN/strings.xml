@@ -33,7 +33,6 @@
     <string name="text_more">更多</string>
     <string name="text_site_sspai_article">少数派文章</string>
     <string name="text_image_box">图片盒子</string>
-    <string name="text_site_gank_io">干货集中营</string>
     <string name="text_icon">图标</string>
     <string name="text_permission_storage">储存权限</string>
     <string name="text_weather">天气</string>
@@ -49,7 +48,6 @@
     <string name="text_site">站点</string>
     <string name="text_android">安卓</string>
     <string name="title_activity_image_view">图片浏览</string>
-    <string name="text_gankio_girl">福利</string>
     <string name="text_qrcode_content">二维码内容</string>
     <string name="text_setting_use_cct_for_web">使用Chrome Custom Tabs来浏览网页</string>
     <string name="text_yes">是</string>

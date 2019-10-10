@@ -7,10 +7,6 @@ class ItemIdMod {
 
     companion object {
         // Feed
-        const val FEED_GANK_IO = "gank_io"
-        const val FEED_GANK_IO_ALL = "gank_io_all"
-        const val FEED_GANK_IO_ANDROID = "gank_io_android"
-        const val FEED_GANK_IO_GIRL = "gank_io_girl"
         const val FEED_DGTLE = "dgtle"
         const val FEED_DGTLE_NEWS = "dgtle_news"
         const val FEED_SSPAI = "sspai"

@@ -16,15 +16,7 @@
 
 - [数字尾巴鲸闻](http://news.dgtle.com/)
 
-3. [干货集中营](http://gank.io/) :[官方提供api](http://gank.io/api)，json格式。
-
-- 全部
-
-- 安卓
-
-- 福利
-
-4. [RSSHub](https://docs.rsshub.app/) :官方提供api，json格式。
+3. [RSSHub](https://docs.rsshub.app/) :官方提供api，json格式。
 
 - [V2EX-最新主题](https://www.v2ex.com)
 

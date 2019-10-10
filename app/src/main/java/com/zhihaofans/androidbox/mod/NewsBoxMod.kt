@@ -30,7 +30,6 @@ class NewsBoxMod {
             return when (siteId) {
                 ItemIdMod.FEED_SSPAI -> SiteInfoSspai.getNewsList(channelId, page)
                 ItemIdMod.FEED_DGTLE -> SiteInfoDgtle.getNewsList(channelId, page)
-                ItemIdMod.FEED_GANK_IO -> SiteInfoGankio.getNewsList(channelId, page)
                 ItemIdMod.FEED_RSSHUB -> SiteInfoRsshub.getNewsList(channelId)
                 ItemIdMod.FEED_WANANDROID -> SiteInfoWanandroid.getNewsList(channelId, page)
                 ItemIdMod.FEED_ZHIHU_DAILY -> SiteInfoZhihudaily.getNewsList(channelId)
@@ -64,15 +63,6 @@ class NewsBoxMod {
                             context.getString(R.string.text_site_dgtle),
                             listOf(
                                     ChannelInfo(ItemIdMod.FEED_DGTLE_NEWS, context.getString(R.string.text_site_dgtle_news))
-                            )
-                    ),
-                    SiteInfo(
-                            ItemIdMod.FEED_GANK_IO,
-                            context.getString(R.string.text_site_gank_io),
-                            listOf(
-                                    ChannelInfo(ItemIdMod.FEED_GANK_IO_ALL, context.getString(R.string.text_all)),
-                                    ChannelInfo(ItemIdMod.FEED_GANK_IO_ANDROID, context.getString(R.string.text_android)),
-                                    ChannelInfo(ItemIdMod.FEED_GANK_IO_GIRL, context.getString(R.string.text_gankio_girl))
                             )
                     ),
                     SiteInfo(
@@ -143,7 +133,6 @@ class NewsBoxMod {
             when (siteId) {
                 ItemIdMod.FEED_SSPAI -> SiteInfoSspai(context).getchannelList()
                 ItemIdMod.FEED_DGTLE -> SiteInfoDgtle(context).getchannelList()
-                ItemIdMod.FEED_GANK_IO -> SiteInfoGankio(context).getchannelList()
                 ItemIdMod.FEED_RSSHUB -> SiteInfoRsshub(context).getchannelList()
                 ItemIdMod.FEED_WANANDROID -> SiteInfoWanandroid(context).getchannelList()
                 ItemIdMod.FEED_ZHIHU_DAILY -> SiteInfoZhihudaily(context).getchannelList()

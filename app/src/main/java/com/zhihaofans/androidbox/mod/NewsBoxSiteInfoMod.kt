@@ -1,7 +1,6 @@
 package com.zhihaofans.androidbox.mod
 
 import com.google.gson.Gson
-import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.ChannelInfo
 import com.zhihaofans.androidbox.data.News
 import com.zhihaofans.androidbox.gson.*
@@ -16,54 +15,6 @@ import org.jsoup.Jsoup
 /**
  * Created by zhihaofans on 2018/6/3.
  */
-
-class SiteInfoGankio {
-    companion object {
-
-        fun getNewsList(channelId: String, page: Int): MutableList<News>? {
-            val g = Gson()
-            var mPage = page
-            val newsList = mutableListOf<News>()
-            if (page < 1) {
-                mPage = 1
-            }
-            val thisUrl: String = when (channelId) {
-                ItemIdMod.FEED_GANK_IO_ALL -> {
-                    UrlMod.GANK_IO_ALL + mPage
-                }
-                ItemIdMod.FEED_GANK_IO_ANDROID -> {
-                    UrlMod.GANK_IO_ANDROID + mPage
-                }
-                ItemIdMod.FEED_GANK_IO_GIRL -> {
-                    UrlMod.GANK_IO_GIRL + mPage
-                }
-                else -> null
-            } ?: return null
-
-            val headers = mutableMapOf(
-                    "content-type" to "application/json, text/javascript, */*; q=0.01",
-                    "user-agent" to "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36"
-            )
-            try {
-                val newsListJson = HttpUtil.httpGetString(thisUrl, headers) ?: return null
-                val newsIndex = g.fromJson(newsListJson, GankIoAllGson::class.java)
-                val newsListIndex = newsIndex.results
-                if (newsIndex.error) {
-                    Logger.e("gankIndex.error:${newsIndex.error}")
-                    return null
-                }
-                newsListIndex.map {
-                    newsList.add(News(it.desc, it.url))
-                }
-                return newsList
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
-            }
-
-        }
-    }
-}
 
 
 class SiteInfoDgtle {

@@ -34,7 +34,6 @@
     <string name="text_more">More</string>
     <string name="text_site_sspai_article">sspai articles</string>
     <string name="text_image_box">Image box</string>
-    <string name="text_site_gank_io">Gank.io</string>
     <string name="setting_http_defaultua" translatable="false">Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36</string>
     <string name="text_icon">Icon</string>
     <string name="text_permission_storage">Storage permission</string>
@@ -51,7 +50,6 @@
     <string name="text_site">Site</string>
     <string name="text_android">Android</string>
     <string name="title_activity_image_view">Image View</string>
-    <string name="text_gankio_girl">Girl</string>
     <string name="text_qrcode_content">QR code content</string>
     <string name="text_setting_use_cct_for_web">Use Chrome Custom Tabs to browse the web</string>
     <string name="text_yes">Yes</string>

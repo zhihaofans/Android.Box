@@ -1,37 +1,39 @@
 language: android
-dist: trusty
-jdk: oraclejdk8
-sudo: false
 android:
   components:
-    - build-tools-29.0.2
-    - android-29
-    - extra-google-m2repository
-    - extra-android-m2repository
-  licenses:
-    - android-sdk-license-.+
-    - google-gdk-license-.+
+  - tools
+  - platform-tools
+  - build-tools-29.0.2
+  - android-29
+  - add-on
+  - extra
+licenses:
+- android-sdk-license-.+
 before_install:
-  - openssl aes-256-cbc -K $encrypted_21cc456f46e0_key -iv $encrypted_21cc456f46e0_iv
-    -in zhihaofans_android.jks.enc -out zhihaofans_android.jks -d
+- echo $TRAVIS_BUILD_NUMBER
+- yes | sdkmanager "platforms;android-29"
+jdk:
+- oraclejdk8
 before_script:
-  - chmod +x gradlew
+- chmod +x gradlew
 script:
-  - "./gradlew assembleRelease"
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    - "$HOME/.gradle/caches/"
-    - "$HOME/.gradle/wrapper/"
-    - "$HOME/.android/build-cache"
+#- "./gradlew assembleRelease"
+- 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then ./gradlew assembleDebug; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./gradlew assembleRelease; fi'
+before_deploy:
+  - echo gitVersion
+  - git rev-list --all --count
+  - echo version
+  - git describe --tags
+  - echo $TRAVIS_BUILD_NUMBER
 deploy:
   provider: releases
   api_key:
     secure: Cw3pQRyABgZdInqPHBpoV3DTNCUtJnjjQ2QpMpwR1dv5m49zOFUqSPDwjAZGFnSKF9KXevfqxwL03lh1lFDHzvYKKpCl9eMuFRk2mRztZSXjHquj85WQRSTGM2vIfszFNYePm0Qs7A9P+l5iO1asNd2WvRHzfVMtR0reEy+vCL5+YCz6UYYg/3qFvBVxDnIW/yPOLrDo4WTkL33AMIA+h4mK+kXKtLht5kiozEJCr672nbCRJ3Ky4RDR0d35JMO8Oou00s5nG5C15fd71Yltos4DvokRvVl2uCE4vEaozyDixtPUGxTJSLy4rIsOciFvrMggKB583H4apf+k1WevKfIf8YR7kckg/j4Yc8IFq39SxTeO9i4FEAuDEYnekNKIr+pydgCteeK86HPGo5BUH+4MTwHW+a2FKmJOLRYt3OAvOsHFF6FxfIEK7UNiycbYWC37/zF/r8V1Z3iCPSDP3QHdh9GTWSlLaycKB0AXUEZqsmj2NCVoYL8v3bFGvSsLUwyDDqFLSIzGI11y5V8M9P66RCB68Il/XKB9BvoGJYIhdWFU1W2a/IJb6yn19kKq7coDO/a3Vgy1z/AslZLNjef255YAs7RvSC4sKsFz9pAEteLmcq1gBxIuA7owY5YoKhryO7muAotNalH7Vfse9vrtHfofWGyPrfMWH0uwkRg=
-  file: app/build/outputs/apk/release/Android.Box.apk
+  file: "app/build/outputs/apk/release/Andorid.Box.apk"
+  skip_cleanup: true
   on:
     repo: zhihaofans/Android.Box
-    # 这句手动添加
+    branch:
+      - master
     tags: true

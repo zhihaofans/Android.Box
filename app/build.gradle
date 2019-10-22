@@ -4,11 +4,6 @@ apply plugin: "kotlin-android"
 
 apply plugin: "kotlin-android-extensions"
 
-// 加载本地keystore.properties中的签名配置
-def signProperties = rootProject.file("keystore.properties")//配置文件路径
-def props = new Properties()
-props.load(new FileInputStream(signProperties))
-def file = file(props['storeFile'])//jks秘钥库文件
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
@@ -48,13 +43,10 @@ android {
     }
     signingConfigs {
         release {
-            //为了保护秘钥信息的安全，这些信息不该以明文放到build文件中，下面是利用配置文件进行配置
-            if (file.exists() && signProperties.exists()) {//如果秘钥库文件和配置文件存在就签名，否则不签名
-                keyAlias props['ALIAS_NAME']//Properties['key']方法用来获取key对应的属性值，就是properties文件下配置的属性
-                keyPassword props['ALIAS_PASS']
-                storeFile file//注意这里要的是file
-                storePassword props['zzh01122680yyn']
-            }
+            storeFile file(".key.jks")
+            storePassword System.getenv("KEYSTORE_PASS")
+            keyAlias System.getenv("ALIAS_NAME")
+            keyPassword System.getenv("ALIAS_PASS")
         }
     }
 }

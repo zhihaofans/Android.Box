@@ -55,9 +55,9 @@ class FeedActivity : AppCompatActivity() {
         newsBox.init(this@FeedActivity)
         appBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
+        /*
         refreshLayout.setDisableContentWhenRefresh(true)
         refreshLayout.setDisableContentWhenLoading(true)
-        /*
         refreshLayout.setOnRefreshListener {
             if (!manualRefresh) this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
         }

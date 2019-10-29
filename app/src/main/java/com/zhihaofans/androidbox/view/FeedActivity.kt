@@ -55,21 +55,6 @@ class FeedActivity : AppCompatActivity() {
         newsBox.init(this@FeedActivity)
         appBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
-        /*
-        refreshLayout.setDisableContentWhenRefresh(true)
-        refreshLayout.setDisableContentWhenLoading(true)
-        refreshLayout.setOnRefreshListener {
-            if (!manualRefresh) this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
-        }
-        refreshLayout.setOnLoadMoreListener { mRefreshlayout ->
-            val newsCache = newsBox.getCache()
-            if (newsCache == null) {
-                mRefreshlayout.finishLoadMore(false)
-            } else {
-                this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage + 1))
-            }
-        }
-        */
         fab_feed.setOnClickListener {
             when (nowTabPosition) {
                 0 -> {
@@ -87,13 +72,11 @@ class FeedActivity : AppCompatActivity() {
                         }
                     } else {
                         if (newsCache.onlyOnePage) {
-                            refreshLayout.setNoMoreData(true)
                         } else {
                             menu.add(getString(R.string.text_next_page))
                             if (newsBox.page > 1) {
                                 menu.add(2, getString(R.string.text_previous_page))
                             }
-                            refreshLayout.setNoMoreData(false)
                         }
                         selector("", menu) { _, pos ->
                             when (pos) {
@@ -128,7 +111,6 @@ class FeedActivity : AppCompatActivity() {
                 }
             }
         }
-        refreshLayout.autoRefresh()
     }
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
@@ -151,8 +133,6 @@ class FeedActivity : AppCompatActivity() {
                         uiThread {
                             if (cache == null) {
                                 snackbar(coordinatorLayout_feed, "空白数据")
-                                refreshLayout.finishRefresh(500, false)//传入false表示刷新失败
-                                refreshLayout.finishLoadMore(false)
                             } else {
                                 initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                             }
@@ -183,8 +163,6 @@ class FeedActivity : AppCompatActivity() {
             else -> {
                 listView_feed.removeAllItems()
                 snackbar(coordinatorLayout_feed, "不支持")
-                refreshLayout.finishRefresh(500, false)//传入false表示刷新失败
-                refreshLayout.finishLoadMore(false)
             }
         }
     }
@@ -202,15 +180,11 @@ class FeedActivity : AppCompatActivity() {
                             doAsync {
                                 if (cache == null) {
                                     snackbar(coordinatorLayout_feed, "空白订阅数据")
-                                    refreshLayout.finishRefresh(500, false)
-                                    refreshLayout.finishLoadMore(false)
                                 } else {
                                     cache = newsBox.refreshCache()
                                     uiThread {
                                         if (cache == null) {
                                             snackbar(coordinatorLayout_feed, "空白数据")
-                                            refreshLayout.finishRefresh(500, false)
-                                            refreshLayout.finishLoadMore(false)
                                         } else {
                                             initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                         }
@@ -220,21 +194,16 @@ class FeedActivity : AppCompatActivity() {
                         }
                         1 -> {
                             manualRefresh = true
-                            refreshLayout.autoRefresh()
                             val page = update.data as Int
                             LogUtil.d("updateFeed->page:$page")
                             doAsync {
                                 if (cache == null) {
                                     snackbar(coordinatorLayout_feed, "空白订阅数据")
-                                    refreshLayout.finishRefresh(500, false)
-                                    refreshLayout.finishLoadMore(false)
                                 } else {
                                     cache = newsBox.changePage(page)
                                     uiThread {
                                         if (cache == null) {
                                             snackbar(coordinatorLayout_feed, "空白数据")
-                                            refreshLayout.finishRefresh(500, false)
-                                            refreshLayout.finishLoadMore(false)
                                         } else {
                                             listView_feed.removeAllItems()
                                             initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
@@ -254,33 +223,24 @@ class FeedActivity : AppCompatActivity() {
                                         channelId = channelList[channelIndex].id
                                         LogUtil.d("ChangeSite:$siteId/$channelId")
                                         manualRefresh = true
-                                        refreshLayout.autoRefresh()
                                         initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                     }
                                 } else {
                                     manualRefresh = true
-                                    refreshLayout.autoRefresh()
                                     LogUtil.d("ChangeSite:$siteId/$channelId")
                                     initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                 }
                             }
                         }
                         else -> {
-                            refreshLayout.finishRefresh(500, false)
-                            refreshLayout.finishLoadMore(false)
                         }
                     }
                 }
             }
             1 -> {
-                refreshLayout.finishRefresh(500, false)
-                refreshLayout.finishLoadMore(false)
                 // TODO:App updateFeed
             }
             else -> {
-
-                refreshLayout.finishRefresh(500, false)
-                refreshLayout.finishLoadMore(false)
             }
 
         }
@@ -304,8 +264,6 @@ class FeedActivity : AppCompatActivity() {
                         SystemUtil.browse(this@FeedActivity, newUrl, newsList.titleList[index])
                     }
                 }
-                refreshLayout.finishRefresh(500, true)
-                refreshLayout.finishLoadMore(0, true, newsBox.getCache()?.onlyOnePage ?: true)
             }
             /*1 -> {
                 refreshLayout.finishRefresh(500, true)

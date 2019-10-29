@@ -8,29 +8,15 @@
     tools:context=".view.FeedActivity"
     tools:showIn="@layout/activity_feed">
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/refreshLayout"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srlTextFailed="@string/srl_header_failed"
-        app:srlTextFinish="@string/srl_header_finish"
-        app:srlTextLoading="@string/srl_header_loading"
-        app:srlTextPulling="@string/srl_header_pulling"
-        app:srlTextRefreshing="@string/srl_header_refreshing"
-        app:srlTextRelease="@string/srl_header_release"
-        app:srlTextSecondary="@string/srl_header_secondary"
-        app:srlTextUpdate="@string/srl_header_update">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/listView_feed"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ListView
-                android:id="@+id/listView_feed"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            android:layout_height="match_parent" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

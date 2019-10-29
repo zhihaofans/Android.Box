@@ -8,9 +8,6 @@ import com.liulishuo.filedownloader.FileDownloader
 import com.lxj.androidktx.AndroidKtxConfig
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
-import com.scwang.smartrefresh.layout.SmartRefreshLayout
-import com.scwang.smartrefresh.layout.footer.ClassicsFooter
-import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.vondear.rxtool.RxTool
 import com.xuexiang.xui.XUI
 import dev.DevUtils
@@ -53,11 +50,6 @@ class App : Application() {
         XUI.init(this)
         XUI.debug(true)
 
-        // SmartRefreshLayout
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ -> ClassicsHeader(context) }
-        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
-            ClassicsFooter(context).setDrawableSize(20f)
-        }
         // DoraemonKit
         DoraemonKit.install(this)
 

@@ -11,7 +11,6 @@ import com.orhanobut.logger.Logger
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import com.simple.spiderman.SpiderMan
 import com.vondear.rxtool.RxTool
 import com.xuexiang.xui.XUI
 import dev.DevUtils
@@ -30,9 +29,6 @@ class App : Application() {
         super.onCreate()
         // AndroidLibrary
         ZLibrary.init(applicationContext)
-
-        // SpiderMan
-        SpiderMan.init(applicationContext)
 
         // Logger
         Logger.addLogAdapter(AndroidLogAdapter())

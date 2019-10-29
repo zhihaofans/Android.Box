@@ -4,11 +4,6 @@ apply plugin: "kotlin-android"
 
 apply plugin: "kotlin-android-extensions"
 
-// 加载本地keystore.properties中的签名配置
-def signProperties = rootProject.file("keystore.properties")//配置文件路径
-def props = new Properties()
-props.load(new FileInputStream(signProperties))
-def file = file(props['storeFile'])//jks秘钥库文件
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
@@ -46,30 +41,19 @@ android {
             }
         }
     }
-    signingConfigs {
-        release {
-            //为了保护秘钥信息的安全，这些信息不该以明文放到build文件中，下面是利用配置文件进行配置
-            if (file.exists() && signProperties.exists()) {//如果秘钥库文件和配置文件存在就签名，否则不签名
-                keyAlias props['ALIAS_NAME']//Properties['key']方法用来获取key对应的属性值，就是properties文件下配置的属性
-                keyPassword props['ALIAS_PASS']
-                storeFile file//注意这里要的是file
-                storePassword props['zzh01122680yyn']
-            }
-        }
-    }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation 'junit:junit:4.13-beta-3'
+    testImplementation 'junit:junit:4.13-rc-1'
 
     // Android / Google
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta05'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core-ktx:1.2.0-beta01'
@@ -108,17 +92,11 @@ dependencies {
     // Paperdb <https://github.com/pilgr/Paper>
     implementation 'io.paperdb:paperdb:2.6'
 
-    // AppUpdater <https://github.com/javiersantos/AppUpdater>
-    implementation 'com.github.javiersantos:AppUpdater:2.7'
-
     // RxTool <https://github.com/vondear/RxTool>
     implementation "com.github.vondear.RxTool:RxKit:$rxtool_version"
     implementation "com.github.vondear.RxTool:RxUI:$rxtool_version"
     implementation "com.github.vondear.RxTool:RxCamera:$rxtool_version"
     implementation "com.github.vondear.RxTool:RxFeature:$rxtool_version"
-
-    // SpiderMan <https://github.com/simplepeng/SpiderMan>
-    implementation 'com.simple:spiderman:1.0.8'
 
     // XUI <https://github.com/xuexiangjys/XUI>
     implementation 'com.github.xuexiangjys:XUI:1.0.1'

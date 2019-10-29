@@ -7,10 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import com.github.javiersantos.appupdater.AppUpdaterUtils
-import com.github.javiersantos.appupdater.enums.AppUpdaterError
-import com.github.javiersantos.appupdater.enums.UpdateFrom
-import com.github.javiersantos.appupdater.objects.Update
 import com.google.android.material.snackbar.Snackbar
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
@@ -18,17 +14,17 @@ import com.hjq.permissions.XXPermissions
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
-import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
-import dev.utils.app.DialogUtils
 import io.zhihao.library.android.kotlinEx.snackbar
 import io.zhihao.library.android.kotlinEx.string
 import io.zhihao.library.android.util.AppUtil
 import io.zhihao.library.android.util.ClipboardUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -183,91 +179,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate(manual: Boolean = false) {
         //val url = UrlMod.APP_GITHUB_RELEASE.replaceByList(mutableMapOf("@author@" to "zhihaofans", "@project@" to "android.box")).apply { logd() }
-        val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…").apply {
-            setCancelable(false)
-            setCanceledOnTouchOutside(false)
-            if (manual) show() else dismiss()
-        }
-        AppUpdaterUtils(this)
-                .setUpdateFrom(UpdateFrom.GITHUB)
-                .setGitHubUserAndRepo("zhihaofans", "android.box")
-                .withListener(object : AppUpdaterUtils.UpdateListener {
-                    override fun onFailed(error: AppUpdaterError) {
-                        if (manual) loadingProgressBar.dismiss()
-                    }
 
-                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
-                        if (isUpdateAvailable) {
-                            if (manual) loadingProgressBar.dismiss()
-                            alert {
-                                title = "检测更新"
-                                message = "发现更新，是否调用打开下载地址？"
-                                yesButton {
-                                    val myItems = listOf("打开Github下载页面", "打开国内第三方下载页面")
-                                    selector("选择更新站点", myItems) { _, index ->
-                                        when (index) {
-                                            0 -> browse(update.urlToDownload.toString(), true)
-                                            1 -> browse(UrlMod.UPDATE_PGYER, true)
-                                        }
-                                    }
-                                }
-                                noButton { }
-                            }.show()
-                        } else if (manual) {
-                            loadingProgressBar.dismiss()
-                            alert {
-                                title = "检测更新"
-                                message = "已经是最新版本"
-                                okButton { }
-                            }.show()
-                        }
-                    }
-                }).start()
-        /*
-        AllenVersionChecker
-                .getInstance()
-                .requestVersion()
-                .setRequestUrl(url).request(object : RequestVersionListener {
-                    override fun onRequestVersionSuccess(result: String?): UIData? {
-                        if (result.isNullOrEmpty()) {
-                            coordinatorLayout_main.snackbar("检测更新失败,返回空白结果")
-                            return null
-                        } else {
-                            val githubRelease = NewsSitesMod.githubApiReleaseJson2Class("zhihaofans", "android.box", result)
-                            return if (githubRelease.success) {
-                                val githubReleaseResult = githubRelease.result
-                                if (githubReleaseResult == null) {
-                                    coordinatorLayout_main.snackbar("检测更新失败")
-                                    null
-                                } else {
-                                    if (githubReleaseResult.version != AppUtil.getAppVersionName()) {
-                                        val fileList = githubReleaseResult.fileList
-                                        if (fileList.isEmpty()) {
-                                            coordinatorLayout_main.snackbar("检测更新失败,返回空白文件列表")
-                                            null
-                                        } else {
-                                            XPopup.get(this@MainActivity).asConfirm("发现更新", "版本：" + githubReleaseResult.version) {
-
-                                            }.show()
-                                            UIData.create().setDownloadUrl(fileList[0].url)
-                                        }
-                                    } else {
-                                        coordinatorLayout_main.snackbar("已经是最新版")
-                                        null
-                                    }
-                                }
-                            } else {
-                                coordinatorLayout_main.snackbar("检测更新失败")
-                                null
-                            }
-                        }
-                    }
-
-                    override fun onRequestVersionFailure(message: String?) {
-                        coordinatorLayout_main.snackbar("检测更新失败：$message")
-                    }
-                })
-                .executeMission(this)*/
     }
 
 }

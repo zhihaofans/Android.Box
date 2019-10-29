@@ -57,6 +57,7 @@ class FeedActivity : AppCompatActivity() {
         snackbar(coordinatorLayout_feed, "初始化中")
         refreshLayout.setDisableContentWhenRefresh(true)
         refreshLayout.setDisableContentWhenLoading(true)
+        /*
         refreshLayout.setOnRefreshListener {
             if (!manualRefresh) this@FeedActivity.updateFeed(0, FeedMod.News.Update(0))
         }
@@ -68,6 +69,7 @@ class FeedActivity : AppCompatActivity() {
                 this@FeedActivity.updateFeed(0, FeedMod.News.Update(1, newsCache.nowPage + 1))
             }
         }
+        */
         fab_feed.setOnClickListener {
             when (nowTabPosition) {
                 0 -> {

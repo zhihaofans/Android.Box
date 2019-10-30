@@ -24,11 +24,11 @@ import org.jetbrains.anko.uiThread
 class FeedActivity : AppCompatActivity() {
     private var nowTabPosition = 0
     private val newsBox = FeedMod.News()
-    private val appBox = FeedMod.App()
+    //private val appBox = FeedMod.App()
 
     private val notificationUtil = NotificationUtil()
     private var firstRun = true
-    private var manualRefresh = false
+    //private var manualRefresh = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
@@ -53,7 +53,7 @@ class FeedActivity : AppCompatActivity() {
     private fun init() {
         notificationUtil.init(this)
         newsBox.init(this@FeedActivity)
-        appBox.init(this@FeedActivity)
+        //appBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
         fab_feed.setOnClickListener {
             when (nowTabPosition) {
@@ -71,8 +71,7 @@ class FeedActivity : AppCompatActivity() {
                             }
                         }
                     } else {
-                        if (newsCache.onlyOnePage) {
-                        } else {
+                        if (!newsCache.onlyOnePage) {
                             menu.add(getString(R.string.text_next_page))
                             if (newsBox.page > 1) {
                                 menu.add(2, getString(R.string.text_previous_page))
@@ -115,6 +114,7 @@ class FeedActivity : AppCompatActivity() {
 
     private fun initFeed(index: Int, data: Any? = null, noCache: Boolean = false) {
         listView_feed.removeAllItems()
+        ToastUtil.info("开始加载")
         when (index) {
             0 -> {
                 firstRun = false
@@ -132,13 +132,15 @@ class FeedActivity : AppCompatActivity() {
                         cache = newsBox.getCache(newsInit.siteId, newsInit.channelId, newsInit.page)
                         uiThread {
                             if (cache == null) {
-                                snackbar(coordinatorLayout_feed, "空白数据")
+                                ToastUtil.error("空白数据")
                             } else {
+                                ToastUtil.success("加载成功")
                                 initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                             }
                         }
                     }
                 } else {
+                    ToastUtil.success("加载成功")
                     initListView(newsBox.getListView(cache!!.newsList.map { i -> i.title }, cache!!.newsList.map { i -> i.url }))
                 }
             }
@@ -193,7 +195,7 @@ class FeedActivity : AppCompatActivity() {
                             }
                         }
                         1 -> {
-                            manualRefresh = true
+                            //manualRefresh = true
                             val page = update.data as Int
                             LogUtil.d("updateFeed->page:$page")
                             doAsync {
@@ -222,11 +224,11 @@ class FeedActivity : AppCompatActivity() {
                                     selector(getString(R.string.text_channel), channelList.map { it.name }) { _, channelIndex ->
                                         channelId = channelList[channelIndex].id
                                         LogUtil.d("ChangeSite:$siteId/$channelId")
-                                        manualRefresh = true
+                                        //manualRefresh = true
                                         initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                     }
                                 } else {
-                                    manualRefresh = true
+                                    //manualRefresh = true
                                     LogUtil.d("ChangeSite:$siteId/$channelId")
                                     initFeed(0, FeedMod.News.Init(siteId, channelId, 1), true)
                                 }
@@ -248,7 +250,7 @@ class FeedActivity : AppCompatActivity() {
 
     private fun initListView(data: Any) {
         listView_feed.removeAllItems()
-        manualRefresh = false
+        //manualRefresh = false
         val mNumber = 0
         when (mNumber) {
             0 -> {
@@ -266,13 +268,9 @@ class FeedActivity : AppCompatActivity() {
                 }
             }
             /*1 -> {
-                refreshLayout.finishRefresh(500, true)
-                refreshLayout.finishLoadMore(false)
                 //TODO:Feed -> App
                 val appFeeds = (data as FeedMod.App.AppList).data
                 listView_feed.init(this@FeedActivity, appFeeds.map { it.name })
-                refreshLayout.finishRefresh(500, true)
-                refreshLayout.finishLoadMore(500, true, true)
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
                     val clickedApp = appFeeds[index]
                     alert {

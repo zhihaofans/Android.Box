@@ -16,6 +16,7 @@ class XXDownMod {
                 ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE -> XXDownSitesMod.githubReleaseXX(url)
                 ItemIdMod.XXDOWN_SITE_INSTAGRAM -> XXDownSitesMod.instagram(url)
                 ItemIdMod.XXDOWN_SITE_TWITTER -> XXDownSitesMod.twitter(url)
+                ItemIdMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW -> XXDownSitesMod.githubFileRaw(url)
                 else -> null
             }
 

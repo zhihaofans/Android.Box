@@ -2,6 +2,7 @@ package com.zhihaofans.androidbox.mod
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.data.*
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdate
 import com.zhihaofans.androidbox.gson.FirimApiLatestUpdateError
@@ -497,6 +498,28 @@ class XXDownSitesMod {
                         val mUrl = it.url
                         XXDownResultUrlData(mUrl, itemType)
                     }
+                    XXDownResultData(true, "", itemList)
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        fun githubFileRaw(url: URL): XXDownResultData? {
+            LogUtil.d("githubFileRaw($url")
+            return try {
+                if (url.host == UrlMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW) {
+                    val a = "https://raw.githubusercontent.com/zhihaofans/zhuang.zhihao.io/master/.gitignore"
+                    val group = url.path.split("/")
+                    Logger.d("group:$group")
+                    val author = "${group[1]}/${group[2]}"
+                    val branch = group[3]
+                    val path = url.path.remove("$author/$branch")
+                    val newUrl = "https://cdn.jsdelivr.net/gh/$author@$branch/$path"
+                    val itemList = listOf(XXDownResultUrlData("", XXDownUrlType.other))
                     XXDownResultData(true, "", itemList)
                 } else {
                     null

@@ -45,5 +45,6 @@ class ItemIdMod {
         const val XXDOWN_SITE_GITHUB_RELEASE_NAME = "Github release"
         const val XXDOWN_SITE_INSTAGRAM = "xxdown_site_instagram"
         const val XXDOWN_SITE_TWITTER = "xxdown_site_twitter"
+        const val XXDOWN_SITE_GITHUBUSERCONTENT_RAW = "xxdown_site_githubusercontent_raw"
     }
 }

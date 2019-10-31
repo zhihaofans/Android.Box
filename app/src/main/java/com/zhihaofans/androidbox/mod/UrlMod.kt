@@ -38,6 +38,7 @@ class UrlMod {
         val APP_PICTURE_DOWNLOAD_PATH = FileUtil.getPicturePathString() + "Android.Box/"
         // XXDown
         const val XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL = "http://www.acfun.cn/v/"
+        const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL_HTTP = "http://www.bilibili.com/video/"
         const val XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL = "https://www.bilibili.com/video/"
         const val XXDOWN_SITE_BILIBILI_ACG_VIDEO_THUMBNAIL = "https://acg.tv/"
         const val XXDOWN_SITE_GITHUB_RELEASE = "https://github.com/"
@@ -47,5 +48,7 @@ class UrlMod {
         const val XXDOWN_SITE_10INSTA = "https://www.10insta.net/"
         const val XXDOWN_SITE_HOST_TWITTER = "twitter.com"
         const val XXDOWN_SITE_TUBEOFFLINE = "https://www.tubeoffline.com/downloadFrom.php?host=%s&video=%s"
+        //const val XXDOWN_SITE_GITHUBUSERCONTENT_RAW = "https://raw.githubusercontent.com/zhihaofans/zhuang.zhihao.io/master/.gitignore"
+        const val XXDOWN_SITE_GITHUBUSERCONTENT_RAW = "https://raw.githubusercontent.com/"
     }
 }

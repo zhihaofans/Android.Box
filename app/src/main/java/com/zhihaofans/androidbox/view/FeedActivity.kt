@@ -55,6 +55,7 @@ class FeedActivity : AppCompatActivity() {
         newsBox.init(this@FeedActivity)
         //appBox.init(this@FeedActivity)
         snackbar(coordinatorLayout_feed, "初始化中")
+        initFeed(0)
         fab_feed.setOnClickListener {
             when (nowTabPosition) {
                 0 -> {
@@ -181,12 +182,14 @@ class FeedActivity : AppCompatActivity() {
                         0 -> {
                             doAsync {
                                 if (cache == null) {
-                                    snackbar(coordinatorLayout_feed, "空白订阅数据")
+                                    uiThread {
+                                        ToastUtil.error("空白订阅数据")
+                                    }
                                 } else {
                                     cache = newsBox.refreshCache()
                                     uiThread {
                                         if (cache == null) {
-                                            snackbar(coordinatorLayout_feed, "空白数据")
+                                            ToastUtil.error("空白数据")
                                         } else {
                                             initListView(newsBox.getListView(cache!!.newsList.map { it.title }, cache!!.newsList.map { it.url }))
                                         }
@@ -243,6 +246,7 @@ class FeedActivity : AppCompatActivity() {
                 // TODO:App updateFeed
             }
             else -> {
+                ToastUtil.error("未知错误")
             }
 
         }

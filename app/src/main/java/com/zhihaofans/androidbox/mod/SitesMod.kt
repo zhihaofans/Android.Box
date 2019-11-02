@@ -519,7 +519,7 @@ class XXDownSitesMod {
                     val branch = group[3]
                     val path = url.path.remove("$author/$branch")
                     val newUrl = "https://cdn.jsdelivr.net/gh/$author@$branch/$path"
-                    val itemList = listOf(XXDownResultUrlData("", XXDownUrlType.other))
+                    val itemList = listOf(XXDownResultUrlData(newUrl, XXDownUrlType.other))
                     XXDownResultData(true, "", itemList)
                 } else {
                     null

@@ -8,7 +8,6 @@ import com.xuexiang.xui.XUI
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.kotlinEx.browse
 import com.zhihaofans.androidbox.mod.OpenerMod
-import com.zhihaofans.androidbox.mod.OtherAppMod
 import com.zhihaofans.androidbox.util.ToastUtil
 import com.zhihaofans.androidbox.util.UiUtil
 import io.zhihao.library.android.kotlinEx.*
@@ -97,11 +96,14 @@ class OpenerActivity : AppCompatActivity() {
                             }
                             1 -> share(mUrl.toString())
                             2 -> {
+                                startActivity<XXDownActivity>("zhihaofans_data" to mUrl.toString())
+
+                                /*
                                 if (OtherAppMod.admAutoDownload(mUrl)) {
                                     ToastUtil.info("尝试跳转至Advanced Download Manager")
                                 } else {
                                     ToastUtil.error("跳转下载失败，请确认有安装《Advanced Download Manager Pro》或者《Advanced Download Manager》")
-                                }
+                                }*/
                             }
                             else -> {
                                 ToastUtil.error("未知错误")

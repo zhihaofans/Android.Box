@@ -509,16 +509,16 @@ class XXDownSitesMod {
         }
 
         fun githubFileRaw(url: URL): XXDownResultData? {
-            LogUtil.d("githubFileRaw($url")
+            LogUtil.d("githubFileRaw($url)")
             return try {
-                if (url.host == UrlMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW) {
-                    val a = "https://raw.githubusercontent.com/zhihaofans/zhuang.zhihao.io/master/.gitignore"
+                if (url.host == UrlMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW_HOST) {
                     val group = url.path.split("/")
                     Logger.d("group:$group")
                     val author = "${group[1]}/${group[2]}"
                     val branch = group[3]
-                    val path = url.path.remove("$author/$branch")
+                    val path = url.path.remove("/$author/$branch/")
                     val newUrl = "https://cdn.jsdelivr.net/gh/$author@$branch/$path"
+                    Logger.d("$author\n$branch\n$path")
                     val itemList = listOf(XXDownResultUrlData(newUrl, XXDownUrlType.other))
                     XXDownResultData(true, "", itemList)
                 } else {

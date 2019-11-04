@@ -49,6 +49,7 @@ class UrlMod {
         const val XXDOWN_SITE_HOST_TWITTER = "twitter.com"
         const val XXDOWN_SITE_TUBEOFFLINE = "https://www.tubeoffline.com/downloadFrom.php?host=%s&video=%s"
         //const val XXDOWN_SITE_GITHUBUSERCONTENT_RAW = "https://raw.githubusercontent.com/zhihaofans/zhuang.zhihao.io/master/.gitignore"
+        const val XXDOWN_SITE_GITHUBUSERCONTENT_RAW_HOST = "raw.githubusercontent.com"
         const val XXDOWN_SITE_GITHUBUSERCONTENT_RAW = "https://raw.githubusercontent.com/"
     }
 }

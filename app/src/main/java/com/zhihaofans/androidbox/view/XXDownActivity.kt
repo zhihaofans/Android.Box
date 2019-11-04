@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import com.orhanobut.logger.Logger
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.data.XXDownResultData
 import com.zhihaofans.androidbox.data.XXDownResultUrlData
@@ -23,6 +24,7 @@ import java.net.URL
 
 class XXDownActivity : AppCompatActivity() {
     private var resultList = mutableListOf<XXDownResultUrlData>()
+    private var lastInputText = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_xxdown)
@@ -41,7 +43,7 @@ class XXDownActivity : AppCompatActivity() {
     private fun input() {
         alert {
             customView {
-                val inputUrl = editText()
+                val inputUrl = editText(lastInputText)
                 okButton {
                     when {
                         inputUrl.string.isEmpty() -> {
@@ -50,6 +52,7 @@ class XXDownActivity : AppCompatActivity() {
                             }.show()
                         }
                         inputUrl.string.isUrl() -> {
+                            lastInputText = inputUrl.string
                             start(inputUrl.string)
                         }
                         else -> {
@@ -64,6 +67,7 @@ class XXDownActivity : AppCompatActivity() {
     }
 
     private fun start(url: String) {
+        lastInputText = url
         val loadingProgressBar = DialogUtils.createProgressDialog(this, "下载中...", "Please wait a bit…")
         loadingProgressBar.setCancelable(false)
         loadingProgressBar.setCanceledOnTouchOutside(false)
@@ -90,6 +94,7 @@ class XXDownActivity : AppCompatActivity() {
         LogUtil.d(url.host)
         return when {
             mUrl.startsWith(UrlMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_ACFUN_VIDEO_THUMBNAIL, url) //ACfun video thumbnail
+            mUrl.startsWith(UrlMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW, url) //Github file
             mUrl.startsWithList(
                     listOf(UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, UrlMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL_HTTP, UrlMod.XXDOWN_SITE_BILIBILI_ACG_VIDEO_THUMBNAIL)
             ) -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_BILIBILI_VIDEO_THUMBNAIL, url) //Bilibili video thumbnail
@@ -97,7 +102,7 @@ class XXDownActivity : AppCompatActivity() {
                 UrlMod.XXDOWN_SITE_HOST_GITHUB_RELEASE -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUB_RELEASE, url) //Github release
                 UrlMod.XXDOWN_SITE_HOST_INSTAGRAM -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_INSTAGRAM, url) //Instagram
                 UrlMod.XXDOWN_SITE_HOST_TWITTER -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_TWITTER, url) //Twitter
-                UrlMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW, url) //Github file
+                UrlMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW_HOST -> XXDownMod.get(ItemIdMod.XXDOWN_SITE_GITHUBUSERCONTENT_RAW, url) //Github file
                 else -> null
             }
         }
@@ -162,6 +167,22 @@ class XXDownActivity : AppCompatActivity() {
                 if (uri !== null) {
                     start(uri.toString())
                 } else {
+                    finish()
+                }
+            }
+            else -> {
+                try {
+                    if (mIntent.hasExtra("zhihaofans_data")) {
+                        val zhihaofansData = mIntent.getStringExtra("zhihaofans_data")
+                        if (zhihaofansData.isNullOrEmpty()) {
+                            finish()
+                        } else {
+                            start(zhihaofansData)
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Logger.i("寻找内部变量失败")
                     finish()
                 }
             }

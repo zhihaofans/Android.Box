@@ -97,7 +97,7 @@ class QrcodeActivity : AppCompatActivity() {
         }
         checkMethod()
         if (AppUtil.isDebug()) {
-            editText_qrcode_content.setText(UrlMod.UPDATE_FIR_IM)
+            editText_qrcode_content.setText(UrlMod.UPDATE_PGYER)
             generateQR()
         }
         imageView_qrcode.setOnClickListener {

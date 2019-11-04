@@ -14,6 +14,7 @@ import com.hjq.permissions.XXPermissions
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.AppSettingMod
 import com.zhihaofans.androidbox.mod.QrcodeMod
+import com.zhihaofans.androidbox.mod.UrlMod
 import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.SystemUtil
 import io.zhihao.library.android.kotlinEx.snackbar
@@ -77,7 +78,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.menu_manual_update -> {
                     //SystemUtil.browse(this@MainActivity, updateWebUrl)
-                    checkUpdate(true)
+                    //checkUpdate(true)
+                    SystemUtil.browse(this, UrlMod.UPDATE_PGYER)
                 }
                 R.id.menu_checkPermission -> {
                     checkPermissions(true)

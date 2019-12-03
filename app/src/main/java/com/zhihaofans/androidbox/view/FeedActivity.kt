@@ -5,8 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihaofans.androidbox.R
 import com.zhihaofans.androidbox.mod.FeedMod
-import com.zhihaofans.androidbox.mod.OtherAppMod
-import com.zhihaofans.androidbox.mod.UrlRedirectMod
 import com.zhihaofans.androidbox.util.LogUtil
 import com.zhihaofans.androidbox.util.NotificationUtil
 import com.zhihaofans.androidbox.util.SystemUtil
@@ -261,14 +259,17 @@ class FeedActivity : AppCompatActivity() {
                 val newsList = data as FeedMod.News.ListView
                 listView_feed.init(newsList.titleList)
                 listView_feed.setOnItemClickListener { _, _, index, _ ->
-                    val newUrl = UrlRedirectMod.urlRedirect(newsList.urlList[index]).toString()
+                    val sourceUrl = newsList.urlList[index]
+                    val title = newsList.titleList[index]
+                    /*val newUrl = UrlRedirectMod.urlRedirect(sourceUrl).toString()
                     if (OtherAppMod.browserByLynket(newUrl)) {
                         ToastUtil.success("启动成功")
                     } else {
                         ToastUtil.error("启动失败")
                         //browseWeb(newUrl, true)
-                        SystemUtil.browse(this@FeedActivity, newUrl, newsList.titleList[index])
-                    }
+                        SystemUtil.browse(this@FeedActivity, newUrl, title)
+                    }*/
+                    SystemUtil.browse(this@FeedActivity, sourceUrl, title)
                 }
             }
             /*1 -> {

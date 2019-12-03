@@ -33,6 +33,8 @@ class UrlMod {
         const val TOPHUB_TODAY_V2EX_HOT = "https://tophub.today/n/wWmoORe4EO"
         const val TOPHUB_TODAY_QDAILY = "https://tophub.today/n/Y3QeLGAd7k"
         const val TOPHUB_MOD_HOMEPAGE = "https://tophub.today"
+        const val TOPHUBFUN_TYPE = "https://www.tophub.fun:8080/GetType"
+        const val TOPHUBFUN_GET_ALL_INFO = "https://www.tophub.fun:8080/GetAllInfoGzip?id="
         // Local
         val APP_DOWNLOAD_PATH = FileUtil.getDownloadPathString() + "Android.Box/"
         val APP_PICTURE_DOWNLOAD_PATH = FileUtil.getPicturePathString() + "Android.Box/"

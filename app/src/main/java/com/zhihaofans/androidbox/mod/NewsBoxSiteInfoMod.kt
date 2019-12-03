@@ -325,158 +325,10 @@ class SiteInfoFishPondHotList {
 
     companion object {
         private val g = Gson()
-        fun getType(): FishPondHotListGson? {
+        fun getType(): TophubfunTypeGson? {
             return try {
-                val jsonStr = """
-                    {
-                      "Code": 0,
-                      "Message": "获取数据成功",
-                      "Data": [
-                        {
-                          "id": "1",
-                          "sort": "132042",
-                          "title": "知乎"
-                        },
-                        {
-                          "id": "2",
-                          "sort": "47989",
-                          "title": "虎扑"
-                        },
-                        {
-                          "id": "6",
-                          "sort": "23894",
-                          "title": "天涯"
-                        },
-                        {
-                          "id": "7",
-                          "sort": "26726",
-                          "title": "知乎日报"
-                        },
-                        {
-                          "id": "9",
-                          "sort": "21400",
-                          "title": "水木社区"
-                        },
-                        {
-                          "id": "10",
-                          "sort": "14996",
-                          "title": "网易新闻"
-                        },
-                        {
-                          "id": "11",
-                          "sort": "17138",
-                          "title": "微信"
-                        },
-                        {
-                          "id": "12",
-                          "sort": "12352",
-                          "title": "36Kr"
-                        },
-                        {
-                          "id": "56",
-                          "sort": "10844",
-                          "title": "贴吧"
-                        },
-                        {
-                          "id": "57",
-                          "sort": "14449",
-                          "title": "豆瓣"
-                        },
-                        {
-                          "id": "58",
-                          "sort": "30619",
-                          "title": "微博"
-                        },
-                        {
-                          "id": "59",
-                          "sort": "43116",
-                          "title": "V2EX"
-                        },
-                        {
-                          "id": "60",
-                          "sort": "13438",
-                          "title": "Segmentfault"
-                        },
-                        {
-                          "id": "61",
-                          "sort": "10696",
-                          "title": "好奇心日报"
-                        },
-                        {
-                          "id": "62",
-                          "sort": "11581",
-                          "title": "黑客派"
-                        },
-                        {
-                          "id": "83",
-                          "sort": "9942",
-                          "title": "百度热搜"
-                        },
-                        {
-                          "id": "85",
-                          "sort": "16977",
-                          "title": "GitHub"
-                        },
-                        {
-                          "id": "86",
-                          "sort": "9628",
-                          "title": "果壳"
-                        },
-                        {
-                          "id": "100",
-                          "sort": "0",
-                          "title": "博客墙"
-                        },
-                        {
-                          "id": "101",
-                          "sort": "589",
-                          "title": "反馈建议"
-                        },
-                        {
-                          "id": "105",
-                          "sort": "7311",
-                          "title": "凯迪"
-                        },
-                        {
-                          "id": "106",
-                          "sort": "7682",
-                          "title": "NGA"
-                        },
-                        {
-                          "id": "108",
-                          "sort": "10004",
-                          "title": "猫扑"
-                        },
-                        {
-                          "id": "109",
-                          "sort": "7013",
-                          "title": "ChipShell"
-                        },
-                        {
-                          "id": "110",
-                          "sort": "16585",
-                          "title": "抽屉"
-                        },
-                        {
-                          "id": "111",
-                          "sort": "18281",
-                          "title": "煎蛋"
-                        },
-                        {
-                          "id": "112",
-                          "sort": "5828",
-                          "title": "IT之家"
-                        },
-                        {
-                          "id": "113",
-                          "sort": "329",
-                          "title": "涨姿势"
-                        }
-                      ]
-                    }
-                """
-                //HttpUtil.httpGetString("https://www.printf520.com:8080/GetType") ?: return null
-                g.fromJson(jsonStr, FishPondHotListGson::class.java)
+                val jsonStr = HttpUtil.httpGetString(UrlMod.TOPHUBFUN_TYPE) ?: return null
+                g.fromJson(jsonStr, TophubfunTypeGson::class.java)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -503,20 +355,20 @@ class SiteInfoFishPondHotList {
 
 
         fun start(id: String): List<News>? {
-            val url = "https://www.printf520.com:8080/GetTypeInfo?id=$id"
+            val url = UrlMod.TOPHUBFUN_TYPE
             return try {
                 val fishPondHotListStr = HttpUtil.httpGetString(url)
                 if (fishPondHotListStr.isNullOrEmpty()) {
                     null
                 } else {
-                    val fishPondHotListGson = g.fromJson(fishPondHotListStr, FishPondHotListGson::class.java)
+                    val fishPondHotListGson = g.fromJson(fishPondHotListStr, TophubfunTypeGson::class.java)
                     if (fishPondHotListGson.Code != 0) {
                         null
                     } else {
                         val mData = fishPondHotListGson.Data
                         if (mData.isNullOrEmpty()) return null
                         mData.map {
-                            News(it.title, it.url ?: "")
+                            News(it.title, it.id)
                         }.toList()
                     }
                 }

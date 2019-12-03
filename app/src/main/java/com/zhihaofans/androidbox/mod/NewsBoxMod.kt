@@ -35,7 +35,7 @@ class NewsBoxMod {
                 ItemIdMod.FEED_ZHIHU_DAILY -> SiteInfoZhihudaily.getNewsList(channelId)
                 ItemIdMod.FEED_JUHE_WEIXIN_JINGXUAN -> SiteInfoWeixinjingxuan.getNewsList(channelId, page)
                 ItemIdMod.FEED_TOPHUB_TODAY -> SiteInfoTophubToday.getNewsList(channelId)
-                ItemIdMod.FEED_FISH_POND_HOT_LIST -> SiteInfoFishPondHotList.start(channelId)
+                //ItemIdMod.FEED_FISH_POND_HOT_LIST -> SiteInfoFishPondHotList.start(channelId)
                 else -> null
             }
         }

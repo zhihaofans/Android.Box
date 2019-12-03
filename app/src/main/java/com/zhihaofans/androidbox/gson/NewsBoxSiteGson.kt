@@ -136,15 +136,34 @@ data class JuheWeixinResultListGson(
         val url: String
 )
 
-data class FishPondHotListGson(
+
+// Tophub.fun
+data class TophubfunTypeGson(
         val Code: Int,
         val Message: String,
-        val Data: List<FishPondHotListDataGson>?
+        val Data: List<TophubfunTypeDataGson>?
 )
 
-data class FishPondHotListDataGson(
-        val id: String?,
-        val title: String,
-        val url: String?,
-        val sort: String?
+data class TophubfunTypeDataGson(
+        val id: String,
+        val sort: String,
+        val title: String
+)
+
+data class TophubfunInfoGson(
+        val Code: Int,
+        val Message: String,
+        val Data: List<TophubfunInfoDataGson>?
+)
+
+data class TophubfunInfoDataGson(
+        val id: String,
+        val CreateTime: String,
+        val Desc: String,
+        val Url: String,
+        val approvalNum: String,
+        val commentNum: String,
+        val hotDesc: String,
+        val imgUrl: String,
+        val title: String
 )
